@@ -1,5 +1,5 @@
 import Axios from "axios";
-import jwtDecode from "jwt-decode";
+import jwt_decode from "jwt-decode";
 import { LOGIN_API } from "../config";
 
 
@@ -13,7 +13,6 @@ function logout() {
 
 function authenticate(credentials) {
     return Axios
-        //.post(LOGIN_API, credentials)
         .post(LOGIN_API, credentials)
         .then((response) => response.data.token)
         .then(token => {
@@ -33,24 +32,24 @@ function setAxiosToken(token) {
  * mise en place lors du chargement de l'appli
  * @returns boolean
  */
-/*function setup() {
+function setup() {
     const token = window.localStorage.getItem("authToken");
 
     if (token) {
-        const jwtData = jwtDecode(token);
+        const jwtData = jwt_decode(token);
         if (jwtData.exp * 1000 > new Date().getTime()) {
             setAxiosToken(token);
-            return true;
+            /*return true;*/
         }
         else {
             logout();
-            return false;
+            /*return false;*/
         }
     } else {
         logout();
-        return false;
+        /*return false;*/
     }
-}*/
+}
 
 /**
  * permet de savoir si on est authentifié ou pas
@@ -60,20 +59,26 @@ function isAuthenticated() {
     const token = window.localStorage.getItem("authToken");
 
     if (token) {
-        const jwtData = jwtDecode(token);
+        const jwtData = jwt_decode(token);
         if (jwtData.exp * 1000 > new Date().getTime()) {
             return true;
         }
-        logout();
         return false;
     }
-    logout();
     return false;
 }
 
+/*function getRole() {
+    const token = window.localStorage.getItem("authToken");
+    const jwtData = jwt_decode(token)
+    return jwtData.role[0]
+}*/
+
+// eslint-disable-next-line import/no-anonymous-default-export
 export default {
+    setup,
     logout,
     authenticate,
-    //setup,
     isAuthenticated,
+    /*getRole,*/
 };

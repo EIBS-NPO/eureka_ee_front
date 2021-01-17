@@ -1,30 +1,15 @@
-//import JwtDecode from "jwt-decode";
+
 import React, { useContext, useState } from "react";
-//import { Link } from "react-router-dom";
 import Field from "../_components/forms/Field";
 import AuthContext from "../_contexts/AuthContext";
 import AuthAPI from "../_services/authAPI";
-//import "../../scss/pages/Login.scss";
-//import usersAPI from "../_services/usersAPI";
 
-const LoginPage = ({ history }) => {
+const Login = ({ history }) => {
     const { isAuthenticated, setIsAuthenticated } = useContext(AuthContext);
 
     if (isAuthenticated === true) {
         history.replace('/');
     }
-    /*if (isAuthenticated === true) {
-        const role = usersAPI.checkRole()
-        if (role === 'ROLE_ADMIN') {
-            history.replace('/dashboardAdmin')
-        } else if (role === 'ROLE_COACH') {
-            history.replace('/dashboardCoach')
-        } else if (role === 'ROLE_PLAYER'){
-            history.replace('/dashboardPlayer')
-        }else if (role === 'ROLE_NOT_ALLOWED'){
-            history.replace("/notAllowedUser")
-        }
-    }*/
 
     const [credentials, setCredential] = useState({
         email: "",
@@ -50,22 +35,7 @@ const LoginPage = ({ history }) => {
             setIsAuthenticated(true);
             history.replace("/");
 
-            //const token = window.localStorage.getItem("authToken");
-            //je fait la redirection, en fonction du role de l'user
-            //const jwtData = JwtDecode(token);
-            /*const roles = jwtData.roles[0]
-            if (roles === "ROLE_ADMIN") {
-                history.replace("/dashboardAdmin");
-            } else if (roles === "ROLE_COACH") {
-                history.replace("/dashboardCoach");
-            } else if (roles === "ROLE_PLAYER"){
-                history.replace("/dashboardPlayer");
-            } else if (roles === "ROLE_NOT_ALLOWED"){
-                history.replace("/notAllowedUser");
-            }*/
-
         } catch (error) {
-          //  notification.errorNotif("Erreur dans l'un des champs du formulaire")
             setError(
                 "Echec, veuillez vérifier vos identifiants"
             );
@@ -73,7 +43,9 @@ const LoginPage = ({ history }) => {
     };
 
     return (
-        <div className="LoginPage">
+        /*<div className="Login">*/
+        <>
+        <div className="App">
             <form onSubmit={handleSubmit}>
                 <Field
                     label="Email"
@@ -99,7 +71,8 @@ const LoginPage = ({ history }) => {
                 </div>
             </form>
         </div>
+            </>
     );
 };
 
-export default LoginPage;
+export default Login;

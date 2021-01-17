@@ -2,8 +2,9 @@ import Axios from "axios";
 import JwtDecode from "jwt-decode";
 import { API_URL } from "../config";
 
-function registerUser(user) {
-    return Axios.post(API_URL + "/register", user);
+function register(user) {
+    /*//todo decompo param*/
+    return Axios.post(API_URL + "/user/register", user);
 }
 
 function putUserProfil(user) {
@@ -44,7 +45,7 @@ function checkFirstName() {
 }*/
 
 export default {
-    registerUser,
+    register,
     checkRole,
     putUserProfil,
     getUserProfile,

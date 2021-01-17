@@ -4,7 +4,11 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
 import AuthAPI from "./_services/authAPI";
 import AuthContext from "./_contexts/AuthContext";
-import MainMenu from "./_components/MainMenu";
+import HeaderAndMenus from "./_components/HeaderAndMenus";
+/*import MainMenu from "./_components/menus/MainMenu";
+import AnoMenu from "./_components/menus/AnoMenu";
+import AdminMenu from "./_components/menus/AdminMenu";
+import UserMenu from "./_components/menus/UserMenu";*/
 
 const Home = lazy(() => import('./_routes/Home'));
 const Register = lazy(() => import('./_routes/Register'));
@@ -12,24 +16,46 @@ const About = lazy(() => import('./_routes/About'));
 const Login = lazy(() => import('./_routes/Login'));
 
  function App() {
-    //AuthAPI.setup();
+    AuthAPI.setup();
 
     const [isAuthenticated, setIsAuthenticated] = useState(
         AuthAPI.isAuthenticated()
     );
 
+    /*const [userRole, setUR] = useState(
+        AuthAPI.getRole()
+    );*/
+
   return (
       <AuthContext.Provider value={{isAuthenticated, setIsAuthenticated}}>
           <Router>
-            <MainMenu />
-            <Suspense fallback={<div>Chargement...</div>}>
-              <Switch>
-                  <Route exact path="/" component={Home}/>
-                  <Route path="register" component={Register}/>
-                  <Route path="/login" component={Login}/>
-                  <Route path="/about" component={About}/>
-              </Switch>
-            </Suspense>
+              <HeaderAndMenus />
+          {/*/todo placer Header et menu dans un Compo
+              //todo make Header component with logo & MainMenu inside*/}
+              {/*<header>
+                  <MainMenu />
+              </header>*/}
+           {/* //todo make AsideNav component with (MenuUser or MenuAdmin) & AnonyMenu*/}
+             {/*<aside>
+                 <AdminMenu />
+                 <UserMenu />
+                 {isAuthenticated && (
+                     <AdminMenu />
+                 )}
+                 {isAuthenticated && (
+                     <UserMenu />
+                 )}
+                 <AnoMenu />
+             </aside>*/}
+
+             <Suspense fallback={<div>Chargement...</div>}>
+               <Switch>
+                   <Route exact path="/" component={Home}/>
+                   <Route path="/register" component={Register}/>
+                   <Route path="/login" component={Login}/>
+                   <Route path="/about" component={About}/>
+               </Switch>
+             </Suspense>
           </Router>
       </AuthContext.Provider>
   );
