@@ -7,6 +7,7 @@ const UserMenu = () => {
             <nav>
                 <ul>
                     <li><NavLink to="/my_activities">Mes activités</NavLink></li>
+                    <li><NavLink to="/my_organizations">Mes organisations</NavLink></li>
                     <li><NavLink to="/my_projects">Mes projets</NavLink></li>
                     <li><NavLink to="/my_resources">MesResources</NavLink></li>
                 </ul>

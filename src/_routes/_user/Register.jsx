@@ -1,8 +1,8 @@
 
 import React, { useContext, useState } from "react";
-import Field from "../_components/forms/Field";
-import AuthContext from "../_contexts/AuthContext";
-import UserAPI from "../_services/userAPI";
+import Field from "../../_components/forms/Field";
+import AuthContext from "../../_contexts/AuthContext";
+import UserAPI from "../../_services/userAPI";
 
 /*//todo add optionalFields*/
 const Register = ({ history }) => {
@@ -54,39 +54,10 @@ const Register = ({ history }) => {
             .catch(error => {
                 setErrors(error.response.data.error)
             })
-        /*try {
-            const response = await UserAPI.registerUser(user);
-//            console.log(response)
-            //création Admin
-            try {
-                await UserAPI.register(response);
-
-                //on efface les messages d'erreur et on renvoi sur la page de login
-                setErrors("");
-                history.replace("/");
-            } catch (error) {
-                console.log(error)
-                /!*!//todo message info erreur server*!/
-            }
-        } catch (error) {
-           // console.log(error)
-            //const { violations } = error.response.data;
-            /!*const { violations } = error.response.data;
-            notification.errorNotif("Erreur dans la formualire d'inscription")
-            if (violations) {
-                violations.forEach((violation) => {
-                    apiErrors[violation.propertyPath] = violation.message;
-                });
-                setErrors(apiErrors);
-                setLoading(false)
-            }*!/
-        }*/
     };
 
     return (
-        /*<div className="Login">*/
-        <>
-            <div className="App">
+            <div className="card">
                 <form onSubmit={handleSubmit}>
                     <Field
                         label="Email"
@@ -139,7 +110,6 @@ const Register = ({ history }) => {
                     </div>
                 </form>
             </div>
-        </>
     );
 };
 

@@ -7,6 +7,7 @@ function logout() {
     window.localStorage.removeItem("authToken");
     if (Axios.defaults.headers["Authorization"]){
         delete Axios.defaults.headers["Authorization"];
+        //todo ca c'est tout pourris comme redir
         window.location.href='/'
     }
 }

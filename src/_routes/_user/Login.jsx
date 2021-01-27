@@ -1,8 +1,8 @@
 
 import React, { useContext, useState } from "react";
-import Field from "../_components/forms/Field";
-import AuthContext from "../_contexts/AuthContext";
-import AuthAPI from "../_services/authAPI";
+import Field from "../../_components/forms/Field";
+import AuthContext from "../../_contexts/AuthContext";
+import AuthAPI from "../../_services/authAPI";
 
 const Login = ({ history }) => {
     const { isAuthenticated, setIsAuthenticated } = useContext(AuthContext);
@@ -44,8 +44,7 @@ const Login = ({ history }) => {
 
     return (
         /*<div className="Login">*/
-        <>
-        <div className="App">
+        <div className="card">
             <form onSubmit={handleSubmit}>
                 <Field
                     label="Email"
@@ -71,7 +70,6 @@ const Login = ({ history }) => {
                 </div>
             </form>
         </div>
-            </>
     );
 };
 

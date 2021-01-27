@@ -6,7 +6,7 @@ const Field = ({id, name, label, value, onChange, placeholder, type, error = ""}
         <label htmlFor={name}>{label}</label>
       <input
         id={id ? id : name}
-        value={value ? value : ""}
+        value={value}
         onChange={onChange}
         type={type ? type : "text"}
         placeholder={placeholder}

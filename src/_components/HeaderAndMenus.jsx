@@ -18,7 +18,10 @@ const HeaderAndMenus = ({history}) => {
     return(
         <>
             <header className="row">
-                <div className="logo">The Logo</div>
+                <div className="logo">
+                    <img src="" alt="The Logo"/>
+                    <h1>Eureka</h1>
+                </div>
                 <div className="main_menu">
                     <MainMenu props={history}/>
                 </div>

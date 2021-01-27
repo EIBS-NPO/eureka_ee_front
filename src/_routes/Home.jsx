@@ -1,15 +1,16 @@
 import React from 'react';
-//import AuthContext from '../_contexts/AuthContext';
-//import MainMenu from "../_components/MainMenu";
+import utilities from "../_services/utilities";
+// the hoc
+import { withTranslation } from 'react-i18next';
 
-const Home = ({ history }) => {
+const Home = ({ t }) => {
 
     return (
         <div className="App">
-            <h1>Welcome</h1>
+            <h1>{utilities.strUcFirst(t('Welcome'))}</h1>
         </div>
     );
 };
 
-export default Home;
+export default withTranslation()(Home);
 

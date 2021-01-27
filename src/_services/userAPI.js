@@ -3,15 +3,14 @@ import JwtDecode from "jwt-decode";
 import { API_URL } from "../config";
 
 function register(user) {
-    /*//todo decompo param*/
     return Axios.post(API_URL + "/user/register", user);
 }
 
-function putUserProfil(user) {
-    return Axios.put(API_URL + "/user/update", user)
+function put(user) {
+    return Axios.put(API_URL + "/user", user)
 }
 
-function getUserProfile() {
+function get() {
     return Axios.get(API_URL + "/user" )
 }
 
@@ -47,6 +46,6 @@ function checkFirstName() {
 export default {
     register,
     checkRole,
-    putUserProfil,
-    getUserProfile,
+    put,
+    get,
 };

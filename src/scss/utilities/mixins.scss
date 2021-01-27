@@ -1,0 +1,14 @@
+@mixin component-size(
+  $display,
+  $flex-direction,
+  $align-item,
+  $justify-content
+) {
+  min-height: 100vh;
+  max-height: 100vh;
+  overflow: auto;
+  display: $display;
+  flex-direction: $flex-direction;
+  align-items: $align-item;
+  justify-content: $justify-content;
+}
