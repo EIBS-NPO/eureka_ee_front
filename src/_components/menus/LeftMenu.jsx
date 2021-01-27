@@ -9,6 +9,7 @@ import AnoMenu from "./AnoMenu";
 
 const LeftMenu = ({history}) => {
     const isAuthenticated = useContext(AuthContext);
+    /*const roleUser = AuthAPI.getRole();*/
 
     return (
         <>

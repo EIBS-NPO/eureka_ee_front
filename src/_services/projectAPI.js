@@ -16,7 +16,12 @@ function get(id = null){
 }
 
 function getMy(id =null){
-    return Axios.get(API_URL + "/project/created")
+    if(id === null ){
+        return Axios.get(API_URL + "/project/created")
+    }else {
+        return Axios.get(API_URL + "/project/created/?id="+ id)
+    }
+
 }
 
 export default {

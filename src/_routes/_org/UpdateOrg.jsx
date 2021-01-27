@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import utilities from "../../_services/utilities";
-// the hoc
-import { withTranslation } from 'react-i18next';
-import AuthAPI from "../../_services/authAPI";
-import orgAPI from "../../_services/orgAPI";
-import Organization from "../../_components/cards/organization";
-import Field from "../../_components/forms/Field";
-import OrgAPI from "../../_services/orgAPI";
 
-const UpdateOrg = ({ t, id }) => {
+import { withTranslation } from 'react-i18next';
+import orgAPI from "../../_services/orgAPI";
+import OrgAPI from "../../_services/orgAPI";
+import Field from "../../_components/forms/Field";
+
+const UpdateOrg = ( props ) => {
+
+    const id = props.match.params.id
+    console.log(id)
 
     const [org, setOrg] = useState({
         name: "",
@@ -18,10 +18,10 @@ const UpdateOrg = ({ t, id }) => {
     });
 
     useEffect(() => {
-        orgAPI.get(id)
+        orgAPI.getMy(id)
             .then(response => {
                 console.log(response)
-                setOrg(response.data)
+                setOrg(response.data[0])
             })
             .catch(error => console.log(error.response))
     }, []);
@@ -36,7 +36,7 @@ const UpdateOrg = ({ t, id }) => {
     const handleSubmit = (event) => {
         event.preventDefault()
 
-        OrgAPI.put(org)
+        orgAPI.put(org)
             .then(response =>
                 console.log(response.data)
             )

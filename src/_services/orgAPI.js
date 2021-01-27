@@ -11,15 +11,15 @@ function put(org) {
 }
 
 function get(id = null){
-console.log(ORG_API + "/public")
+//console.log(ORG_API + "/public")
     return Axios.get(API_URL + "/org/public", id)
 }
 
 function getMy(id= null){
-    if(id !== null){
-        return Axios.get(API_URL + "/org", id)
-    }else {
+    if(id === null){
         return Axios.get(API_URL + "/org")
+    }else {
+        return Axios.get(API_URL + "/org?id=" + id)
     }
 }
 

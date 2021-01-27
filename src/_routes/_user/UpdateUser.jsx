@@ -39,9 +39,6 @@ const UpdateUser = ({ history, t }) => {
         setUser({ ...user, [name]: value });
     };
 
-    /**
-     * Call ajax lors de la soumission du formulaire pour créer l'admin et l'utilisateur associé
-     */
     const handleSubmit = async (event) => {
         event.preventDefault();
 

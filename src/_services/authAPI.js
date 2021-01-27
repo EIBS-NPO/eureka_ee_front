@@ -69,11 +69,11 @@ function isAuthenticated() {
     return false;
 }
 
-/*function getRole() {
+function getRole() {
     const token = window.localStorage.getItem("authToken");
     const jwtData = jwt_decode(token)
     return jwtData.role[0]
-}*/
+}
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
@@ -81,5 +81,5 @@ export default {
     logout,
     authenticate,
     isAuthenticated,
-    /*getRole,*/
+    getRole,
 };

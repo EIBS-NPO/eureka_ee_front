@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import orgAPI from '../../_services/userAPI';
-import {NavLink} from "react-router-dom";
+import orgAPI from '../../_services/orgAPI';
+import Project from "../../_components/cards/project";
+import Organization from "../../_components/cards/organization";
 //import AuthContext from '../_contexts/AuthContext';
 //import MainMenu from "../_components/MainMenu";
 
@@ -15,18 +16,14 @@ const ProfilOrg = ({ history, id }) => {
             })
             .catch(error => console.log(error.response))
     }, []);
+
     return (
 
         <div>
             <h1>Fiche d'organisation</h1>
             {org &&
             (   <>
-                    <p>{org.name}</p>
-                    <p>{org.type}</p>
-                    <p>{org.email}</p>
-                    <p>{org.phone}</p>
-
-                    <NavLink to="/UpdateOrg">Update</NavLink>
+                    <Organization org={org}/>
                 </>
             )
             }

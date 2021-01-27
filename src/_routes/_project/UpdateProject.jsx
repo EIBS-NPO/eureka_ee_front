@@ -1,15 +1,14 @@
-import React, { useContext, useEffect, useState } from "react";
+
+import React, { useEffect, useState } from "react";
+
 import Field from '../../_components/forms/Field';
 import { withTranslation } from 'react-i18next';
-import ProjectAPI from "../../_services/projectAPI";
-import AuthContext from "../../_contexts/AuthContext";
-import projectAPI from "../../_services/orgAPI";
+import projectAPI from "../../_services/projectAPI";
 
-const UpdateProject = ({ history, t, id }) => {
-    const isAuthenticated = useContext(AuthContext);
-    if (isAuthenticated === true) {
-        history.replace('/');
-    }
+const UpdateProject = (props) => {
+
+    const id = props.match.params.id
+    console.log(id)
 
     const [project, setProject] = useState({
         title: "",
@@ -19,10 +18,10 @@ const UpdateProject = ({ history, t, id }) => {
     });
 
     useEffect(() => {
-        projectAPI.get(id)
+        projectAPI.getMy(id)
             .then(response => {
                 console.log(response)
-                setProject(response.data)
+                setProject(response.data[0])
             })
             .catch(error => console.log(error.response))
     }, []);
@@ -37,9 +36,9 @@ const UpdateProject = ({ history, t, id }) => {
     const handleSubmit = (event) => {
         event.preventDefault()
 
-        ProjectAPI.put(project)
+        projectAPI.put(project)
             .then(response =>
-                console.log(response.data)
+                console.log(response.data[0])
             )
             .catch(error => {
                 console.log(error.response)

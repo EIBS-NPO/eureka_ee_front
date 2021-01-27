@@ -5,7 +5,9 @@ import '../../scss/components/cardOrg.scss';
 import { withTranslation } from 'react-i18next';
 import {NavLink} from "react-router-dom";
 
-const Project = ({ t, project, context}) => {
+const Project = ({ t, project, context }) => {
+
+
     return (
         <div className="card">
             <p>{project.title}</p>
@@ -17,7 +19,7 @@ const Project = ({ t, project, context}) => {
                 <p>{project.endDate}</p>
             )}
             {context === "creator" && (
-                <NavLink to="/UpdateProject">Update</NavLink>
+                <NavLink to={"/update_project/" + project.id }>Update</NavLink>
             )}
         </div>
     );

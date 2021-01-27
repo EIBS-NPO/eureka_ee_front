@@ -23,7 +23,7 @@ const GetAllProjects = ({ t }) => {
             <h1>Mes projets</h1>
             {projects.length > 0 ?
                 projects.map(p => (
-                    <Project key={p.id} project={p} className="card" context="creator"/>
+                    <Project key={p.id} project={p} context={"creator"}/>
                 ))
                 :   <div className="card">
                     <p>Aucun projet trouvé</p>

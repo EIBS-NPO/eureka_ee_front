@@ -1,6 +1,6 @@
 import './scss/main.scss';
 import React, { Suspense, lazy, useState } from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 import 'semantic-ui-css/semantic.min.css'
 
 import eureka_logo from "./_resources/logos/eureka_logo.png"
@@ -11,6 +11,8 @@ import AuthContext from "./_contexts/AuthContext";
 import MainMenu from "./_components/menus/MainMenu";
 import LeftMenu from "./_components/menus/LeftMenu";
 import Footer from "./_components/footer/Footer";
+
+import PrivateRoute from "./_components/PrivateRoute";
 
 
 const Home = lazy(() => import('./_routes/Home'));
@@ -79,9 +81,9 @@ const Beweging = lazy(() => import('./_routes/_partners/beweging'));
                                   <Route path="/profil_org" component={ProfilOrg}/>
                                   <Route path="/profil_project" component={ProfilProject}/>
 
-                                  <Route path="/update_user" component={UpdateUser}/>
-                                  <Route path="/update_project" component={UpdateProject}/>
-                                  <Route path="/update_org" component={UpdateOrg}/>
+                                  <PrivateRoute path="/update_user" component={UpdateUser}/>
+                                  <PrivateRoute path="/update_org/:id" component={UpdateOrg}/>
+                                  <PrivateRoute path="/update_project/:id" component={UpdateProject} />
 
                                   <Route path="/beweging" component={Beweging}/>
                               </Switch>

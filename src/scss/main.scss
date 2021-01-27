@@ -41,6 +41,7 @@
 
 #main_content {
     display:flex;
+    flex-direction: column;
     border: 2px solid $fourth-color;
     background-image:
             radial-gradient(rgba(white, 0.1), white 250px, $fourth-color),

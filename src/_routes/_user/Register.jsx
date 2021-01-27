@@ -52,6 +52,7 @@ const Register = ({ history }) => {
                 history.replace("/")
             })
             .catch(error => {
+                console.log(error)
                 setErrors(error.response.data.error)
             })
     };

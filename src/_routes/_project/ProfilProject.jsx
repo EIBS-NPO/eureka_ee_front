@@ -15,13 +15,6 @@ import {NavLink} from "react-router-dom";
  * la liste des reources privées, si abilitation user suffisante.
  */
 
-/**
- *
- * @param history
- * @param id
- * @returns {JSX.Element}
- * @constructor
- */
 const ProfilProject = ({ history, id }) => {
 
     const [project, setProject] = useState()
@@ -39,7 +32,7 @@ const ProfilProject = ({ history, id }) => {
             <h1>Fiche de projet</h1>
             {project &&
             (   <>
-                    <Project p={project}/>
+                    <Project project={project}/>
                 </>
             )
             }
