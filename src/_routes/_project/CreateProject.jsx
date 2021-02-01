@@ -3,8 +3,11 @@ import Field from '../../_components/forms/Field';
 import { withTranslation } from 'react-i18next';
 import ProjectAPI from "../../_services/projectAPI";
 import AuthContext from "../../_contexts/AuthContext";
+import {Button, Form} from "semantic-ui-react";
+import AuthAPI from "../../_services/authAPI";
 
 const CreateProject = ({ history, t }) => {
+    AuthAPI.setup();
     const isAuthenticated = useContext(AuthContext);
     if (isAuthenticated === true) {
         history.replace('/');
@@ -13,14 +16,12 @@ const CreateProject = ({ history, t }) => {
     const [project, setProject] = useState({
         title: "",
         description: "",
-        startDate: "",
-        endDate: "",
+        startDate: {},
+        endDate: {},
     });
 
     const handleChange = (event) => {
-        const value = event.currentTarget.value;
-        const name = event.currentTarget.name;
-
+        const { name, value } = event.currentTarget;
         setProject({ ...project, [name]: value });
     };
 
@@ -32,50 +33,71 @@ const CreateProject = ({ history, t }) => {
                 console.log(response.data)
             )
             .catch(error => {
-                console.log(error.response)
-                setError("Echec, veuillez vérifier vos informations");
+                console.log(error.response.data.error)
+                setErrors(error.response.data.error);
             })
     };
 
-    const [error, setError] = useState("");
+    const [errors, setErrors] = useState({
+        title: "",
+        description: "",
+        startDate: "",
+        endDate: "",
+    });
 
     return (
-        <div className="App">
+        <div className="card">
             <h1>Créer un nouveau projet</h1>
             <form onSubmit={handleSubmit}>
-                <Field
+                <Form.Input
+                    icon=''
+                    iconPosition='left'
+
                     label="Title"
                     name="title"
+                    type="text"
                     value={project.title}
                     onChange={handleChange}
                     placeholder="nom..."
+                    error={errors.title ? errors.title : null}
                 />
-                <Field
+                <Form.Input
+                    icon=''
+                    iconPosition='left'
+
                     label="Description"
                     name="description"
                     type="textarea"
                     value={project.description}
                     onChange={handleChange}
                     placeholder="description..."
+                    error={errors.description ? errors.description : null}
                 />
-                <Field
+                <Form.Input
+                    icon=''
+                    iconPosition='left'
+
                     label="Date de début"
                     name="startDate"
                     type="date"
                     value={project.startDate}
                     onChange={handleChange}
+                    error={errors.startDate ? errors.startDate : null}
                 />
-                <Field
+                <Form.Input
+                    icon=''
+                    iconPosition='left'
+
                     label="Date de fin"
                     name="endDate"
                     type="date"
                     value={project.endDate}
                     onChange={handleChange}
+                    error={errors.endDate ? errors.endDate : null}
                 />
                 <div className="inline-btn">
                     <button type="submit" className="btn btn-success">Enregistrer</button>
                 </div>
-                <p>{error}</p>
             </form>
         </div>
     );

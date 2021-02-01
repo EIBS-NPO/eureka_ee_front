@@ -1,8 +1,9 @@
 
 import React, { useContext, useEffect, useState } from "react";
-import Field from "../../_components/forms/Field";
+import {Button, Form, Item} from "semantic-ui-react";
 import AuthContext from "../../_contexts/AuthContext";
 import UserAPI from "../../_services/userAPI";
+import ImageUpload from "../../_components/Crop/ImageUpload";
 
 /*//todo add optionalFields*/
 const UpdateUser = ({ history, t }) => {
@@ -12,25 +13,42 @@ const UpdateUser = ({ history, t }) => {
         history.replace('/');
     }
 
+    const [userPicture, setUserPicture] =useState();
+
     const [user, setUser] = useState({
         email: "",
         lastname: "",
         firstname: "",
+        picture:""
     });
+
+    const [refreshUser, setRefreshUser] = useState([0])
 
     useEffect(() => {
         UserAPI.get()
             .then(response => {
-                console.log(response)
+                console.log(response.data[0])
                 setUser(response.data[0])
-            })
+                if(response.data[0].picture){
+                    UserAPI.dowloadPic(response.data[0].picture)
+                        .then(response => {
+                            console.log(response)
+                            setUserPicture(response.data[0])
+                            //   setLoading3(false)
+                        })
+                        .catch(error => {
+                            console.log(error.response)
+                            //todo handle error
+                        })
+                }})
             .catch(error => console.log(error.response))
-    }, []);
+    }, [refreshUser]);
 
     const [errors, setErrors] = useState({
         email: "",
         lastname: "",
         firstname: "",
+        picture:""
     });
 
     //gestion des changements des inputs dans le formulaire
@@ -54,39 +72,66 @@ const UpdateUser = ({ history, t }) => {
     };
 
     return (
+    <>
         <div className="card">
-                <form onSubmit={handleSubmit}>
-                    <Field
-                        label="Email"
-                        name="email"
-                        type="email"
-                        value={user.email}
-                        onChange={handleChange}
-                        error={errors.email}
+            {user && (
+                <>
+            <Item.Group >
+                <Item>
+                    {userPicture != null &&
+                    <Item.Image src={`data:image/jpeg;base64,${userPicture}`}/>
+                    }
+                </Item>
+                <Item>
+                    <ImageUpload
+                        setRefresh={setRefreshUser}
+                        refresh={refreshUser}
                     />
-                    <Field
-                        label="Firstname"
-                        name="firstname"
-                        type="text"
-                        value={user.firstname}
-                        onChange={handleChange}
-                        error={errors.firstname}
-                    />
-                    <Field
-                        label="Lastname"
-                        name="lastname"
-                        type="text"
-                        value={user.lastname}
-                        onChange={handleChange}
-                        error={errors.lastname}
-                    />
+                </Item>
+                <Item>
+                    <Item.Content>
+                        <Form onSubmit={handleSubmit}>
+                            <Form.Input
+                                icon='mail'
+                                iconPosition='left'
+                                name="email"
+                                value={user.email}
+                                label='Email'
+                                placeholder='Email'
+                                onChange={handleChange}
+                                error={errors.email ? errors.email : null}
+                            />
+                            <Form.Input
+                                icon='user'
+                                iconPosition='left'
 
-                    <div className="inline-btn">
-                        <button type="submit" className="btn btn-success">Enregistrer</button>
-                    </div>
-                </form>
+                                label="Firstname"
+                                name="firstname"
+                                type="text"
+                                value={user.firstname}
+                                onChange={handleChange}
+                                error={errors.firstname ? errors.firstname : null}
+                            />
+                            <Form.Input
+                                icon='user'
+                                iconPosition='left'
 
+                                label="Lastname"
+                                name="lastname"
+                                type="text"
+                                value={user.lastname}
+                                onChange={handleChange}
+                                error={errors.lastname ? errors.lastname : null}
+                            />
+                            <Button content='Valider' primary />
+                        </Form>
+                    </Item.Content>
+                </Item>
+            </Item.Group>
+                </>
+            )}
         </div>
+    </>
     );
 };
 

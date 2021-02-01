@@ -1,6 +1,8 @@
 @import "../utilities/variables.scss";
 
 #main_menu {
+  display: flex;
+  justify-content: center;
   z-index:1;
  // background-color: $second-color;
   background: linear-gradient(to right, white 20%, $second-color );
@@ -10,4 +12,9 @@
 
 #main_nav {
   vertical-align: center;
+}
+
+.push {
+  align-items: flex-end;
+  margin-left: auto;
 }

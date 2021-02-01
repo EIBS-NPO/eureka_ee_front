@@ -3,6 +3,7 @@ import React, { useContext, useState } from "react";
 import Field from "../../_components/forms/Field";
 import AuthContext from "../../_contexts/AuthContext";
 import UserAPI from "../../_services/userAPI";
+import {Button, Form} from "semantic-ui-react";
 
 /*//todo add optionalFields*/
 const Register = ({ history }) => {
@@ -58,7 +59,77 @@ const Register = ({ history }) => {
     };
 
     return (
-            <div className="card">
+        <div className="card">
+            <Form onSubmit={handleSubmit}>
+                <Form.Input
+                    icon='mail'
+                    iconPosition='left'
+
+                    label="Email"
+                    name="email"
+                    type="email"
+                    value={user.email}
+                    onChange={handleChange}
+                    placeholder="email..."
+                    error={errors.email ? errors.email : null}
+                />
+                <Form.Input
+                    icon='user'
+                    iconPosition='left'
+
+                    label="Firstname"
+                    name="firstname"
+                    type="text"
+                    value={user.firstname}
+                    onChange={handleChange}
+                    error={errors.firstname ? errors.firstname : null}
+                />
+                <Form.Input
+                    icon='user'
+                    iconPosition='left'
+
+                    label="Lastname"
+                    name="lastname"
+                    type="text"
+                    value={user.lastname}
+                    onChange={handleChange}
+                    error={errors.lastname ? errors.lastname : null}
+                />
+
+                <Form.Input
+                    icon='lock'
+                    iconPosition='left'
+
+                    name="password"
+                    value={user.password}
+                    label='Password'
+                    type='password'
+                    onChange={handleChange}
+                    error={errors.password ? errors.password : null}
+                />
+
+                <Form.Input
+                    icon='lock'
+                    iconPosition='left'
+
+                    label="Confirmation"
+                    name="passwordConfirm"
+                    type="password"
+                    value={user.passwordConfirm}
+                    onChange={handleChange}
+                    placeholder="password confirm..."
+                    error={errors.passwordConfirm ? errors.passwordConfirm :null}
+                />
+                <Button content='Login' primary />
+            </Form>
+        </div>
+    );
+};
+
+export default Register;
+
+/*
+<div className="card">
                 <form onSubmit={handleSubmit}>
                     <Field
                         label="Email"
@@ -111,7 +182,4 @@ const Register = ({ history }) => {
                     </div>
                 </form>
             </div>
-    );
-};
-
-export default Register;
+ */

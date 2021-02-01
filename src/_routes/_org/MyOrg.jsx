@@ -1,11 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import utilities from "../../_services/utilities";
 // the hoc
 import { withTranslation } from 'react-i18next';
 import orgAPI from "../../_services/orgAPI";
 import Organization from "../../_components/cards/organization";
+import AuthAPI from "../../_services/authAPI";
+import AuthContext from "../../_contexts/AuthContext";
 
-const GetAllOrg = ({ t }) => {
+const GetAllOrg = ({ history, t }) => {
+    AuthAPI.setup();
+    const isAuthenticated = useContext(AuthContext);
+    if (isAuthenticated === true) {
+        history.replace('/');
+    }
 
     const [orgs, setOrgs] = useState([])
 

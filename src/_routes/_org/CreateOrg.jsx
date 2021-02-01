@@ -3,8 +3,11 @@ import Field from '../../_components/forms/Field';
 import { withTranslation } from 'react-i18next';
 import OrgAPI from "../../_services/orgAPI";
 import AuthContext from "../../_contexts/AuthContext";
+import {Button, Form} from "semantic-ui-react";
+import AuthAPI from "../../_services/authAPI";
 
 const CreateOrg = ({ history, t }) => {
+    AuthAPI.setup();
     const isAuthenticated = useContext(AuthContext);
     if (isAuthenticated === true) {
         history.replace('/');
@@ -18,9 +21,7 @@ const CreateOrg = ({ history, t }) => {
     });
 
     const handleChange = (event) => {
-        const value = event.currentTarget.value;
-        const name = event.currentTarget.name;
-
+        const { name, value } = event.currentTarget;
         setOrg({ ...org, [name]: value });
     };
 
@@ -33,50 +34,70 @@ const CreateOrg = ({ history, t }) => {
             )
             .catch(error => {
                 console.log(error.response)
-                setError("Echec, veuillez vérifier vos informations");
+                setErrors(error.response.data.error);
             })
     };
 
-    const [error, setError] = useState("");
+    const [errors, setErrors] = useState({
+        name: "",
+        type: "",
+        email: "",
+        phone: "",
+    });
 
     return (
-        <div className="App">
+        <div className="card">
             <h1>Enregistrer votre organisation</h1>
-            <form onSubmit={handleSubmit}>
-                <Field
+            <form className="center column" onSubmit={handleSubmit}>
+                <Form.Input
+                    icon='user'
+                    iconPosition='left'
+
                     label="Name"
                     name="name"
                     value={org.name}
                     onChange={handleChange}
-                    placeholder="nom..."
+                    placeholder="name..."
+                    type="text"
+                    error={errors.firstname ? errors.firstname : null}
                 />
-                <Field
+                <Form.Input
+                    icon='tag'
+                    iconPosition='left'
+
                     label="Type"
                     name="type"
+                    type="text"
                     value={org.type}
                     onChange={handleChange}
                     placeholder="type..."
+                    error={errors.type ? errors.type : null}
                 />
-                <Field
+                <Form.Input
+                    icon='mail'
+                    iconPosition='left'
+
                     label="Email"
                     name="email"
                     type="email"
                     value={org.email}
                     onChange={handleChange}
                     placeholder="email..."
+                    error={errors.email ? errors.email : null}
                 />
-                <Field
+                <Form.Input
+                    icon='phone'
+                    iconPosition='left'
+
                     label="Phone"
                     name="phone"
                     type="phone"
                     value={org.phone}
                     onChange={handleChange}
                     placeholder="phone..."
+                    error={errors.phone ? errors.phone : null}
                 />
-                <div className="inline-btn">
-                    <button type="submit" className="btn btn-success">Enregistrer</button>
-                </div>
-                <p>{error}</p>
+                <Button className="ui primary basic button" content='Login' />
             </form>
         </div>
     );

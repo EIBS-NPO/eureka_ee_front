@@ -22,10 +22,10 @@ const ProfilOrg = ({ history, id }) => {
         <div>
             <h1>Fiche d'organisation</h1>
             {org &&
-            (   <>
-                    <Organization org={org}/>
-                </>
-            )
+                (   <>
+                        <Organization org={org}/>
+                    </>
+                )
             }
         </div>
     );

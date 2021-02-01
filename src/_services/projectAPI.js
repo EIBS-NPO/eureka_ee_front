@@ -3,6 +3,7 @@ import {API_URL, PROJECT_API} from "../config";
 
 
 function post(project) {
+    console.log(project)
     return Axios.post(PROJECT_API, project)
 }
 

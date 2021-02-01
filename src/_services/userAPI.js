@@ -20,6 +20,21 @@ const checkRole = () => {
     return jwtData.roles[0]
 }
 
+const uploadPic = (bodyFormData) => {
+    console.log(bodyFormData)
+    //return Axios.post(API_URL + "/user/picture", {picture:pic} );
+    return Axios({
+        method: 'post',
+        url: API_URL + "/user/picture",
+        data: bodyFormData,
+        headers: {'Content-Type': 'multipart/form-data'}
+    })
+}
+
+const dowloadPic = (picture) => {
+    return Axios.get(API_URL + "/user/picture/?pic=" + picture)
+}
+
 /*
 function checkLastName() {
     const token = window.localStorage.getItem("authToken");
@@ -48,4 +63,6 @@ export default {
     checkRole,
     put,
     get,
+    uploadPic,
+    dowloadPic
 };
