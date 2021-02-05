@@ -1,5 +1,5 @@
 import React from 'react';
-import { Divider, Button, Icon, Image, Item, Label } from 'semantic-ui-react'
+import { Item, Label } from 'semantic-ui-react'
 import '../../scss/components/cardOrg.scss';
 
 // the hoc

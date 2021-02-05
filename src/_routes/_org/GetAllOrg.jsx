@@ -35,12 +35,11 @@ const GetAllOrg = ({ t }) => {
         <div className="card">
             <h1>Liste des organizations</h1>
             {orgs.length > 0 ?
-                orgs.map(org => (
-                    <Item.Group divided>
+                <Item.Group divided>
+                    {orgs.map(org => (
                         <Organization key={org.id} org={org}/>
-                        <Divider section />
-                    </Item.Group>
-                ))
+                    ))}
+                </Item.Group>
                 :
                 <p>Aucun projet trouvé</p>
             }

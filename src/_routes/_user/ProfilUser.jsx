@@ -1,13 +1,13 @@
+
 import React, { useEffect, useState, useContext } from 'react';
 import userAPI from '../../_services/userAPI';
-import User from '../../_components/cards/user'
 import AuthAPI from "../../_services/authAPI";
 import AuthContext from "../../_contexts/AuthContext";
 import fileAPI from "../../_services/fileAPI";
-import UserAPI from "../../_services/userAPI";
-import {Divider, Grid, Segment, Button, Form, Icon, Item, Label} from "semantic-ui-react";
-import ImageUpload from "../../_components/Crop/ImageUpload";
-import authAPI from "../../_services/authAPI";
+import {Loader, Grid, Segment, Item } from "semantic-ui-react";
+import PictureForm from "../../_components/forms/PictureForm";
+import ParamLoginForm from "../../_components/forms/ParamLoginForm";
+import UserCoordForm from "../../_components/forms/UserCoordForm";
 
 const ProfilUser = ({ history }) => {
     AuthAPI.setup();
@@ -26,291 +26,93 @@ const ProfilUser = ({ history }) => {
 
     {/*todo modal pour change password et email?*/}
 
-    const [userMail, setUserMail] = useState()
     const [picture, setPicture] = useState()
-    const [update, setUpdate] = useState(false)
 
+    const [userLoader, setUserLoader] = useState(false)
+    const [picLoader, setPicLoader] = useState(false)
 
     useEffect(() => {
+        setUserLoader(true)
+        setPicLoader(true)
         userAPI.get()
             .then(response => {
                 setUser(response.data[0])
+                setUserLoader(false)
                 if(response.data[0].picture ){
                     fileAPI.downloadPic("user",response.data[0].picture)
                         .then(response => {
                             setPicture(response.data[0])
-                            // setPictures64(pictures64 => [...pictures64, { [player.id]: response.data.data }])
+                            setPicLoader(false)
                         })
-                        .catch(error => console.log(error.response))
+                        .catch(error => {
+                            console.log(error.response)
+                            setPicLoader(false)
+                        })
                 }
             })
-            .catch(error => console.log(error.response))
-        setUserMail(authAPI.getUserMail())
-    }, []);
-
-    /*if(user.picture ){
-        fileAPI.downloadPic("user", user.picture)
-            .then(response => {
-                setPicture(response.data[0])
-                // setPictures64(pictures64 => [...pictures64, { [player.id]: response.data.data }])
-            })
-            .catch(error => console.log(error.response))
-    }*/
-
-    const [errors, setErrors] = useState({
-        email: "",
-        lastname: "",
-        firstname: "",
-        picture:""
-    });
-
-    //gestion des changements des inputs dans le formulaire
-    const handleChange = (event) => {
-        const { name, value } = event.currentTarget;
-        setUser({ ...user, [name]: value });
-    };
-
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-
-        //création User
-        UserAPI.put(user)
-            .then(response => {
-                //  setErrors({});
-                //todo confirmation
-            })
             .catch(error => {
-                setErrors(error.response.data.error)
+                setUserLoader(false)
+                console.log(error.response)
             })
-    };
-
-    const switchUpdate = () => {
-        setUpdate(true);
-    }
-
-    const stopUpdate = () => {
-        setUpdate(false)
-    }
+           /* .finally(()=> setUserLoader(false))*/
+    }, []);
 
     return (
         <div className="card">
             {user &&
-                <>
-            <Grid columns={3}>
-                <Grid.Column>
-                    <Segment>
-                        <Item>
-                            <Item.Group divided>
+                <Grid columns={3}>
+                    <Grid.Column>
+                        <Segment>
+                            {picLoader ?
                                 <Item>
-                                    <Item.Content>
-                                        <Label attached='top'>
-                                            <h3>Picture</h3>
-                                        </Label>
-                                        <Item.Description>
-                                            {picture ?
-                                                <Item.Image size="small" src={`data:image/jpeg;base64,${picture}`}/>
-                                                :
-                                                <Item.Image size="small" src='https://react.semantic-ui.com/images/wireframe/image.png'/>
-                                            }
-                                        </Item.Description>
-                                    </Item.Content>
+                                    <Loader active inline="centered" />
                                 </Item>
-                                {update &&
+                                :
+                                <PictureForm picture={picture} setterPic={setPicture} entityType="user" entity={user}/>
+                            }
+                        </Segment>
+
+                        <Segment>
+                            {userLoader ?
                                 <Item>
-                                    <ImageUpload
-                                        setRefresh={setPicture}
-                                        type="user"
-                                        entity={user}
-                                    />
+                                    <Loader active inline="centered" />
                                 </Item>
-                                }
-                            </Item.Group>
-                        </Item>
-                    </Segment>
+                                :
+                                <ParamLoginForm entity={user} />
+                            }
+                        </Segment>
+                    </Grid.Column>
 
-                    <Segment>
-                        <Item.Group>
-                            <Item>
-                                <Item.Content>
-                                    <Item.Header>Parametres de connexion</Item.Header>
-                                    {update &&
-                                    <Form onSubmit={handleSubmit}>
-                                        <Form.Input
-                                            icon='mail'
-                                            iconPosition='left'
-                                            name="email"
-                                            value={user.email}
-                                            label='Email'
-                                            placeholder='Email'
-                                            onChange={handleChange}
-                                            error={errors.email ? errors.email : null}
-                                        />
-                                    </Form>
-                                    }
-                                    {!update &&
-                                    <Item.Description>
-                                        <Item.Group divided>
-                                            <Item>
-                                                <Label icon="mail" size="small" color="#A36298" ribbon>
-                                                    Email
-                                                </Label>
-                                                <Item.Content verticalAlign='middle'>
-                                                    {user.email}
-                                                </Item.Content>
-                                            </Item>
-                                            <Item>
-                                                <Label icon="mail" size="small" color="#A36298" ribbon>
-                                                    Password
-                                                </Label>
-                                                <Item.Content verticalAlign='middle'>
+                    <Grid.Column>
+                        <Segment>
+                            {userLoader ?
+                                <Item>
+                                    <Loader active inline="centered"/>
+                                </Item>
+                                :
+                                <UserCoordForm user={user} setterUser={setUser}/>
+                            }
+                        </Segment>
+                    </Grid.Column>
 
-                                                </Item.Content>
-                                            </Item>
-                                        </Item.Group>
-                                    </Item.Description>
-                                    }
-                                </Item.Content>
-                            </Item>
-                        </Item.Group>
-                    </Segment>
-
-                </Grid.Column>
-
-                <Grid.Column>
-                    <Segment>
-                        <Item.Group >
-                            <Item>
-                                <Item.Content>
-                                    <Item.Header>Mes Coordonnées</Item.Header>
-                                {update &&
-                                        <Form onSubmit={handleSubmit}>
-                                            <Form.Input
-                                                icon='mail'
-                                                iconPosition='left'
-                                                name="email"
-                                                value={user.email}
-                                                label='Email'
-                                                placeholder='Email'
-                                                onChange={handleChange}
-                                                error={errors.email ? errors.email : null}
-                                            />
-                                            <Form.Input
-                                                icon='user'
-                                                iconPosition='left'
-
-                                                label="Firstname"
-                                                name="firstname"
-                                                type="text"
-                                                value={user.firstname}
-                                                onChange={handleChange}
-                                                error={errors.firstname ? errors.firstname : null}
-                                            />
-                                            <Form.Input
-                                                icon='user'
-                                                iconPosition='left'
-
-                                                label="Lastname"
-                                                name="lastname"
-                                                type="text"
-                                                value={user.lastname}
-                                                onChange={handleChange}
-                                                error={errors.lastname ? errors.lastname : null}
-                                            />
-                                            <Button content='Valider' primary />
-                                            <Button size="small" onClick={stopUpdate}>
-                                                <Icon name='edit'/> Annuler
-                                            </Button>
-                                        </Form>
-                                }
-                                {!update &&
-                                    <>
-                                        <Item.Description>
-                                            <Item.Group divided>
-                                                <Item>
-                                                    <Label size="small" color="#A36298" ribbon>
-                                                        Firstname
-                                                    </Label>
-                                                    <Item.Content verticalAlign='middle'>
-                                                        {user.firstname}
-                                                    </Item.Content>
-                                                </Item>
-
-                                                <Item>
-                                                    <Label size="small" color="#A36298" ribbon>
-                                                        Lastname
-                                                    </Label>
-                                                    <Item.Content verticalAlign='middle'>
-                                                        {user.lastname}
-                                                    </Item.Content>
-                                                </Item>
-
-                                                <Item>
-                                                    <Label size="small" color="#A36298" ribbon>
-                                                        Phone
-                                                    </Label>
-                                                    <Item.Content verticalAlign='middle'>
-                                                        {user.phone ?
-                                                            user.phone
-                                                            : "non renseigné"
-                                                        }
-                                                    </Item.Content>
-                                                </Item>
-
-                                                <Item>
-                                                    <Label size="small" color="#A36298" ribbon>
-                                                        Mobile
-                                                    </Label>
-                                                    <Item.Content verticalAlign='middle'>
-                                                        {user.mobile ?
-                                                            user.mobile
-                                                            : "non renseigné"
-                                                        }
-                                                    </Item.Content>
-                                                </Item>
-
-                                            </Item.Group>
-                                        </Item.Description>
-                                        <Item.Extra>
-                                            {user.phone &&
-                                                <Label>
-                                                    <Icon name='phone' /> {user.phone}
-                                                </Label>
-                                            }
-                                            {user.mobile &&
-                                                <Label>
-                                                    <Icon name='phone' /> {user.mobile}
-                                                </Label>
-                                            }
-                                        </Item.Extra>
-                                        {userMail === user.email &&
-                                        <Item>
-                                            <Item.Content>
-                                                <Button size="small" onClick={switchUpdate}>
-                                                    <Icon name='edit'/> Modifier
-                                                </Button>
-                                            </Item.Content>
-                                        </Item>
-                                        }
-                                    </>
-                                }
-                                </Item.Content>
-                            </Item>
-                        </Item.Group>
-                    </Segment>
-                </Grid.Column>
-                <Grid.Column>
-                    <Segment>
-                        <Item.Group >
-                            <Item>
-                                <Item.Content>
-                                    <Item.Header>Addresse</Item.Header>
-                                </Item.Content>
-                            </Item>
-                        </Item.Group>
-                    </Segment>
-                </Grid.Column>
-            </Grid>
-            </>
+                    <Grid.Column>
+                        <Segment>
+                            {userLoader ?
+                                <Item>
+                                    <Loader active inline="centered"/>
+                                </Item>
+                                :
+                                <Item.Group>
+                                    <Item>
+                                        <Item.Content>
+                                            <Item.Header>Addresse</Item.Header>
+                                        </Item.Content>
+                                    </Item>
+                                </Item.Group>
+                            }
+                        </Segment>
+                    </Grid.Column>
+                </Grid>
             }
         </div>
     );

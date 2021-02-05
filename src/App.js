@@ -2,8 +2,9 @@ import './scss/main.scss';
 import React, { Suspense, lazy, useState } from 'react';
 import { BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 import 'semantic-ui-css/semantic.min.css'
+import { Loader } from "semantic-ui-react";
 
-import eureka_logo from "./_resources/logos/eureka_logo.png"
+/*import eureka_logo from "./_resources/logos/eureka_logo.png"*/
 import interreg_logo from "./_resources/logos/Interreg.jpg"
 
 import AuthAPI from "./_services/authAPI";
@@ -61,7 +62,8 @@ const Beweging = lazy(() => import('./_routes/_partners/beweging'));
                   <div id="main_middle">
                       <LeftMenu />
                       <div id="main_content" className="main_left">
-                          <Suspense fallback={<div>Chargement...</div>}>
+                          {/*<Suspense fallback={<div>Chargement...</div>}>*/}
+                          <Suspense fallback={<Loader content='Loading' />}>
                               <Switch>
                                   <Route exact path="/" component={Home}/>
                                   <Route path="/login" component={Login}/>

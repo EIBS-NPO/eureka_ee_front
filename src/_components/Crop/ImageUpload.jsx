@@ -1,9 +1,9 @@
-import React, { useState, useContext} from 'react'
+import React, { useState } from 'react'
 import ImageCropper from './ImageCropper'
 import Modal from "../Modal";
 import fileAPI from '../../_services/fileAPI';
-import AuthAPI from "../../_services/authAPI";
-import AuthContext from "../../_contexts/AuthContext";
+// import AuthAPI from "../../_services/authAPI";
+// import AuthContext from "../../_contexts/AuthContext";
 //import notification from '../../services/notification';
 
 const ImageUpload = ({ refresh, setRefresh, type, entity, parentCallBack }) => {

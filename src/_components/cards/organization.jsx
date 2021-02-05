@@ -1,11 +1,12 @@
-import React, {useState} from 'react';
+
+import React from 'react';
 import '../../scss/components/cardOrg.scss';
 
 // the hoc
 import { withTranslation } from 'react-i18next';
-import {NavLink} from "react-router-dom";
+// import {NavLink} from "react-router-dom";
 import { Icon, Item, Label} from "semantic-ui-react";
-import fileAPI from "../../_services/fileAPI";
+// import fileAPI from "../../_services/fileAPI";
 
 const Organization = ({ t, org, context}) => {
 
