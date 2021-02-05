@@ -23,9 +23,26 @@ function getMy(id= null){
     }
 }
 
+const uploadPic = (bodyFormData) => {
+    console.log(bodyFormData)
+    //return Axios.post(API_URL + "/user/picture", {picture:pic} );
+    return Axios({
+        method: 'post',
+        url: API_URL + "/user/picture",
+        data: bodyFormData,
+        headers: {'Content-Type': 'multipart/form-data'}
+    })
+}
+
+const downloadPic = (picture) => {
+    return Axios.get(API_URL + "/user/picture/?pic=" + picture)
+}
+
 export default {
     post,
     put,
     get,
-    getMy
+    getMy,
+    uploadPic,
+    downloadPic
 };

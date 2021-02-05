@@ -1,4 +1,5 @@
 import React from 'react';
+import { Divider, Button, Icon, Image, Item, Label } from 'semantic-ui-react'
 import '../../scss/components/cardOrg.scss';
 
 // the hoc
@@ -9,19 +10,32 @@ const Project = ({ t, project, context }) => {
 
 
     return (
-        <div className="card">
-            <p>{project.title}</p>
-            <p>{project.description}</p>
-            {project.startDate && (
-                <p>{project.startDate}</p>
-            )}
-            {project.endDate && (
-                <p>{project.endDate}</p>
-            )}
-            {context === "creator" && (
-                <NavLink to={"/update_project/" + project.id }>Update</NavLink>
-            )}
-        </div>
+        <Item>
+            {project.picture &&
+            <Item.Image src={`data:image/jpeg;base64,${project.picture}`}/>
+            }
+            {!project.picture &&
+            <Item.Image src='https://react.semantic-ui.com/images/wireframe/image.png' />
+            }
+
+            <Item.Content>
+                <Item.Header>{project.name}</Item.Header>
+                <Item.Meta>
+                    <span>début : {project.startDate}</span>
+                    {project.endDate && (
+                        <span>fin : {project.endDate}</span>
+                    )}
+
+                </Item.Meta>
+                <Item.Description>{project.description}</Item.Description>
+                <Item.Extra>
+                    <Label icon='globe' content='Additional Languages' />
+                    {context === "creator" && (
+                        <NavLink to={"/update_project/" + project.id }>Update</NavLink>
+                    )}
+                </Item.Extra>
+            </Item.Content>
+        </Item>
     );
 };
 

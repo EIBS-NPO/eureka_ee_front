@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react';
+import { Divider, Button, Icon, Image, Item, Label } from 'semantic-ui-react'
+
 import utilities from "../../_services/utilities";
 // the hoc
 import { withTranslation } from 'react-i18next';
 import projectAPI from "../../_services/projectAPI";
 import Project from "../../_components/cards/project";
 
-const GetAllProjects = ({ t }) => {
+const GetAllProjects = ({ props }) => {
+
 
     const [projects, setProjects] = useState([])
 
@@ -19,19 +22,22 @@ const GetAllProjects = ({ t }) => {
     }, []);
 
     return (
-        <>
+        <div className="card">
             <h1>Liste des projets</h1>
             {projects.length > 0 ?
-                projects.map(p => (
-                    <Project key={p.id} project={p} className="card"/>
+                projects.map((p, key) => (
+                    <Item.Group divided key={key}>
+                        <Project project={p} context={"all"} />
+
+                        <Divider section />
+                    </Item.Group>
                 ))
-                :   <div className="card">
+                :
                     <p>Aucun projet trouvé</p>
-                </div>
             }
-        </>
+        </div>
     );
-};
+}
 
 export default withTranslation()(GetAllProjects);
 

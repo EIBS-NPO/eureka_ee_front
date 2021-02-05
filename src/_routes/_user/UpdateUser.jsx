@@ -3,14 +3,24 @@ import React, { useContext, useEffect, useState } from "react";
 import {Button, Form, Item} from "semantic-ui-react";
 import AuthContext from "../../_contexts/AuthContext";
 import UserAPI from "../../_services/userAPI";
+import fileAPI from "../../_services/fileAPI";
+import user from "../../_components/cards/user";
 import ImageUpload from "../../_components/Crop/ImageUpload";
 
 /*//todo add optionalFields*/
-const UpdateUser = ({ history, t }) => {
+const UpdateUser = ( props ) => {
+    //const userData =
+    /*console.log(props.user)
+    console.log(props.match.params.id)
+    console.log(props.match.params.firstname)
+    console.log(props.match.params.lastname)
+    console.log(props.match.params.picture)
+    console.log(props.match.params.email)*/
+
     const { isAuthenticated, setIsAuthenticated } = useContext(AuthContext);
 
     if (isAuthenticated === false) {
-        history.replace('/');
+        props.history.replace('/');
     }
 
     const [userPicture, setUserPicture] =useState();
@@ -25,23 +35,28 @@ const UpdateUser = ({ history, t }) => {
     const [refreshUser, setRefreshUser] = useState([0])
 
     useEffect(() => {
-        UserAPI.get()
-            .then(response => {
-                console.log(response.data[0])
-                setUser(response.data[0])
-                if(response.data[0].picture){
-                    UserAPI.dowloadPic(response.data[0].picture)
-                        .then(response => {
-                            console.log(response)
-                            setUserPicture(response.data[0])
-                            //   setLoading3(false)
-                        })
-                        .catch(error => {
-                            console.log(error.response)
-                            //todo handle error
-                        })
-                }})
-            .catch(error => console.log(error.response))
+        /*if(userData){
+            setUser(userData)
+        }
+        else {*/
+            UserAPI.get()
+                .then(response => {
+                    console.log(response.data[0])
+                    setUser(response.data[0])
+                    if(response.data[0].picture){
+                        fileAPI.downloadPic("user", response.data[0].picture)
+                            .then(response => {
+                                console.log(response)
+                                setUserPicture(response.data[0])
+                                //   setLoading3(false)
+                            })
+                            .catch(error => {
+                                console.log(error.response)
+                                //todo handle error
+                            })
+                    }})
+                .catch(error => console.log(error.response))
+       /* }*/
     }, [refreshUser]);
 
     const [errors, setErrors] = useState({
@@ -72,20 +87,22 @@ const UpdateUser = ({ history, t }) => {
     };
 
     return (
-    <>
+        <User user={user} context="update" />
+    /*<>
         <div className="card">
             {user && (
                 <>
             <Item.Group >
                 <Item>
                     {userPicture != null &&
-                    <Item.Image src={`data:image/jpeg;base64,${userPicture}`}/>
+                        <Item.Image src={`data:image/jpeg;base64,${userPicture}`}/>
                     }
                 </Item>
                 <Item>
                     <ImageUpload
                         setRefresh={setRefreshUser}
                         refresh={refreshUser}
+                        entity={"user"}
                     />
                 </Item>
                 <Item>
@@ -131,7 +148,7 @@ const UpdateUser = ({ history, t }) => {
                 </>
             )}
         </div>
-    </>
+    </>*/
     );
 };
 

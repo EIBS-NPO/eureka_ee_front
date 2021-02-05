@@ -26,6 +26,7 @@ const ProfilProject = ({ history, id }) => {
             })
             .catch(error => console.log(error.response))
     }, []);
+
     return (
 
         <div>

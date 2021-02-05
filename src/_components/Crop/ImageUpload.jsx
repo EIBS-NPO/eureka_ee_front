@@ -1,12 +1,12 @@
 import React, { useState, useContext} from 'react'
 import ImageCropper from './ImageCropper'
 import Modal from "../Modal";
-import userAPI from '../../_services/userAPI';
+import fileAPI from '../../_services/fileAPI';
 import AuthAPI from "../../_services/authAPI";
 import AuthContext from "../../_contexts/AuthContext";
 //import notification from '../../services/notification';
 
-const ImageUpload = ({ refresh, setRefresh, parentCallBack }) => {
+const ImageUpload = ({ refresh, setRefresh, type, entity, parentCallBack }) => {
 
     const [blob, setBlob] = useState(null)
     const [inputImg, setInputImg] = useState('')
@@ -37,10 +37,11 @@ const ImageUpload = ({ refresh, setRefresh, parentCallBack }) => {
         var bodyFormData = new FormData();
         bodyFormData.append('image', blob)
 
-        userAPI.uploadPic(bodyFormData)
+        fileAPI.uploadPic(type, bodyFormData)
             .then(response => {
             //    notification.successNotif('nouvelle photo de profil bien enregistrée')
-                setRefresh(refresh + 1)
+                setRefresh(response.data[0])
+                console.log(response)
                 parentCallBack()
                 hideModal()
             })

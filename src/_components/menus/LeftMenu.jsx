@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import { NavLink } from "react-router-dom";
 import AuthAPI from "../../_services/authAPI";
 import AuthContext from "../../_contexts/AuthContext";
@@ -8,13 +8,20 @@ import UserMenu from "./UserMenu";
 import AnoMenu from "./AnoMenu";
 
 const LeftMenu = ({history}) => {
-    const isAuthenticated = useContext(AuthContext);
-    /*const roleUser = AuthAPI.getRole();*/
+    const isAuthenticated = useContext(AuthContext).isAuthenticated;
+
+    const [isAdmin, setIsAdmin] = useState({})
+
+    useEffect(() => {
+        if(isAuthenticated){
+            setIsAdmin(AuthAPI.isAdmin());
+        }
+    },[])
 
     return (
         <>
             <aside id="left_menu">
-                {isAuthenticated && (
+                {isAuthenticated && isAdmin && (
                     <AdminMenu />
                 )}
                 {isAuthenticated && (

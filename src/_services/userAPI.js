@@ -20,21 +20,6 @@ const checkRole = () => {
     return jwtData.roles[0]
 }
 
-const uploadPic = (bodyFormData) => {
-    console.log(bodyFormData)
-    //return Axios.post(API_URL + "/user/picture", {picture:pic} );
-    return Axios({
-        method: 'post',
-        url: API_URL + "/user/picture",
-        data: bodyFormData,
-        headers: {'Content-Type': 'multipart/form-data'}
-    })
-}
-
-const dowloadPic = (picture) => {
-    return Axios.get(API_URL + "/user/picture/?pic=" + picture)
-}
-
 /*
 function checkLastName() {
     const token = window.localStorage.getItem("authToken");
@@ -51,18 +36,14 @@ function checkFirstName() {
     return firstName;
 }*/
 
-/*function findUserId() {
+/*function getUserId() {
     const token = window.localStorage.getItem("authToken");
-    const jwtData = JwtDecode(token)
-    const userId = jwtData.id
-    return userId;
+    return JwtDecode(token).id
 }*/
 
 export default {
     register,
     checkRole,
     put,
-    get,
-    uploadPic,
-    dowloadPic
+    get
 };

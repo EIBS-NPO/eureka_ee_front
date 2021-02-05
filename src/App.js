@@ -71,6 +71,7 @@ const Beweging = lazy(() => import('./_routes/_partners/beweging'));
                                   <Route path="/create_project" component={CreateProject}/>
 
                                   <Route path="/all_organizations" component={AllOrg}/>
+
                                   <Route path="/my_organizations" component={MyOrg}/>
                                   <Route path="/all_projects" component={AllProject}/>
                                   <Route path="/my_projects" component={MyProjects}/>
@@ -81,6 +82,7 @@ const Beweging = lazy(() => import('./_routes/_partners/beweging'));
                                   <Route path="/profil_org" component={ProfilOrg}/>
                                   <Route path="/profil_project" component={ProfilProject}/>
 
+                                  <PrivateRoute path="/update_user/:id/:firstname/:lastname/:email/:picture" component={UpdateUser}/>
                                   <PrivateRoute path="/update_user" component={UpdateUser}/>
                                   <PrivateRoute path="/update_org/:id" component={UpdateOrg}/>
                                   <PrivateRoute path="/update_project/:id" component={UpdateProject} />

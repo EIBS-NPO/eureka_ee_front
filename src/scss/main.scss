@@ -54,8 +54,9 @@
     background-repeat: no-repeat;
     background-position-x: center;
     background-position-y: center;
-    justify-content: center;
-    align-items: center;
+    justify-content: start;
+   /* align-items:center;*/
+    align-items:stretch;
     max-height:80vh;
     overflow:auto;
 }

@@ -1,6 +1,7 @@
 import Axios from "axios";
 import jwt_decode from "jwt-decode";
 import { LOGIN_API } from "../config";
+import JwtDecode from "jwt-decode";
 
 
 function logout() {
@@ -69,10 +70,20 @@ function isAuthenticated() {
     return false;
 }
 
+function isAdmin() {
+    const token = window.localStorage.getItem("authToken");
+    return jwt_decode(token).roles[0] === "ROLE_ADMIN";
+}
+
 function getRole() {
     const token = window.localStorage.getItem("authToken");
     const jwtData = jwt_decode(token)
-    return jwtData.role[0]
+    return jwtData.roles[0]
+}
+
+function getUserMail() {
+    const token = window.localStorage.getItem("authToken");
+    return JwtDecode(token).username
 }
 
 // eslint-disable-next-line import/no-anonymous-default-export
@@ -82,4 +93,6 @@ export default {
     authenticate,
     isAuthenticated,
     getRole,
+    getUserMail,
+    isAdmin
 };
