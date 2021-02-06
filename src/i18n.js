@@ -1,4 +1,5 @@
 import i18n from "i18next";
+import detector from "i18next-browser-languagedetector";
 import { initReactI18next } from "react-i18next";
 
 // the translations
@@ -9,6 +10,7 @@ import fr from './_locales/fr/translation.json';
 import nl from './_locales/nl/translation.json';
 
 i18n
+    .use(detector)
     .use(initReactI18next) // passes i18n down to react-i18next
     .init({
         resources: {
@@ -22,21 +24,16 @@ i18n
                 translation: nl,
             }
         },
-        fallbackLng: 'en'
-    })
-/*const resources = {
-    en: {
-        translation: {
-            "Welcome to React": "Welcome"
-        }
-    },
-    fr: {
-        translation: {
-            "Welcome to React": "Bienvenue"
-        }
-    }
-};
+        fallbackLng: 'en',
 
+        //todo ??
+        keySeparator: false, // we do not use keys in form messages.welcome
+
+        interpolation: {
+            escapeValue: false // react already safes from xss
+        }
+    })
+/*
 i18n
     .use(initReactI18next) // passes i18n down to react-i18next
     .init({
