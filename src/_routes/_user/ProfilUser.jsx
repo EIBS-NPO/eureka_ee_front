@@ -6,8 +6,8 @@ import AuthContext from "../../_contexts/AuthContext";
 import fileAPI from "../../_services/fileAPI";
 import {Loader, Grid, Segment, Item } from "semantic-ui-react";
 import PictureForm from "../../_components/forms/PictureForm";
-import ParamLoginForm from "../../_components/forms/ParamLoginForm";
-import UserCoordForm from "../../_components/forms/UserCoordForm";
+import ParamLoginForm from "../../_components/forms/user/ParamLoginForm";
+import UserCoordForm from "../../_components/forms/user/UserCoordForm";
 
 const ProfilUser = ({ history }) => {
     AuthAPI.setup();

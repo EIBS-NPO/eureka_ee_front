@@ -16,6 +16,7 @@ const downloadPic = (entity, picture) => {
     return Axios.get(API_URL + "/" + entity + "/picture/?pic=" + picture)
 }
 
+// eslint-disable-next-line import/no-anonymous-default-export
 export default {
     uploadPic,
     downloadPic

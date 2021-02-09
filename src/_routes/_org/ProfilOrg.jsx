@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import orgAPI from '../../_services/orgAPI';
-import Project from "../../_components/cards/project";
 import Organization from "../../_components/cards/organization";
-//import AuthContext from '../_contexts/AuthContext';
-//import MainMenu from "../_components/MainMenu";
 
 const ProfilOrg = ({ history, id }) => {
 

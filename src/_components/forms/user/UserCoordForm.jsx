@@ -2,8 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import {Loader, Button, Form, Icon, Item, Label} from "semantic-ui-react";
 
-import UserAPI from "../../_services/userAPI";
-import authAPI from "../../_services/authAPI";
+import UserAPI from "../../../_services/userAPI";
+import authAPI from "../../../_services/authAPI";
 
 const UserCoordForm = ({user, setterUser}) => {
 

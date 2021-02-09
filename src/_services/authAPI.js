@@ -14,6 +14,7 @@ function logout() {
 }
 
 function authenticate(credentials) {
+    console.log(LOGIN_API)
     return Axios
         .post(LOGIN_API, credentials)
         .then((response) => response.data.token)
@@ -62,10 +63,7 @@ function isAuthenticated() {
 
     if (token) {
         const jwtData = jwt_decode(token);
-        if (jwtData.exp * 1000 > new Date().getTime()) {
-            return true;
-        }
-        return false;
+        return jwtData.exp * 1000 > new Date().getTime();
     }
     return false;
 }

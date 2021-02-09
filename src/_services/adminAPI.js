@@ -10,6 +10,7 @@ function getUser(id =null) {
     return Axios.get(API_URL + addURL )
 }
 
+// eslint-disable-next-line import/no-anonymous-default-export
 export default {
     getUser
 };

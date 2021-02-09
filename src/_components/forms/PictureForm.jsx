@@ -1,6 +1,6 @@
 
 import React from 'react';
-import {Dimmer, Loader, Image, Item, Label} from "semantic-ui-react";
+import {Image, Item, Label} from "semantic-ui-react";
 import ImageUpload from "../Crop/ImageUpload";
 
 const PictureForm = ({loader, picture, setterPic, entityType, entity}) => {

@@ -1,8 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Divider, Button, Icon, Image, Item, Label } from 'semantic-ui-react'
-
-import utilities from "../../_services/utilities";
-// the hoc
+import { Divider, Item } from 'semantic-ui-react'
 import { withTranslation } from 'react-i18next';
 import projectAPI from "../../_services/projectAPI";
 import Project from "../../_components/cards/project";

@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import projectAPI from '../../_services/userAPI';
 import Project from '../../_components/cards/project';
-import {NavLink} from "react-router-dom";
-//import AuthContext from '../_contexts/AuthContext';
-//import MainMenu from "../_components/MainMenu";
 
 /**
  * la page qui affiche les détail de projet, doit afficher

@@ -1,6 +1,5 @@
 
 import React, { useContext, useState } from "react";
-import Field from "../../_components/forms/Field";
 import AuthContext from "../../_contexts/AuthContext";
 import UserAPI from "../../_services/userAPI";
 import {Button, Form} from "semantic-ui-react";

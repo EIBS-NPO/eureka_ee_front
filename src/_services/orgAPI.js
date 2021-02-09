@@ -38,6 +38,7 @@ const downloadPic = (picture) => {
     return Axios.get(API_URL + "/user/picture/?pic=" + picture)
 }
 
+// eslint-disable-next-line import/no-anonymous-default-export
 export default {
     post,
     put,

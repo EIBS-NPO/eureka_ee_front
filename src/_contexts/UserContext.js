@@ -4,5 +4,5 @@ import React from "react";
 //prend la forme des infos que je veux passer
 export default React.createContext({
     name: "",
-    setIsAuthenticated: (value) => { },
+    setName: (value) => { },
 });

@@ -33,7 +33,7 @@ const MyOrg = lazy(() => import('./_routes/_org/MyOrg'));
 const AllProject = lazy(() => import('./_routes/_project/GetAllProjects'));
 const MyProjects = lazy(() => import('./_routes/_project/MyProjects'));
 
-const UpdateUser = lazy(() => import('./_routes/_user/UpdateUser'));
+/*const UpdateUser = lazy(() => import('./_routes/_user/UpdateUser'));*/
 const UpdateOrg = lazy(() => import('./_routes/_org/UpdateOrg'));
 const UpdateProject = lazy(() => import('./_routes/_project/UpdateProject'));
 
@@ -84,8 +84,7 @@ const Beweging = lazy(() => import('./_routes/_partners/beweging'));
                                   <Route path="/profil_org" component={ProfilOrg}/>
                                   <Route path="/profil_project" component={ProfilProject}/>
 
-                                  <PrivateRoute path="/update_user/:id/:firstname/:lastname/:email/:picture" component={UpdateUser}/>
-                                  <PrivateRoute path="/update_user" component={UpdateUser}/>
+                                  {/*<PrivateRoute path="/update_user" component={UpdateUser}/>*/}
                                   <PrivateRoute path="/update_org/:id" component={UpdateOrg}/>
                                   <PrivateRoute path="/update_project/:id" component={UpdateProject} />
 

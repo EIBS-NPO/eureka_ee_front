@@ -1,7 +1,6 @@
 
 import React, {useContext, useEffect, useState} from "react";
 
-import Field from '../../_components/forms/Field';
 import { withTranslation } from 'react-i18next';
 import projectAPI from "../../_services/projectAPI";
 import AuthAPI from "../../_services/authAPI";

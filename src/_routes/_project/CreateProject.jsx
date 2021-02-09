@@ -1,10 +1,27 @@
-import React, { useContext, useState } from "react";
-import Field from '../../_components/forms/Field';
+import React, {createContext, useContext, useEffect, useState} from "react";
 import { withTranslation } from 'react-i18next';
-import ProjectAPI from "../../_services/projectAPI";
+
 import AuthContext from "../../_contexts/AuthContext";
-import {Button, Form} from "semantic-ui-react";
+import {Step, Button, Item, Segment, Icon} from "semantic-ui-react";
 import AuthAPI from "../../_services/authAPI";
+
+import ProjectDescForm from "../../_components/forms/project/ProjectDescForm";
+import ProjectDatingForm from "../../_components/forms/project/ProjectDatingForm";
+import OrgLinkForm from "../../_components/forms/org/OrgLinkForm";
+import PublicationForm from "../../_components/forms/PublicationForm";
+import ProjectFormResume from "../../_components/forms/project/ProjectFormResume";
+import Organization from "../../_components/cards/organization";
+
+//import StepFormContext from "../../_contexts/StepFormContext";
+
+export const StepFormContext = createContext({
+    obj:{ },
+    setObj: ( value ) => { },
+    currentStep:{ },
+    setCurrentStep: ( value ) =>{ },
+    stepList:[ ],
+    setStepList: ( value ) => { }
+})
 
 const CreateProject = ({ history, t }) => {
     AuthAPI.setup();
@@ -13,22 +30,83 @@ const CreateProject = ({ history, t }) => {
         history.replace('/');
     }
 
-    const [project, setProject] = useState({
-        title: "",
-        description: "",
-        startDate: {},
-        endDate: {},
-    });
+  // const { obj, setObj, currentStep, setCurrentStep, stepList, setStepList } = useContext(StepFormContext)
 
-    const handleChange = (event) => {
+    /*const handleChange = (event) => {
         const { name, value } = event.currentTarget;
         setProject({ ...project, [name]: value });
-    };
+    };*/
+    const [stepList, setStepList] = useState([
+        {id:0, name:"description", isValid:false, state:"active"},
+        {id:1, name:"dating", isValid:false, state:"diseable"},
+        {id:2, name:"linking", isValid:false, state:"diseable"},
+        {id:3, name:"publication", isValid:false, state:"diseable"},
+        {id:4, name:"resume", isValid:false, state:"diseable"}
+    ])
+    const [currentStep, setCurrentStep] = useState({id:0, name:"description", isValid:false})
+
+    const [obj, setObj] = useState( {
+        title: "",
+        description: "",
+        organization: {},
+        startDate: {},
+        endDate: {},
+        isPublic:false
+    })
+
+    const handleClick = ({id}) => {
+        console.log(id)
+        console.log(stepList.find(step => step.id === {id}))
+     //   setCurrentStep(stepList.find(step => step.id === id))
+    }
+
+    const GetStepState = ({step}) => {
+        switch(step.state){
+            case "active":
+                return <Step active>
+                            <Icon name='edit outline' />
+                            <Step.Content>
+                                <Step.Title>{step.name}</Step.Title>
+                            </Step.Content>
+                        </Step>
+            case "completed":
+                return <Step as="a" onClick={handleClick(step.id)} completed>
+                        <Icon name='check circle outline' />
+                        <Step.Content>
+                            <Step.Title>{step.name}</Step.Title>
+                        </Step.Content>
+                    </Step>
+            default:
+                return <Step disabled>
+                        <Step.Content>
+                            <Step.Title>{step.name}</Step.Title>
+                        </Step.Content>
+                    </Step>
+        }
+    }
+
+    const SwitchedStepBoard = () => {
+        switch(currentStep.name){
+            case "description":
+                return <ProjectDescForm loader={loader} errors={errors}/>
+            case "dating":
+                return <ProjectDatingForm loader={loader} errors={errors}/>
+            case "linking":
+                return <OrgLinkForm loader={loader} errors={errors}/>
+            case "publication":
+                return <PublicationForm loader={loader} errors={errors}/>
+            case "resume":
+                return <ProjectFormResume loader={loader} errors={errors}/>
+        }
+    }
+
+    const [loader, setLoader] = useState(false)
 
     const handleSubmit = (event) => {
+        setLoader(true)
         event.preventDefault()
 
-        ProjectAPI.post(project)
+        /*ProjectAPI.post(project)
             .then(response =>
                 console.log(response.data)
             )
@@ -36,72 +114,58 @@ const CreateProject = ({ history, t }) => {
                 console.log(error.response.data.error)
                 setErrors(error.response.data.error);
             })
+            .finally(()=>setLoader(false))*/
     };
 
     const [errors, setErrors] = useState({
         title: "",
         description: "",
+        organization: "",
         startDate: "",
         endDate: "",
+        isPublic:""
     });
+
+    /*//todo possibilité de lier a une org ?  */
+    /*//todo faire un truc etape par etape?*/
+    /*//todo public ou non */
 
     return (
         <div className="card">
-            <h1>Créer un nouveau projet</h1>
-            <form onSubmit={handleSubmit}>
-                <Form.Input
-                    icon=''
-                    iconPosition='left'
+            <StepFormContext.Provider
+                value={{
+                    obj,
+                    setObj,
+                    currentStep,
+                    setCurrentStep,
+                    stepList,
+                    setStepList
+                }}
+            >
+                <Segment>
+                    {/*<StepsRow />*/}
+                    <Step.Group size='mini'>
+                        {stepList && stepList.map(s => (
+                            <GetStepState key={s.id} step={s}/>
+                        ))}
+                    </Step.Group>
+                </Segment>
+                <Segment>
+                    <SwitchedStepBoard />
+                </Segment>
+                <Segment>
 
-                    label="Title"
-                    name="title"
-                    type="text"
-                    value={project.title}
-                    onChange={handleChange}
-                    placeholder="nom..."
-                    error={errors.title ? errors.title : null}
-                />
-                <Form.Input
-                    icon=''
-                    iconPosition='left'
+                {/*<Item>
+                    <div className="inline-btn">
+                            <Button type="submit" className="btn btn-success" onClik={handleSubmit}> Enregistrer </Button>
 
-                    label="Description"
-                    name="description"
-                    type="textarea"
-                    value={project.description}
-                    onChange={handleChange}
-                    placeholder="description..."
-                    error={errors.description ? errors.description : null}
-                />
-                <Form.Input
-                    icon=''
-                    iconPosition='left'
-
-                    label="Date de début"
-                    name="startDate"
-                    type="date"
-                    value={project.startDate}
-                    onChange={handleChange}
-                    error={errors.startDate ? errors.startDate : null}
-                />
-                <Form.Input
-                    icon=''
-                    iconPosition='left'
-
-                    label="Date de fin"
-                    name="endDate"
-                    type="date"
-                    value={project.endDate}
-                    onChange={handleChange}
-                    error={errors.endDate ? errors.endDate : null}
-                />
-                <div className="inline-btn">
-                    <button type="submit" className="btn btn-success">Enregistrer</button>
-                </div>
-            </form>
+                            <Button type="submit" className="btn btn-success" disabled> Enregistrer </Button>
+                    </div>
+                </Item>*/}
+                </Segment>
+            </StepFormContext.Provider>
         </div>
     );
 };
 
 export default withTranslation()(CreateProject);
-
