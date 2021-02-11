@@ -1,19 +1,26 @@
 
 import React, {useContext, useState} from "react";
-/*import { withTranslation } from 'react-i18next';*/
-import {Checkbox, Icon, Button, Item, Label, Form, Loader} from "semantic-ui-react";
+import { withTranslation } from 'react-i18next';
+import {Button, Form, Icon, Item, Label} from "semantic-ui-react";
 import { StepFormContext } from "../../../_routes/_project/CreateProject";
-import ProjectAPI from "../../../_services/projectAPI";
+import utilities from "../../../_services/utilities";
+import Project from "../../cards/project";
+import projectAPI from "../../../_services/projectAPI";
 
-const ProjectFormResume = ({loader, errors }) => {
+const ProjectFormResume = ({t, errors, nextStep }) => {
 
-    const { obj, setObj, currentStep, setCurrentStep, stepList, setStepList } = useContext(StepFormContext)
+    const { obj } = useContext(StepFormContext)
+
+    console.log(obj)
+    const handleSub = () => {
+    //    nextStep()
+    }
 
     const handleSubmit = (event) => {
-       // setLoader(true)
+      //  setLoader(true)
         event.preventDefault()
 
-        ProjectAPI.post(obj)
+        projectAPI.post(obj)
             .then(response =>
                 console.log(response.data)
             )
@@ -21,88 +28,45 @@ const ProjectFormResume = ({loader, errors }) => {
                 console.log(error.response.data.error)
            //     setErrors(error.response.data.error);
             })
-    //        .finally(()=>setLoader(false))
+        //    .finally(()=>setLoader(false))
     };
 
-    /*
-    title: "",
-        description: "",
-        organization: {},
-        startDate: {},
-        endDate: {},
-        isPublic:false
-     */
     return (
-            <Item.Group divided>
-                        <Item>
-                            <Label size="small" ribbon>
-                                Title
-                            </Label>
-                            <Item.Content verticalAlign='middle'>
-                                {obj.title}
-                            </Item.Content>
-                        </Item>
+        <>
+            <Label attached="top">
+                <h4>{t("review")}</h4>
+            </Label>
+            <Form onSubmit={handleSubmit}>
+            {/*
+                <Item>
+                    <Item.Content>
+                        <Item.Header>{obj.name}</Item.Header>
+                        <Item.Meta>
+                            {obj.startDate !== "" &&
+                                obj.startDate
+                            }
+                           {obj.endDate !== "" &&
+                                obj.endDate
+                            }
 
-                        <Item>
-                            <Label size="small" ribbon>
-                                Description
-                            </Label>
-                            <Item.Content verticalAlign='middle'>
-                                {obj.description}
-                            </Item.Content>
-                        </Item>
+                        </Item.Meta>
+                        <Item.Description>{obj.description}</Item.Description>
+                    </Item.Content>
+                </Item>
+            */}
 
-                        <Item>
-                            <Label size="small" ribbon>
-                                StartDate
-                            </Label>
-                            <Item.Content verticalAlign='middle'>
-                                {obj.startDate ? obj.startDate : ""}
-                            </Item.Content>
-                        </Item>
+                <Project project={obj} context="create"/>
 
-                        <Item>
-                            <Label size="small" ribbon>
-                                EndDate
-                            </Label>
-                            <Item.Content verticalAlign='middle'>
-                                {obj.endDate ? obj.endDate : ""}
-                            </Item.Content>
-                        </Item>
-
-                        <Item>
-                            <Label size="small" ribbon>
-                                Organization
-                            </Label>
-                            <Item.Content verticalAlign='middle'>
-                                {obj.organization ?
-                                    obj.organization
-                                    : "non renseigné"
-                                }
-                            </Item.Content>
-                        </Item>
-
-                        <Item>
-                            <Label size="small" ribbon>
-                                isPublic
-                            </Label>
-                            <Item.Content verticalAlign='middle'>
-                                {obj.isPublic ?
-                                    "yes"
-                                    : "no"
-                                }
-                            </Item.Content>
-                        </Item>
-                <Form onSubmit={handleSubmit}>
-                    <Item>
-                        <div className="inline-btn">
-                            <Button type="submit" className="btn btn-success" > Enregistrer </Button>
-                        </div>
-                    </Item>
-                </Form>
-            </Item.Group>
+                <Button animated >
+                    <Button.Content visible>{t("save")}</Button.Content>
+                    <Button.Content hidden>
+                        <Icon name='arrow right' />
+                    </Button.Content>
+                </Button>
+            </Form>
+        </>
     );
 }
 
 
-export default ProjectFormResume;
+export default withTranslation()(ProjectFormResume);

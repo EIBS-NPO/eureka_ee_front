@@ -4,6 +4,7 @@ import utilities from "../../_services/utilities";
 import { withTranslation } from 'react-i18next';
 import projectAPI from "../../_services/projectAPI";
 import Project from "../../_components/cards/project";
+import fileAPI from "../../_services/fileAPI";
 
 const GetAllProjects = ({ t }) => {
 
@@ -20,13 +21,13 @@ const GetAllProjects = ({ t }) => {
 
     return (
         <>
-            <h1>Mes projets</h1>
+            <h1>{t('my_projects')}</h1>
             {projects.length > 0 ?
                 projects.map(p => (
                     <Project key={p.id} project={p} context={"creator"}/>
                 ))
                 :   <div className="card">
-                    <p>Aucun projet trouvé</p>
+                    <p>{t('no_result')}</p>
                 </div>
             }
         </>

@@ -1,5 +1,6 @@
 import React, { useContext } from "react";
-import { Redirect, Route } from "react-router-dom";
+import { Route, Redirect  } from "react-router-dom";
+
 import AuthContext from "../_contexts/AuthContext";
 
 const PrivateRoute = ({ path, component }) => {
@@ -11,12 +12,7 @@ const PrivateRoute = ({ path, component }) => {
     );
 };
 
-/*import React from 'react';
-import { Route, Redirect } from 'react-router-dom';*/
-/*
-import { authenticationService } from '@/_services';
-
-export const PrivateRoute = ({ component: Component, ...rest }) => (
+/*export const PrivateRoute = ({ component: Component, ...rest }) => (
     <Route {...rest} render={props => {
         const currentUser = authenticationService.currentUserValue;
         if (!currentUser) {

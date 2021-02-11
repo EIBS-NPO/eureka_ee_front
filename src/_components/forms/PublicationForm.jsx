@@ -1,14 +1,14 @@
 
 import React, {useContext, useState} from "react";
-/*import { withTranslation } from 'react-i18next';*/
+import { withTranslation } from 'react-i18next';
 import {Checkbox, Icon, Button, Item, Label, Form} from "semantic-ui-react";
 import { StepFormContext } from "../../_routes/_project/CreateProject";
 
-const PublicationForm = ({loader, errors}) => {
+const PublicationForm = ({t, loader, errors, nextStep}) => {
 
-    const { obj, setObj, currentStep, setCurrentStep, stepList, setStepList } = useContext(StepFormContext)
+    const { obj, setObj} = useContext(StepFormContext)
 
-    const [isPublicValue, setIsPublicValue] = useState(obj.isPublic)
+    const [isPublicValue, setIsPublicValue] = useState(false)
 
     const handlePublication = (event) => {
         if(!isPublicValue){
@@ -16,54 +16,50 @@ const PublicationForm = ({loader, errors}) => {
         }else {
             setIsPublicValue(false)
         }
-        setObj({...obj, 'isPublic': isPublicValue})
     }
-    console.log(obj)
+    console.log(isPublicValue)
 
     const handleSub = () => {
-        currentStep.isValid = true
-        currentStep.state = "completed"
-        stepList.splice(currentStep.id, 1, currentStep)
-        setCurrentStep(stepList[currentStep.id + 1])
-        stepList[currentStep.id + 1].state = "active"
+        setObj({...obj, 'isPublic': isPublicValue})
+        nextStep()
     }
 
     return (
+        <>
+            <Label attached='top'>
+                <h4>Public or Private</h4>
+            </Label>
         <Form onSubmit={handleSub}>
-            <Item.Group>
                 <Item.Group>
                     <Item>
-                        <Item.Content>
-                            <Label attached='top'>
-                                <h4>Public or Private</h4>
+                        {isPublicValue?
+                            <Label color="green" size="small" horizontal>
+                                {t("public")}
                             </Label>
-                        </Item.Content>
-                    </Item>
-                    <Item>
+                            :
+                            <Label size="small" horizontal>
+                                {t("private")}
+                            </Label>
+                        }
                         <Checkbox
                             name='isPublic'
-                            label={{ children: 'isPublic ?' }}
                             onChange={handlePublication}
                             toggle
                         />
                     </Item>
 
-                    {/*//todo double button ou juste en label? ca peut être sympa et plus simple ? ....*/}
-                    <Button.Group>
-                        <Button>Private</Button>
-                        <Button.Or text='or' />
-                        <Button positive>Public</Button>
-                    </Button.Group>
-
-                    <Button icon labelPosition='right'>
-                        Next
-                        <Icon name='right arrow' />
+                    <Button animated >
+                        <Button.Content visible>Next</Button.Content>
+                        <Button.Content hidden>
+                            <Icon name='arrow right' />
+                        </Button.Content>
                     </Button>
+
                 </Item.Group>
-            </Item.Group>
         </Form>
+            </>
     );
 }
 
 
-export default PublicationForm;
+export default withTranslation()(PublicationForm);

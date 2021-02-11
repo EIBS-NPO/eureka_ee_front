@@ -2,25 +2,25 @@ import React, {createContext, useContext, useEffect, useState} from "react";
 import { withTranslation } from 'react-i18next';
 
 import AuthContext from "../../_contexts/AuthContext";
-import {Step, Button, Item, Segment, Icon} from "semantic-ui-react";
+import {Form, Step, Button, Item, Segment, Icon} from "semantic-ui-react";
 import AuthAPI from "../../_services/authAPI";
+import projectAPI from "../../_services/projectAPI";
 
 import ProjectDescForm from "../../_components/forms/project/ProjectDescForm";
 import ProjectDatingForm from "../../_components/forms/project/ProjectDatingForm";
 import OrgLinkForm from "../../_components/forms/org/OrgLinkForm";
 import PublicationForm from "../../_components/forms/PublicationForm";
 import ProjectFormResume from "../../_components/forms/project/ProjectFormResume";
-import Organization from "../../_components/cards/organization";
-
-//import StepFormContext from "../../_contexts/StepFormContext";
 
 export const StepFormContext = createContext({
     obj:{ },
     setObj: ( value ) => { },
-    currentStep:{ },
+    errors: { },
+    setErrors: ( value ) => { }
+    /*currentStep:{ },
     setCurrentStep: ( value ) =>{ },
     stepList:[ ],
-    setStepList: ( value ) => { }
+    setStepList: ( value ) => { }*/
 })
 
 const CreateProject = ({ history, t }) => {
@@ -30,18 +30,12 @@ const CreateProject = ({ history, t }) => {
         history.replace('/');
     }
 
-  // const { obj, setObj, currentStep, setCurrentStep, stepList, setStepList } = useContext(StepFormContext)
-
-    /*const handleChange = (event) => {
-        const { name, value } = event.currentTarget;
-        setProject({ ...project, [name]: value });
-    };*/
     const [stepList, setStepList] = useState([
         {id:0, name:"description", isValid:false, state:"active"},
-        {id:1, name:"dating", isValid:false, state:"diseable"},
-        {id:2, name:"linking", isValid:false, state:"diseable"},
-        {id:3, name:"publication", isValid:false, state:"diseable"},
-        {id:4, name:"resume", isValid:false, state:"diseable"}
+        {id:1, name:"dating", isValid:false, state:"disabled"},
+        {id:2, name:"linking", isValid:false, state:"disabled"},
+        {id:3, name:"publication", isValid:false, state:"disabled"},
+        {id:4, name:"resume", isValid:false, state:"disabled"}
     ])
     const [currentStep, setCurrentStep] = useState({id:0, name:"description", isValid:false})
 
@@ -49,15 +43,28 @@ const CreateProject = ({ history, t }) => {
         title: "",
         description: "",
         organization: {},
-        startDate: {},
-        endDate: {},
+        startDate: "",
+        endDate: "",
         isPublic:false
     })
 
-    const handleClick = ({id}) => {
+    const handleNext = () => {
+        currentStep.isValid = true
+        currentStep.state = "completed"
+        stepList.splice(currentStep.id, 1, currentStep)
+        if(stepList.length > currentStep.id){
+            setCurrentStep(stepList[currentStep.id + 1])
+            stepList[currentStep.id + 1].state = "active"
+        }
+    /*todo sinon on est a la fin de from fair epage de requete et de resultat*/
+        console.log(stepList)
+        console.log(obj)
+    }
+
+    const stepReturn = ({id}) => {
         console.log(id)
         console.log(stepList.find(step => step.id === {id}))
-     //   setCurrentStep(stepList.find(step => step.id === id))
+        setCurrentStep(stepList.find(step => step.id === id))
     }
 
     const GetStepState = ({step}) => {
@@ -70,7 +77,7 @@ const CreateProject = ({ history, t }) => {
                             </Step.Content>
                         </Step>
             case "completed":
-                return <Step as="a" onClick={handleClick(step.id)} completed>
+                return <Step /*as="button" onSubmit={stepReturn(step.id)}*/ completed>
                         <Icon name='check circle outline' />
                         <Step.Content>
                             <Step.Title>{step.name}</Step.Title>
@@ -86,17 +93,20 @@ const CreateProject = ({ history, t }) => {
     }
 
     const SwitchedStepBoard = () => {
+        if (isAuthenticated === true) {
+            history.replace('/');
+        }
         switch(currentStep.name){
             case "description":
-                return <ProjectDescForm loader={loader} errors={errors}/>
+                return <ProjectDescForm loader={loader} errors={errors} nextStep={handleNext}/>
             case "dating":
-                return <ProjectDatingForm loader={loader} errors={errors}/>
+                return <ProjectDatingForm loader={loader} errors={errors} nextStep={handleNext}/>
             case "linking":
-                return <OrgLinkForm loader={loader} errors={errors}/>
+                return <OrgLinkForm loader={loader} errors={errors} nextStep={handleNext}/>
             case "publication":
-                return <PublicationForm loader={loader} errors={errors}/>
+                return <PublicationForm loader={loader} errors={errors} nextStep={handleNext}/>
             case "resume":
-                return <ProjectFormResume loader={loader} errors={errors}/>
+                return <ProjectFormResume loader={loader} errors={errors} nexStep={handleNext} />
         }
     }
 
@@ -106,7 +116,7 @@ const CreateProject = ({ history, t }) => {
         setLoader(true)
         event.preventDefault()
 
-        /*ProjectAPI.post(project)
+        projectAPI.post(obj)
             .then(response =>
                 console.log(response.data)
             )
@@ -114,7 +124,7 @@ const CreateProject = ({ history, t }) => {
                 console.log(error.response.data.error)
                 setErrors(error.response.data.error);
             })
-            .finally(()=>setLoader(false))*/
+            .finally(()=>setLoader(false))
     };
 
     const [errors, setErrors] = useState({
@@ -126,6 +136,17 @@ const CreateProject = ({ history, t }) => {
         isPublic:""
     });
 
+    /*//todo verifier par isValid aussi, avec retour erreurs.*/
+    const isRegistrable = () => {
+        let c = true;
+        stepList.map(s => {
+            if(s.state !== "completed"){
+                c =  false
+            }
+        })
+        return c
+    }
+
     /*//todo possibilité de lier a une org ?  */
     /*//todo faire un truc etape par etape?*/
     /*//todo public ou non */
@@ -135,34 +156,28 @@ const CreateProject = ({ history, t }) => {
             <StepFormContext.Provider
                 value={{
                     obj,
-                    setObj,
-                    currentStep,
-                    setCurrentStep,
-                    stepList,
-                    setStepList
+                    setObj
                 }}
             >
-                <Segment>
-                    {/*<StepsRow />*/}
-                    <Step.Group size='mini'>
-                        {stepList && stepList.map(s => (
-                            <GetStepState key={s.id} step={s}/>
-                        ))}
-                    </Step.Group>
-                </Segment>
+                    <Form onSubmit={handleSubmit}>
+                        {/*<StepsRow />*/}
+                        <Step.Group size='mini'>
+                            {stepList && stepList.map(s => (
+                                <GetStepState key={s.id} step={s}/>
+                            ))}
+                        </Step.Group>
+                    </Form>
                 <Segment>
                     <SwitchedStepBoard />
                 </Segment>
-                <Segment>
 
-                {/*<Item>
-                    <div className="inline-btn">
-                            <Button type="submit" className="btn btn-success" onClik={handleSubmit}> Enregistrer </Button>
-
-                            <Button type="submit" className="btn btn-success" disabled> Enregistrer </Button>
-                    </div>
-                </Item>*/}
-                </Segment>
+                {isRegistrable() === true &&
+                    <Item>
+                        <div className="inline-btn">
+                            <Button type="submit" className="btn btn-success" > {t("save")} </Button>
+                        </div>
+                    </Item>
+                }
             </StepFormContext.Provider>
         </div>
     );

@@ -1,10 +1,19 @@
 import Axios from "axios";
 import {API_URL, PROJECT_API} from "../config";
 
-
 function post(project) {
-    console.log(project)
-    return Axios.post(PROJECT_API, project)
+    let data = {
+        "title": project.title,
+        "description": project.description,
+        "startDate": project.startDate,
+        "endDate": project.endDate,
+        "isPublic": project.isPublic,
+    }
+    if(project.organization) {
+        data["orgId"] = project.organization.id
+    }
+    console.log(data)
+    return Axios.post(PROJECT_API, data)
 }
 
 function put(project) {
@@ -12,7 +21,6 @@ function put(project) {
 }
 
 function get(id = null){
-    console.log(PROJECT_API + "/public")
     return Axios.get(API_URL + "/project/public")
 }
 

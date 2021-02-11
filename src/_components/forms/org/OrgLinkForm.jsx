@@ -1,35 +1,39 @@
 
 import React, {useContext, useEffect, useState} from "react";
-/*import { withTranslation } from 'react-i18next';*/
-import {Checkbox, Icon, Button, Form, Item, Label, Dropdown} from "semantic-ui-react";
+import { withTranslation } from 'react-i18next';
+import {Loader, Checkbox, Icon, Button, Form, Item, Label, Dropdown} from "semantic-ui-react";
 import orgAPI from "../../../_services/orgAPI";
 import { StepFormContext } from "../../../_routes/_project/CreateProject";
 
-const OrgLinkForm = ({loader, errors}) => {
+const OrgLinkForm = ({t, loader, errors, nextStep}) => {
 
-    const { obj, setObj, currentStep, setCurrentStep, stepList, setStepList } = useContext(StepFormContext)
+    const { obj, setObj } = useContext(StepFormContext)
 
-    const handleChange = ({e, value }) => {
-        setObj({ ...obj, "organization": value });
+    const [selected, setSelected] = useState("")
+
+    const handleChange = (e, { value }) => {
         console.log(value)
-        console.log(obj)
+        setSelected(value)
     };
 
-        const [toggleShow, setToggleShow] = useState(false)
+    const [toggleShow, setToggleShow] = useState(false)
 
     const handleShow = () => {
         if(!toggleShow){
             setToggleShow(true)
         }else {
             setToggleShow(false)
-            setObj({...obj, organization: null})
+            setSelected("")
         }
     }
 
-    const [options, setOptions] = useState([])
-   // console.log(options)
 
+    const [orgs, setOrgs] = useState([])
+    const [options, setOptions] = useState([])
+    console.log(options)
     const setOrgsOptions = (orgs) => {
+        console.log(orgs)
+        setOrgs(orgs)
         let table=[];
         orgs.map(org => (
             table.push({ key:org.id, value:org.id, text:org.name} )
@@ -38,98 +42,86 @@ const OrgLinkForm = ({loader, errors}) => {
         setOptions(table)
     }
 
-    const setDropValue = (obj) => {
-        let  res = null
-        if(obj.organization !== null){
-            if(obj.organization.id){
-                res = obj.organization.id
-            }else {
-                res = obj.organization
-            }
-        }
-        console.log(res)
-        return res
-    }
+    const [orgLoader, setOrgLoader] = useState(false)
 
     const handleSub = () => {
-        currentStep.isValid = true
-        currentStep.state = "completed"
-        stepList.splice(currentStep.id, 1, currentStep)
-        setCurrentStep(stepList[currentStep.id + 1])
-        stepList[currentStep.id + 1].state = "active"
-        console.log(stepList)
+        let value = orgs.find(o => o.id === selected)
+        setObj({ ...obj, organization: value });
+        nextStep()
     }
 
     {/*//todo rechercher les org en tant que referrent et en tant que membre!*/}
     useEffect(() => {
-        orgAPI.getMy()
-            .then(response => {
-                setOrgsOptions(response.data)
-            })
-            .catch(error => console.log(error.response))
+            setOrgLoader(true)
+            orgAPI.getMy()
+                .then(response => {
+                    //console.log(response.data)
+                    setOrgsOptions(response.data)
+                })
+                .catch(error => console.log(error.response))
+                .finally(()=>setOrgLoader(false))
     },[])
 
     return (
+        <>
+        <Label attached='top'>
+            <h4>Lier à une Organisation</h4>
+        </Label>
         <Form onSubmit={handleSub}>
-            <Item.Group>
                 <Item.Group>
-                    <Item>
-                        <Item.Content>
-                            <Label attached='top'>
-                                <h4>Lier à une Organisation</h4>
-                            </Label>
-                        </Item.Content>
-                    </Item>
-                    <Item>
-                        <Checkbox
-                            name="toggleShow"
-                            onChange={handleShow}
-                            toggle
-                        />
-                    </Item>
-                    {toggleShow &&
-                        <Item>
-                            <Label size="small" ribbon>
-                                Organisations
-                            </Label>
-                            {loader ?
-                                <Form.Input
-                                    type="text"
-                                    disabled
-                                    loading
-                                />
-                                :
-                                <Dropdown
-                                    fluid
-                                    search
-                                    selection
-
-                                    placeholder='Select the organization'
-                                    name="organization"
-                                    value={setDropValue}
-                                    options={options}
-                                    onChange={handleChange}
-                                />
-                            }
-                        </Item>
-                    }
-
-                    {loader ?
-                        <Button icon labelPosition='right' disabled loading>
-                            Next
-                            <Icon name='right arrow'/>
-                        </Button>
+                    {orgLoader ?
+                        <Loader active inline="centered" />
                         :
-                        <Button icon labelPosition='right'>
-                            Next
-                            <Icon name='right arrow'/>
-                        </Button>
+                        <>
+                            <Item>
+                                {toggleShow ?
+                                    <Label color="green" size="small" horizontal>
+                                        {t("yes")}
+                                    </Label>
+                                    :
+                                    <Label size="small" horizontal>
+                                        {t("no")}
+                                    </Label>
+                                }
+
+                                <Checkbox
+                                    name="toggleShow"
+                                    onChange={handleShow}
+                                    toggle
+                                />
+                            </Item>
+                            {toggleShow &&
+                                <Item>
+                                    <Label size="small" ribbon>
+                                        Organisations
+                                    </Label>
+                                    <Dropdown
+                                        fluid
+                                        search
+                                        selection
+
+                                        placeholder='Select the organization'
+                                        name="organization"
+                                        value={selected && selected !=="" ? selected : null  }
+                                        options={options}
+                                        onChange={handleChange}
+                                    />
+                                </Item>
+                             }
+                        </>
                     }
+
+                    <Button animated >
+                        <Button.Content visible>Next</Button.Content>
+                        <Button.Content hidden>
+                            <Icon name='arrow right' />
+                        </Button.Content>
+                    </Button>
                 </Item.Group>
-            </Item.Group>
         </Form>
+    </>
     );
 }
 
 
-export default OrgLinkForm;
+export default withTranslation()(OrgLinkForm);

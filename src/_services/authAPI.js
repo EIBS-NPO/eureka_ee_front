@@ -1,14 +1,12 @@
 import Axios from "axios";
 import jwt_decode from "jwt-decode";
 import { LOGIN_API } from "../config";
-import JwtDecode from "jwt-decode";
 
 
 function logout() {
     window.localStorage.removeItem("authToken");
     if (Axios.defaults.headers["Authorization"]){
         delete Axios.defaults.headers["Authorization"];
-        //todo ca c'est tout pourris comme redir
         window.location.href='/'
     }
 }
@@ -39,14 +37,20 @@ function setup() {
     const token = window.localStorage.getItem("authToken");
 
     if (token) {
-        const jwtData = jwt_decode(token);
-        if (jwtData.exp * 1000 > new Date().getTime()) {
-            setAxiosToken(token);
-            /*return true;*/
-        }
-        else {
-            logout();
-            /*return false;*/
+        try {
+            const jwtData = jwt_decode(token);
+            // valid token format
+            if (jwtData.exp * 1000 > new Date().getTime()) {
+                setAxiosToken(token);
+                /*return true;*/
+            }
+            else {
+                logout();
+                /*return false;*/
+            }
+        } catch(error) {
+            console.log(error)
+            // invalid token format
         }
     } else {
         logout();
@@ -81,7 +85,7 @@ function getRole() {
 
 function getUserMail() {
     const token = window.localStorage.getItem("authToken");
-    return JwtDecode(token).username
+    return jwt_decode(token).username
 }
 
 // eslint-disable-next-line import/no-anonymous-default-export

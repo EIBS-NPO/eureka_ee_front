@@ -1,43 +1,46 @@
-import React, {useContext} from "react";
+import React, {useContext, useState} from "react";
 import {Button, Form, Icon, Item, Label} from "semantic-ui-react";
 import utilities from "../../../_services/utilities";
-import orgAPI from "../../../_services/orgAPI";
 import { StepFormContext } from "../../../_routes/_project/CreateProject";
+import {withTranslation} from "react-i18next";
 
-const ProjectDatingForm = ({loader, errors}) => {
+const ProjectDatingForm = ({t, loader, errors, nextStep}) => {
 
-    const { obj, setObj, currentStep, setCurrentStep, stepList, setStepList } = useContext(StepFormContext)
+    const { obj, setObj } = useContext(StepFormContext)
+
+    const [dates, setDates] = useState({
+        start:"",
+        end:""
+    })
 
     const handleChange = (event) => {
         const { name, value } = event.currentTarget;
-        setObj({ ...obj, [name]: value });
-        console.log(value)
+        setDates({ ...dates, [name]: value });
     };
-
-    const handleSub = () => {
-        currentStep.isValid = true
-        currentStep.state = "completed"
-        stepList.splice(currentStep.id, 1, currentStep)
-        setCurrentStep(stepList[currentStep.id + 1])
-        stepList[currentStep.id + 1].state = "active"
-        console.log(stepList)
-    }
 
     const minDateForStart = utilities.formatDate(new Date())
 
     const minDateForEnd = () => {
-        if(obj.startDate) {
-            console.log(utilities.addDaysToDate(obj.startDate, 1))
-            return utilities.addDaysToDate(obj.startDate, 1)
+        if(dates.start) {
+        //    console.log(utilities.addDaysToDate(dates.start, 1))
+            return utilities.addDaysToDate(dates.start, 1)
         }
          else return null
     }
 
-    console.log(obj)
-    /*//todo mettre controle date min sur date actuelle */
+    const handleSub = () => {
+        obj.startDate = dates.start
+        obj.endDate = dates.end
+        nextStep()
+    }
+
+ //   console.log(obj)
     return (
+        <>
+            <Label attached='top'>
+                <h4>Dating</h4>
+            </Label>
         <Form onSubmit={handleSub}>
-            <Item.Group>
                 <Item.Group divided>
                     <Item>
                         <Label size="small" ribbon>
@@ -51,12 +54,10 @@ const ProjectDatingForm = ({loader, errors}) => {
                             />
                             :
                             <Form.Input
-                                name="startDate"
+                                name="start"
                                 type="date"
-                                value={obj.startDate ? obj.startDate : {} }
+                                value={ obj.startDate ? obj.startDate : dates.start }
                                 onChange={handleChange}
-                             //   min={Utilities.formatDate(new Date())}
-                                min={minDateForStart}
                                 error={errors.startDate ? errors.startDate : null}
                             />
                         }
@@ -73,36 +74,27 @@ const ProjectDatingForm = ({loader, errors}) => {
                             />
                             :
                             <Form.Input
-                                name="endDate"
+                                name="end"
                                 type="date"
-                                value={obj.endDate ? obj.endDate : {}}
+                                value={ obj.endDate ? obj.endDate : dates.end}
                                 onChange={handleChange}
                                 min={minDateForEnd()}
                                 error={errors.endDate ? errors.endDate : null}
                             />
                         }
                     </Item>
-                    {/*<Button icon className="prevBtn" labelPosition='left'>
-                        Previous
-                        <Icon name='left arrow' />
+                    <Button animated >
+                        <Button.Content visible>Next</Button.Content>
+                        <Button.Content hidden>
+                            <Icon name='arrow right' />
+                        </Button.Content>
                     </Button>
-*/}
-                    {loader ?
-                        <Button icon labelPosition='right' disabled loading>
-                            Next
-                            <Icon name='right arrow'/>
-                        </Button>
-                        :
-                        <Button icon labelPosition='right'>
-                            Next
-                            <Icon name='right arrow'/>
-                        </Button>
-                    }
+
                 </Item.Group>
-            </Item.Group>
         </Form>
+            </>
     );
 }
 
 
-export default ProjectDatingForm;
+export default withTranslation()(ProjectDatingForm);

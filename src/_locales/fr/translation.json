@@ -4,6 +4,23 @@
   "Login": "Connexion",
   "Logout": "Déconnexion",
   "new_org": "Nouvelle Organisation",
+  "my_projects": "Mes projets",
+  "no_result": "Aucun résultat",
+
+  "yes": "oui",
+  "no": "non",
+  "save" : "enregistrer",
+
+  "no_def": "non défini",
+  "review": "vérifications",
+  "title":  "title",
+  "description": "description",
+  "dating": "datation",
+  "startDate": "date de début",
+  "endDate": "date de fin",
+  "publishing": "publication",
+  "public": "publique",
+  "private": "privé",
 
   "OrgCreate_title": "Enregistrer votre organisation",
 
