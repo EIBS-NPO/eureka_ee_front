@@ -1,152 +1,89 @@
 import React from 'react';
-import {Image, Grid, Segment, Button, Item, Label, Form} from 'semantic-ui-react'
+import {Icon, Image, Grid, Segment, Button, Item, Label, Form, Menu} from 'semantic-ui-react'
 import '../../scss/components/cardOrg.scss';
 import { withTranslation } from 'react-i18next';
 import {NavLink} from "react-router-dom";
 
 const Project = ({ t, project, context }) => {
 
-
+    console.log(project)
     return (
-        <>
-            {/*<Item.Image size="small" src={`data:image/jpeg;base64,${project.picture}`} floated='left'/>
+        <Item>
+            { project.creator &&
+            <Label as='a' basic image>
+                {project.creator.picture ?
+                    <Image size="small" src={`data:image/jpeg;base64,${project.creator.picture}`}
+                           floated='left'/>
+                    :
+                    <Image size="small" src='https://react.semantic-ui.com/images/wireframe/image.png'
+                           floated='left'/>
+                }
+                {/*<img src='https://react.semantic-ui.com/images/avatar/small/elliot.jpg' />*/}
+                {project.creator.lastname + ' ' + project.creator.firstname}
+                <Label.Detail>{t('author')}</Label.Detail>
+            </Label>
             }
-            {!project.picture &&
-            <Item.Image size="small" src='https://react.semantic-ui.com/images/wireframe/image.png' floated='left' />*/}
-                <Item>
-                    {project.creator &&
-                        <Label as='a' basic image>
-                            {project.creator.picture ?
-                                <Image size="small" src={`data:image/jpeg;base64,${project.creator.picture}`}
-                                            floated='left'/>
-                                :
-                                <Image size="small" src='https://react.semantic-ui.com/images/wireframe/image.png'
-                                            floated='left'/>
-                            }
-                            {/*<img src='https://react.semantic-ui.com/images/avatar/small/elliot.jpg' />*/}
+
+            {project.organization &&
+            <Label as='a' basic image>
+                <img src='https://react.semantic-ui.com/images/avatar/small/elliot.jpg'/>
+                {project.organization.name}
+                <Label.Detail>{t('organization')}</Label.Detail>
+            </Label>
+            }
+
+            <Segment>
+
+                <Label as="h3" attached='top'>
+                    {project.title}
+                    {context !== 'public' &&
+                    <Label.Detail>
+                        {project.isPublic ?
                             <span>
-                                { project.creator.lastname + ' ' + project.creator.firstname }
-                            </span>
-                        </Label>
+                                        {t('public')}
+                                    </span>
+                            :
+                            <span>
+                                        {t('private')}
+                                    </span>
+                        }
+                    </Label.Detail>
                     }
 
-                    {project.organization &&
-                    <Label as='a' basic image>
-                        <img src='https://react.semantic-ui.com/images/avatar/small/elliot.jpg' />
-                        <span>
-                                {project.organization.name}
-                            </span>
+                    {context === "public" &&
+                    <Label as={NavLink} to={"/project/public_" + project.id} attached={"top right"}>
+                        <Icon name="eye"/> {t('details')}
+                    </Label>
+                    }
+                    {context === "creator" &&
+                    <Label as={NavLink} to={"/project/creator_" + project.id} attached={"top right"}>
+                        <Icon name="eye"/> {t('details')}
+                    </Label>
+                    }
+                    {context === "assigned" &&
+                    <Label as={NavLink} to={"/project/assign_" + project.id} attached={"top right"}>
+                        <Icon name="eye"/> {t('details')}
                     </Label>
                     }
 
-                    <Segment>
-                        <Label as="h3" attached='top'>
-                            {project.title}
-                        </Label>
-                        <Item.Content>
-                            <Item.Meta>
-                                <span>{project.startDate}</span>
-                                <span>{project.isPublic ? "public" : "private"}</span>
-                                <span>{project.endDate}</span>
-                            </Item.Meta>
-                            <Item.Description  attached='right'>
-                                {context !== "create" && project.picture &&
-                                <Item.Image size="small" src={`data:image/jpeg;base64,${project.picture}`}
-                                            floated='left'/>
-                                }
-                                <p>{project.description}</p>
-                            </Item.Description>
-                        </Item.Content>
-                    </Segment>
-                </Item>
-                    {/*<Item.Group>
-                        <Item>
-                        <Segment>
-                            <Label as="h4" attached='top'>{t('description')}</Label>
-                            <Item.Description  attached='bottom'>
-                                <p>
-                                    {project.description}
-                                </p>
-                            </Item.Description>
-                            </Segment>
 
+                </Label>
 
-                        </Item>
-                    </Item.Group>
-
-            {context !== "create" &&
-                <Item>
-                    {project.picture &&
-
-                    <Item.Image size="small" src={`data:image/jpeg;base64,${project.picture}`} floated='left'/>
-                    }
-                    {!project.picture &&
-                    <Item.Image size="small" src='https://react.semantic-ui.com/images/wireframe/image.png' floated='left' />
-                    }
-
-                </Item>
-            }
-
-
-            <Item>
-                <Item.Header >
-                    <h4>{t('dating')}</h4>
-                </Item.Header>
-
-                <Item.Description>
-                    <Button as='div' labelPosition='left'>
-                        <Label pointing='right'>
-                            {t('startDate')}
-                        </Label>
-                        {project.startDate ?
-                            <Button basic color='teal' desabled>
-                                {project.startDate}
-                            </Button>
-                        :
-                            <Button desabled>
-                                {t('no_def')}
-                            </Button>
+                <Item.Content>
+                    <Item.Meta>
+                        <span>{project.startDate}</span>
+                        <span>{project.endDate}</span>
+                    </Item.Meta>
+                    <Item.Description attached='right'>
+                        {context !== "create" && project.picture &&
+                        <Item.Image size="small" src={`data:image/jpeg;base64,${project.picture}`}
+                                    floated='left'/>
                         }
-                    </Button>
-
-                    <Button as='div' labelPosition='left'>
-                        <Label pointing='right'>
-                            {t('endDate')}
-                        </Label>
-                        {project.endDate ?
-                            <Button basic color='teal' desabled>
-                                {project.startDate}
-                            </Button>
-                        :
-                            <Button desabled>
-                                {t('no_def')}
-                            </Button>
-                        }
-                    </Button>
-                </Item.Description>
-
-                <Item.Header>
-                    <h4>{t('publishing')}</h4>
-                </Item.Header>
-
-                <Item.Description>
-                    <Button as='div' labelPosition='left' desabled>
-                        <Label pointing='right'>
-                            {t('visibility')}
-                        </Label>
-                        {project.isPublic ?
-                            <Button basic color='teal' desabled>
-                                {t('public')}
-                            </Button>
-                            :
-                            <Button desabled>
-                                {t('private')}
-                            </Button>
-                        }
-                    </Button>
-                </Item.Description>
-            </Item>*/}
-        </>
+                        <p>{project.description}</p>
+                    </Item.Description>
+                </Item.Content>
+            </Segment>
+        </Item>
     );
 };
 

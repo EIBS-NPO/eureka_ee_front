@@ -20,15 +20,19 @@ function put(project) {
     return Axios.put(PROJECT_API, project)
 }
 
-function get(id = null){
-    return Axios.get(API_URL + "/project/public")
+function get(context, id = null){
+    let params = "?context="+ context
+    if(id !== null){
+           params += "&id="+ id
+    }
+    return Axios.get(API_URL + "/project/" + params)
 }
 
-function getMy(id =null){
+function getPublic(id =null){
     if(id === null ){
-        return Axios.get(API_URL + "/project/created")
+        return Axios.get(API_URL + "/project/public")
     }else {
-        return Axios.get(API_URL + "/project/created/?id="+ id)
+        return Axios.get(API_URL + "/project/public/?id="+ id)
     }
 
 }
@@ -38,5 +42,5 @@ export default {
     post,
     put,
     get,
-    getMy
+    getPublic
 };

@@ -80,7 +80,7 @@ const ProjectDescForm = ({t, loader, errors, nextStep}) => {
                             }
                         </Item>
 
-                        <Button animated >
+                        <Button fluid animated >
                             <Button.Content visible>Next</Button.Content>
                             <Button.Content hidden>
                                 <Icon name='arrow right' />

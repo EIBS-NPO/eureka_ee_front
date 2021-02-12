@@ -4,13 +4,12 @@ import { withTranslation } from 'react-i18next';
 import projectAPI from "../../_services/projectAPI";
 import Project from "../../_components/cards/project";
 
-const GetAllProjects = ({ props }) => {
-
+const PublicProjects = ({t, props }) => {
 
     const [projects, setProjects] = useState([])
 
     useEffect(() => {
-        projectAPI.get()
+        projectAPI.getPublic()
             .then(response => {
                 console.log(response)
                 setProjects(response.data)
@@ -20,21 +19,20 @@ const GetAllProjects = ({ props }) => {
 
     return (
         <div className="card">
-            <h1>Liste des projets</h1>
+            <h1>{ t('public_projects') }</h1>
             {projects.length > 0 ?
                 projects.map((p, key) => (
-                    <Item.Group divided key={key}>
-                        <Project project={p} context={"all"} />
-
+                    <>
+                        <Project project={p} context={"public"} />
                         <Divider section />
-                    </Item.Group>
+                    </>
                 ))
                 :
-                    <p>Aucun projet trouvé</p>
+                    <p>{t('no_result')}</p>
             }
         </div>
     );
 }
 
-export default withTranslation()(GetAllProjects);
+export default withTranslation()(PublicProjects);
 

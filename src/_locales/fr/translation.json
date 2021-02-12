@@ -5,6 +5,7 @@
   "Logout": "Déconnexion",
   "new_org": "Nouvelle Organisation",
   "my_projects": "Mes projets",
+  "public_projects" : "Projets publiques",
   "no_result": "Aucun résultat",
 
   "yes": "oui",
@@ -21,6 +22,10 @@
   "publishing": "publication",
   "public": "publique",
   "private": "privé",
+  "author": "auteur",
+  "organization": "organisation",
+  "details": "détails",
+  "address": "adresse",
 
   "OrgCreate_title": "Enregistrer votre organisation",
 

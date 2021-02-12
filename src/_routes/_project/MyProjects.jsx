@@ -5,13 +5,14 @@ import { withTranslation } from 'react-i18next';
 import projectAPI from "../../_services/projectAPI";
 import Project from "../../_components/cards/project";
 import fileAPI from "../../_services/fileAPI";
+import {Divider, Segment} from "semantic-ui-react";
 
-const GetAllProjects = ({ t }) => {
+const GetMyProjects = ({ t }) => {
 
     const [projects, setProjects] = useState([])
 
     useEffect(() => {
-        projectAPI.getMy()
+        projectAPI.get("creator")
             .then(response => {
                 console.log(response)
                 setProjects(response.data)
@@ -21,18 +22,24 @@ const GetAllProjects = ({ t }) => {
 
     return (
         <>
+            <div className="card">
             <h1>{t('my_projects')}</h1>
             {projects.length > 0 ?
                 projects.map(p => (
-                    <Project key={p.id} project={p} context={"creator"}/>
+                    <>
+                        <Project key={p.id} project={p} context={"creator"}/>
+                        <Divider section />
+                    </>
                 ))
-                :   <div className="card">
-                    <p>{t('no_result')}</p>
-                </div>
+                :
+                    <Segment>
+                        <p>{t('no_result')}</p>
+                    </Segment>
             }
+            </div>
         </>
     );
 };
 
-export default withTranslation()(GetAllProjects);
+export default withTranslation()(GetMyProjects);
 
