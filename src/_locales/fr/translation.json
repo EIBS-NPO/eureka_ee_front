@@ -6,11 +6,14 @@
   "new_org": "Nouvelle Organisation",
   "my_projects": "Mes projets",
   "public_projects" : "Projets publiques",
+  "presentation" : "Présentation",
   "no_result": "Aucun résultat",
+  "loading": "Chargement",
 
   "yes": "oui",
   "no": "non",
-  "save" : "enregistrer",
+  "save": "enregistrer",
+  "edit": "editer",
 
   "no_def": "non défini",
   "review": "vérifications",

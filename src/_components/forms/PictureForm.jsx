@@ -1,9 +1,12 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import {Image, Item, Label} from "semantic-ui-react";
 import ImageUpload from "../Crop/ImageUpload";
 
-const PictureForm = ({loader, picture, setterPic, entityType, entity}) => {
+const PictureForm = ({loader, entityType, entity}) => {
+
+    const [picture, setPicture] = useState(entity.picture);
+
     return (
         <Item>
             <Item.Group divided>
@@ -24,7 +27,7 @@ const PictureForm = ({loader, picture, setterPic, entityType, entity}) => {
                 </Item>
                 <Item>
                     <ImageUpload
-                        setRefresh={setterPic}
+                        setRefresh={setPicture}
                         type={entityType}
                         entity={entity}
                     />

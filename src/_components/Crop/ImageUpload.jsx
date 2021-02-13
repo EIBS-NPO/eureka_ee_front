@@ -37,9 +37,9 @@ const ImageUpload = ({ refresh, setRefresh, type, entity, parentCallBack }) => {
         fileAPI.uploadPic(type, bodyFormData)
             .then(response => {
             //    notification.successNotif('nouvelle photo de profil bien enregistrée')
-                setRefresh(response.data[0])
+                setRefresh(response.data[0].picture)
                 console.log(response)
-                parentCallBack()
+               // parentCallBack()
                 hideModal()
             })
             .catch(error => {

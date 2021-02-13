@@ -27,7 +27,7 @@ const ProfilUser = ({t, history }) => {
 
     {/*todo modal pour change password et email?*/}
 
-    const [picture, setPicture] = useState()
+  //  const [picture, setPicture] = useState()
 
     const [loader, setLoader] = useState(false)
   //  const [picLoader, setPicLoader] = useState(false)
@@ -70,7 +70,7 @@ const ProfilUser = ({t, history }) => {
                                     <Loader active inline="centered" />
                                 </Item>
                                 :
-                                <PictureForm picture={user.picture} setterPic={setPicture} entityType="user" entity={user}/>
+                                <PictureForm picture={user.picture} entityType="user" entity={user}/>
                             }
                         </Segment>
 

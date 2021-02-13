@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import projectAPI from '../../_services/projectAPI';
 import Project from '../../_components/cards/project';
-import { Loader } from "semantic-ui-react";
+import {Header, Item, Menu, Label, Loader, Segment, Icon} from "semantic-ui-react";
 import {withTranslation} from "react-i18next";
+import {NavLink} from "react-router-dom";
 
 /**
  * la page qui affiche les détail de projet, doit afficher
@@ -17,30 +18,27 @@ import {withTranslation} from "react-i18next";
 const ProfilProject = (props) => {
 
     const urlParams = props.match.params.id.split('_')
+    const ctx = urlParams[0]
 
     const [project, setProject] = useState()
 
     const [loader, setLoader] = useState(true);
 
+    const [activeItem, setActiveItem] = useState('presentation')
+
+    const handleItemClick = (e, { name }) => setActiveItem(name)
+
     useEffect(() => {
-        console.log("1")
-        console.log(urlParams)
-        if(urlParams[0] === 'public'){
-            console.log("2")
+        if(ctx === 'public'){
             projectAPI.getPublic(urlParams[1])
                 .then(response => {
-                    console.log("3")
-                    console.log(response.data[0])
                     setProject(response.data[0])
                 })
                 .catch(error => console.log(error.response))
                 .finally(()=>setLoader(false))
         }else {
-            console.log("4")
-            projectAPI.get(urlParams[0], urlParams[1])
+            projectAPI.get(ctx, urlParams[1])
                 .then(response => {
-                    console.log("5")
-                    console.log(response.data[0])
                     setProject(response.data[0])
                 })
                 .catch(error => console.log(error.response))
@@ -49,25 +47,83 @@ const ProfilProject = (props) => {
     }, []);
 
     return (
-
         <div className="card">
-            <h1>Fiche de projet</h1>
+            <>
             {!loader &&
                 <>
                 {project !== "DATA_NOT_FOUND" ?
-                    <>
-                        <Project project={project} context={urlParams[0]}/>
-                    </>
+                    <Segment vertical>
+                        <Label as="h2" attached='top'>
+                            { project.title }
+                        </Label>
+
+                        <Menu attached='top' tabular>
+                            <Menu.Item
+                                name='presentation'
+                                active={activeItem === 'presentation'}
+                                onClick={handleItemClick}
+                            >
+                                <Header >
+                                    { props.t("presentation") }
+                                    {ctx === 'creator' &&
+                                    <Label as={NavLink} to={"/project/public_" + project.id}>
+                                        <Icon name="edit"/> {props.t('edit')}
+                                    </Label>
+                                    }
+                                </Header>
+                            </Menu.Item>
+                            <Menu.Item
+                                name='team'
+                                active={activeItem === 'team'}
+                                onClick={handleItemClick}
+                            />
+                            <Menu.Item
+                                name='activities'
+                                active={activeItem === 'activities'}
+                                onClick={handleItemClick}
+                            />
+                        </Menu>
+
+                        {activeItem === "presentation" &&
+                            <Segment attached='bottom'>
+                                <Item>
+                                    {project.picture &&
+                                    <Item.Image size="small" src={`data:image/jpeg;base64,${project.picture}`}
+                                                floated='left'/>
+                                    }
+                                    {/*//todo image just fort dev render*/}
+                                    <Item.Image src='https://react.semantic-ui.com/images/wireframe/square-image.png' size='small' floated='left' rounded  />
+
+                                    <Item.Content>
+                                        <p>{project.description}</p>
+                                    </Item.Content>
+                                </Item>
+
+                            </Segment>
+                        }
+
+
+                       {/*
+                       <Project project={project} context={urlParams[0]}/>
+                       */}
+                    </Segment>
                 :
-                    <>
-                        <p>{ props.t('no_result') }</p>
-                    </>
+                    <p>{ props.t('no_result') }</p>
                 }
                 </>
             }
             {loader &&
-                <Loader active inline="centered"/>
+            <Segment>
+                <Loader
+                    active
+                    content={
+                        <p>{props.t('loading') +" : " + props.t('presentation') }</p>
+                    }
+                    inline="centered"
+                />
+            </Segment>
             }
+            </>
         </div>
     );
 };

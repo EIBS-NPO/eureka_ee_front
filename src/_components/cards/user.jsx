@@ -9,17 +9,18 @@ const User = ({ t, user}) => {
 
    // console.log(user)
     const [userId, setUserId] = useState()
-    const [picture, setPicture] = useState()
+
+ //   const [picture, setPicture] = useState()
     const [update, setUpdate] = useState(false)
 
-    if(user.picture ){
+    /*if(user.picture ){
         fileAPI.downloadPic("user", user.picture)
             .then(response => {
                 setPicture(response.data[0])
                 // setPictures64(pictures64 => [...pictures64, { [player.id]: response.data.data }])
             })
             .catch(error => console.log(error.response))
-    }
+    }*/
 
     const [changeUser, setChangeUser] = useState({
         email: "",
@@ -66,7 +67,7 @@ const User = ({ t, user}) => {
     return (
         <>
             <Item>
-                {picture ?
+                {(user.picture && user.picture !== "no found data")?
                     <Item.Image size="small" src={`data:image/jpeg;base64,${picture}`}/>
                     :
                     <Item.Image size="small" src='https://react.semantic-ui.com/images/wireframe/image.png'/>
