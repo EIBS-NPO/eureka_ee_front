@@ -28,14 +28,8 @@ const ProfilUser = lazy(() => import('./_routes/_user/ProfilUser'));
 const ProfilOrg = lazy(() => import('./_routes/_org/ProfilOrg'));
 const ProfilProject = lazy(() => import('./_routes/_project/ProfilProject'));
 
-const AllOrg = lazy(() => import('./_routes/_org/GetAllOrg'));
-const MyOrg = lazy(() => import('./_routes/_org/MyOrg'));
-const PublicProjects = lazy(() => import('./_routes/_project/PublicProjects'));
-const MyProjects = lazy(() => import('./_routes/_project/MyProjects'));
-
-/*const UpdateUser = lazy(() => import('./_routes/_user/UpdateUser'));*/
-const UpdateOrg = lazy(() => import('./_routes/_org/UpdateOrg'));
-const UpdateProject = lazy(() => import('./_routes/_project/UpdateProject'));
+const OrgList = lazy(() => import('./_routes/_org/OrgList'));
+const ProjectsList = lazy(() => import('./_routes/_project/ProjectsList'));
 
 //footer
 const Beweging = lazy(() => import('./_routes/_partners/beweging'));
@@ -64,33 +58,28 @@ const Beweging = lazy(() => import('./_routes/_partners/beweging'));
                       <div id="main_content" className="main_left">
                           {/*<Suspense fallback={<div>Chargement...</div>}>*/}
                           <Suspense fallback={<Loader content='Loading' />}>
-                              <Switch>
-                                  <Route exact path="/" component={Home}/>
-                                  <Route path="/login" component={Login}/>
+          <Switch>
+              <Route exact path="/" component={Home}/>
+              <Route path="/register" component={Register}/>
+              <Route path="/login" component={Login}/>
 
-                                  <Route path="/register" component={Register}/>
-                                  <Route path="/create_org" component={CreateOrg}/>
-                                  <Route path="/create_project" component={CreateProject}/>
+              <Route path="/register" component={Register}/>
+              <PrivateRoute path="/create_org" component={CreateOrg}/>
+              <PrivateRoute path="/create_project" component={CreateProject}/>
 
-                                  <Route path="/all_organizations" component={AllOrg}/>
+              <Route path="/all_organizations/:ctx" component={OrgList}/>
 
-                                  <Route path="/my_organizations" component={MyOrg}/>
-                                  <Route path="/all_projects" component={PublicProjects}/>
-                                  <Route path="/my_projects" component={MyProjects}/>
+              <Route path="/all_projects/:ctx" component={ProjectsList}/>
 
-                                  <Route path="/about" component={About}/>
 
-                                  <Route path="/profil_user" component={ProfilUser}/>
-                                  <Route path="/profil_org" component={ProfilOrg}/>
+              <PrivateRoute path="/profil_user" component={ProfilUser}/>
+              <Route path="/org/:id" component={ProfilOrg}/>
+              <Route path="/project/:id" component={ProfilProject}/>
 
-                                  <Route path="/project/:id" component={ProfilProject}/>
+              <Route path="/about" component={About}/>
 
-                                  {/*<PrivateRoute path="/update_user" component={UpdateUser}/>*/}
-                                  <PrivateRoute path="/update_org/:id" component={UpdateOrg}/>
-                                  <PrivateRoute path="/update_project/:id" component={UpdateProject} />
-
-                                  <Route path="/beweging" component={Beweging}/>
-                              </Switch>
+              <Route path="/beweging" component={Beweging}/>
+          </Switch>
                           </Suspense>
                       </div>
                   </div>

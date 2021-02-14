@@ -106,7 +106,7 @@ const CreateProject = ({ history, t }) => {
             case "publication":
                 return <PublicationForm loader={loader} errors={errors} nextStep={handleNext}/>
             case "resume":
-                return <ProjectFormResume loader={loader} errors={errors} nexStep={handleNext} />
+                return <ProjectFormResume loader={loader} errors={errors} nexStep={handleNext} history />
         }
     }
 

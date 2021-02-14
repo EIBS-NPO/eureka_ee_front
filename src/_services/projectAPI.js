@@ -17,6 +17,7 @@ function post(project) {
 }
 
 function put(project) {
+    console.log(project)
     return Axios.put(PROJECT_API, project)
 }
 

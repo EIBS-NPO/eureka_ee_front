@@ -28,6 +28,12 @@ const ProjectDatingForm = ({t, loader, errors, nextStep}) => {
          else return null
     }
 
+    const maxDateForStart = () => {
+        if(dates.end) {
+            return utilities.removeDaysToDate(dates.start, 1)
+        }
+    }
+
     const handleSub = () => {
         obj.startDate = dates.start
         obj.endDate = dates.end
@@ -58,6 +64,7 @@ const ProjectDatingForm = ({t, loader, errors, nextStep}) => {
                                 type="date"
                                 value={ obj.startDate ? obj.startDate : dates.start }
                                 onChange={handleChange}
+                                max={maxDateForStart()}
                                 error={errors.startDate ? errors.startDate : null}
                             />
                         }

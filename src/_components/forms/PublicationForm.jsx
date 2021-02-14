@@ -17,7 +17,7 @@ const PublicationForm = ({t, loader, errors, nextStep}) => {
             setIsPublicValue(false)
         }
     }
-    console.log(isPublicValue)
+   // console.log(isPublicValue)
 
     const handleSub = () => {
         setObj({...obj, 'isPublic': isPublicValue})

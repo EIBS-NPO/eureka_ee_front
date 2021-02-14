@@ -11,7 +11,6 @@ import UserCoordForm from "../../_components/forms/user/UserCoordForm";
 import {withTranslation} from "react-i18next";
 
 const ProfilUser = ({t, history }) => {
-    AuthAPI.setup();
     const isAuthenticated = useContext(AuthContext);
     if (isAuthenticated === true) {
         history.replace('/');
@@ -27,10 +26,7 @@ const ProfilUser = ({t, history }) => {
 
     {/*todo modal pour change password et email?*/}
 
-  //  const [picture, setPicture] = useState()
-
     const [loader, setLoader] = useState(false)
-  //  const [picLoader, setPicLoader] = useState(false)
 
     useEffect(() => {
         setLoader(true)
@@ -40,23 +36,11 @@ const ProfilUser = ({t, history }) => {
                 console.log(response.data[0])
                 setUser(response.data[0])
                 setLoader(false)
-                /*if(response.data[0].picture ){
-                    fileAPI.downloadPic("user",response.data[0].picture)
-                        .then(response => {
-                            setPicture(response.data[0])
-                            setPicLoader(false)
-                        })
-                        .catch(error => {
-                            console.log(error.response)
-                            setPicLoader(false)
-                        })
-                }*/
             })
             .catch(error => {
                 setLoader(false)
                 console.log(error.response)
             })
-           /* .finally(()=> setUserLoader(false))*/
     }, []);
 
     return (

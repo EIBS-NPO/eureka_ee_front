@@ -38,6 +38,10 @@ export function addDaysToDate(date, nbDays){
     return formatDate(new Date(Date.parse(date) + (60 * 60 * nbDays * 1000)))
 }
 
+export function removeDaysToDate(date, nbDays){
+    return formatDate(new Date(Date.parse(date) - (60 * 60 * nbDays * 1000)))
+}
+
 export function getTimestamp(date){
     var dates1 = date.split("-");
     var newDate = dates1[0]+"/"+dates1[1]+"/"+dates1[2];
@@ -50,6 +54,7 @@ export default {
     formatDate,
     getCurrentDate,
     addDaysToDate,
+    removeDaysToDate,
     getTimestamp,
     clone
 };

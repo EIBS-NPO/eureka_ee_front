@@ -34,6 +34,10 @@ const ImageUpload = ({ refresh, setRefresh, type, entity, parentCallBack }) => {
         var bodyFormData = new FormData();
         bodyFormData.append('image', blob)
 
+        if(type !== "user"){
+            bodyFormData.append('id', entity.id)
+        }
+
         fileAPI.uploadPic(type, bodyFormData)
             .then(response => {
             //    notification.successNotif('nouvelle photo de profil bien enregistrée')

@@ -1,19 +1,20 @@
 import React from 'react';
 import { NavLink } from "react-router-dom";
+import {withTranslation} from "react-i18next";
 
-const UserMenu = () => {
+const UserMenu = ( props ) => {
     return(
         <>
             <nav>
                 <ul>
-                    <li><NavLink to="/my_activities">Mes activités</NavLink></li>
-                    <li><NavLink to="/my_organizations">Mes organisations</NavLink></li>
-                    <li><NavLink to="/my_projects">Mes projets</NavLink></li>
-                    <li><NavLink to="/my_resources">MesResources</NavLink></li>
+                    <li><NavLink to="/all_activities/creator"> { props.t('my_activities') } </NavLink></li>
+                    <li><NavLink to="/all_organizations/my"> { props.t('my_org') } </NavLink></li>
+                    <li><NavLink to="/all_projects/creator"> { props.t('my_projects') } </NavLink></li>
+                    <li><NavLink to="/all_resources/creator"> { props.t('my_resources') } </NavLink></li>
                 </ul>
             </nav>
         </>
     );
 }
 
-export default UserMenu;
+export default withTranslation()(UserMenu);
