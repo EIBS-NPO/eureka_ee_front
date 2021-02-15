@@ -75,7 +75,6 @@ const ProfilProject = (props) => {
 
     const handleItemClick = (e, { name }) => setActiveItem(name)
 
-    //todo si bug j'ai changé la condition ci dessous avant : ctx() === 'creator'
     useEffect(() => {
         if(ctx() !== 'public'){
             setOrgLoader(true)
@@ -93,6 +92,7 @@ const ProfilProject = (props) => {
                 })
                 .catch(response => console.log(response))
                 .finally(()=>setLoader(false))
+
             orgAPI.getMy()
                 .then(response => {
                     //console.log(response.data)
@@ -100,6 +100,7 @@ const ProfilProject = (props) => {
                 })
                 .catch(error => console.log(error.response))
                 .finally(()=>setOrgLoader(false))
+
         }else {
             projectAPI.getPublic(urlParams[1])
                 .then(response => {
@@ -159,7 +160,6 @@ const ProfilProject = (props) => {
             )
         )
         setOptions(table)
-
     }
 
     const handleSubmit = async (event) => {

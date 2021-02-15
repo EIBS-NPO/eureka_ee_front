@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 import { withTranslation } from 'react-i18next';
 import OrgAPI from "../../_services/orgAPI";
 import AuthContext from "../../_contexts/AuthContext";
-import {Button, Form} from "semantic-ui-react";
+import {Button, Form, Icon} from "semantic-ui-react";
 import AuthAPI from "../../_services/authAPI";
 
 const CreateOrg = ({ history, t }) => {
@@ -46,57 +46,63 @@ const CreateOrg = ({ history, t }) => {
 
     return (
         <div className="card">
-            <h1>Enregistrer votre organisation</h1>
+            <h1> {t('new_org')} </h1>
             <form className="center column" onSubmit={handleSubmit}>
                 <Form.Input
                     icon='user'
                     iconPosition='left'
 
-                    label="Name"
+                    label={t('name')}
                     name="name"
                     value={org.name}
                     onChange={handleChange}
-                    placeholder="name..."
+                    placeholder={t('name') + "..."}
                     type="text"
-                    error={errors.firstname ? errors.firstname : null}
+                    error={errors.name ? errors.name : null}
+                    required
                 />
                 <Form.Input
                     icon='tag'
                     iconPosition='left'
 
-                    label="Type"
+                    label={t('type')}
                     name="type"
                     type="text"
                     value={org.type}
                     onChange={handleChange}
-                    placeholder="type..."
+                    placeholder={t('type') + "..."}
                     error={errors.type ? errors.type : null}
                 />
                 <Form.Input
                     icon='mail'
                     iconPosition='left'
 
-                    label="Email"
+                    label={t('email')}
                     name="email"
                     type="email"
                     value={org.email}
                     onChange={handleChange}
-                    placeholder="email..."
+                    placeholder={t('email') + "..."}
                     error={errors.email ? errors.email : null}
                 />
                 <Form.Input
                     icon='phone'
                     iconPosition='left'
 
-                    label="Phone"
+                    label={t('phone')}
                     name="phone"
                     type="phone"
                     value={org.phone}
                     onChange={handleChange}
-                    placeholder="phone..."
+                    placeholder={t('phone') + "..."}
                     error={errors.phone ? errors.phone : null}
                 />
-                <Button className="ui primary basic button" content='Login' />
+                <Button fluid animated >
+                    <Button.Content visible>{ t('save') } </Button.Content>
+                    <Button.Content hidden>
+                        <Icon name='save' />
+                    </Button.Content>
+                </Button>
             </form>
         </div>
     );

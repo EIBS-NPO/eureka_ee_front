@@ -23,13 +23,17 @@ const Login = lazy(() => import('./_routes/_user/Login'));
 const Register = lazy(() => import('./_routes/_user/Register'));
 const CreateOrg = lazy(() => import('./_routes/_org/CreateOrg'));
 const CreateProject = lazy(() => import('./_routes/_project/CreateProject'));
+const CreateActivity = lazy(() => import('./_routes/_activity/CreateActivity'));
 
 const ProfilUser = lazy(() => import('./_routes/_user/ProfilUser'));
 const ProfilOrg = lazy(() => import('./_routes/_org/ProfilOrg'));
 const ProfilProject = lazy(() => import('./_routes/_project/ProfilProject'));
+const ProfilActivity = lazy(() => import('./_routes/_activity/ProfilActivity'));
 
+//todo UserList
 const OrgList = lazy(() => import('./_routes/_org/OrgList'));
 const ProjectsList = lazy(() => import('./_routes/_project/ProjectsList'));
+const ActivitiesList = lazy(() => import('./_routes/_activity/ActivitiesList'));
 
 //footer
 const Beweging = lazy(() => import('./_routes/_partners/beweging'));
@@ -56,7 +60,6 @@ const Beweging = lazy(() => import('./_routes/_partners/beweging'));
                   <div id="main_middle">
                       <LeftMenu />
                       <div id="main_content" className="main_left">
-                          {/*<Suspense fallback={<div>Chargement...</div>}>*/}
                           <Suspense fallback={<Loader content='Loading' />}>
           <Switch>
               <Route exact path="/" component={Home}/>
@@ -66,15 +69,17 @@ const Beweging = lazy(() => import('./_routes/_partners/beweging'));
               <Route path="/register" component={Register}/>
               <PrivateRoute path="/create_org" component={CreateOrg}/>
               <PrivateRoute path="/create_project" component={CreateProject}/>
+              <PrivateRoute path="/create_activity" component={CreateActivity}/>
 
               <Route path="/all_organizations/:ctx" component={OrgList}/>
-
               <Route path="/all_projects/:ctx" component={ProjectsList}/>
+              <Route path="/all_activities/:ctx" component={ActivitiesList}/>
 
 
               <PrivateRoute path="/profil_user" component={ProfilUser}/>
               <Route path="/org/:id" component={ProfilOrg}/>
               <Route path="/project/:id" component={ProfilProject}/>
+              <Route path="/activity/:id" component={ProfilActivity}/>
 
               <Route path="/about" component={About}/>
 

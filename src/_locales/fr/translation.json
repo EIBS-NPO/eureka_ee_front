@@ -4,14 +4,23 @@
   "Login": "Connexion",
   "Logout": "Déconnexion",
   "new_org": "Nouvelle Organisation",
+  "new_project": "Nouveau Projet",
+  "new_activity": "Nouvelle Activité",
+  "my_space": "mon espace",
+  "admin": "administraition",
+
   "my_activities" : "mes activités",
   "my_projects": "mes projets",
   "my_org": "mes organisations",
-  "my_resources": "mes ressources",
+
   "all_projects": "Tous les projets",
   "all_org": "Toutes les organisastions",
-  "all_resources": "Toutes les ressoures",
+  "all_activities": "Toutes les activités",
+
   "public_projects" : "Projets publiques",
+  "public_activities" : "Activités publiques",
+
+
   "presentation" : "Présentation",
   "no_result": "Aucun résultat",
   "loading": "Chargement",
@@ -23,8 +32,11 @@
 
   "no_def": "non défini",
   "review": "vérifications",
+  "name" : "nom",
   "title":  "titre",
   "description": "description",
+  "summary": "sommaire",
+  "type": "type",
   "dating": "datation",
   "startDate": "date de début",
   "endDate": "date de fin",
@@ -36,6 +48,8 @@
   "organization": "organisation",
   "project": "projet",
   "projects": "projets",
+  "activity": "activité",
+  "activities": "activitées",
   "organization_link": "lien d'organisation",
   "personal_project": "projet personnel",
 
@@ -43,6 +57,8 @@
   "address": "adresse",
   "email": "email",
   "phone": "téléphone",
+  "files": "fichiers",
+  "file": "fichier",
 
   "OrgCreate_title": "Enregistrer votre organisation",
 
