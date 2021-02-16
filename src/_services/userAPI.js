@@ -1,17 +1,17 @@
 import Axios from "axios";
 import JwtDecode from "jwt-decode";
-import { API_URL } from "../config";
+import { USR_API } from "../config";
 
 const register = (user) => {
-    return Axios.post(API_URL + "/user/register", user);
+    return Axios.post(USR_API + "/register", user);
 }
 
 const put = (user) => {
-    return Axios.put(API_URL + "/user", user)
+    return Axios.put(USR_API, user)
 }
 
 const get = ()  => {
-    return Axios.get(API_URL + "/user" )
+    return Axios.get(USR_API )
 }
 
 const checkRole = () => {

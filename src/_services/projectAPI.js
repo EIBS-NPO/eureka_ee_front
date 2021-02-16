@@ -1,5 +1,5 @@
 import Axios from "axios";
-import {API_URL, PROJECT_API} from "../config";
+import { PROJECT_API } from "../config";
 
 function post(project) {
     let data = {
@@ -26,14 +26,14 @@ function get(context, id = null){
     if(id !== null){
            params += "&id="+ id
     }
-    return Axios.get(API_URL + "/project/" + params)
+    return Axios.get(PROJECT_API + params)
 }
 
 function getPublic(id =null){
     if(id === null ){
-        return Axios.get(API_URL + "/project/public")
+        return Axios.get(PROJECT_API + "/public")
     }else {
-        return Axios.get(API_URL + "/project/public/?id="+ id)
+        return Axios.get(PROJECT_API + "/public?id="+ id)
     }
 
 }

@@ -1,5 +1,5 @@
 import Axios from "axios";
-import {API_URL, ACT_API} from "../config";
+import { ACT_API } from "../config";
 
 
 function post(activity) {
@@ -15,14 +15,14 @@ function get(context, id = null){
     if(id !== null){
         params += "&id="+ id
     }
-    return Axios.get(API_URL + "/activity/" + params)
+    return Axios.get(ACT_API + params)
 }
 
 function getPublic(id =null){
     if(id === null ){
-        return Axios.get(API_URL + "/activity/public")
+        return Axios.get(ACT_API + "/public")
     }else {
-        return Axios.get(API_URL + "/activity/public/?id="+ id)
+        return Axios.get(ACT_API + "/public?id="+ id)
     }
 
 }
@@ -30,14 +30,14 @@ function getPublic(id =null){
 const uploadPic = (bodyFormData) => {
     return Axios({
         method: 'post',
-        url: API_URL + "/activity/picture",
+        url: ACT_API + "/picture",
         data: bodyFormData,
         headers: {'Content-Type': 'multipart/form-data'}
     })
 }
 
 const downloadPic = (picture) => {
-    return Axios.get(API_URL + "/activity/picture/?pic=" + picture)
+    return Axios.get(ACT_API + "/picture/?pic=" + picture)
 }
 
 // eslint-disable-next-line import/no-anonymous-default-export
