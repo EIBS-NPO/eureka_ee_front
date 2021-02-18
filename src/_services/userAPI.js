@@ -20,6 +20,12 @@ const checkRole = () => {
     return jwtData.roles[0]
 }
 
+const checkMail = () => {
+    const token = window.localStorage.getItem("authToken");
+    const jwtData = JwtDecode(token)
+    return jwtData.username
+}
+
 /*
 function checkLastName() {
     const token = window.localStorage.getItem("authToken");
@@ -45,6 +51,7 @@ function checkFirstName() {
 export default {
     register,
     checkRole,
+    checkMail,
     put,
     get
 };

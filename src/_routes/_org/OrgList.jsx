@@ -5,8 +5,9 @@ import AuthAPI from "../../_services/authAPI";
 import orgAPI from "../../_services/orgAPI";
 import fileAPI from "../../_services/fileAPI";
 import Organization from "../../_components/cards/organization";
-import {Divider, Item, Label, Loader, Segment} from "semantic-ui-react";
+import {Divider, Icon, Image, Item, Label, Loader, Segment} from "semantic-ui-react";
 import AuthContext from "../../_contexts/AuthContext";
+import {NavLink} from "react-router-dom";
 
 const OrgList = ( props ) => {
     const isAuth = useContext(AuthContext).isAuthenticated;
@@ -20,7 +21,7 @@ const OrgList = ( props ) => {
             return 'my';
         }
         else {
-            console.log(urlParams)
+            // console.log(urlParams)
             return 'public'
         }
     }
@@ -29,11 +30,10 @@ const OrgList = ( props ) => {
 
     const [loader, setLoader] = useState();
 
-    //todo modif back pour recup les image avec les org
-    //todo et pour leur en filer aussi
+    //todo charger les referent dans un tableau a part pour limiter les requetes doublons
+    //donc les object seriliser org du back ne doivent reoutourner que l'id des ref
     useEffect(() => {
         setLoader(true)
-        console.log(ctx())
         if(ctx() === 'my'){
             orgAPI.getMy()
                 .then(response => {
@@ -61,9 +61,37 @@ const OrgList = ( props ) => {
                 <>
                     {orgs && orgs.length > 0 &&
                         orgs.map((org, key )=> (
-                            <Segment key={key}>
-                                <Organization key={org.id} org={org} context={ctx()}/>
-                            </Segment>
+                        <>
+                            {ctx() === 'public' && org.referent &&
+                                <Label as='a' basic image>
+                                    {org.referent.picture ?
+                                        <Image size="small" src={`data:image/jpeg;base64,${org.referent.picture}`}
+                                               floated='left'/>
+                                        :
+                                        <Image size="small" src='https://react.semantic-ui.com/images/wireframe/image.png'
+                                               floated='left'/>
+                                    }
+                                    {org.referent.lastname + ' ' + org.referent.firstname}
+                                    <Label.Detail>{props.t('referent')}</Label.Detail>
+                                </Label>
+                            }
+
+                            {ctx() === "public" &&
+                            <Label as={NavLink} to={"/org/public_" + org.id} >
+                                <Icon name="eye"/> { props.t('details') }
+                            </Label>
+                            }
+                            {ctx() === "my" &&
+                            <Label as={NavLink} to={"/org/my_" + org.id} >
+                                <Icon name="eye"/> { props.t('details') }
+                            </Label>
+                            }
+
+
+                            <Organization key={org.id} org={org} />
+                            <Divider hidden />
+
+                        </>
                         ))
                         /*:
                         <p> {props.t('no_result')}</p>*/
