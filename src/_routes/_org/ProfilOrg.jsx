@@ -160,7 +160,7 @@ const ProfilOrg = ( props ) => {
                                         :
                                             <>
                                                 <Organization org={org} />
-                                                {isReferent() && !orgForm &&
+                                                {isAuth && isReferent() && !orgForm &&
                                                 <Button onClick={handleForm} fluid animated>
                                                     <Button.Content visible>
                                                         { props.t('edit') }
@@ -177,7 +177,7 @@ const ProfilOrg = ( props ) => {
                             }
 
                             {/*todo faire en sorte que les compo ne se charge qu'à la demande*/}
-                            {activeItem === 'membreship' &&
+                            {activeItem === 'membership' &&
                                 <Segment attached='bottom'>
                                     <Membership org={org} />
                                 </Segment>
