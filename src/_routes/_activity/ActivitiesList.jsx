@@ -1,9 +1,8 @@
 import React, { useEffect, useState, useContext } from 'react';
-import {Divider, Item, Loader, Segment} from 'semantic-ui-react'
+import { Loader, Segment } from 'semantic-ui-react'
 import { withTranslation } from 'react-i18next';
 import activityAPI from "../../_services/activityAPI";
 import activity from "../../_components/cards/activity";
-import userAPI from "../../_services/userAPI";
 import AuthContext from "../../_contexts/AuthContext";
 import Activity from "../../_components/cards/activity";
 
