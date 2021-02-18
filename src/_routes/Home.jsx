@@ -1,6 +1,5 @@
 import React from 'react';
 import utilities from "../_services/utilities";
-// the hoc
 import { withTranslation } from 'react-i18next';
 
 const Home = ({ t }) => {

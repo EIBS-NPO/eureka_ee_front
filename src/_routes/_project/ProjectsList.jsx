@@ -1,9 +1,8 @@
 import React, { useEffect, useState, useContext } from 'react';
-import {Divider, Item, Loader, Segment} from 'semantic-ui-react'
+import { Loader, Segment} from 'semantic-ui-react'
 import { withTranslation } from 'react-i18next';
 import projectAPI from "../../_services/projectAPI";
 import Project from "../../_components/cards/project";
-import userAPI from "../../_services/userAPI";
 import AuthContext from "../../_contexts/AuthContext";
 
 const ProjectsList = ( props ) => {

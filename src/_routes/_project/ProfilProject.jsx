@@ -1,17 +1,13 @@
 import React, {useContext, useEffect, useState} from 'react';
 import projectAPI from '../../_services/projectAPI';
-import Project from '../../_components/cards/project';
 import {
     Header, Item, Menu, Label, Loader, Segment, Icon, Grid, Form, TextArea, Button, Checkbox, Dropdown
 } from "semantic-ui-react";
 import {withTranslation} from "react-i18next";
-import {NavLink} from "react-router-dom";
 import PictureForm from "../../_components/forms/PictureForm";
 import utilities from "../../_services/utilities";
-import AuthAPI from "../../_services/authAPI";
 import AuthContext from "../../_contexts/AuthContext";
 import orgAPI from "../../_services/orgAPI";
-import UserAPI from "../../_services/userAPI";
 import Organization from "../../_components/cards/organization";
 
 /**

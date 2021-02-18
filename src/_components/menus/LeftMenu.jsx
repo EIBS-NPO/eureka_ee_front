@@ -1,5 +1,4 @@
 import React, {useContext, useEffect, useState} from 'react';
-import { NavLink } from "react-router-dom";
 import AuthAPI from "../../_services/authAPI";
 import AuthContext from "../../_contexts/AuthContext";
 import '../../scss/components/leftMenu.scss';
@@ -7,7 +6,7 @@ import AdminMenu from "./AdminMenu";
 import UserMenu from "./UserMenu";
 import AnoMenu from "./AnoMenu";
 
-const LeftMenu = ({history}) => {
+const LeftMenu = ( ) => {
     const isAuthenticated = useContext(AuthContext).isAuthenticated;
 
     const [isAdmin, setIsAdmin] = useState({})

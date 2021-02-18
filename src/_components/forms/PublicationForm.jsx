@@ -4,7 +4,7 @@ import { withTranslation } from 'react-i18next';
 import {Checkbox, Icon, Button, Item, Label, Form} from "semantic-ui-react";
 import { StepFormContext } from "../../_routes/_project/CreateProject";
 
-const PublicationForm = ({t, loader, errors, nextStep}) => {
+const PublicationForm = ({t, nextStep}) => {
 
     const { obj, setObj} = useContext(StepFormContext)
 

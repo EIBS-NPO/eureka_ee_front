@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
-import {NavLink} from "react-router-dom";
 import {Item, Icon, Label, Form, Button} from 'semantic-ui-react'
 import ImageUpload from "../Crop/ImageUpload";
-import fileAPI from "../../_services/fileAPI";
 import UserAPI from "../../_services/userAPI";
 
 const User = ({ t, user}) => {

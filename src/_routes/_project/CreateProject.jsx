@@ -1,4 +1,4 @@
-import React, {createContext, useContext, useEffect, useState} from "react";
+import React, {createContext, useContext, useState} from "react";
 import { withTranslation } from 'react-i18next';
 
 import AuthContext from "../../_contexts/AuthContext";

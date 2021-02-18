@@ -1,5 +1,5 @@
+
 import React from 'react';
-// the hoc
 import { withTranslation } from 'react-i18next';
 
 const Beweging = ({ t }) => {

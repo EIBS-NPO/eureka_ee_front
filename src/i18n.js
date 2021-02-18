@@ -7,7 +7,7 @@ import { initReactI18next } from "react-i18next";
 
 import en from './_locales/en/translation.json';
 import fr from './_locales/fr/translation.json';
-import nl from './_locales/nl/translation.json';
+import nl from './_locales/nl_BE/translation.json';
 
 i18n
     .use(detector)

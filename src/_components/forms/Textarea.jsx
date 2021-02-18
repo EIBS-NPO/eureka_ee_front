@@ -1,14 +1,5 @@
-import React from "react";
 
-// besoin : -name
-//           -label
-//          - value
-//           -onChange
-//          -placeholder
-//          -type
-//          -error
-//          -rows
-//          -cols
+import React from "react";
 
 const Textarea = ({
     name,
