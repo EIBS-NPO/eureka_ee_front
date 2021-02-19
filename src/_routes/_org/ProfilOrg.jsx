@@ -1,18 +1,22 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, {useEffect, useState, useContext, createContext} from 'react';
 import orgAPI from '../../_services/orgAPI';
 import Organization from "../../_components/cards/organization";
-import {Button, Divider, Form, Grid, Header, Icon, Image, Item, Label, Loader, Menu, Segment} from "semantic-ui-react";
+import {Button, Header, Icon, Image, Item, Label, Loader, Menu, Segment} from "semantic-ui-react";
 import {withTranslation} from "react-i18next";
 import AuthContext from "../../_contexts/AuthContext";
-import PictureForm from "../../_components/forms/PictureForm";
-import projectAPI from "../../_services/projectAPI";
+import OrgForm from "./OrgForm";
+import userAPI from "../../_services/userAPI";
+import Membership from "./Membership";
 
+export const OrgContext = createContext({
+    org:{ },
+    errors: { },
+})
+
+//todo afficher un bouton si referent pour update
+//todo si update clicquer afficher le compo orgForm sinon le compo organization
 const ProfilOrg = ( props ) => {
     const isAuth = useContext(AuthContext).isAuthenticated;
-
-    const [org, setOrg] = useState({})
-    const [picture, setPicture] = useState()
-    console.log(org)
 
     const urlParams = props.match.params.id.split('_')
 
@@ -23,6 +27,23 @@ const ProfilOrg = ( props ) => {
         }
         else {
             return urlParams[0]
+        }
+    }
+
+    const isReferent = () => {
+        return userAPI.checkMail() === org.referent.email
+    }
+
+    const [ org, setOrg ] = useState({})
+
+    const  [ orgForm, setOrgForm ]  = useState(false)
+
+    const handleForm = ( ) => {
+        if(orgForm === true){
+            setOrgForm(false)
+        }
+        else {
+            setOrgForm(true)
         }
     }
 
@@ -39,8 +60,6 @@ const ProfilOrg = ( props ) => {
             orgAPI.getMy(urlParams[1])
                 .then(response => {
                     console.log(response)
-                    if(response.data[0].picture){
-                        setPicture(response.data.picture)}
                     setOrg(response.data[0])
                 })
                 .catch(error => console.log(error.response))
@@ -56,217 +75,137 @@ const ProfilOrg = ( props ) => {
         }
     }, []);
 
-    const [errors, setErrors] = useState({
-        name:"",
-        type:"",
-        email:"",
-        phone:""
-    });
-
-    const handleChange = (event) => {
-        const { name, value } = event.currentTarget;
-        setOrg({ ...org, [name]: value })
-        console.log(name)
-        console.log(value)
-        console.log(org)
-    };
-
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-        setLoader(true);
-        //update User
-        orgAPI.put(org)
-            .then(response => {
-                console.log(response.data[0])
-                //     setOrg(response.data[0])
-                //  setErrors({});
-                //todo confirmation
-            })
-            .catch(error => {
-                setErrors(error.response.data.error)
-            })
-            .finally(()=> {
-                setLoader(false)
-            })
-    };
-
     return (
 
         <div className="card">
-            <h1>{ props.t('presentation') + ' : ' + props.t('organization') }</h1>
-            {!loader &&
-                <>
-                {org && org !== "DATA_NOT_FOUND" ?
+            <OrgContext.Provider
+                value={{
+                    org,
+                    setOrg,
+                    setOrgForm
+                }}
+            >
+
+                <h1>{ props.t('presentation') + ' : ' + props.t('organization') }</h1>
+                {!loader &&
                     <>
-                        {ctx() === 'public' &&
-                            org.referent &&
-                            <Label as='a' basic image>
-                                {org.referent.picture ?
-                                    <Image size="small" src={`data:image/jpeg;base64,${org.referent.picture}`}
-                                           floated='left'/>
-                                    :
-                                    <Image size="small" src='https://react.semantic-ui.com/images/wireframe/image.png'
-                                           floated='left'/>
-                                }
-                                {org.referent.lastname + ' ' + org.referent.firstname}
-                                <Label.Detail>{props.t('author')}</Label.Detail>
+                    {org && org !== "DATA_NOT_FOUND" ?
+                        <>
+                            {ctx() === 'public' &&
+                                org.referent &&
+                                <Label as='a' basic image>
+                                    {org.referent.picture ?
+                                        <Image size="small" src={`data:image/jpeg;base64,${org.referent.picture}`}
+                                               floated='left'/>
+                                        :
+                                        <Image size="small" src='https://react.semantic-ui.com/images/wireframe/image.png'
+                                               floated='left'/>
+                                    }
+                                    {org.referent.lastname + ' ' + org.referent.firstname}
+                                    <Label.Detail>{props.t('referent')}</Label.Detail>
+                                </Label>
+                            }
+
+                        <Segment vertical>
+                            <Label as="h2" attached='top'>
+                                { org.name }
                             </Label>
-                        }
 
-                    <Segment vertical>
-                        <Label as="h2" attached='top'>
-                            { org.name }
-                        </Label>
+                            <Menu attached='top' tabular>
+                                <Menu.Item
+                                    name='presentation'
+                                    active={activeItem === 'presentation'}
+                                    onClick={handleItemClick}
+                                >
+                                    <Header >
+                                        { props.t("presentation") }
+                                    </Header>
+                                </Menu.Item>
+                                <Menu.Item
+                                    name='membership'
+                                    active={activeItem === 'membership'}
+                                    onClick={handleItemClick}
+                                >
+                                    <Header >
+                                        { props.t("membership") }
+                                    </Header>
+                                </Menu.Item>
+                                <Menu.Item
+                                    name='projects'
+                                    active={activeItem === 'projects'}
+                                    onClick={handleItemClick}
+                                >
+                                    <Header >
+                                        { props.t("projects") }
+                                    </Header>
+                                </Menu.Item>
+                                <Menu.Item
+                                    name='activities'
+                                    active={activeItem === 'activities'}
+                                    onClick={handleItemClick}
+                                >
+                                    <Header >
+                                        { props.t("activities") }
+                                    </Header>
+                                </Menu.Item>
+                            </Menu>
 
-                        <Menu attached='top' tabular>
-                            <Menu.Item
-                                name='presentation'
-                                active={activeItem === 'presentation'}
-                                onClick={handleItemClick}
-                            >
-                                <Header >
-                                    { props.t("presentation") }
-                                </Header>
-                            </Menu.Item>
-                            <Menu.Item
-                                name='membreship'
-                                active={activeItem === props.t('membership')}
-                                onClick={handleItemClick}
-                            />
-                            <Menu.Item
-                                name='projects'
-                                active={activeItem === props.t('projects')}
-                                onClick={handleItemClick}
-                            />
-                            <Menu.Item
-                                name='activities'
-                                active={activeItem === props.t('activities')}
-                                onClick={handleItemClick}
-                            />
-                        </Menu>
 
-                        {activeItem === "presentation" &&
-                        <Segment attached='bottom'>
-                            <Item>
-                                <Grid columns={2}>
-                                    <Grid.Column>
-                                        <Segment>
-                                            {ctx() === "my" ?
-                                                <PictureForm picture={org.picture} entityType="org"
-                                                             entity={org}/>
-                                            :
-                                                <Item>
-                                                    {org.picture ?
-                                                    <Item.Image size="small"
-                                                                src={`data:image/jpeg;base64,${org.picture}`}/>
-                                                    :
-                                                        <Item.Image size="small"
-                                                                    src='https://react.semantic-ui.com/images/wireframe/square-image.png'/>
-                                                    }
-                                                </Item>
-                                            }
-                                        </Segment>
-                                    </Grid.Column>
 
-                                    <Grid.Column>
-                                        <Segment>
-                                            {ctx() === "my" &&
-                                            <Form onSubmit={handleSubmit}>
-                                                <Item.Group divided>
-                                                    <Item.Content>
-                                                        <Item.Header>{props.t('email')}</Item.Header>
-                                                        {loader ?
-                                                            <Form.Input
-                                                                type="email"
-                                                                disabled
-                                                                loading
-                                                            />
-                                                            :
-                                                            <Form.Input
-                                                                name="email"
-                                                                type="email"
-                                                                value={org.email}
-                                                                onChange={handleChange}
-                                                                placeholder="email..."
-                                                                error={errors.email ? errors.email : null}
-                                                                required
-                                                            />
-                                                        }
-                                                    </Item.Content>
-
-                                                    <Item.Content>
-                                                        <Item.Header>{props.t('phone')}</Item.Header>
-                                                        {loader ?
-                                                            <Form.Input
-                                                                type="phone"
-                                                                disabled
-                                                                loading
-                                                            />
-                                                            :
-                                                            <Form.Input
-                                                                name="phone"
-                                                                type="phone"
-                                                                value={org.phone}
-                                                                onChange={handleChange}
-                                                                placeholder="phone..."
-                                                                error={errors.phone ? errors.phone : null}
-                                                            />
-                                                        }
-                                                    </Item.Content>
-                                                </Item.Group>
-
-                                                <Button fluid animated >
-                                                    <Button.Content visible>{ props.t('save') } </Button.Content>
+                            {activeItem === "presentation" &&
+                                <Segment attached='bottom'>
+                                    <>
+                                        {orgForm ?
+                                            <OrgForm org={org} setForm={handleForm} />
+                                        :
+                                            <>
+                                                <Organization org={org} />
+                                                {isAuth && isReferent() && !orgForm &&
+                                                <Button onClick={handleForm} fluid animated>
+                                                    <Button.Content visible>
+                                                        { props.t('edit') }
+                                                    </Button.Content>
                                                     <Button.Content hidden>
-                                                        <Icon name='save' />
+                                                        <Icon name='edit'/>
                                                     </Button.Content>
                                                 </Button>
+                                                }
+                                            </>
+                                        }
+                                    </>
+                                </Segment>
+                            }
 
-                                            </Form>
-                                            }
-
-                                            {ctx() === "public" &&
-                                            <Item.Content>
-                                                <Item.Extra>
-                                                    <Label as="a" href={"mailto:" + org.email} icon='mail'
-                                                           content={org.email}/>
-                                                    {org.phone &&
-                                                    <>
-                                                        <Divider horizontal/>
-                                                        <Label icon='phone' content={org.phone}/>
-                                                    </>
-                                                    }
-                                                </Item.Extra>
-                                            </Item.Content>
-                                            }
-                                        </Segment>
-                                    </Grid.Column>
-                                </Grid>
-                            </Item>
+                            {/*todo faire en sorte que les compo ne se charge qu'à la demande*/}
+                            {activeItem === 'membership' &&
+                                <Segment attached='bottom'>
+                                    <Membership org={org} />
+                                </Segment>
+                            }
                         </Segment>
-                        }
-                    </Segment>
-                    </>
-                    :
-                    <Item>
-                        <Item.Content>
-                            { props.t("no_result") }
-                        </Item.Content>
-                    </Item>
-                }
-            </>
-            }
-            {loader &&
-            <Segment>
-                <Loader
-                    active
-                    content={
-                        <p>{props.t('loading') +" : " + props.t('presentation') }</p>
+                        </>
+                        :
+                        <Item>
+                            <Item.Content>
+                                { props.t("no_result") }
+                            </Item.Content>
+                        </Item>
                     }
-                    inline="centered"
-                />
-            </Segment>
-            }
+                </>
+                }
+                {loader &&
+                <Segment>
+                    <Loader
+                        active
+                        content={
+                            <p>{props.t('loading') +" : " + props.t('presentation') }</p>
+                        }
+                        inline="centered"
+                    />
+                </Segment>
+                }
+
+            </OrgContext.Provider>
         </div>
     );
 };

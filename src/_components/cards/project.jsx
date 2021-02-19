@@ -1,5 +1,5 @@
 import React from 'react';
-import {Icon, Image, Grid, Segment, Button, Item, Label, Form, Menu} from 'semantic-ui-react'
+import {Icon, Image, Grid, Segment, Item, Label } from 'semantic-ui-react'
 import '../../scss/components/cardOrg.scss';
 import { withTranslation } from 'react-i18next';
 import {NavLink} from "react-router-dom";

@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import {Image, Item, Label} from "semantic-ui-react";
 import ImageUpload from "../Crop/ImageUpload";
 
-const PictureForm = ({loader, entityType, entity}) => {
+const PictureForm = ({ entityType, entity}) => {
 
     const [picture, setPicture] = useState(entity.picture);
 

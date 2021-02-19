@@ -1,9 +1,7 @@
 
 import React, { useEffect, useState, useContext } from 'react';
 import userAPI from '../../_services/userAPI';
-import AuthAPI from "../../_services/authAPI";
 import AuthContext from "../../_contexts/AuthContext";
-import fileAPI from "../../_services/fileAPI";
 import {Loader, Grid, Segment, Item } from "semantic-ui-react";
 import PictureForm from "../../_components/forms/PictureForm";
 import ParamLoginForm from "../../_components/forms/user/ParamLoginForm";

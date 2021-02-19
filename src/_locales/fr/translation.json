@@ -22,6 +22,7 @@
 
 
   "presentation" : "Présentation",
+  "membership": "Membres",
   "no_result": "Aucun résultat",
   "loading": "Chargement",
 
@@ -29,8 +30,17 @@
   "no": "non",
   "save": "enregistrer",
   "edit": "editer",
+  "send": "envoyer",
+  "remove": "retirer",
+  "remove_confirm": "Retirer cet utilisateur de l'organisation ?",
+  "confirm": "confirmer",
+  "confirmation": "confirmation",
+  "errors": "Une erreure est survenue.",
+  "add_members" : "ajouter des membres",
 
   "no_def": "non défini",
+  "no_description": "aucune description",
+  "no_members": "auncun membre",
   "review": "vérifications",
   "name" : "nom",
   "title":  "titre",
@@ -61,6 +71,8 @@
   "file": "fichier",
 
   "OrgCreate_title": "Enregistrer votre organisation",
+  "choose_language_translation": "Choisissez le langage pour votre traduction",
+  "your_translation_here": "Votre traduction ici",
 
   "pre_beweging" : "Beweging.net rassemble un large réseau d’organisations sociales et des milliers de bénévoles. \nEnsemble, nous cherchons des solutions équitables aux défis sociaux. Nous agissons, nous montons des projets et nous essayons de changer les choses pour que tout le monde puisse vivre de manière décente et agreable. Nous le faisons en accordant une attention particulière aux personnes les plus vulnérables.  “”Beweging.net Flandre occidentale” a déjà de l’expérience dans la mise en place de nouveaux projets tels que le Fietsbieb (projet Leader) ou le projet liège (avec le soutien de la province de Flandre occidentale)."
 }

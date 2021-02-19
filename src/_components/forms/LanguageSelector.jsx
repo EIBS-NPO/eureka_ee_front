@@ -1,10 +1,13 @@
-import React, { useState }from 'react'
+import React from 'react'
 import { Dropdown } from 'semantic-ui-react'
 import { useTranslation } from 'react-i18next'
 
 const LanguageSelector = () => {
-    const {t, i18n} = useTranslation()
-    const [lg, setLg ] = useState();
+    const { t, i18n } = useTranslation()
+   /* console.log(i18n.languageCode)
+    console.log(t.language)*/
+//    console.log(i18n.options)
+ //   const [lg, setLg ] = useState();
 
     const countryOptions = [
         {key: 'en', value: 'en', flag: 'gb', text: ''},
@@ -14,7 +17,7 @@ const LanguageSelector = () => {
 
     const handleChange = (e, { value }) => {
         i18n.changeLanguage( value )
-        setLg(value)
+   //     setLg(value)
     }
 
     return (
@@ -24,7 +27,7 @@ const LanguageSelector = () => {
                 search
                 selection
                 options={countryOptions}
-                value={lg ? lg : "en"}
+                value={i18n.language}
                 onChange={handleChange}
             />
     )

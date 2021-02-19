@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react';
 import activityAPI from '../../_services/activityAPI';
-import {Button, Checkbox, Divider, Form, Grid, Header, Icon, Image, Item, Label, Loader, Menu, Segment, TextArea
+import {Button, Checkbox, Form, Grid, Header, Icon, Image, Item, Label, Loader, Menu, Segment, TextArea
 } from "semantic-ui-react";
 import {withTranslation} from "react-i18next";
 import AuthContext from "../../_contexts/AuthContext";

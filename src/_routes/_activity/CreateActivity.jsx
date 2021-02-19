@@ -1,6 +1,5 @@
 import React, { useContext, useState } from "react";
 import { withTranslation } from 'react-i18next';
-import OrgAPI from "../../_services/orgAPI";
 import AuthContext from "../../_contexts/AuthContext";
 import {Button, Checkbox, Form, Icon, Item, Label, TextArea} from "semantic-ui-react";
 import AuthAPI from "../../_services/authAPI";
