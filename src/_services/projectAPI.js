@@ -22,9 +22,11 @@ function put(project) {
 }
 
 function get(context, id = null){
-    let params = "?context="+ context
+    let params = "?ctx="+ context
+    console.log(params)
     if(id !== null){
            params += "&id="+ id
+        console.log(params)
     }
     return Axios.get(PROJECT_API + params)
 }

@@ -5,6 +5,7 @@ import activityAPI from "../../_services/activityAPI";
 import activity from "../../_components/cards/activity";
 import AuthContext from "../../_contexts/AuthContext";
 import Activity from "../../_components/cards/activity";
+import Card from "../../_components/Card";
 
 const ActivitiesList = ( props ) => {
     const isAuth = useContext(AuthContext).isAuthenticated;
@@ -60,11 +61,11 @@ const ActivitiesList = ( props ) => {
             {!loader &&
             <>
                 {activities && activities.length > 0 &&
-                activities.map((p, key) => (
-                    <Segment key={key}>
-                        <Activity activity={p} context={ctx()} />
-                    </Segment>
-                ))
+                    activities.map( activity => (
+                        <Segment raised>
+                            <Card key={activity.id} obj={activity} type="activity" isLink={true} />
+                        </Segment>
+                    ))
                 }
             </>
             }

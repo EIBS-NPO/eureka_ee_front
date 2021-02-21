@@ -1,12 +1,13 @@
 import React, {useEffect, useState, useContext, createContext} from 'react';
 import orgAPI from '../../_services/orgAPI';
 import Organization from "../../_components/cards/organization";
-import {Button, Header, Icon, Image, Item, Label, Loader, Menu, Segment} from "semantic-ui-react";
+import {Container, Button, Header, Icon, Image, Item, Label, Loader, Menu, Segment} from "semantic-ui-react";
 import {withTranslation} from "react-i18next";
 import AuthContext from "../../_contexts/AuthContext";
 import OrgForm from "./OrgForm";
 import userAPI from "../../_services/userAPI";
 import Membership from "./Membership";
+import Card from "../../_components/Card";
 
 export const OrgContext = createContext({
     org:{ },
@@ -15,7 +16,7 @@ export const OrgContext = createContext({
 
 //todo afficher un bouton si referent pour update
 //todo si update clicquer afficher le compo orgForm sinon le compo organization
-const ProfilOrg = ( props ) => {
+const OrgProfile = (props ) => {
     const isAuth = useContext(AuthContext).isAuthenticated;
 
     const urlParams = props.match.params.id.split('_')
@@ -85,13 +86,16 @@ const ProfilOrg = ( props ) => {
                     setOrgForm
                 }}
             >
-
-                <h1>{ props.t('presentation') + ' : ' + props.t('organization') }</h1>
                 {!loader &&
                     <>
                     {org && org !== "DATA_NOT_FOUND" ?
                         <>
-                            {ctx() === 'public' &&
+                            <Container textAlign="center">
+                                <h1>{ org.name }</h1>
+                                <span> { org.type } </span>
+                            </Container>
+
+                            {/*{ctx() === 'public' &&
                                 org.referent &&
                                 <Label as='a' basic image>
                                     {org.referent.picture ?
@@ -104,13 +108,9 @@ const ProfilOrg = ( props ) => {
                                     {org.referent.lastname + ' ' + org.referent.firstname}
                                     <Label.Detail>{props.t('referent')}</Label.Detail>
                                 </Label>
-                            }
+                            }*/}
 
                         <Segment vertical>
-                            <Label as="h2" attached='top'>
-                                { org.name }
-                            </Label>
-
                             <Menu attached='top' tabular>
                                 <Menu.Item
                                     name='presentation'
@@ -153,27 +153,28 @@ const ProfilOrg = ( props ) => {
 
 
                             {activeItem === "presentation" &&
-                                <Segment attached='bottom'>
-                                    <>
-                                        {orgForm ?
-                                            <OrgForm org={org} setForm={handleForm} />
-                                        :
-                                            <>
-                                                <Organization org={org} />
-                                                {isAuth && isReferent() && !orgForm &&
-                                                <Button onClick={handleForm} fluid animated>
-                                                    <Button.Content visible>
-                                                        { props.t('edit') }
-                                                    </Button.Content>
-                                                    <Button.Content hidden>
-                                                        <Icon name='edit'/>
-                                                    </Button.Content>
-                                                </Button>
-                                                }
-                                            </>
-                                        }
-                                    </>
-                                </Segment>
+                            <Segment attached='bottom'>
+                                <>
+                                    {orgForm ?
+                                        <OrgForm org={org} setForm={handleForm} />
+                                    :
+                                        <>
+                                            {/*<Organization org={org} />*/}
+                                            <Card obj={org} type="org" profile={true} />
+                                            {isAuth && isReferent() && !orgForm &&
+                                            <Button onClick={handleForm} fluid animated>
+                                                <Button.Content visible>
+                                                    { props.t('edit') }
+                                                </Button.Content>
+                                                <Button.Content hidden>
+                                                    <Icon name='edit'/>
+                                                </Button.Content>
+                                            </Button>
+                                            }
+                                        </>
+                                    }
+                                </>
+                            </Segment>
                             }
 
                             {/*todo faire en sorte que les compo ne se charge qu'à la demande*/}
@@ -210,4 +211,4 @@ const ProfilOrg = ( props ) => {
     );
 };
 
-export default withTranslation()(ProfilOrg);
+export default withTranslation()(OrgProfile);

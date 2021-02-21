@@ -1,5 +1,5 @@
 
-import React, { useState }from 'react'
+import React, { useState } from 'react'
 import {Form, Dropdown, Item, Menu} from 'semantic-ui-react'
 import { useTranslation } from 'react-i18next'
 
@@ -30,6 +30,13 @@ const TextAreaMultilang = ({ tabText, setter }) => {
         setLg(value)
     }
 
+    /*const controlArea = () => {
+        let isOk = true
+        tabText.forEach(t => {
+            if(t === ""){ isOk += isOk + false}
+        })
+    }*/
+
     return (
         <>
             <Item>
@@ -56,6 +63,7 @@ const TextAreaMultilang = ({ tabText, setter }) => {
                     value={getText()}
                     onChange={handleText}
                     placeholder={ t('your_translation_here')}
+
                 />
             </Item>
         </>

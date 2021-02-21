@@ -4,6 +4,7 @@ import { withTranslation } from 'react-i18next';
 import projectAPI from "../../_services/projectAPI";
 import Project from "../../_components/cards/project";
 import AuthContext from "../../_contexts/AuthContext";
+import Card from "../../_components/Card";
 
 const ProjectsList = ( props ) => {
     const isAuth = useContext(AuthContext).isAuthenticated;
@@ -28,23 +29,26 @@ const ProjectsList = ( props ) => {
 
     useEffect(() => {
         setLoader(true)
-            if (ctx() !== 'public') {
-                projectAPI.get(ctx())
-                    .then(response => {
-                        console.log(response)
-                        setProjects(response.data)
-                    })
-                    .catch(error => console.log(error.response))
-                    .finally(() => setLoader(false))
-            } else {
-                projectAPI.getPublic()
-                    .then(response => {
-                        console.log(response)
-                        setProjects(response.data)
-                    })
-                    .catch(error => console.log(error.response))
-                    .finally(() => setLoader(false))
-            }
+        console.log(ctx())
+        if (ctx() !== 'public') {
+            console.log('ta mere')
+            projectAPI.get(ctx())
+                .then(response => {
+                    console.log(response)
+                    setProjects(response.data)
+                })
+                .catch(error => console.log(error.response))
+                .finally(() => setLoader(false))
+        } else {
+            console.log('ta meeeeeeere')
+            projectAPI.getPublic()
+                .then(response => {
+                    console.log(response)
+                    setProjects(response.data)
+                })
+                .catch(error => console.log(error.response))
+                .finally(() => setLoader(false))
+        }
     }, [urlParams]);
 
     return (
@@ -58,9 +62,9 @@ const ProjectsList = ( props ) => {
             {!loader &&
                 <>
                 {projects && projects.length > 0 &&
-                    projects.map((p, key) => (
-                        <Segment key={key}>
-                            <Project project={p} context={ctx()} />
+                    projects.map( project  => (
+                        <Segment raised>
+                            <Card key={project.id} obj={project} type="project" isLink={true} />
                         </Segment>
                     ))
                 }

@@ -3,8 +3,6 @@ import React, { Suspense, lazy, useState } from 'react';
 import { BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 import 'semantic-ui-css/semantic.min.css'
 import { Loader } from "semantic-ui-react";
-
-/*import eureka_logo from "./_resources/logos/eureka_logo.png"*/
 import interreg_logo from "./_resources/logos/Interreg.jpg"
 
 import AuthAPI from "./_services/authAPI";
@@ -14,6 +12,9 @@ import LeftMenu from "./_components/menus/LeftMenu";
 import Footer from "./_components/footer/Footer";
 
 import PrivateRoute from "./_components/PrivateRoute";
+
+
+/*const ProfilePage = lazy(() => import("./_routes/ProfilePage"));*/
 
 
 const Home = lazy(() => import('./_routes/Home'));
@@ -26,9 +27,9 @@ const CreateProject = lazy(() => import('./_routes/_project/CreateProject'));
 const CreateActivity = lazy(() => import('./_routes/_activity/CreateActivity'));
 
 const ProfilUser = lazy(() => import('./_routes/_user/ProfilUser'));
-const ProfilOrg = lazy(() => import('./_routes/_org/ProfilOrg'));
+const ProfilOrg = lazy(() => import('./_routes/_org/OrgProfile'));
 const ProfilProject = lazy(() => import('./_routes/_project/ProfilProject'));
-const ProfilActivity = lazy(() => import('./_routes/_activity/ProfilActivity'));
+const ProfilActivity = lazy(() => import('./_routes/_activity/ActivityProfil'));
 
 //todo UserList
 const OrgList = lazy(() => import('./_routes/_org/OrgList'));
@@ -80,6 +81,8 @@ const Beweging = lazy(() => import('./_routes/_partners/beweging'));
               <Route path="/org/:id" component={ProfilOrg}/>
               <Route path="/project/:id" component={ProfilProject}/>
               <Route path="/activity/:id" component={ProfilActivity}/>
+
+              {/*<Route path="/profile/:id" component={ProfilePage} />*/}
 
               <Route path="/about" component={About}/>
 

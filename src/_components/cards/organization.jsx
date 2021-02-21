@@ -3,8 +3,9 @@ import React from 'react';
 import '../../scss/components/cardOrg.scss';
 import {useTranslation, withTranslation} from 'react-i18next';
 import { Divider, Grid, Item, Label, Segment} from "semantic-ui-react";
+import Picture from "../Picture";
 
-const Organization = ({ org }) => {
+const Organization = ({ org, isLink=false }) => {
 
     const {t,  i18n } = useTranslation()
 
@@ -19,49 +20,66 @@ const Organization = ({ org }) => {
                             </Label.Detail>
                         </Label>
 
-                        <Item>
-                            <Grid columns={3}>
-                                <Grid.Column>
-                                    <Item>
-                                        {org.picture ?
-                                            <Item.Image size="small"
-                                                        src={`data:image/jpeg;base64,${org.picture}`}/>
+                        <Item.Group link={isLink}>
+                            <Item>
+                                <Picture size="small" picture={org.picture} />
+
+                                <Item.Content
+                                    header= { t('description') }
+                                    description={
+                                        org.description && org.description[i18n.language] ?
+                                            org.description[i18n.language]
                                             :
-                                            <Item.Image size="small"
-                                                        src='https://react.semantic-ui.com/images/wireframe/square-image.png'/>
+                                            t('no_description')
                                         }
-                                    </Item>
-                                </Grid.Column>
+                                />
 
-                                <Grid.Column>
-                                    <Item.Content>
-                                        <Item.Description>
-                                            {org.description && org.description[i18n.language] ?
-                                                <p> {org.description[i18n.language]} </p>
-                                                :
-                                                <p> {t('no_description')} </p>
+                                {/*<Item.Content>
+                                    <Item.Description
+                                        content={
+                                            org.description && org.description[i18n.language] ?
+                                                org.description[i18n.language]
+                                            :
+                                                t('no_description')
+                                        }
+                                    />
 
-                                            }
-                                        </Item.Description>
-                                    </Item.Content>
-                                </Grid.Column>
+                                </Item.Content>*/}
 
-                                <Grid.Column>
-                                    <Item.Content>
-                                        <Item.Extra>
-                                            <Label as="a" href={"mailto:" + org.email} icon='mail'
-                                                   content={org.email}/>
-                                            {org.phone &&
-                                            <>
-                                                <Divider hidden/>
-                                                <Label icon='phone' content={org.phone}/>
-                                            </>
-                                            }
-                                        </Item.Extra>
-                                    </Item.Content>
-                                </Grid.Column>
-                            </Grid>
-                        </Item>
+                                <Item.Content>
+                                    <Item.Extra>
+                                        <Label as="a" href={"mailto:" + org.email} icon='mail'
+                                               content={org.email}/>
+                                        {org.phone &&
+                                        <>
+                                            <Divider hidden/>
+                                            <Label icon='phone' content={org.phone}/>
+                                        </>
+                                        }
+                                    </Item.Extra>
+                                </Item.Content>
+
+                            </Item>
+                        </Item.Group>
+
+                        <Item.Group>
+                            <Item.Meta>
+                                {org.startDate &&
+                                <Label basic>
+                                    {t('startDate')}
+                                    <Label.Detail>{org.startDate}</Label.Detail>
+                                </Label>
+                                }
+
+                                {org.endDate &&
+                                <Label basic >
+                                    {t('endDate')}
+                                    <Label.Detail>{org.endDate}</Label.Detail>
+                                </Label>
+                                }
+                            </Item.Meta>
+                        </Item.Group>
+
 
                     </Segment>
 

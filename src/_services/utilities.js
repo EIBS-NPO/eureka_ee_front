@@ -12,6 +12,9 @@ export function clone(a) {
     return JSON.parse(JSON.stringify(a));
 }
 
+export function octetsToKilos($octets){
+    return Math.round(($octets * 0.000977)*100)/100
+}
 
 ///date
 export function getCurrentDate(){
@@ -55,6 +58,7 @@ export default {
     getCurrentDate,
     addDaysToDate,
     removeDaysToDate,
+    octetsToKilos,
     getTimestamp,
     clone
 };

@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import {Image, Item, Label} from "semantic-ui-react";
-import ImageUpload from "../Crop/ImageUpload";
+import ImageUpload from "../upload/ImageUpload";
 
 const PictureForm = ({ entityType, entity}) => {
 

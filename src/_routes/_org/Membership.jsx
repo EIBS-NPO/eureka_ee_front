@@ -1,12 +1,13 @@
 import React, {useContext, useState, useEffect } from 'react';
-import {Message, Label, Segment, Button, Form, Icon } from "semantic-ui-react";
+import { Divider, Message, Label, Segment, Button, Form, Icon } from "semantic-ui-react";
 import {useTranslation, withTranslation} from "react-i18next";
 import userAPI from "../../_services/userAPI";
 import AuthContext from "../../_contexts/AuthContext";
 import memberAPI from "../../_services/memberAPI";
 import User from "../../_components/cards/user";
 import Modal from "../../_components/Modal";
-import ImageCropper from "../../_components/Crop/ImageCropper";
+import ImageCropper from "../../_components/upload/ImageCropper";
+import Card from "../../_components/Card";
 
 //todo afficher un bouton si referent pour update
 //todo si update clicquer afficher le compo orgForm sinon le compo organization
@@ -143,18 +144,21 @@ const Membership = ( props ) => {
                 <>
                     {members && members.length > 0 &&
                         members.map( (m, key) => (
-                            <Segment key={key}>
-                                <User user={m} />
+                            <>
+                                <Card obj={m} type="user" isLink={true} />
 
                                 {isAuth && isReferent() &&
+                                    <>
                                     <Button animated onClick={() => showModal(m)}>
                                         <Button.Content visible>{t('remove')} </Button.Content>
                                         <Button.Content hidden>
                                             <Icon name='remove user'/>
                                         </Button.Content>
                                     </Button>
+                                        <Divider section />
+                                    </>
                                 }
-                            </Segment>
+                            </>
                         ))
                     }
 

@@ -8,12 +8,15 @@ import Organization from "../../_components/cards/organization";
 import {Divider, Icon, Image, Item, Label, Loader, Segment} from "semantic-ui-react";
 import AuthContext from "../../_contexts/AuthContext";
 import {NavLink} from "react-router-dom";
+import Card from "../../_components/Card";
 
 const OrgList = ( props ) => {
     const isAuth = useContext(AuthContext).isAuthenticated;
     //const [ctx, setCtx] = useState(props.match.params.ctx)
 
     const urlParams = props.match.params.ctx
+
+    const [owners, setOwners] = useState([])
 
     const ctx = () => {
         if (urlParams ==="my" && isAuth) {
@@ -53,6 +56,14 @@ const OrgList = ( props ) => {
         }
     }, [urlParams]);
 
+    /*useEffect(() => {
+        orgs.forEach(org => {
+            if(owners.find( o => o.id === org.referent.id) === undefined){
+                setOwners({...owners, org.referent})
+            }
+        })
+    },[orgs])*/
+
     return (
         <div className="card">
             { ctx() === 'my' && <h1>{ props.t('my_org') }</h1> }
@@ -60,41 +71,11 @@ const OrgList = ( props ) => {
             {!loader &&
                 <>
                     {orgs && orgs.length > 0 &&
-                        orgs.map((org, key )=> (
-                        <>
-                            {ctx() === 'public' && org.referent &&
-                                <Label as='a' basic image>
-                                    {org.referent.picture ?
-                                        <Image size="small" src={`data:image/jpeg;base64,${org.referent.picture}`}
-                                               floated='left'/>
-                                        :
-                                        <Image size="small" src='https://react.semantic-ui.com/images/wireframe/image.png'
-                                               floated='left'/>
-                                    }
-                                    {org.referent.lastname + ' ' + org.referent.firstname}
-                                    <Label.Detail>{props.t('referent')}</Label.Detail>
-                                </Label>
-                            }
-
-                            {ctx() === "public" &&
-                            <Label as={NavLink} to={"/org/public_" + org.id} >
-                                <Icon name="eye"/> { props.t('details') }
-                            </Label>
-                            }
-                            {ctx() === "my" &&
-                            <Label as={NavLink} to={"/org/my_" + org.id} >
-                                <Icon name="eye"/> { props.t('details') }
-                            </Label>
-                            }
-
-
-                            <Organization key={org.id} org={org} />
-                            <Divider hidden />
-
-                        </>
+                        orgs.map(org => (
+                            <Segment raised>
+                                <Card key={org.id} obj={org} type="org" isLink={true} />
+                            </Segment>
                         ))
-                        /*:
-                        <p> {props.t('no_result')}</p>*/
                     }
                 </>
             }
