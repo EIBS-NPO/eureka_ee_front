@@ -37,9 +37,6 @@ const OrgForm = ( props ) => {
     const handleChange = (event) => {
         const { name, value } = event.currentTarget;
         setUpdateOrg({ ...updateOrg, [name]: value })
-        console.log(name)
-        console.log(value)
-        console.log(org)
     };
 
     const preSubmit = (event) => {
@@ -50,7 +47,7 @@ const OrgForm = ( props ) => {
         if(updateOrg.type){org.type = updateOrg.type}
         if(updateOrg.phone){org.phone = updateOrg.phone}
         if(updateOrg.email){org.nemail= updateOrg.email}
-        console.log(props.org)
+        console.log(org)
         handleSubmit()
     }
 
@@ -61,14 +58,15 @@ const OrgForm = ( props ) => {
 
     const handleSubmit = () => {
         setLoader(true);
-        orgAPI.put(props.org)
+        orgAPI.put( org )
             .then(response => {
                 console.log(response.data[0])
                 props.setForm(false)
                 //todo confirmation
             })
             .catch(error => {
-                setErrors(error.response.data.error)
+                console.log(error)
+                setErrors(error.response)
             })
             .finally(()=> {
                 setLoader(false)
@@ -77,7 +75,6 @@ const OrgForm = ( props ) => {
 
     return (
         <>
-            <h1>{ props.t('presentation') + ' : ' + props.t('organization') }</h1>
             <Segment>
                 <PictureForm picture={org.picture} entityType="org" entity={org}/>
             </Segment>

@@ -70,21 +70,6 @@ const CreateActivity = ({ history, t }) => {
                     required
                 />
                 <TextArea
-                    /*icon='tag'*/
-                    iconPosition='left'
-
-                    label={ t("description") }
-                    name="description"
-                    type="textarea"
-                    minLength="2"
-                    maxLength="250"
-                    value={activity.type}
-                    onChange={handleChange}
-                    placeholder={ t("description") + "..."}
-                    error={errors.type ? errors.type : null}
-                    required
-                />
-                <TextArea
                     /*icon='email'*/
                     iconPosition='left'
 

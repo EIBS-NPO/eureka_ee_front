@@ -16,7 +16,8 @@ const ImageUpload = ({ refresh, setRefresh, type, entity, parentCallBack }) => {
     const onInputChange = (e) => {
         // convert image file to base64 string
         const file = e.target.files[0]
-        const reader = new FileReader()
+        //todo if noworking i've changing const reader for let reader
+        let reader = new FileReader()
 
         reader.addEventListener('load', () => {
             setInputImg(reader.result)
@@ -31,7 +32,7 @@ const ImageUpload = ({ refresh, setRefresh, type, entity, parentCallBack }) => {
     const handleSubmitImage = (e) => {
         // upload blob to firebase 'images' folder with filename 'image'
         e.preventDefault()
-        var bodyFormData = new FormData();
+        let bodyFormData = new FormData();
         bodyFormData.append('image', blob)
 
         if(type !== "user"){

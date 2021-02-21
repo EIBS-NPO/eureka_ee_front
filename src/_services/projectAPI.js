@@ -22,18 +22,21 @@ function put(project) {
 }
 
 function get(context, id = null){
-    let params = "?context="+ context
+    let params = "?ctx="+ context
+    console.log(params)
     if(id !== null){
            params += "&id="+ id
+        console.log(params)
     }
-    return Axios.get(API_URL + "/project/" + params)
+    console.log(params)
+    return Axios.get(API_URL + "/project" + params)
 }
 
 function getPublic(id =null){
     if(id === null ){
         return Axios.get(API_URL + "/project/public")
     }else {
-        return Axios.get(API_URL + "/project/public/?id="+ id)
+        return Axios.get(API_URL + "/project/public?id="+ id)
     }
 
 }

@@ -11,7 +11,7 @@ function put(activity) {
 }
 
 function get(context, id = null){
-    let params = "?context="+ context
+    let params = "?cxt="+ context
     if(id !== null){
         params += "&id="+ id
     }

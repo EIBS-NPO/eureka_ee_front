@@ -3,6 +3,7 @@ import {Icon, Image, Grid, Segment, Item, Label } from 'semantic-ui-react'
 import '../../scss/components/cardOrg.scss';
 import { withTranslation } from 'react-i18next';
 import {NavLink} from "react-router-dom";
+import Picture from "../Picture";
 
 const Activity = ({ t, activity, context }) => {
 
@@ -76,17 +77,18 @@ const Activity = ({ t, activity, context }) => {
                     <Item.Content>
                         <Grid columns={2}>
                             <Grid.Column>
-                                {context !== "create" && activity.picture ?
+                                {/*{context !== "create" && activity.picture ?
                                     <Item.Image size="small" src={`data:image/jpeg;base64,${activity.picture}`} />
                                     :
                                     <Item.Image size="small"
                                                 src='https://react.semantic-ui.com/images/wireframe/square-image.png'/>
-                                }
+                                }*/}
+                                <Picture size="small" picture={activity.picture} />
                             </Grid.Column>
 
                             <Grid.Column>
                                 <Item.Description attached='right'>
-                                    <p>{activity.description}</p>
+                                    <p>{activity.summary}</p>
                                 </Item.Description>
                             </Grid.Column>
                             {/*<Item.Meta>
