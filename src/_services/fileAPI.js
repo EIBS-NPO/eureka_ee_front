@@ -10,9 +10,6 @@ const uploadPic = (entityName, bodyFormData) => {
     })
 }
 
-/*
-//todo maybe change route to match with backEnd
- */
 const postFile = ( bodyFormData ) => {
     return Axios({
         method: 'post',
@@ -42,29 +39,15 @@ console.log(url)
     return Axios.get(API_URL + url, {responseType: 'arraybuffer'})
 }
 
-/*function urlDownloadPublic ( url ) {
-    //"/file/download/public?id=" +id
-    return Axios.get(API_URL + url)
+const remove = (id) => {
+    return Axios.delete(API_URL + "/file?id=" +id)
 }
-
-function urlDownload (url) {
-    //"/file/download?id=" +id
-    return Axios.get(API_URL + url)
-   // return "API_URL + /file/download?id=" +id
-}*/
-
-/*const downloadPublicFile = (id){
-    return Axios.get(API_URL + "/file/download/public?id=" + id)
-}*/
-/*const downloadPic = (entity, picture) => {
-    return Axios.get(API_URL + "/" + entity + "/picture/?pic=" + picture)
-}*/
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
     uploadPic,
     postFile,
     putFile,
-    download
-  //  downloadPic
+    download,
+    remove
 }

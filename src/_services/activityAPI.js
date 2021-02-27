@@ -28,7 +28,7 @@ function getPublic(id =null){
 
 }
 
-const uploadPic = (bodyFormData) => {
+function uploadPic(bodyFormData) {
     return Axios({
         method: 'post',
         url: ACT_API + "/picture",
@@ -37,8 +37,12 @@ const uploadPic = (bodyFormData) => {
     })
 }
 
-const downloadPic = (picture) => {
+function downloadPic(picture) {
     return Axios.get(ACT_API + "/picture/?pic=" + picture)
+}
+
+function remove(id) {
+    return Axios.delete(ACT_API + "?id=" + id)
 }
 
 // eslint-disable-next-line import/no-anonymous-default-export
@@ -47,6 +51,6 @@ export default {
     put,
     get,
     getPublic,
-    uploadPic,
-    downloadPic
+    downloadPic,
+    remove
 };

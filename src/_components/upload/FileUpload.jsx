@@ -1,10 +1,8 @@
 
-import React, {useContext, useState} from 'react';
-import { Message, Item, Button, Form, Icon, Loader, Segment, Header} from "semantic-ui-react";
+import React, { useState } from 'react';
+import { Message, Item, Button, Form, Icon, Loader } from "semantic-ui-react";
 import fileAPI from "../../_services/fileAPI";
 import {useTranslation, withTranslation} from "react-i18next";
-import utilities from "../../_services/utilities";
-import AuthContext from "../../_contexts/AuthContext";
 import authAPI from "../../_services/authAPI";
 
 //todo config jpa sur type mime accepté par le button
@@ -24,8 +22,6 @@ const FileUpload = ( { history, activity, setter} ) => {
 
     const { t } = useTranslation()
 
- //   console.log(activity)
-
     const [activityFile, setActivityFile] = useState()
     const [file, setFile] = useState()
     const [loader, setLoader] = useState(false)
@@ -37,7 +33,6 @@ const FileUpload = ( { history, activity, setter} ) => {
         //todo sert a quetchy
         reader.addEventListener('load', () => {
             setActivityFile(reader.result)
-        //    console.log(activityFile);
         }, false)
 
         if (file) {
@@ -46,17 +41,11 @@ const FileUpload = ( { history, activity, setter} ) => {
     }
 
     const [error, setError] = useState()
- //   console.log(error)
-
-    /*const redirectToNewActivity = (id) => {
-       return <Redirect to={"/activity/creator_" + id}/>
-    }*/
 
     const handleSubmitFile = (event) => {
         event.preventDefault()
         setLoader(true)
         let bodyFormData = new FormData();
-        console.log(file);
         bodyFormData.append('file', file)
         bodyFormData.append('id', activity.id)
 
@@ -68,11 +57,6 @@ const FileUpload = ( { history, activity, setter} ) => {
                 setter(response.data[0])
             })
             .catch(error => {
-                //handle error
-                console.log(error.response)
-                console.log(error.response.data)
-                console.log(error.response.status)
-                console.log(error.response.statusText)
                 setError(error.response)
             })
             .finally(() => setLoader(false))
@@ -92,6 +76,19 @@ const FileUpload = ( { history, activity, setter} ) => {
                 .finally(() => setLoader(false))
         }
 
+    }
+
+    const handleDelete = () => {
+        setLoader(true)
+        fileAPI.remove(activity.id)
+            .then(response => {
+                console.log(response)
+                setter(response.data[0])
+            })
+            .catch(error => {
+                console.log(error)
+            })
+            .finally(() => setLoader(false))
     }
 
     return (
@@ -146,6 +143,17 @@ const FileUpload = ( { history, activity, setter} ) => {
                             </Button.Content>
                         </Button>
                     </Form>
+
+                    {activity.fileType &&
+                        <Form onSubmit={handleDelete}>
+                            <Button fluid animated >
+                                <Button.Content visible>{ t('delete') } </Button.Content>
+                                <Button.Content hidden>
+                                    <Icon name='delete' />
+                                </Button.Content>
+                            </Button>
+                        </Form>
+                    }
                 </Item>
             }
     </>

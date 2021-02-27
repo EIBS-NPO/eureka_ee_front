@@ -166,7 +166,7 @@ const ActivityProfile = ( props ) => {
                             <Segment attached='bottom' >
                                 <>
                                     {activityForm ?
-                                        <ActivityForm activity={activity} setActivity={setActivity} setForm={handleForm}/>
+                                        <ActivityForm history={props.history} activity={activity} setActivity={setActivity} setForm={handleForm}/>
                                         :
                                         <>
                                             <Segment.Group horizontal>

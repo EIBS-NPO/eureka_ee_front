@@ -15,6 +15,7 @@ const ActivitiesList = ( props ) => {
     if ( urlParams[0] !=="public" ) {
         authAPI.setup();
     }
+    console.log(urlParams[0])
 
     const ctx = () => {
         if (urlParams !=="public" && isAuth === false) {
