@@ -1,70 +1,105 @@
 
-import React, { useState } from 'react'
-import {Form, Dropdown, Item, Menu} from 'semantic-ui-react'
+import React, { useState, useEffect } from 'react'
+import {Message, Icon, Container, Label, Form, Item, Flag} from 'semantic-ui-react'
 import { useTranslation } from 'react-i18next'
 
-//todo ou en parmas ou en context, mais il faut l=que le champs text modifie bine l'attribut de l'objet géré par le form
-const TextAreaMultilang = ({ tabText, setter }) => {
+//todo ou en-GB parmas ou en-GB context, mais il faut l=que le champs text modifie bine l'attribut de l'objet géré par le form
+/**
+ *
+ * @param tabText
+ * @param setter
+ * @param name
+ * @param min
+ * @param max
+ * @returns {JSX.Element}
+ * @constructor
+ */
+const TextAreaMultilang = ({ tabText, setter, name, min, max }) => {
     const {t,  i18n } = useTranslation()
-    const [lg, setLg ] = useState(i18n.language)
+    const [lg, setLg ] = useState(i18n.language.split('-')[0])
 
     const handleText = ( event ) => {
         const { value } = event.currentTarget;
         setter({...tabText, [lg]: value})
     }
 
-    const getText = () => {
-        if(tabText[lg]){
-            return  tabText[lg]
+    const getText = (l) => {
+        if(tabText[l]){
+            return  tabText[l]
         }
         else return ""
     }
+    console.log(tabText)
 
-    const countryOptions = [
+    const LangOptions = [
         {key: 'en', value: 'en', flag: 'gb', text: ''},
         {key: 'fr', value: 'fr', flag: 'fr', text: ''},
         {key: 'nl', value: 'nl', flag: 'nl', text: ''},
     ]
 
-    const handleLanguage = (e, { value }) => {
+    const handleLanguage = ( e, value  ) => {
+        e.preventDefault()
         setLg(value)
     }
 
-    /*const controlArea = () => {
-        let isOk = true
-        tabText.forEach(t => {
-            if(t === ""){ isOk += isOk + false}
-        })
-    }*/
+    const MenuFlag = () => {
 
+        return (
+            LangOptions.map((opt,key ) => (
+                <Label key={key}
+                       as='a' basic image
+                       onClick={(event) => handleLanguage(event,opt.value)}
+                       color={lg === opt.key ? "blue" : undefined}
+                >
+                   <Label.Group>
+                       <Flag name={opt.flag} />
+                     <Icon name="check" color={getText(opt.key) !== "" ? "green" : undefined} />
+                   </Label.Group>
+                </Label>
+                )
+            )
+        )
+    }
+/*//todo useEffect for query lang in backConfig*/
+    /*//todo boucle on boutton*/
+    useEffect(()=>{
+        //todo recup config LangAllowed
+        if(tabText.length === 0 ){
+            let initLang = []
+            LangOptions.map((lang, index) => {
+                initLang[lang.key] = ""
+            })
+            setter(initLang)
+        }
+    },[])
+
+    console.log(LangOptions.find(txt => txt.key === 'en'))
     return (
         <>
             <Item>
-                <Menu>
-                    <Menu.Item header> { t('choose_language_translation')} </Menu.Item>
-                    <Menu.Menu position='right'>
-                        <Dropdown
-                            inline
-                            floating
-                            compact
-                            search
-                            selection
-                            options={countryOptions}
-                            value={lg}
-                            onChange={handleLanguage}
-                        />
-                    </Menu.Menu>
-                </Menu>
                 <Form.Input
                     control={"textarea"}
-                    name="description"
-                    minLength="2"
-                    maxLength="250"
-                    value={getText()}
+                    name={name}
+                    minLength={min}
+                    maxLength={max}
+                    value={getText(lg)}
                     onChange={handleText}
                     placeholder={ t('your_translation_here')}
-
+                    required
                 />
+                <Container textAlign="left">
+                    <MenuFlag />
+                </Container>
+
+                {!tabText['en'] &&
+                    <Message
+                        info compact color="teal" size="mini"
+                         icon='idea'
+                         header={ t('default_language') }
+                         content={ t('remember_english') }
+                    />
+                }
+
             </Item>
         </>
     )

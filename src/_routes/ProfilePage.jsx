@@ -204,7 +204,7 @@ const ProfilOrg = ( props ) => {
                                 </Segment>
                                 }
 
-                                {/*todo faire en sorte que les compo ne se charge qu'à la demande*/}
+                                {/*todo faire en-GB sorte que les compo ne se charge qu'à la demande*/}
                                 {activeItem === 'membership' &&
                                 <Segment attached='bottom'>
                                     <Membership org={org} />

@@ -1,24 +1,24 @@
 
 import React, {useEffect, useState} from "react";
-import {Checkbox, Dropdown, Item, Label } from "semantic-ui-react";
-import {withTranslation} from "react-i18next";
+import {Checkbox, Dropdown, Item, Label, Message} from "semantic-ui-react";
+import {useTranslation, withTranslation} from "react-i18next";
 import orgAPI from "../../../_services/orgAPI";
 
 /**
  *
- * @param props
- * @project, @setter (setProject)
+ * @param* @project, @setter (setProject)
  * @returns {JSX.Element}
  * @constructor
  */
-const ProjectSelector = ( props ) => {
+const OrgSelector = ({obj, setter} ) => {
 
+    const { t } = useTranslation()
     const handleSelect = (e, { value }) => {
-        props.setter({ ...props.org, "orgId": value })
+        setter({ ...obj, "orgId": value })
         // set id org in the select
         setSelected(value)
         console.log(selected)
-        console.log(props.org)
+        console.log(obj)
     };
     const handleShow = () => {
         if(!toggleShow){
@@ -38,12 +38,13 @@ const ProjectSelector = ( props ) => {
             table.push({ key:o.id, value:o.id, text:o.name} )
         ))
         setOptions(table)
-        if(props.project.organization){
-            setSelected(props.project.organization.id)
+        if(obj.organization){
+            setSelected(obj.organization.id)
         }
-        setToggleShow(!!props.project.organization)
+        setToggleShow(!!obj.organization)
     }
 
+    //todo only if toggle and the firstime
     useEffect(() => {
         //load projects
         orgAPI.getMy()
@@ -63,11 +64,11 @@ const ProjectSelector = ( props ) => {
                 <Item>
                     {toggleShow ?
                         <Label color="green" size="small" horizontal>
-                            {props.t("yes")}
+                            { t("yes") }
                         </Label>
                         :
                         <Label size="small" horizontal>
-                            {props.t("no")}
+                            { t("no") }
                         </Label>
                     }
 
@@ -81,12 +82,21 @@ const ProjectSelector = ( props ) => {
 
                 {toggleShow &&
                 <Item>
+                    {options.length === 0 &&
+                        <Message
+                            info compact color="teal" size="mini"
+                            icon='idea'
+                            header={ t('informations') }
+                            content={ t('about_orgLink') }
+                        />
+                    }
+                    <Label>Choisissez une de vos organizations</Label>
                     <Dropdown
                         fluid
                         search
                         selection
 
-                        placeholder={props.t('organization_link')}
+                        placeholder={ t('organization_link') }
                         name="orgId"
                         value={selected && selected !== "" ? selected : null}
                         options={options}
@@ -99,4 +109,4 @@ const ProjectSelector = ( props ) => {
     )
 }
 
-export default withTranslation()(ProjectSelector)
+export default withTranslation()(OrgSelector)

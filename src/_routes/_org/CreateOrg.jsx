@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 import { withTranslation } from 'react-i18next';
 import OrgAPI from "../../_services/orgAPI";
 import AuthContext from "../../_contexts/AuthContext";
-import {Label, Segment, Button, Form, Icon, TextArea, Grid, Item} from "semantic-ui-react";
+import {Label, Segment, Button, Form, Icon, Item} from "semantic-ui-react";
 import AuthAPI from "../../_services/authAPI";
 
 import TextAreaMultilang from "../../_components/forms/TextAreaMultilang";
@@ -44,9 +44,10 @@ const CreateOrg = ({ history, t }) => {
 
     const handleSubmit = () => {
         OrgAPI.post(org)
-            .then(response =>
+            .then(response => {
                 console.log(response.data)
-            )
+                history.replace("/org/creator_" + response.data[0].id)
+            })
             .catch(error => {
                 console.log(error.response)
                 setErrors(error.response.data.error);
@@ -128,7 +129,7 @@ const CreateOrg = ({ history, t }) => {
                         <Label attached="top">
                             { t('description') }
                         </Label>
-                            <TextAreaMultilang  tabText={desc} setter={setDesc}/>
+                            <TextAreaMultilang  tabText={desc} setter={setDesc} name="description" min={2} max={500}/>
                     </Segment>
 
                     <Button fluid animated >

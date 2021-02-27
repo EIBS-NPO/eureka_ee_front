@@ -1,23 +1,25 @@
 import React, {useEffect, useState} from "react";
 import projectAPI from "../../../_services/projectAPI";
 import {Checkbox, Dropdown, Item, Label } from "semantic-ui-react";
-import {withTranslation} from "react-i18next";
+import {useTranslation, withTranslation} from "react-i18next";
 
 /**
  *
  * @param props
- * @activity, @setter (setActivity)
+ * @obj, @setter (setobj)
  * @returns {JSX.Element}
  * @constructor
  */
-const ProjectSelector = ( props ) => {
+const ProjectSelector = ( {obj, setter} ) => {
+
+    const { t } = useTranslation()
 
     const handleSelect = (e, { value }) => {
-        props.setter({ ...props.activity, "projectId": value })
+         setter({ ... obj, "projectId": value })
         // set id org in the select
         setSelected(value)
         console.log(selected)
-        console.log(props.activity)
+        console.log( obj)
     };
     const handleShow = () => {
         if(!toggleShow){
@@ -37,12 +39,13 @@ const ProjectSelector = ( props ) => {
             table.push({ key:p.id, value:p.id, text:p.title} )
         ))
         setOptions(table)
-        if(props.activity.project){
-            setSelected(props.activity.project.id)
+        if( obj.project){
+            setSelected( obj.project.id)
         }
-        setToggleShow(!!props.activity.project)
+        setToggleShow(!! obj.project)
     }
 
+    //todo only if toggle and the firstime
     useEffect(() => {
         //load projects
         projectAPI.get()
@@ -62,11 +65,11 @@ const ProjectSelector = ( props ) => {
                 <Item>
                     {toggleShow ?
                         <Label color="green" size="small" horizontal>
-                            {props.t("yes")}
+                            { t("yes")}
                         </Label>
                         :
                         <Label size="small" horizontal>
-                            {props.t("no")}
+                            { t("no")}
                         </Label>
                     }
 
@@ -85,9 +88,9 @@ const ProjectSelector = ( props ) => {
                         search
                         selection
 
-                        placeholder={props.t('project_link')}
+                        placeholder={ t('project_link')}
                         name="projectId"
-                        value={selected && selected !== "" ? selected : null}
+                        value={selected !== "" ? selected : null}
                         options={options}
                         onChange={handleSelect}
                     />

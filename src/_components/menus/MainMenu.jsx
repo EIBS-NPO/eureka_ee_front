@@ -34,12 +34,14 @@ const MainMenu = ({t, history}) => {
                             <Menu.Item as={NavLink} to="/create_org"> { t('new_org') }</Menu.Item>
                             <Menu.Item as={NavLink} to="/create_project">{ t('new_project') }</Menu.Item>
                             <Menu.Item as={NavLink} to="/create_activity">{ t('new_activity') }</Menu.Item>
-                            <Menu.Item as={NavLink} to="/profil_user">Account</Menu.Item>
+                            <Menu.Item as={NavLink} to="/profil_user"> { t('account') }</Menu.Item>
                         </>
                     )}
                 </Menu>
                 <Menu className="push">
-                    <Menu.Item as={LanguageSelector} to="/profil_user">Account</Menu.Item>
+                    <LanguageSelector />
+
+                    {/*<Menu.Item as={LanguageSelector} />*/}
                 </Menu>
             </div>
         </>

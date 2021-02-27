@@ -7,12 +7,12 @@ function logout() {
     window.localStorage.removeItem("authToken");
     if (Axios.defaults.headers["Authorization"]){
         delete Axios.defaults.headers["Authorization"];
-        window.location.href='/'
+        window.location.href='/login'
+     //   history.replace('/')
     }
 }
 
 function authenticate(credentials) {
-    console.log(LOGIN_API)
     return Axios
         .post(LOGIN_API, credentials)
         .then((response) => response.data.token)
@@ -30,31 +30,34 @@ function setAxiosToken(token) {
 }
 
 /**
- * mise en place lors du chargement de l'appli
+ * control auth in loading
  * @returns boolean
  */
 function setup() {
     const token = window.localStorage.getItem("authToken");
-
+    console.log(1)
     if (token) {
         try {
             const jwtData = jwt_decode(token);
             // valid token format
             if (jwtData.exp * 1000 > new Date().getTime()) {
                 setAxiosToken(token);
-                /*return true;*/
+                console.log(2)
+                return true;
             }
             else {
+                console.log(3)
                 logout();
-                /*return false;*/
+                return false;
             }
         } catch(error) {
             console.log(error)
             // invalid token format
         }
     } else {
+        console.log(4)
         logout();
-        /*return false;*/
+        return false;
     }
 }
 
@@ -69,7 +72,6 @@ function isAuthenticated() {
         const jwtData = jwt_decode(token);
         return jwtData.exp * 1000 > new Date().getTime();
     }
-    logout()
 }
 
 function isAdmin() {
@@ -88,7 +90,6 @@ function getUserMail() {
     return jwt_decode(token).username
 }
 
-// eslint-disable-next-line import/no-anonymous-default-export
 export default {
     setup,
     logout,

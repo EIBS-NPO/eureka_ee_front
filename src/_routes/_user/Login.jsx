@@ -28,7 +28,7 @@ const Login = ({ history }) => {
     //requete HTTP d'authentification et stockage du token dans le localStorage
     const handleSubmit = async (event) => {
         event.preventDefault();
-
+        setLoader(true)
         try {
             await AuthAPI.authenticate(credentials);
             setError("");
@@ -39,13 +39,17 @@ const Login = ({ history }) => {
             setError(
                 "Echec, veuillez vérifier vos identifiants"
             );
+        } finally {
+            setLoader(false)
         }
     };
+
+    const [loader, setLoader] = useState(false)
 
     return (
         /*<div className="Login">*/
         <div className="card">
-            <Form onSubmit={handleSubmit}>
+            <Form onSubmit={handleSubmit} loading={loader}>
                 <Form.Input
                     icon='user'
                     iconPosition='left'

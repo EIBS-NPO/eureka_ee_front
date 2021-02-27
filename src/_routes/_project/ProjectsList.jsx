@@ -11,6 +11,11 @@ const ProjectsList = ( props ) => {
 
     const urlParams = props.match.params.ctx
 
+    //forbiden if route for my org and no auth
+    if (urlParams !=="public" && isAuth === undefined) {
+        props.history.replace('/')
+    }
+
     const ctx = () => {
         if (urlParams !=="public" && isAuth === false) {
             //if ctx need auth && have no Auth, public context is forced
@@ -31,7 +36,6 @@ const ProjectsList = ( props ) => {
         setLoader(true)
         console.log(ctx())
         if (ctx() !== 'public') {
-            console.log('ta mere')
             projectAPI.get(ctx())
                 .then(response => {
                     console.log(response)
@@ -40,7 +44,6 @@ const ProjectsList = ( props ) => {
                 .catch(error => console.log(error.response))
                 .finally(() => setLoader(false))
         } else {
-            console.log('ta meeeeeeere')
             projectAPI.getPublic()
                 .then(response => {
                     console.log(response)
@@ -63,8 +66,8 @@ const ProjectsList = ( props ) => {
                 <>
                 {projects && projects.length > 0 &&
                     projects.map( project  => (
-                        <Segment raised>
-                            <Card key={project.id} obj={project} type="project" isLink={true} />
+                        <Segment key={project.id } raised>
+                            <Card key={project.id} obj={project} type="project" isLink={true} ctx={ctx()}/>
                         </Segment>
                     ))
                 }

@@ -13,23 +13,45 @@ const uploadPic = (entityName, bodyFormData) => {
 /*
 //todo maybe change route to match with backEnd
  */
-const uploadFile = ( bodyFormData ) => {
+const postFile = ( bodyFormData ) => {
     return Axios({
         method: 'post',
-        url: API_URL + "/file",
+        url: API_URL + "/file/create",
         data: bodyFormData,
         headers: {'Content-Type': 'multipart/form-data'}
     })
 }
 
-function urlDownloadPublic ( id ) {
-    return "API_URL + /file/download/public?id=" +id
+const putFile = ( bodyFormData ) => {
+    return Axios({
+        method: 'post',
+        url: API_URL + "/file/update",
+        data: bodyFormData,
+        headers: {'Content-Type': 'multipart/form-data'}
+    })
 }
 
-function urlDownload (id) {
-    return Axios.get(API_URL + "/file/download?id=" +id)
-   // return "API_URL + /file/download?id=" +id
+//todo ca marche!!! suffit de config la reponse, on demande comment a v aetre servit!
+const download = (isPublic, id) => {
+    let url = "/file/download"
+    if(isPublic){
+        url += "/public"
+    }
+    url += "?id=" +id
+console.log(url)
+    return Axios.get(API_URL + url, {responseType: 'arraybuffer'})
 }
+
+/*function urlDownloadPublic ( url ) {
+    //"/file/download/public?id=" +id
+    return Axios.get(API_URL + url)
+}
+
+function urlDownload (url) {
+    //"/file/download?id=" +id
+    return Axios.get(API_URL + url)
+   // return "API_URL + /file/download?id=" +id
+}*/
 
 /*const downloadPublicFile = (id){
     return Axios.get(API_URL + "/file/download/public?id=" + id)
@@ -41,8 +63,8 @@ function urlDownload (id) {
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
     uploadPic,
-    uploadFile,
-    urlDownloadPublic,
-    urlDownload
+    postFile,
+    putFile,
+    download
   //  downloadPic
 }

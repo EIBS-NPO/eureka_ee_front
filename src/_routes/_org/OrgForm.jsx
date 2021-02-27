@@ -11,17 +11,15 @@ const OrgForm = ( props ) => {
 
     const [updateOrg, setUpdateOrg] = useState({ })
 
-    const [desc, setDesc] = useState({
-        en:"",
-        fr:"",
-        nl:""
-    })
+    const [desc, setDesc] = useState(org.description)
 
     useEffect(() => {
         setUpdateOrg(org)
-        if(org.description){
-            setDesc(org.description)
-        }
+        /*if(org.description){
+            org.description.map((d, lg) => {
+                setDesc({...desc, [lg]: d[lg]})
+            })
+        }*/
     },[])
 
     const [errors, setErrors] = useState({
@@ -39,16 +37,12 @@ const OrgForm = ( props ) => {
         setUpdateOrg({ ...updateOrg, [name]: value })
     };
 
-    const preSubmit = (event) => {
-        event.preventDefault()
-        console.log(desc)
+    const preSubmit = () => {
         org.description = desc;
         if(updateOrg.name){org.name = updateOrg.name}
         if(updateOrg.type){org.type = updateOrg.type}
         if(updateOrg.phone){org.phone = updateOrg.phone}
         if(updateOrg.email){org.nemail= updateOrg.email}
-        console.log(org)
-        handleSubmit()
     }
 
     const cancelForm = (e) => {
@@ -56,7 +50,35 @@ const OrgForm = ( props ) => {
         props.setForm(false)
     }
 
-    const handleSubmit = () => {
+
+    //todo clean up ? marche? marche pas?
+    const submit = () => {
+            const abortController = new AbortController()
+            const signal = abortController.signal
+
+            preSubmit()
+
+            setLoader(true);
+            orgAPI.put(org, {signal:signal})
+                .then(response => {
+                    console.log(response.data[0])
+                    props.setForm(false)
+                    //todo confirmation
+                })
+                .catch(error => {
+                    console.log(error)
+                    setErrors(error.response)
+                })
+                .finally(() => {
+                    setLoader(false)
+                })
+            //specify how to cleanup after this effect
+            return function cleanup(){
+                abortController.abort()
+            }
+    }
+
+    /*const handleSubmit = () => {
         setLoader(true);
         orgAPI.put( org )
             .then(response => {
@@ -71,15 +93,15 @@ const OrgForm = ( props ) => {
             .finally(()=> {
                 setLoader(false)
             })
-    };
+    };*/
 
     return (
         <>
             <Segment>
-                <PictureForm picture={org.picture} entityType="org" entity={org}/>
+                <PictureForm entityType="org" entity={org} setter={props.setter}/>
             </Segment>
 
-            <Form onSubmit={preSubmit} loading={loader}>
+            <Form onSubmit={submit} loading={loader}>
                 <Segment>
                     <Item>
                         <Form.Input
@@ -141,7 +163,7 @@ const OrgForm = ( props ) => {
                     <Label attached="top">
                         { props.t('description') }
                     </Label>
-                    <TextAreaMultilang  tabText={desc} setter={setDesc}/>
+                    <TextAreaMultilang  tabText={desc} setter={setDesc} name="description" min={2} max={500}/>
                 </Segment>
 
                 <Button fluid animated >

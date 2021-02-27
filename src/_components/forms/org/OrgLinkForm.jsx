@@ -50,7 +50,7 @@ const OrgLinkForm = ({t, loader, errors, nextStep}) => {
         nextStep()
     }
 
-    {/*//todo rechercher les org en tant que referrent et en tant que membre!*/}
+    {/*//todo rechercher les org en-GB tant que referrent et en-GB tant que membre!*/}
     useEffect(() => {
             setOrgLoader(true)
             orgAPI.getMy()

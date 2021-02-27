@@ -1,7 +1,7 @@
 import React, {useContext, useEffect, useState} from 'react';
 import projectAPI from '../../_services/projectAPI';
 import {
-    Container, Header, Item, Menu, Label, Loader, Segment, Icon, Button
+    Divider, Container, Header, Item, Menu, Loader, Segment, Icon, Button
 } from "semantic-ui-react";
 import {withTranslation} from "react-i18next";
 import AuthContext from "../../_contexts/AuthContext";
@@ -20,11 +20,15 @@ import userAPI from "../../_services/userAPI";
  * la liste des reources privées, si abilitation user suffisante.
  */
 
-const ProfilProject = (props) => {
+const ProjectProfile = (props) => {
     const isAuth = useContext(AuthContext).isAuthenticated;
 
     const urlParams = props.match.params.id.split('_')
-    console.log(urlParams)
+
+    //todo project toujour public en faite.
+   /* if (urlParams[0] !=="public" && isAuth === undefined) {
+        props.history.replace('/')
+    }*/
 
     const ctx = () => {
         if (urlParams[0] !=="public" && isAuth === false) {
@@ -36,9 +40,10 @@ const ProfilProject = (props) => {
         }
     }
 
-    const isOwner= () => {
+    const [isOwner, setIsOwner] =useState(false)
+    /*const isOwner= () => {
         return userAPI.checkMail() === project.creator.email
-    }
+    }*/
 
     const [project, setProject] = useState({})
 
@@ -62,7 +67,7 @@ const ProfilProject = (props) => {
     useEffect(() => {
         setLoader(true)
         console.log(ctx())
-        if(ctx() !== 'public'){
+        /*if(ctx() !== 'public'){
             projectAPI.get(ctx(), urlParams[1])
                 .then(response => {
                     console.log(response)
@@ -70,15 +75,17 @@ const ProfilProject = (props) => {
                 })
                 .catch(error => console.log(error.response))
                 .finally(() => setLoader(false))
-        }else {
+        }else {*/
             projectAPI.getPublic(urlParams[1])
                 .then(response => {
                     console.log(response)
                     setProject(response.data[0])
+                    setIsOwner(userAPI.checkMail() === response.data[0].creator.email)
                 })
                 .catch(error => console.log(error.response))
                 .finally(() => setLoader(false))
-        }
+        /*}*/
+
     }, []);
 
     return (
@@ -123,16 +130,27 @@ const ProfilProject = (props) => {
                                 <ProjectForm project={project} setProject={setProject} setForm={handleForm}/>
                                 :
                                 <>
-                                    <Card obj={project} type="project" profile={true}/>
-                                    {isAuth && isOwner() && !projectForm &&
-                                    <Button onClick={handleForm} fluid animated>
-                                        <Button.Content visible>
-                                            {props.t('edit')}
-                                        </Button.Content>
-                                        <Button.Content hidden>
-                                            <Icon name='edit'/>
-                                        </Button.Content>
-                                    </Button>
+                                    <Card obj={project} type="project" profile={true} ctx={ctx()}/>
+
+                                    {isAuth && isOwner && !projectForm &&
+                                        <Segment basic textAlign="center" >
+                                            {/*<Divider hidden />*/}
+                                           {/* <Button onClick={handleForm} fluid basic animated color="teal">
+                                                <Button.Content visible>
+                                                    {props.t('edit')}
+                                                </Button.Content>
+                                                <Button.Content hidden>
+                                                    <Icon name='edit'/>
+                                                </Button.Content>
+                                            </Button>*/}
+                                            <Button
+                                                basic
+                                                icon='edit'
+                                                size='big'
+                                                content={props.t('edit')}
+                                                onClick={handleForm}
+                                            />
+                                        </Segment>
                                     }
                                 </>
                             }
@@ -167,4 +185,4 @@ const ProfilProject = (props) => {
     );
 };
 
-export default withTranslation()(ProfilProject);
+export default withTranslation()(ProjectProfile);

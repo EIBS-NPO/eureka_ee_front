@@ -1,31 +1,32 @@
 import React, { useEffect, useState, useContext } from 'react';
 import activityAPI from '../../_services/activityAPI';
-import {Input, Container, Button, Checkbox, Form, Grid, Header, Icon, Image, Item, Label, Loader, Menu, Segment } from "semantic-ui-react";
+import {Input, Container, Button, Header, Icon, Item, Loader, Menu, Segment } from "semantic-ui-react";
 import {withTranslation} from "react-i18next";
 import AuthContext from "../../_contexts/AuthContext";
-import PictureForm from "../../_components/forms/PictureForm";
-import orgAPI from "../../_services/orgAPI";
 import fileAPI from "../../_services/fileAPI";
 import FileUpload from "../../_components/upload/FileUpload";
 import userAPI from "../../_services/userAPI";
-import Picture from "../../_components/Picture";
-import OrgForm from "../_org/OrgForm";
-import Organization from "../../_components/cards/organization";
 import Card from "../../_components/Card";
-import ProjectForm from "../_project/ProjectForm";
 import ActivityForm from "./ActivityForm";
 import utilities from "../../_services/utilities";
+import authAPI from "../../_services/authAPI";
+import FileDownload from "../../_components/upload/FileDownload";
+import FileInfos from "../../_components/upload/FileInfos";
 
-const ActivityProfil = (props ) => {
+const ActivityProfile = ( props ) => {
+    const urlParams = props.match.params.id.split('_')
+    //if anonymous user is on no anonymous context
+
     const isAuth = useContext(AuthContext).isAuthenticated;
 
-    const urlParams = props.match.params.id.split('_')
-
-    const [activity, setActivity] = useState({})
+    const [activity, setActivity] = useState({
+      //  creator:{}
+    })
 
     const ctx = () => {
         if (urlParams[0] !=="public" && isAuth === false) {
             //if ctx need auth && have no Auth, public context is forced
+            //non, if the activity asked is private it's cheap
             return 'public';
         }
         else {
@@ -35,7 +36,7 @@ const ActivityProfil = (props ) => {
 
 
     const isOwner = () => {
-        console.log(activity)
+ //       console.log(activity)
         return userAPI.checkMail() === activity.creator.email
     }
 
@@ -43,7 +44,7 @@ const ActivityProfil = (props ) => {
     const [toggleShow, setToggleShow] = useState(false)
 
     const [picture, setPicture] = useState()
-    console.log(activity)
+ //   console.log(activity)
 
     const [activityForm, setActivityForm] = useState(false)
 
@@ -64,6 +65,12 @@ const ActivityProfil = (props ) => {
     const handleItemClick = (e, { name }) => setActiveItem(name)
 
     useEffect(() => {
+        if ( !(urlParams[0] === "public") && !(authAPI.isAuthenticated()) ) {
+            console.log('test redirect login')
+            props.history.replace('/login')
+           // authAPI.setup();
+        }
+
         if(ctx() !== 'public'){
        //     setactivityLoader(true)
             activityAPI.get(ctx(), urlParams[1])
@@ -71,6 +78,7 @@ const ActivityProfil = (props ) => {
                     console.log(response)
                     if(response.data[0] !== "DATA_NOT_FOUND"){
                         if(response.data[0].organization){
+                            //todo ??
                             response.data[0].activityId = response.data[0].organization.id
                   //          setSelected(response.data[0].organization.id)
                    //         setToggleShow(true)
@@ -107,21 +115,6 @@ const ActivityProfil = (props ) => {
                         <Container textAlign={"center"}>
                             <h1>{ activity.title }</h1>
                         </Container>
-
-                        {/*{ctx() === 'public' &&
-                        activity.creator &&
-                        <Label as='a' basic image>
-                            {activity.creator.picture ?
-                                <Image size="small" src={`data:image/jpeg;base64,${activity.creator.picture}`}
-                                       floated='left'/>
-                                :
-                                <Image size="small" src='https://react.semantic-ui.com/images/wireframe/image.png'
-                                       floated='left'/>
-                            }
-                            {activity.creator.lastname + ' ' + activity.creator.firstname}
-                            <Label.Detail>{props.t('author')}</Label.Detail>
-                        </Label>
-                        }*/}
 
                         <Segment vertical >
                             <Menu attached='top' tabular>
@@ -178,40 +171,11 @@ const ActivityProfil = (props ) => {
                                         <>
                                             <Segment.Group horizontal>
                                                 <Segment>
-                                                    <Card obj={activity} type="activity" profile={true} />
+                                                    <Card obj={activity} type="activity" profile={true} ctx={ctx()}/>
                                                 </Segment>
                                                 <Segment placeholder >
-                                                    <Container textAlign='center'>
-                                                        {!activity.fileType &&
-                                                        <Header icon>
-                                                            <Icon name='pdf file outline' />
-                                                            { props.t('no_file') }
-                                                        </Header>
-                                                        }
-                                                        {activity.fileType &&
-                                                            <>
-                                                        <Header icon>
-                                                            <Icon name='file pdf' />
-                                                            <p>{activity.filePath}</p>
-                                                            <p>{utilities.octetsToKilos(activity.size) + "kB"}</p>
-                                                        </Header>
-                                                        {activity.isPublic ?
-                                                       //     <a href={fileAPI.urlDownloadPublic(activity.id)} download />
-                                                            <Input as={"a"} type="download" href={fileAPI.urlDownloadPublic(activity.id)} />
-                                                        :
-                                                            <a href={fileAPI.urlDownload(activity.id)} download />
-                                                        }
-                                                        <Button fluid animated onClick={downloadFile}>
-                                                                <Button.Content visible>
-                                                                    { props.t('download') }
-                                                                </Button.Content>
-                                                                <Button.Content hidden>
-                                                                    <Icon name='download'/>
-                                                                </Button.Content>
-                                                            </Button>
-                                                        </>
-                                                        }
-                                                    </Container>
+
+                                                    <FileDownload file={activity} setter={setActivity}/>
                                                 </Segment>
 
                                             </Segment.Group>
@@ -238,7 +202,8 @@ const ActivityProfil = (props ) => {
                                     {/*todo dropzone*/}
                                     <Segment placeholder>
                                         <Container textAlign='center'>
-                                            <FileUpload activity={ activity } setter={ setActivity }/>
+                                            <FileInfos file={activity} />
+                                            <FileUpload history={props.history} activity={ activity } setter={ setActivity }/>
                                         </Container>
                                     </Segment>
                                 </>
@@ -270,4 +235,25 @@ const ActivityProfil = (props ) => {
     );
 };
 
-export default withTranslation()(ActivityProfil);
+export default withTranslation()(ActivityProfile);
+
+                                        /*
+                                        <script>
+                                        function Upload(element) {
+                                        var reader = new FileReader();
+                                        let file = element.files[0];
+                                        reader.onload = function () {
+                                        var arrayBuffer = this.result;
+                                        Download(arrayBuffer, file.type);
+                                        }
+                                        reader.readAsArrayBuffer(file);
+                                        }
+
+                                        function Download(arrayBuffer, type) {
+                                        var blob = new Blob([arrayBuffer], { type: type });
+                                        var url = URL.createObjectURL(blob);
+                                        window.open(url);
+                                        }
+
+                                        </script>
+                                        */

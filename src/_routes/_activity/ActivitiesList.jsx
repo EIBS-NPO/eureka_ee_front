@@ -4,13 +4,17 @@ import { withTranslation } from 'react-i18next';
 import activityAPI from "../../_services/activityAPI";
 import activity from "../../_components/cards/activity";
 import AuthContext from "../../_contexts/AuthContext";
-import Activity from "../../_components/cards/activity";
 import Card from "../../_components/Card";
+import authAPI from "../../_services/authAPI";
 
 const ActivitiesList = ( props ) => {
     const isAuth = useContext(AuthContext).isAuthenticated;
 
     const urlParams = props.match.params.ctx
+    //if anonymous user is on no anonymous context
+    if ( urlParams[0] !=="public" ) {
+        authAPI.setup();
+    }
 
     const ctx = () => {
         if (urlParams !=="public" && isAuth === false) {
@@ -24,7 +28,7 @@ const ActivitiesList = ( props ) => {
         }
     }
 
-    const [activities, setActivities] = useState()
+    const [activities, setActivities] = useState({})
 
     const [loader, setLoader] = useState();
 
@@ -58,16 +62,12 @@ const ActivitiesList = ( props ) => {
                 <h1>{ props.t('public_activities') }</h1>
             }
 
-            {!loader &&
-            <>
-                {activities && activities.length > 0 &&
-                    activities.map( activity => (
-                        <Segment raised>
-                            <Card key={activity.id} obj={activity} type="activity" isLink={true} />
-                        </Segment>
-                    ))
-                }
-            </>
+            {!loader && activities && activities.length > 0 &&
+                activities.map( activity => (
+                    <Segment key={activity.id} raised>
+                        <Card key={activity.id} obj={activity} type="activity" isLink={true} />
+                    </Segment>
+                ))
             }
 
             {loader &&

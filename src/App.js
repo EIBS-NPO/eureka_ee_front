@@ -11,7 +11,7 @@ import MainMenu from "./_components/menus/MainMenu";
 import LeftMenu from "./_components/menus/LeftMenu";
 import Footer from "./_components/footer/Footer";
 
-import PrivateRoute from "./_components/PrivateRoute";
+import PrivateRoute from "./_routes/PrivateRoute";
 
 
 /*const ProfilePage = lazy(() => import("./_routes/ProfilePage"));*/
@@ -28,8 +28,8 @@ const CreateActivity = lazy(() => import('./_routes/_activity/CreateActivity'));
 
 const ProfilUser = lazy(() => import('./_routes/_user/ProfilUser'));
 const ProfilOrg = lazy(() => import('./_routes/_org/OrgProfile'));
-const ProfilProject = lazy(() => import('./_routes/_project/ProfilProject'));
-const ProfilActivity = lazy(() => import('./_routes/_activity/ActivityProfil'));
+const ProfilProject = lazy(() => import('./_routes/_project/ProjectProfile'));
+const ProfilActivity = lazy(() => import('./_routes/_activity/ActivityProfile'));
 
 //todo UserList
 const OrgList = lazy(() => import('./_routes/_org/OrgList'));
@@ -37,7 +37,7 @@ const ProjectsList = lazy(() => import('./_routes/_project/ProjectsList'));
 const ActivitiesList = lazy(() => import('./_routes/_activity/ActivitiesList'));
 
 //footer
-const Beweging = lazy(() => import('./_routes/_partners/beweging'));
+/*const Beweging = lazy(() => import('./_routes/_partners/beweging'));*/
 
  function App({history}) {
     AuthAPI.setup();
@@ -82,11 +82,13 @@ const Beweging = lazy(() => import('./_routes/_partners/beweging'));
               <Route path="/project/:id" component={ProfilProject}/>
               <Route path="/activity/:id" component={ProfilActivity}/>
 
+              {/*<PrivateRoute path="/activity/:id" component={ProfilActivity} />*/}
+
               {/*<Route path="/profile/:id" component={ProfilePage} />*/}
 
               <Route path="/about" component={About}/>
 
-              <Route path="/beweging" component={Beweging}/>
+             {/* <Route path="/beweging" component={Beweging}/>*/}
           </Switch>
                           </Suspense>
                       </div>

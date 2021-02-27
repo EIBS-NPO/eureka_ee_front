@@ -1,6 +1,6 @@
 
 import React, {useEffect, useState} from 'react';
-import {withTranslation} from "react-i18next";
+import {useTranslation, withTranslation} from "react-i18next";
 import {Button, Checkbox, Dropdown, Form, Grid, Icon, Item, Label, Segment, TextArea} from "semantic-ui-react";
 import PictureForm from "../../_components/forms/PictureForm";
 import FileUpload from "../../_components/upload/FileUpload";
@@ -10,18 +10,36 @@ import projectAPI from "../../_services/projectAPI";
 import orgAPI from "../../_services/orgAPI";
 import ProjectSelector from "../../_components/forms/project/ProjectSelector";
 import authAPI from "../../_services/authAPI";
+import OrgSelector from "../../_components/forms/org/OrgsSelector";
+import ProjectForm from "../_project/ProjectForm";
 
+/*<ProjectForm project={project} setProject={setProject} setForm={handleForm}/>*/
+const ActivityForm = ( { activity, setActivity, setForm} ) => {
 
-const ActivityForm = ( props ) => {
+    const { t } = useTranslation()
 
-    const activity = props.activity
+    const [updateActivity, setUpdateActivity] = useState({
+        title:"",
+        summary:[],
+        isPublic:undefined,
+        orgId:null,
+        projectId:null
+    })
+console.log(updateActivity)
+    const [desc, setDesc] = useState({
+        en:"",
+        fr:"",
+        nl:""
+    })
 
     const [errors, setErrors] = useState({
         title:"",
         summary:"",
         isPublic:"",
-        organization:""
+        organization:"",
+        project:""
     });
+
     const [loader, setLoader] = useState(false);
 
     const handleChange = (event) => {
@@ -31,7 +49,7 @@ const ActivityForm = ( props ) => {
 
     const cancelForm = (e) => {
         e.preventDefault()
-        props.setForm(false)
+        setForm(false)
     }
 
     const handlePublication = () => {
@@ -42,93 +60,16 @@ const ActivityForm = ( props ) => {
         }
     }
 
-    const [selected, setSelected] = useState("")
-    const handleSelect = (e, { value }) => {
-        //     console.log(value)
-        let o = orgs.find(og => og.id > value)
-        setUpdateActivity({ ...updateActivity, "organization": o })
-        setUpdateActivity({ ...updateActivity, "orgId": value })
-        setSelected(value)
-    };
-
-    const [toggleShow, setToggleShow] = useState()
-
-    const handleShow = () => {
-        if(!toggleShow){
-            setToggleShow(true)
-        }else {
-            setToggleShow(false)
-            /* if(upProject.organization){
-                 setSelected(upProject.organization.id)
-             }else {*/
-            //    setSelected("")
-            // }
-        }
-        console.log(updateActivity)
-    }
-    //handle orgs option for linking
-   // const [loadOrgs, setLoadOrgs] = useState(false)
-    const [orgs, setOrgs] = useState([])
-    const [options, setOptions] = useState([])
-    const setOrgsOptions = (orgs) => {
-        setOrgs(orgs)
-        let table=[];
-        orgs.map(org => (
-                table.push({ key:org.id, value:org.id, text:org.name} )
-            )
-        )
-        setOptions(table)
-    }
-
-    const [updateActivity, setUpdateActivity] = useState({ })
-
-    //multilang textarea init
-    const [desc, setDesc] = useState({
-        en:"",
-        fr:"",
-        nl:""
-    })
-
-    const handleProjectSelect = (e, { value }) => {
-        setUpdateActivity({ ...updateActivity, "projectId": value })
-        // set id org in the select
-        setSelectedProject(value)
-        console.log(selectedProject)
-        console.log(updateActivity)
-    };
-    const handleShowProject = () => {
-        if(!toggleShowProject){
-            setToggleShowProject(true)
-        }else {
-            setToggleShowProject(false)
-        }
-    }
-    const [toggleShowProject, setToggleShowProject] = useState()
-    const [selectedProject, setSelectedProject] = useState("")
-    const [projects, setProjects] = useState([])
-    const [pjtOptions, setPjtOptions] = useState([])
-    const setProjectOptions = (projects) => {
-        setProjects(projects)
-        let table=[]
-        projects.map(p => (
-            table.push({ key:p.id, value:p.id, text:p.name} )
-        ))
-        setPjtOptions(table)
-        if(activity.project){
-            setSelectedProject(activity.project.id)
-        }
-        setToggleShowProject(!!activity.project)
-    }
-
     //todo ajouter le orgsSelector
     useEffect(() => {
         setUpdateActivity(activity)
+
         if(activity.summary){
             setDesc(activity.summary)
         }
 
         //load for orgSelector
-        orgAPI.getMy()
+       /* orgAPI.getMy()
             .then(response => {
                 //          console.log(response.data)
                 setOrgsOptions(response.data)
@@ -136,40 +77,22 @@ const ActivityForm = ( props ) => {
             .catch(error => {
                 console.log(error)
                 setErrors(error.response)
-            })
-
-        /*projectAPI.get()
-            .then(response => {
-                //          console.log(response.data)
-                setProjectOptions(response.data)
-            })
-            .catch(error => {
-                console.log(error)
-                setErrors(error.response)
             })*/
+
     },[])
 
-    const preSubmit = (event) => {
-        event.preventDefault()
-        console.log(desc)
-        updateActivity.summary = desc;
-
-     //   if(!toggleShow || (toggleShow && upProject.orgId === undefined)){ upProject.orgId = null }
-
-        console.log(activity)
-        handleSubmit()
-    }
-
-    const handleSubmit = async (event) => {
-        event.preventDefault();
+    const handleSubmit = () => {
         authAPI.isAuthenticated();
 
         setLoader(true);
-        //update User
-        activityAPI.put(activity)
+        updateActivity.summary = desc;
+
+        //update Project
+        activityAPI.put(updateActivity)
             .then(response => {
                 console.log(response.data[0])
-                //     setProject(response.data[0])
+                setActivity(response.data[0])
+                setForm(false)
                 //  setErrors({});
                 //todo confirmation
             })
@@ -184,66 +107,27 @@ const ActivityForm = ( props ) => {
     return (
         <Item>
             <Segment>
-                <PictureForm picture={activity.picture} entityType="activity" entity={ activity }/>
+                <PictureForm entityType="activity" entity={ activity } setter={setActivity}/>
 
             </Segment>
 
-            <Form onSubmit={preSubmit} loading={loader}>
-                <Segment>
-                    <Label attached='top'>
-                        <h4>{ props.t('organization_link')}</h4>
-                    </Label>
+            <Segment>
+                <Label attached="top">
+                    { t('organization_link') }
+                </Label>
+                <OrgSelector obj={updateActivity} setter={setUpdateActivity}/>
+            </Segment>
 
-                    <Item.Group>
-                        <Item>
-                            {toggleShow ?
-                                <Label color="green" size="small" horizontal>
-                                    {props.t("yes")}
-                                </Label>
-                                :
-                                <Label size="small" horizontal>
-                                    {props.t("no")}
-                                </Label>
-                            }
-
-                            <Checkbox
-                                name="toggleShow"
-                                checked={toggleShow}
-                                onChange={handleShow}
-                                toggle
-                            />
-                        </Item>
-
-                        {toggleShow &&
-                        <Item>
-                            <Dropdown
-                                fluid
-                                search
-                                selection
-
-                                placeholder={props.t('organization_link')}
-                                name="orgId"
-                                value={selected && selected !== "" ? selected : null}
-                                options={options}
-                                onChange={handleSelect}
-                            />
-                        </Item>
-                        }
-                    </Item.Group>
-
-                </Segment>
-            </Form>
-
-            <Form onSubmit={handleSubmit}>
+            <Form onSubmit={handleSubmit} loading={loader}>
                 <Item.Group divided>
                     <Segment>
                         <Label attached='top'>
-                            <h4>{ props.t('title')}</h4>
+                            <h4>{ t('title')}</h4>
                         </Label>
 
                         <Item>
                             <Item.Content>
-                                <Item.Header>{props.t('title')}</Item.Header>
+                                <Item.Header>{t('title')}</Item.Header>
                                     <Form.Input
                                         name="title"
                                         type="title"
@@ -260,46 +144,46 @@ const ActivityForm = ( props ) => {
 
                 <Segment>
                     <Label attached='top'>
-                        <h4>{ props.t('summary')}</h4>
+                        <h4>{ t('summary')}</h4>
                     </Label>
 
                     <Item>
                         <Item.Content>
-                            <TextAreaMultilang  tabText={desc} setter={setDesc}/>
+                            <TextAreaMultilang  tabText={desc} setter={setDesc} name="summary" min={2} max={500}/>
                         </Item.Content>
                     </Item>
                 </Segment>
 
                 <Segment>
                     <Label attached='top'>
-                        <h4>{ props.t('project_link')}</h4>
+                        <h4>{ t('project_link')}</h4>
                     </Label>
 
                     <Item>
                         <Item.Content>
-                            <ProjectSelector activity={updateActivity} setter={setUpdateActivity} />
+                            <ProjectSelector obj={updateActivity} setter={setUpdateActivity} />
                         </Item.Content>
                     </Item>
                 </Segment>
 
                 <Segment>
                     <Label attached='top'>
-                        <h4>{ props.t('publication')}</h4>
+                        <h4>{ t('publication')}</h4>
                     </Label>
 
                     <Item>
                         {updateActivity.isPublic ?
                             <Label color="green" size="small" horizontal>
-                                {props.t("public")}
+                                {t("public")}
                             </Label>
                             :
                             <Label size="small" horizontal>
-                                {props.t("private")}
+                                {t("private")}
                             </Label>
                         }
                         <Checkbox
                             name='isPublic'
-                            checked={updateActivity.isPublic}
+                            defaultChecked={updateActivity.isPublic}
                             onChange={handlePublication}
                             toggle
                         />
@@ -307,22 +191,27 @@ const ActivityForm = ( props ) => {
                 </Segment>
                 </Item.Group>
 
-                <Button fluid animated >
-                    <Button.Content visible>{ props.t('save') } </Button.Content>
-                    <Button.Content hidden>
-                        <Icon name='save' />
-                    </Button.Content>
-                </Button>
-
-
-                <Button onClick={cancelForm} fluid animated>
-                    <Button.Content visible>
-                        { props.t('cancel') }
-                    </Button.Content>
-                    <Button.Content hidden>
-                        <Icon name='cancel'/>
-                    </Button.Content>
-                </Button>
+                <Segment basic>
+                    <Grid stackable relaxed centered columns={2}>
+                        <Grid.Column>
+                            <Button
+                                basic
+                                icon='cancel'
+                                size='large'
+                                content= { t('cancel') }
+                                onClick={cancelForm}
+                            />
+                        </Grid.Column>
+                        <Grid.Column>
+                            <Button
+                                basic
+                                icon='save'
+                                size='large'
+                                content= { t('save') }
+                            />
+                        </Grid.Column>
+                    </Grid>
+                </Segment>
 
             </Form>
         </Item>

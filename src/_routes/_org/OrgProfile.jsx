@@ -36,6 +36,7 @@ const OrgProfile = (props ) => {
     }
 
     const [ org, setOrg ] = useState({})
+    console.log(org)
 
     const  [ orgForm, setOrgForm ]  = useState(false)
 
@@ -54,6 +55,7 @@ const OrgProfile = (props ) => {
 
     const handleItemClick = (e, { name }) => setActiveItem(name)
 
+    /*//todo cleanup*/
     useEffect(() => {
         setLoader(true)
         console.log(ctx())
@@ -65,7 +67,7 @@ const OrgProfile = (props ) => {
                 })
                 .catch(error => console.log(error.response))
                 .finally(() => setLoader(false))
-        }else {
+        }else {//for anonymous
             orgAPI.get(urlParams[1])
                 .then(response => {
                     console.log(response)
@@ -94,21 +96,6 @@ const OrgProfile = (props ) => {
                                 <h1>{ org.name }</h1>
                                 <span> { org.type } </span>
                             </Container>
-
-                            {/*{ctx() === 'public' &&
-                                org.referent &&
-                                <Label as='a' basic image>
-                                    {org.referent.picture ?
-                                        <Image size="small" src={`data:image/jpeg;base64,${org.referent.picture}`}
-                                               floated='left'/>
-                                        :
-                                        <Image size="small" src='https://react.semantic-ui.com/images/wireframe/image.png'
-                                               floated='left'/>
-                                    }
-                                    {org.referent.lastname + ' ' + org.referent.firstname}
-                                    <Label.Detail>{props.t('referent')}</Label.Detail>
-                                </Label>
-                            }*/}
 
                         <Segment vertical>
                             <Menu attached='top' tabular>
@@ -151,16 +138,18 @@ const OrgProfile = (props ) => {
                             </Menu>
 
 
-
                             {activeItem === "presentation" &&
                             <Segment attached='bottom'>
                                 <>
                                     {orgForm ?
-                                        <OrgForm org={org} setForm={handleForm} />
+                                        /*//todo ajout setter pour org?*/
+                                        <OrgForm org={org} setForm={handleForm} setter={setOrg}/>
                                     :
                                         <>
-                                            {/*<Organization org={org} />*/}
-                                            <Card obj={org} type="org" profile={true} />
+
+                                            <Card obj={org} type="org" profile={true} ctx={ctx()}/>
+
+
                                             {isAuth && isReferent() && !orgForm &&
                                             <Button onClick={handleForm} fluid animated>
                                                 <Button.Content visible>
@@ -177,7 +166,7 @@ const OrgProfile = (props ) => {
                             </Segment>
                             }
 
-                            {/*todo faire en sorte que les compo ne se charge qu'à la demande*/}
+                            {/*todo faire en-GB sorte que les compo ne se charge qu'à la demande*/}
                             {activeItem === 'membership' &&
                                 <Segment attached='bottom'>
                                     <Membership org={org} />

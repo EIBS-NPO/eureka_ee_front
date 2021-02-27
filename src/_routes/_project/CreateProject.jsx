@@ -2,7 +2,7 @@ import React, {createContext, useContext, useState} from "react";
 import { withTranslation } from 'react-i18next';
 
 import AuthContext from "../../_contexts/AuthContext";
-import {Form, Step, Button, Item, Segment, Icon} from "semantic-ui-react";
+import {Form, Step, Button, Item, Segment, Icon, Message} from "semantic-ui-react";
 import AuthAPI from "../../_services/authAPI";
 import projectAPI from "../../_services/projectAPI";
 
@@ -34,18 +34,18 @@ const CreateProject = ({ history, t }) => {
         {id:0, name:"description", isValid:false, state:"active"},
         {id:1, name:"dating", isValid:false, state:"disabled"},
         {id:2, name:"linking", isValid:false, state:"disabled"},
-        {id:3, name:"publication", isValid:false, state:"disabled"},
-        {id:4, name:"resume", isValid:false, state:"disabled"}
+        /*{id:3, name:"publication", isValid:false, state:"disabled"},*/
+        {id:3, name:"resume", isValid:false, state:"disabled"}
     ])
     const [currentStep, setCurrentStep] = useState({id:0, name:"description", isValid:false})
 
     const [obj, setObj] = useState( {
         title: "",
-        description: "",
+        description: {},
         organization: {},
         startDate: "",
-        endDate: "",
-        isPublic:false
+        endDate: ""
+        /*isPublic:false*/
     })
 
     const handleNext = () => {
@@ -103,8 +103,8 @@ const CreateProject = ({ history, t }) => {
                 return <ProjectDatingForm loader={loader} errors={errors} nextStep={handleNext}/>
             case "linking":
                 return <OrgLinkForm loader={loader} errors={errors} nextStep={handleNext}/>
-            case "publication":
-                return <PublicationForm loader={loader} errors={errors} nextStep={handleNext}/>
+            /*case "publication":
+                return <PublicationForm loader={loader} errors={errors} nextStep={handleNext}/>*/
             case "resume":
                 return <ProjectFormResume loader={loader} errors={errors} nexStep={handleNext} history />
         }
@@ -132,8 +132,8 @@ const CreateProject = ({ history, t }) => {
         description: "",
         organization: "",
         startDate: "",
-        endDate: "",
-        isPublic:""
+        endDate: ""
+        /*isPublic:""*/
     });
 
     /*//todo verifier par isValid aussi, avec retour erreurs.*/
@@ -159,6 +159,12 @@ const CreateProject = ({ history, t }) => {
                     setObj
                 }}
             >
+                <Message
+                    info compact color="teal" size="mini"
+                    icon='idea'
+                    header={ t('informations') }
+                    content={ t('about_project') }
+                />
                     <Form onSubmit={handleSubmit}>
                         {/*<StepsRow />*/}
                         <Step.Group size='mini'>

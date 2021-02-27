@@ -5,9 +5,9 @@ import { initReactI18next } from "react-i18next";
 // the translations
 // (tip move them in a JSON file and import them)
 
-import en from './_locales/en/translation.json';
-import fr from './_locales/fr/translation.json';
-import nl from './_locales/nl_BE/translation.json';
+import en from './_locales/en-GB/en-GB.json';
+import fr from './_locales/fr-FR/fr-FR.json';
+import nl from './_locales/nl-BE/nl-BE.json';
 
 i18n
     .use(detector)
@@ -26,7 +26,6 @@ i18n
         },
         fallbackLng: 'en',
 
-        //todo ??
         keySeparator: false, // we do not use keys in form messages.welcome
 
         interpolation: {
@@ -38,7 +37,7 @@ i18n
     .use(initReactI18next) // passes i18n down to react-i18next
     .init({
         resources,
-        lng: "en",
+        lng: "en-GB",
 
         keySeparator: false, // we do not use keys in form messages.welcome
 

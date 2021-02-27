@@ -2,24 +2,36 @@
 import React, {useState, useEffect, useContext} from 'react';
 import '../scss/components/cardOrg.scss';
 import {useTranslation, withTranslation} from 'react-i18next';
-import {Container, Divider, Grid, Icon, Image, Item, Label, Segment} from "semantic-ui-react";
+import {Container, Item, Label } from "semantic-ui-react";
 import Picture from "./Picture";
-import {NavLink} from "react-router-dom";
 import userAPI from "../_services/userAPI";
 import AuthContext from "../_contexts/AuthContext";
 import LabelUser from "./LabelUser";
-import LabelOrg from "./LabelOrg";
 
-const Card = ({ obj, type, isLink=false, profile=false }) => {
-//    console.log(obj)
+const Card = ({ obj, type, isLink=false, profile=false, ctx=undefined }) => {
+    //console.log(obj)
     const isAuth = useContext(AuthContext).isAuthenticated;
     const {t,  i18n } = useTranslation()
+    const lg = i18n.language.split('-')[0]
 
   //  const [isOwner, setIsOwner] = useState(false)
     const [hrefLink, setHrefLink] = useState("")
     /*const [hrefLink2, setHrefLink2] = useState("")*/
 
     const [owner, setOwner] = useState({});
+
+    function getTranslate(typeText) {
+        //console.log(obj[typeText])
+        if(obj[typeText]){
+           if(obj[typeText][lg]) {
+                return obj[typeText][lg]
+            }else if(obj[typeText]['en']) {
+               return obj[typeText]['en']
+           }
+        }else {
+            return t('no_' + typeText)
+        }
+    }
 
     useEffect(() => {
        /* let h2 = "/profile/public_" + type + "_" + obj.id;*/
@@ -43,7 +55,7 @@ const Card = ({ obj, type, isLink=false, profile=false }) => {
             setHrefLink(h);
         }
 
-        //console.log(h)
+        ////console.log(h)
         /*setHrefLink2(h2);*/
     },[])
 
@@ -63,7 +75,7 @@ const Card = ({ obj, type, isLink=false, profile=false }) => {
                                     </>
                             }
 
-                            { !obj.isPublic && ( type === "project" || type === "activity") &&
+                            { ctx !== 'public' && type === "activity" &&
                                 <Label basic >
                                     { t('publishing')}
                                     <Label.Detail>
@@ -88,36 +100,19 @@ const Card = ({ obj, type, isLink=false, profile=false }) => {
                     <Item.Group link={isLink} href={ hrefLink }>
                         {/*<a href={ hrefLink2 }>vers pageProfile</a>*/}
                         <Item>
-                            {/*<Item.Content>
-                                <Item.Header as="h4">
-                                    { t('description') }
-                                </Item.Header>
-                                    <Picture size="small" picture={obj.picture} isFloat="middle"/>
-                                    <p>
-                                        {obj.description && obj.description[i18n.language] ?
-                                            obj.description[i18n.language]
-                                            :
-                                            t('no_description')
-                                        }
-                                    </p>
-                            </Item.Content>*/}
 
                             <Container textAlign='center'>
                                 <Picture size="small" picture={obj.picture} />
                             </Container>
 
-                            { (type === "org" || type === "project") &&
+                            { (type === "org" || type === "project" ) &&
                                 <Container textAlign='center'>
                                     <Item.Content>
                                         <Item.Header as="h4">
                                             { t('description') }
                                         </Item.Header>
                                         <Item.Description>
-                                            {obj.description && obj.description[i18n.language] ?
-                                                obj.description[i18n.language]
-                                                :
-                                                t('no_description')
-                                            }
+                                            { getTranslate("description") }
                                         </Item.Description>
                                     </Item.Content>
                                 </Container>
@@ -130,11 +125,7 @@ const Card = ({ obj, type, isLink=false, profile=false }) => {
                                         { t('summary') }
                                     </Item.Header>
                                     <Item.Description>
-                                        {obj.summary && obj.summary[i18n.language] ?
-                                            obj.summary[i18n.language]
-                                            :
-                                            t('no_summary')
-                                        }
+                                        { getTranslate("summary") }
                                     </Item.Description>
                                 </Item.Content>
                             </Container>
@@ -152,19 +143,28 @@ const Card = ({ obj, type, isLink=false, profile=false }) => {
                                         { t('contact') }
                                     </Item.Header>
                                     <Item.Extra>
-                                        {type !== "user" &&
+                                        {type !== "user" && ctx !=="create" &&
                                             <LabelUser user={ owner } type={type === "org" ? "referent" : "author"} />
                                           //  <Label icon='user' content={obj.referent.firstname + " " + obj.referent.lastname}/>
                                         }
 
+                                        {obj.project &&
+                                           /* <LabelOrg org={obj.organization } />*/
+                                            //"/project/:id"
+                                            <Label as='a' href={"/project/"+obj.project.id} basic image >
+                                                { obj.project.title }
+                                                <Label.Detail>{ t('project') }</Label.Detail>
+                                            </Label>
+                                        }
                                         {obj.organization &&
-                                            /*<>
-                                                <Divider hidden/>
-                                                <Label icon='link' content={obj.organization.name}/>
-                                            </>*/
-                                            <LabelOrg org={obj.organization } />
+                                            <Label as='a' href={"/org/"+obj.organization.id} basic image >
+                                                {obj.organization.name}
+                                                <Label.Detail>{ t('organization') }</Label.Detail>
+                                            </Label>
+                                            /*<LabelOrg org={obj.organization } />*/
                                         }
 
+                                        {/*//todo tout s affiche?*/}
                                         {(obj.email || obj.phone) &&
                                         <>
                                             {

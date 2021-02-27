@@ -1,26 +1,30 @@
 
 import React, {useContext, useState} from "react";
-import { Button, Icon, TextArea, Form, Item, Label } from "semantic-ui-react";
+import {Container, Button, Icon, TextArea, Form, Item, Label, Segment} from "semantic-ui-react";
 import { StepFormContext } from "../../../_routes/_project/CreateProject";
 import {withTranslation} from "react-i18next";
+import TextAreaMultilang from "../TextAreaMultilang";
 
 const ProjectDescForm = ({t, loader, errors, nextStep}) => {
 
     const { obj } = useContext(StepFormContext)
 
-    const [p, setP]=useState({
-        title: "",
-        description: ""
+    const [title, setTitle]=useState("")
+    const [desc, setDesc] = useState({
+        en:"",
+        fr:"",
+        nl:""
     })
 
     const handleChange = (event) => {
-        const { name, value } = event.currentTarget;
-        setP({ ...p, [name]: value })
+        const {value}  = event.currentTarget;
+        setTitle( value )
     };
 
     const handleSub = () => {
-        obj.title = p.title
-        obj.description = p.description
+        obj.title = title
+        obj.description = desc
+        console.log(obj)
         nextStep()
     }
 
@@ -47,7 +51,7 @@ const ProjectDescForm = ({t, loader, errors, nextStep}) => {
                                 type="text"
                                 minLength="2"
                                 maxLength="50"
-                                value={obj.title ? obj.title : p.title}
+                                value={title}
                                 onChange={handleChange}
                                 placeholder="Titre..."
                                 error={errors.title ? errors.title : null}
@@ -55,30 +59,10 @@ const ProjectDescForm = ({t, loader, errors, nextStep}) => {
                             />
                         }
                     </Item>
-                    <Item>
-                        <Label size="small" ribbon>
-                            Description
-                        </Label>
-                        {loader ?
-                            <TextArea
-                                type="textarea"
-                                disabled
-                                loading
-                            />
-                            :
-                            <TextArea
-                                name="description"
-                                type="textarea"
-                                minLength="2"
-                                maxLength="250"
-                                value={obj.description ? obj.description : p.description}
-                                onChange={handleChange}
-                                placeholder="description..."
-                                error={errors.description ? errors.description : null}
-                                required
-                            />
-                        }
-                    </Item>
+
+                    <Container>
+                        <TextAreaMultilang  tabText={desc} setter={setDesc} name="description" min={2} max={500}/>
+                    </Container>
 
                     <Button fluid animated >
                         <Button.Content visible>Next</Button.Content>

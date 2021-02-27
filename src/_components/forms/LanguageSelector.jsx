@@ -3,31 +3,25 @@ import { Dropdown } from 'semantic-ui-react'
 import { useTranslation } from 'react-i18next'
 
 const LanguageSelector = () => {
-    const { t, i18n } = useTranslation()
-   /* console.log(i18n.languageCode)
-    console.log(t.language)*/
-//    console.log(i18n.options)
- //   const [lg, setLg ] = useState();
+    const { i18n } = useTranslation()
 
     const countryOptions = [
-        {key: 'en', value: 'en', flag: 'gb', text: ''},
-        {key: 'fr', value: 'fr', flag: 'fr', text: ''},
-        {key: 'nl', value: 'nl', flag: 'nl', text: ''},
+        {key: 'en-GB', value: 'en-GB', flag: 'gb', text: ''},
+        {key: 'fr-FR', value: 'fr-FR', flag: 'fr', text: ''},
+        {key: 'nl-BE', value: 'nl-BE', flag: 'nl', text: ''},
     ]
 
-    const handleChange = (e, { value }) => {
+    //don't touche (e, {value}) event is important for Dropdown (onClick event)
+    const handleChange = (e, {value}) => {
         i18n.changeLanguage( value )
-   //     setLg(value)
     }
 
     return (
             <Dropdown
-                placeholder='Select Country'
-                fluid
-                search
-                selection
-                options={countryOptions}
+                placeholder='Country'
+                compact closeOnBlur selection
                 value={i18n.language}
+                options={countryOptions}
                 onChange={handleChange}
             />
     )

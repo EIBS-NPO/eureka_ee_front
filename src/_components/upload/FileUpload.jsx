@@ -1,32 +1,43 @@
 
-import React, { useState } from 'react';
-import {Item, Button, Form, Icon, Loader, Segment, Header} from "semantic-ui-react";
+import React, {useContext, useState} from 'react';
+import { Message, Item, Button, Form, Icon, Loader, Segment, Header} from "semantic-ui-react";
 import fileAPI from "../../_services/fileAPI";
-import {withTranslation} from "react-i18next";
+import {useTranslation, withTranslation} from "react-i18next";
 import utilities from "../../_services/utilities";
+import AuthContext from "../../_contexts/AuthContext";
+import authAPI from "../../_services/authAPI";
 
+//todo config jpa sur type mime accepté par le button
+/**
+ *
+ * @param history
+ * @param activity
+ * @param setter
+ * @returns {JSX.Element}
+ * @constructor
+ */
+const FileUpload = ( { history, activity, setter} ) => {
+    if ( !authAPI.isAuthenticated ) {
+        console.log('test pour voir')
+        history.replace.push('/login')
+    }
 
+    const { t } = useTranslation()
 
-const FileUpload = ( props ) => {
-
-    const activity = props.activity
-    console.log(props.activity)
- //   console.log(activityFile)
+ //   console.log(activity)
 
     const [activityFile, setActivityFile] = useState()
     const [file, setFile] = useState()
     const [loader, setLoader] = useState(false)
 
-
-    /*//todo verif si fonction pour file, ca vient du uploader d'image*/
     const onInputChange = (e) => {
         setFile(e.target.files[0])
         let reader = new FileReader()
 
-        //todo utile?
+        //todo sert a quetchy
         reader.addEventListener('load', () => {
-            console.log(reader.result)
             setActivityFile(reader.result)
+        //    console.log(activityFile);
         }, false)
 
         if (file) {
@@ -34,27 +45,53 @@ const FileUpload = ( props ) => {
         }
     }
 
+    const [error, setError] = useState()
+ //   console.log(error)
+
+    /*const redirectToNewActivity = (id) => {
+       return <Redirect to={"/activity/creator_" + id}/>
+    }*/
+
     const handleSubmitFile = (event) => {
         event.preventDefault()
         setLoader(true)
         let bodyFormData = new FormData();
+        console.log(file);
         bodyFormData.append('file', file)
         bodyFormData.append('id', activity.id)
 
-
-        fileAPI.uploadFile( bodyFormData )
+        //todo controle sur mimi GPA
+        if(activity.fileType){
+            fileAPI.putFile(bodyFormData)
             .then(response => {
-                //    notification.successNotif('nouvelle photo de profil bien enregistrée')
-                //  setRefresh(response.data[0].picture)
                 console.log(response)
-                props.setter(response.data)
-                // parentCallBack()
+                setter(response.data[0])
             })
             .catch(error => {
                 //handle error
-                console.log(error);
+                console.log(error.response)
+                console.log(error.response.data)
+                console.log(error.response.status)
+                console.log(error.response.statusText)
+                setError(error.response)
             })
             .finally(() => setLoader(false))
+
+        }else {
+            fileAPI.postFile(bodyFormData)
+                .then(response => {
+                    console.log(response)
+                 //   redirectToNewActivity(response.data.id)
+                    setter(response.data[0])
+                    history.replace('/activity/creator_'+response.data[0].id)
+                })
+                .catch(error => {
+                    console.log(error)
+                    setError(error.response)
+                })
+                .finally(() => setLoader(false))
+        }
+
     }
 
     return (
@@ -63,7 +100,7 @@ const FileUpload = ( props ) => {
                 <Loader
                     active
                     content={
-                        <p>{props.t('loading') +" : " + props.t('presentation') }</p>
+                        <p>{t('loading') +" : " + t('presentation') }</p>
                     }
                     inline="centered"
                 />
@@ -72,19 +109,26 @@ const FileUpload = ( props ) => {
             {!loader &&
                 <Item>
 
-                    {!activity.fileType &&
-                    <Header icon>
+                    {!error && !activity.fileType &&
+                    /*<Header icon>
                         <Icon name='pdf file outline' />
 
                         No documents are listed for this customer.
-                    </Header>
+                    </Header>*/
+                        <Message warning icon="file outline" header={ t('no_file') } />
                     }
-                    {activity.fileType &&
-                    <Header icon>
-                        <Icon name='pdf file outline' />
-                        <p>{activity.filePath}</p>
-                        <p>{utilities.octetsToKilos(activity.size) + "kB"}</p>
-                    </Header>
+
+                    {error &&
+                        <Message error icon="file" header={ error.status }>
+                            <p> { error.data }</p>
+                            <p>{ t( error.statusText )}</p>
+                        </Message>
+
+                        /* <Header icon>
+                             <Icon name='pdf file outline' />
+                             <p>{activity.filePath}</p>
+                             <p>{utilities.octetsToKilos(activity.size) + "kB"}</p>
+                         </Header>*/
                     }
 
                     <Form onSubmit={handleSubmitFile}>
@@ -96,7 +140,7 @@ const FileUpload = ( props ) => {
                             /*hidden*/
                         />
                         <Button fluid animated >
-                            <Button.Content visible>{ props.t('save') } </Button.Content>
+                            <Button.Content visible>{ t('save') } </Button.Content>
                             <Button.Content hidden>
                                 <Icon name='save' />
                             </Button.Content>

@@ -16,7 +16,10 @@ const OrgList = ( props ) => {
 
     const urlParams = props.match.params.ctx
 
-    const [owners, setOwners] = useState([])
+    //forbiden if route for my org and no auth
+    if (urlParams !=="public" && isAuth === undefined) {
+        props.history.replace('/')
+    }
 
     const ctx = () => {
         if (urlParams ==="my" && isAuth) {
@@ -72,8 +75,8 @@ const OrgList = ( props ) => {
                 <>
                     {orgs && orgs.length > 0 &&
                         orgs.map(org => (
-                            <Segment raised>
-                                <Card key={org.id} obj={org} type="org" isLink={true} />
+                            <Segment key={org.id} raised>
+                                <Card key={org.id} obj={org} type="org" isLink={true} ctx={ctx()}/>
                             </Segment>
                         ))
                     }

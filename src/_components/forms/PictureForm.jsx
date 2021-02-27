@@ -1,11 +1,15 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {Image, Item, Label} from "semantic-ui-react";
 import ImageUpload from "../upload/ImageUpload";
 
-const PictureForm = ({ entityType, entity}) => {
+const PictureForm = ({ entityType, entity, setter}) => {
 
     const [picture, setPicture] = useState(entity.picture);
+
+    useEffect(()=> {
+        setter({...entity, "picture":picture })
+    },[picture])
 
     return (
         <Item>

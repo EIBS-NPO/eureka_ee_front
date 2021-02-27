@@ -1,0 +1,9 @@
+{
+  "Welcome": "welcome",
+  "Sign_up": "Sign Up",
+  "Login": "Login",
+  "Logout": "Logout",
+  "new_org": "New Organisation",
+
+  "remember_english": "Remember to translate into English. As default language, it will be displayed in case of missing translation."
+}

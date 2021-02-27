@@ -52,7 +52,7 @@ const ProfilUser = ({t, history }) => {
                                     <Loader active inline="centered" />
                                 </Item>
                                 :
-                                <PictureForm picture={user.picture} entityType="user" entity={user}/>
+                                <PictureForm entityType="user" entity={user} setter={setUser}/>
                             }
                         </Segment>
 

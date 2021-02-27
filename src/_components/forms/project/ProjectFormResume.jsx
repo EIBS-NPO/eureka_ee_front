@@ -1,31 +1,35 @@
 
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { withTranslation } from 'react-i18next';
 import {Button, Form, Icon, Label} from "semantic-ui-react";
 import { StepFormContext } from "../../../_routes/_project/CreateProject";
-import Project from "../../cards/project";
 import projectAPI from "../../../_services/projectAPI";
+import Card from "../../Card";
 
-const ProjectFormResume = ( props ) => {
+//todo virer le props? pour la redir??
+const ProjectFormResume = ( props  ) => {
 
     const { obj } = useContext(StepFormContext)
 
     console.log(obj)
 
+    const [loader, setLoader] = useState(false)
+
     const handleSubmit = (event) => {
-      //  setLoader(true)
+        setLoader(true)
         event.preventDefault()
 
         projectAPI.post(obj)
             .then(response => {
-                console.log(response.data[0].id)
-                window.location.href='/project/creator_' + response.data[0].id
+                console.log(response.data[0])
+                props.history.replace("/project/creator_" + response.data[0].id)
             })
             .catch(error => {
                 console.log(error)
                 console.log(error.response)
            //     setErrors(error.response.data.error);
             })
+            .finally(() => setLoader(false))
     };
 
     return (
@@ -33,9 +37,10 @@ const ProjectFormResume = ( props ) => {
             <Label attached="top">
                 <h4>{ props.t("review") }</h4>
             </Label>
-            <Form onSubmit={handleSubmit}>
+            <Form onSubmit={handleSubmit} loading={loader}>
 
-                <Project project={obj} context="create"/>
+                <Card obj={obj} type="project" profile={true} ctx="create"/>
+                {/*<Project project={obj} context="create"/>*/}
 
                 <Button animated >
                     <Button.Content visible>{ props.t("save") }</Button.Content>
