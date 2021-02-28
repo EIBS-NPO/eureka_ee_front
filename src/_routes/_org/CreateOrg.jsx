@@ -49,8 +49,8 @@ const CreateOrg = ({ history, t }) => {
                 history.replace("/org/creator_" + response.data[0].id)
             })
             .catch(error => {
-                console.log(error.response)
-                setErrors(error.response.data.error);
+                console.log(error.response.data)
+                setErrors(error.response.data);
             })
     };
 

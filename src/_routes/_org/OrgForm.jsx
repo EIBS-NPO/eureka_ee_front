@@ -62,7 +62,7 @@ const OrgForm = ( props ) => {
                 })
                 .catch(error => {
                     console.log(error)
-                    setErrors(error.response)
+                    setErrors(error.response.data)
                 })
                 .finally(() => {
                     setLoader(false)
@@ -89,7 +89,7 @@ const OrgForm = ( props ) => {
                             onChange={handleChange}
                             placeholder={props.t('name') + "..."}
                             type="text"
-                            error={errors.name ? errors.name : null}
+                            error={ errors.name ? errors.name : null}
                             required
                         />
                     </Item>
@@ -101,7 +101,7 @@ const OrgForm = ( props ) => {
                             value={updateOrg.type ? updateOrg.type : ""}
                             onChange={handleChange}
                             placeholder={props.t('type') + "..."}
-                            error={errors.type ? errors.type : null}
+                            error={ errors.type ? errors.type : null}
                             required
                         />
                     </Item>
@@ -121,7 +121,7 @@ const OrgForm = ( props ) => {
                         value={updateOrg.email ? updateOrg.email : ""}
                         onChange={handleChange}
                         placeholder={props.t('email') + "..."}
-                        error={errors.email ? errors.email : null}
+                        error={ errors.email ? errors.email : null}
                     />
                     <Form.Input
                         icon='phone'
@@ -133,7 +133,7 @@ const OrgForm = ( props ) => {
                         value={updateOrg.phone ? updateOrg.phone : ""}
                         onChange={handleChange}
                         placeholder={props.t('phone') + "..."}
-                        error={errors.phone ? errors.phone : null}
+                        error={ errors.phone ? errors.phone : null}
                     />
                 </Segment>
 

@@ -81,7 +81,7 @@ const AddressForm = ({ obj, setter }) => {
                     console.log(response)
                 })
                 .catch(error => {
-                    setErrors(error)
+                    setErrors(error.response.data)
                 })
                 .finally(()=> {
                     setLoader(false)
@@ -116,7 +116,7 @@ const AddressForm = ({ obj, setter }) => {
                                     onChange={handleChange}
                                     placeholder={t('address') + "..."}
                                     type="textarea"
-                                    error={errors && errors.address ? errors.address : null}
+                                    error={ errors.address ? errors.address : null}
                                     required
                                 />
                             </Item>
@@ -128,7 +128,7 @@ const AddressForm = ({ obj, setter }) => {
                                     onChange={handleChange}
                                     placeholder={t('complement') + "..."}
                                     type="textarea"
-                                    error={errors && errors.complement ? errors.complement : null}
+                                    error={ errors.complement ? errors.complement : null}
                                 />
                             </Item>
                             <Item>
@@ -139,7 +139,7 @@ const AddressForm = ({ obj, setter }) => {
                                     onChange={handleChange}
                                     placeholder={t('city') + "..."}
                                     type="text"
-                                    error={errors && errors.city ? errors.city : null }
+                                    error={ errors.city ? errors.city : null }
                                     required
                                 />
                             </Item>
@@ -151,7 +151,7 @@ const AddressForm = ({ obj, setter }) => {
                                     onChange={handleChange}
                                     placeholder={t('zipCode') + "..."}
                                     type="text"
-                                    error={errors && errors.zipCode ? errors.zipCode : null}
+                                    error={ errors.zipCode ? errors.zipCode : null}
                                     required
                                 />
                             </Item>
@@ -163,7 +163,7 @@ const AddressForm = ({ obj, setter }) => {
                                     onChange={handleChange}
                                     placeholder={t('country') + "..."}
                                     type="text"
-                                    error={errors && errors.country ? errors.country : null}
+                                    error={ errors.country ? errors.country : null}
                                     required
                                 />
                             </Item>
