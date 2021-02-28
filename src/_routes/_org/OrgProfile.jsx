@@ -1,6 +1,6 @@
+
 import React, {useEffect, useState, useContext, createContext} from 'react';
 import orgAPI from '../../_services/orgAPI';
-import Organization from "../../_components/cards/organization";
 import {Container, Button, Header, Icon, Image, Item, Label, Loader, Menu, Segment} from "semantic-ui-react";
 import {withTranslation} from "react-i18next";
 import AuthContext from "../../_contexts/AuthContext";
@@ -8,6 +8,7 @@ import OrgForm from "./OrgForm";
 import userAPI from "../../_services/userAPI";
 import Membership from "./Membership";
 import Card from "../../_components/Card";
+import AddressForm from "../../_components/forms/AddressForm";
 
 export const OrgContext = createContext({
     org:{ },
@@ -25,10 +26,7 @@ const OrgProfile = (props ) => {
         if (urlParams[0] !=="public" && isAuth === false) {
             //if ctx need auth && have no Auth, public context is forced
             return 'public';
-        }
-        else {
-            return urlParams[0]
-        }
+        } else {return urlParams[0]}
     }
 
     const isReferent = () => {
@@ -36,17 +34,11 @@ const OrgProfile = (props ) => {
     }
 
     const [ org, setOrg ] = useState({})
-    console.log(org)
 
     const  [ orgForm, setOrgForm ]  = useState(false)
 
     const handleForm = ( ) => {
-        if(orgForm === true){
-            setOrgForm(false)
-        }
-        else {
-            setOrgForm(true)
-        }
+        orgForm === true ? setOrgForm(false) : setOrgForm(true)
     }
 
     const [loader, setLoader] = useState(true);
@@ -109,6 +101,15 @@ const OrgProfile = (props ) => {
                                     </Header>
                                 </Menu.Item>
                                 <Menu.Item
+                                    name='address'
+                                    active={activeItem === 'address'}
+                                    onClick={handleItemClick}
+                                >
+                                    <Header >
+                                        { props.t("address") }
+                                    </Header>
+                                </Menu.Item>
+                                <Menu.Item
                                     name='membership'
                                     active={activeItem === 'membership'}
                                     onClick={handleItemClick}
@@ -142,12 +143,11 @@ const OrgProfile = (props ) => {
                             <Segment attached='bottom'>
                                 <>
                                     {orgForm ?
-                                        /*//todo ajout setter pour org?*/
                                         <OrgForm org={org} setForm={handleForm} setter={setOrg}/>
                                     :
                                         <>
-
                                             <Card obj={org} type="org" profile={true} ctx={ctx()}/>
+
 
 
                                             {isAuth && isReferent() && !orgForm &&
@@ -166,7 +166,12 @@ const OrgProfile = (props ) => {
                             </Segment>
                             }
 
-                            {/*todo faire en-GB sorte que les compo ne se charge qu'à la demande*/}
+                            {activeItem === 'address' &&
+                            <Segment attached='bottom'>
+                                <AddressForm obj={org} setter={setOrg} />
+                            </Segment>
+                            }
+
                             {activeItem === 'membership' &&
                                 <Segment attached='bottom'>
                                     <Membership org={org} />

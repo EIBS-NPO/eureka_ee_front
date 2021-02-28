@@ -46,12 +46,14 @@
 
   "no_def": "non défini",
   "no_description": "aucune description",
+  "not_specified": "non renseigné",
   "no_members": "auncun membre",
   "no_file": "Aucun document",
   "no_summary": "aucun résumé",
   "file_available": "fichier disponible",
   "file_not_allowed": "fichier non autorisé",
   "review": "vérifications",
+  "firstname": "prénom",
   "name" : "nom",
   "title": "titre",
   "description": "description",
@@ -79,9 +81,13 @@
   "team": "equipe",
 
   "details": "détails",
+  "coordinates": "coordonnées",
   "address": "adresse",
+  "complement" : "complément",
+  "country": "pays",
   "email": "email",
   "phone": "téléphone",
+  "mobile": "mobile",
   "files": "fichiers",
   "file": "fichier",
 

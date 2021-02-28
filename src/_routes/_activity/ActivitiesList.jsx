@@ -15,18 +15,12 @@ const ActivitiesList = ( props ) => {
     if ( urlParams[0] !=="public" ) {
         authAPI.setup();
     }
-    console.log(urlParams[0])
 
     const ctx = () => {
         if (urlParams !=="public" && isAuth === false) {
             //if ctx need auth && have no Auth, public context is forced
-            console.log('public')
             return 'public';
-        }
-        else {
-            console.log(urlParams)
-            return urlParams
-        }
+        }else {return urlParams}
     }
 
     const [activities, setActivities] = useState({})
@@ -35,7 +29,6 @@ const ActivitiesList = ( props ) => {
 
     useEffect(() => {
         setLoader(true)
-        console.log(ctx())
         if (ctx() !== 'public') {
             activityAPI.get(ctx())
                 .then(response => {

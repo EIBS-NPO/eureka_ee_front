@@ -6,7 +6,6 @@ import AuthContext from "../../_contexts/AuthContext";
 import memberAPI from "../../_services/memberAPI";
 import User from "../../_components/cards/user";
 import Modal from "../../_components/Modal";
-import ImageCropper from "../../_components/upload/ImageCropper";
 import Card from "../../_components/Card";
 
 //todo afficher un bouton si referent pour update
@@ -20,21 +19,15 @@ const Membership = ( props ) => {
     }
 
     const [members, setMembers] = useState([])
-  //  console.log(members)
     const [email, setEmail] = useState()
     const [errors, setErrors] = useState({
         email:""
     })
 
-    /*const [message, setMessage] = useState()
-    const [isSucces, setIsSucces] = useState()*/
-
     useEffect(()=>{
         setLoader(true)
-    //    console.log(props.org.id)
         memberAPI.get(props.org.id)
             .then(response => {
-        //        console.log(response)
                 if(response.data[0] !== "DATA_NOT_FOUND"){
                     setMembers(response.data)
                 }
@@ -54,17 +47,10 @@ const Membership = ( props ) => {
         setLoader(true)
         memberAPI.addMember(props.org.id, email)
             .then(response => {
-          //      console.log(response)
-                //members.push(response.data[0])
                 if(response.data[0] !== "DATA_NOT_FOUND"){
                     setMembers(response.data)
                 }
                 setEmail("")
-                /*setMessage({
-                    header:'Form Completed',
-                    content:"You're all signed up for the newsletter"
-                })
-                setIsSucces(true)*/
             })
             .catch(error => console.log(error.response))
             .finally(() => setLoader(false))
@@ -74,7 +60,6 @@ const Membership = ( props ) => {
     const [show, setShow] = useState(false)
 
     const showModal = ( user ) => {
-      //  console.log(user)
         setUserTarget(user)
         setShow(true)
     }
@@ -88,7 +73,6 @@ const Membership = ( props ) => {
         setLoader(true)
         memberAPI.remove(id, props.org.id)
             .then(response => {
-    //            console.log(response.data)
                 if(response.data[0] !== "DATA_NOT_FOUND") {
                     setMembers(response.data)
                 }else {setMembers([])}
@@ -104,7 +88,6 @@ const Membership = ( props ) => {
                     <Label attached="top">
                         { props.t('add_members')}
                     </Label>
-                   {/* <Form onSubmit={addSubmit} loading={loader} succes={isSucces}>*/}
                     <Form onSubmit={addSubmit} loading={loader} >
                         <p>
                             Entrez ici le mail de la personne à ajouter en tant que membre dans votre organisation.

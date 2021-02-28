@@ -1,22 +1,16 @@
 import React, { useEffect, useState, useContext } from 'react';
-import utilities from "../../_services/utilities";
 import { withTranslation } from 'react-i18next';
-import AuthAPI from "../../_services/authAPI";
 import orgAPI from "../../_services/orgAPI";
-import fileAPI from "../../_services/fileAPI";
-import Organization from "../../_components/cards/organization";
-import {Divider, Icon, Image, Item, Label, Loader, Segment} from "semantic-ui-react";
+import { Loader, Segment} from "semantic-ui-react";
 import AuthContext from "../../_contexts/AuthContext";
-import {NavLink} from "react-router-dom";
 import Card from "../../_components/Card";
 
 const OrgList = ( props ) => {
     const isAuth = useContext(AuthContext).isAuthenticated;
-    //const [ctx, setCtx] = useState(props.match.params.ctx)
 
     const urlParams = props.match.params.ctx
 
-    //forbiden if route for my org and no auth
+    //forbiden if route for my org wwith no auth
     if (urlParams !=="public" && isAuth === undefined) {
         props.history.replace('/')
     }
@@ -25,11 +19,7 @@ const OrgList = ( props ) => {
         if (urlParams ==="my" && isAuth) {
             //if ctx need auth && have no Auth, public context is forced
             return 'my';
-        }
-        else {
-            // console.log(urlParams)
-            return 'public'
-        }
+        } else {return 'public'}
     }
 
     const [orgs, setOrgs] = useState([])
@@ -58,14 +48,6 @@ const OrgList = ( props ) => {
                 .finally(() => setLoader(false))
         }
     }, [urlParams]);
-
-    /*useEffect(() => {
-        orgs.forEach(org => {
-            if(owners.find( o => o.id === org.referent.id) === undefined){
-                setOwners({...owners, org.referent})
-            }
-        })
-    },[orgs])*/
 
     return (
         <div className="card">

@@ -7,8 +7,9 @@ import PictureForm from "../../_components/forms/PictureForm";
 import ParamLoginForm from "../../_components/forms/user/ParamLoginForm";
 import UserCoordForm from "../../_components/forms/user/UserCoordForm";
 import {withTranslation} from "react-i18next";
+import AddressForm from "../../_components/forms/AddressForm";
 
-const ProfilUser = ({t, history }) => {
+const UserProfile = ({t, history }) => {
     const isAuthenticated = useContext(AuthContext);
     if (isAuthenticated === true) {
         history.replace('/');
@@ -19,12 +20,15 @@ const ProfilUser = ({t, history }) => {
         lastname: "",
         firstname: "",
         phone:"",
-        mobile:""
+        mobile:"",
+        address:undefined
     })
 
     {/*todo modal pour change password et email?*/}
 
     const [loader, setLoader] = useState(false)
+
+    const [activeItem, setActiveItem] = useState('presentation')
 
     useEffect(() => {
         setLoader(true)
@@ -86,13 +90,7 @@ const ProfilUser = ({t, history }) => {
                                     <Loader active inline="centered"/>
                                 </Item>
                                 :
-                                <Item.Group>
-                                    <Item>
-                                        <Item.Content>
-                                            <Item.Header>{t('address')}</Item.Header>
-                                        </Item.Content>
-                                    </Item>
-                                </Item.Group>
+                                <AddressForm obj={user} setter={setUser} />
                             }
                         </Segment>
                     </Grid.Column>
@@ -103,4 +101,4 @@ const ProfilUser = ({t, history }) => {
 };
 
 
-export default withTranslation()(ProfilUser);
+export default withTranslation()(UserProfile);

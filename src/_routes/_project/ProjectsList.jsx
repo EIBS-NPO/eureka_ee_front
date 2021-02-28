@@ -2,7 +2,6 @@ import React, { useEffect, useState, useContext } from 'react';
 import { Loader, Segment} from 'semantic-ui-react'
 import { withTranslation } from 'react-i18next';
 import projectAPI from "../../_services/projectAPI";
-import Project from "../../_components/cards/project";
 import AuthContext from "../../_contexts/AuthContext";
 import Card from "../../_components/Card";
 
@@ -19,11 +18,9 @@ const ProjectsList = ( props ) => {
     const ctx = () => {
         if (urlParams !=="public" && isAuth === false) {
             //if ctx need auth && have no Auth, public context is forced
-            console.log('public')
             return 'public';
         }
         else {
-            console.log(urlParams)
             return urlParams
         }
     }

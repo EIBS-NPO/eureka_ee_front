@@ -15,11 +15,6 @@ const OrgForm = ( props ) => {
 
     useEffect(() => {
         setUpdateOrg(org)
-        /*if(org.description){
-            org.description.map((d, lg) => {
-                setDesc({...desc, [lg]: d[lg]})
-            })
-        }*/
     },[])
 
     const [errors, setErrors] = useState({
@@ -77,23 +72,6 @@ const OrgForm = ( props ) => {
                 abortController.abort()
             }
     }
-
-    /*const handleSubmit = () => {
-        setLoader(true);
-        orgAPI.put( org )
-            .then(response => {
-                console.log(response.data[0])
-                props.setForm(false)
-                //todo confirmation
-            })
-            .catch(error => {
-                console.log(error)
-                setErrors(error.response)
-            })
-            .finally(()=> {
-                setLoader(false)
-            })
-    };*/
 
     return (
         <>

@@ -2,13 +2,11 @@ import Axios from "axios";
 import jwt_decode from "jwt-decode";
 import { LOGIN_API } from "../config";
 
-
 function logout() {
     window.localStorage.removeItem("authToken");
     if (Axios.defaults.headers["Authorization"]){
         delete Axios.defaults.headers["Authorization"];
         window.location.href='/login'
-     //   history.replace('/')
     }
 }
 
@@ -35,18 +33,15 @@ function setAxiosToken(token) {
  */
 function setup() {
     const token = window.localStorage.getItem("authToken");
-    console.log(1)
     if (token) {
         try {
             const jwtData = jwt_decode(token);
             // valid token format
             if (jwtData.exp * 1000 > new Date().getTime()) {
                 setAxiosToken(token);
-                console.log(2)
                 return true;
             }
             else {
-                console.log(3)
                 logout();
                 return false;
             }
@@ -55,7 +50,6 @@ function setup() {
             // invalid token format
         }
     } else {
-        console.log(4)
         logout();
         return false;
     }

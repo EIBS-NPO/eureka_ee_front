@@ -20,7 +20,7 @@ const ActivityForm = ( { history, activity, setActivity, setForm} ) => {
         orgId:null,
         projectId:null
     })
-console.log(updateActivity)
+
     const [desc, setDesc] = useState({
         en:"",
         fr:"",

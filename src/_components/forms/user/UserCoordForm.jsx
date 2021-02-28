@@ -1,11 +1,14 @@
 
 import React, { useState, useEffect } from 'react';
-import {Loader, Button, Form, Icon, Item, Label} from "semantic-ui-react";
+import { Button, Form, Icon, Item, Label} from "semantic-ui-react";
 
 import UserAPI from "../../../_services/userAPI";
 import authAPI from "../../../_services/authAPI";
+import {useTranslation} from "react-i18next";
 
 const UserCoordForm = ({user, setterUser}) => {
+
+    const { t } = useTranslation()
 
     const [userMail, setUserMail] = useState()
     const [upUser, setUpUser] = useState(
@@ -54,11 +57,13 @@ const UserCoordForm = ({user, setterUser}) => {
             })
     };
 
-    const switchUpdate = () => {
+    const switchUpdate = (e) => {
+        e.preventDefault()
         setUpdate(true);
     }
 
-    const stopUpdate = () => {
+    const stopUpdate = (e) => {
+        e.preventDefault()
         setUpUser(user)
         setUpdate(false)
     }
@@ -68,128 +73,65 @@ const UserCoordForm = ({user, setterUser}) => {
             <Item>
                 <Item.Content>
                     <Label attached='top'>
-                        <h4>Mes Coordonnées</h4>
+                        <h4>{ t('coordinates') }</h4>
                     </Label>
-                    {/*{loader &&
-                        <Loader active content='Loading'/>
-                    }*/}
                     {update &&
-                    <Form onSubmit={handleSubmit}>
+                    <Form onSubmit={handleSubmit} loading={loader}>
                         <Item.Group divided>
                             <Item>
-                                <Label size="small" ribbon>
-                                    First name
-                                </Label>
-                                {loader ?
                                     <Form.Input
                                         icon='user'
                                         iconPosition='left'
-                                        type="text"
-                                        disabled
-                                        loading
-                                    />
-                                :
-                                    <Form.Input
-                                        icon='user'
-                                        iconPosition='left'
-
+                                        label={ t("firstname") }
                                         name="firstname"
                                         type="text"
                                         value={upUser.firstname}
                                         onChange={handleChange}
                                         error={errors.firstname ? errors.firstname : null}
                                     />
-                                }
                             </Item>
                             <Item>
-                                <Label size="small" ribbon>
-                                    Last name
-                                </Label>
-                                {loader ?
                                     <Form.Input
                                         icon='user'
                                         iconPosition='left'
-                                        type="text"
-                                        disabled
-                                        loading
-                                    />
-                                :
-                                    <Form.Input
-                                        icon='user'
-                                        iconPosition='left'
-
+                                        label={ t("lastname") }
                                         name="lastname"
                                         type="text"
                                         value={upUser.lastname}
                                         onChange={handleChange}
                                         error={errors.lastname ? errors.lastname : null}
                                     />
-                                }
                             </Item>
                             <Item>
-                                <Label size="small" ribbon>
-                                    Phone
-                                </Label>
-                                {loader ?
                                     <Form.Input
                                         icon='phone'
                                         iconPosition='left'
-                                        type="phone"
-                                        disabled
-                                        loading
-                                    />
-                                    :
-                                    <Form.Input
-                                        icon='phone'
-                                        iconPosition='left'
-
+                                        label={ t("phone") }
                                         name="phone"
                                         type="phone"
                                         value={upUser.phone}
                                         onChange={handleChange}
                                         error={errors.phone ? errors.phone : null}
                                     />
-                                }
                             </Item>
                             <Item>
-                                <Label size="small" ribbon>
-                                    Mobile
-                                </Label>
-                                {loader ?
                                     <Form.Input
                                         icon='mobile alternate'
                                         iconPosition='left'
-                                        type="mobile"
-                                        disabled
-                                        loading
-                                    />
-                                    :
-                                    <Form.Input
-                                        icon='mobile alternate'
-                                        iconPosition='left'
-
+                                        label={ t("mobile") }
                                         name="mobile"
                                         type="text"
                                         value={upUser.mobile}
                                         onChange={handleChange}
                                         error={errors.mobile ? errors.mobile : null}
                                     />
-                                }
                             </Item>
                             <Item>
-                                {loader ?
-                                    <Button.Group>
-                                        <Button size="small" disabled loading> Cancel </Button>
-                                        <Button.Or />
-                                        <Button size="small" disabled loading positive > Save </Button>
-                                    </Button.Group>
-                                    :
-                                    <Button.Group>
-                                        <Button size="small" onClick={stopUpdate}> Cancel </Button>
-                                        <Button.Or />
-                                        <Button size="small" positive > Save </Button>
-                                    </Button.Group>
-                                }
+                                <Button.Group>
+                                    <Button size="small" onClick={stopUpdate}> { t("cancel") } </Button>
+                                    <Button.Or />
+                                    <Button size="small" positive > { t("save") } </Button>
+                                </Button.Group>
                             </Item>
                         </Item.Group>
                     </Form>
@@ -199,33 +141,27 @@ const UserCoordForm = ({user, setterUser}) => {
                         <Item.Description>
                             <Item.Group divided>
                                 <Item>
-                                    {loader ?
-                                        <Loader active inline="centered" />
-                                        :
-                                        <>
-                                            <Label size="small" ribbon>
-                                                Firstname
-                                            </Label>
-                                            <Item.Content verticalAlign='middle'>
-                                                {user.firstname}
-                                            </Item.Content>
-                                        </>
-                                    }
+                                    <Item.Header>
+                                        <Icon name="user"/>
+                                    </Item.Header>
+                                    <Item.Content verticalAlign='middle'>
+                                        {user.firstname}
+                                    </Item.Content>
                                 </Item>
 
                                 <Item>
-                                    <Label size="small" ribbon>
-                                        Lastname
-                                    </Label>
+                                    <Item.Header>
+                                        <Icon name="user"/>
+                                    </Item.Header>
                                     <Item.Content verticalAlign='middle'>
                                         {user.lastname}
                                     </Item.Content>
                                 </Item>
 
                                 <Item>
-                                    <Label size="small" ribbon>
-                                        Phone
-                                    </Label>
+                                    <Item.Header>
+                                        <Icon name="phone"/>
+                                    </Item.Header>
                                     <Item.Content verticalAlign='middle'>
                                         {user.phone ?
                                             user.phone
@@ -235,9 +171,9 @@ const UserCoordForm = ({user, setterUser}) => {
                                 </Item>
 
                                 <Item>
-                                    <Label size="small" ribbon>
-                                        Mobile
-                                    </Label>
+                                    <Item.Header>
+                                        <Icon name="mobile alternate"/>
+                                    </Item.Header>
                                     <Item.Content verticalAlign='middle'>
                                         {user.mobile ?
                                             user.mobile

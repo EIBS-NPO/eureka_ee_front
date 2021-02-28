@@ -28,7 +28,6 @@ const Register = ({ history }) => {
         passwordConfirm: "",
     });
 
-    //gestion des changements des inputs dans le formulaire
     const handleChange = (event) => {
         const { name, value } = event.currentTarget;
         setUser({ ...user, [name]: value });
@@ -45,11 +44,9 @@ const Register = ({ history }) => {
         }
         //todo vérification des autres param avant requete
 
-        //création User
         UserAPI.register(user)
             .then(response => {
-              //  setErrors({});
-                history.replace("/")
+                history.replace("/login")
             })
             .catch(error => {
                 console.log(error)
@@ -126,59 +123,3 @@ const Register = ({ history }) => {
 };
 
 export default Register;
-
-/*
-<div className="card">
-                <form onSubmit={handleSubmit}>
-                    <Field
-                        label="Email"
-                        name="email"
-                        type="email"
-                        value={user.email}
-                        onChange={handleChange}
-                        placeholder="identifiant de connection..."
-                        error={errors.email}
-                    />
-                    <Field
-                        label="Firstname"
-                        name="firstname"
-                        type="text"
-                        value={user.firstname}
-                        onChange={handleChange}
-                        placeholder="prénom..."
-                        error={errors.firstname}
-                    />
-                    <Field
-                        label="Lastname"
-                        name="lastname"
-                        type="text"
-                        value={user.lastname}
-                        onChange={handleChange}
-                        placeholder="nom..."
-                        error={errors.lastname}
-                    />
-                    <Field
-                        label="Mot de passe"
-                        name="password"
-                        type="password"
-                        value={user.password}
-                        onChange={handleChange}
-                        placeholder="mot de passe..."
-                        error={errors.password}
-                    />
-                    <Field
-                        label="Confirmation"
-                        name="passwordConfirm"
-                        type="password"
-                        value={user.passwordConfirm}
-                        onChange={handleChange}
-                        placeholder="confirmation mdp..."
-                        error={errors.passwordConfirm}
-                    />
-
-                    <div className="inline-btn">
-                        <button type="submit" className="btn btn-success">Connexion</button>
-                    </div>
-                </form>
-            </div>
- */

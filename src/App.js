@@ -26,7 +26,7 @@ const CreateOrg = lazy(() => import('./_routes/_org/CreateOrg'));
 const CreateProject = lazy(() => import('./_routes/_project/CreateProject'));
 const CreateActivity = lazy(() => import('./_routes/_activity/CreateActivity'));
 
-const ProfilUser = lazy(() => import('./_routes/_user/ProfilUser'));
+const ProfilUser = lazy(() => import('./_routes/_user/UserProfile'));
 const ProfilOrg = lazy(() => import('./_routes/_org/OrgProfile'));
 const ProfilProject = lazy(() => import('./_routes/_project/ProjectProfile'));
 const ProfilActivity = lazy(() => import('./_routes/_activity/ActivityProfile'));

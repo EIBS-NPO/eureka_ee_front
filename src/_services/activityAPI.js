@@ -2,6 +2,7 @@
 import Axios from "axios";
 import { ACT_API } from "../config";
 
+console.log(ACT_API)
 
 function post(activity) {
     return Axios.post(ACT_API, activity)

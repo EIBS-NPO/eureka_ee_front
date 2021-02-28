@@ -1,7 +1,6 @@
 import Axios from "axios";
 import { ORG_API } from "../config";
 
-
 function post(org) {
     return Axios.post(ORG_API, org)
 }

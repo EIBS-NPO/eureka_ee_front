@@ -25,7 +25,6 @@ const Login = ({ history }) => {
         setCredential({ ...credentials, [name]: value });
     };
 
-    //requete HTTP d'authentification et stockage du token dans le localStorage
     const handleSubmit = async (event) => {
         event.preventDefault();
         setLoader(true)
@@ -47,7 +46,6 @@ const Login = ({ history }) => {
     const [loader, setLoader] = useState(false)
 
     return (
-        /*<div className="Login">*/
         <div className="card">
             <Form onSubmit={handleSubmit} loading={loader}>
                 <Form.Input

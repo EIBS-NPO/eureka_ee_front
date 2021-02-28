@@ -9,19 +9,16 @@ import AuthContext from "../_contexts/AuthContext";
 import LabelUser from "./LabelUser";
 
 const Card = ({ obj, type, isLink=false, profile=false, ctx=undefined }) => {
-    //console.log(obj)
+
     const isAuth = useContext(AuthContext).isAuthenticated;
     const {t,  i18n } = useTranslation()
     const lg = i18n.language.split('-')[0]
 
-  //  const [isOwner, setIsOwner] = useState(false)
     const [hrefLink, setHrefLink] = useState("")
-    /*const [hrefLink2, setHrefLink2] = useState("")*/
 
     const [owner, setOwner] = useState({});
 
     function getTranslate(typeText) {
-        //console.log(obj[typeText])
         if(obj[typeText]){
            if(obj[typeText][lg]) {
                 return obj[typeText][lg]
@@ -34,7 +31,6 @@ const Card = ({ obj, type, isLink=false, profile=false, ctx=undefined }) => {
     }
 
     useEffect(() => {
-       /* let h2 = "/profile/public_" + type + "_" + obj.id;*/
         let objMail = ""
         if(obj.creator){
             objMail = obj.creator.email
@@ -49,20 +45,14 @@ const Card = ({ obj, type, isLink=false, profile=false, ctx=undefined }) => {
             let h = "/" + type + "/public_" + obj.id;
             if(isAuth){
                 if(userAPI.checkMail() === objMail) { h = "/" + type + "/creator_" + obj.id}
-                /*if(userAPI.checkMail() === objMail) { h2 = "/profile/my_" + type + "_" + obj.id}*/
             }
 
             setHrefLink(h);
         }
-
-        ////console.log(h)
-        /*setHrefLink2(h2);*/
     },[])
 
     return (
         <>
-         {/*<Segment>*/}
-
             {obj && obj !== "DATA_NOT_FOUND" ?
             <Item>
                 <Item.Content>
@@ -145,12 +135,9 @@ const Card = ({ obj, type, isLink=false, profile=false, ctx=undefined }) => {
                                     <Item.Extra>
                                         {type !== "user" && ctx !=="create" &&
                                             <LabelUser user={ owner } type={type === "org" ? "referent" : "author"} />
-                                          //  <Label icon='user' content={obj.referent.firstname + " " + obj.referent.lastname}/>
                                         }
 
                                         {obj.project &&
-                                           /* <LabelOrg org={obj.organization } />*/
-                                            //"/project/:id"
                                             <Label as='a' href={"/project/"+obj.project.id} basic image >
                                                 { obj.project.title }
                                                 <Label.Detail>{ t('project') }</Label.Detail>
@@ -161,7 +148,6 @@ const Card = ({ obj, type, isLink=false, profile=false, ctx=undefined }) => {
                                                 {obj.organization.name}
                                                 <Label.Detail>{ t('organization') }</Label.Detail>
                                             </Label>
-                                            /*<LabelOrg org={obj.organization } />*/
                                         }
 
                                         {/*//todo tout s affiche?*/}
@@ -174,17 +160,11 @@ const Card = ({ obj, type, isLink=false, profile=false, ctx=undefined }) => {
                                             }
 
                                             {obj.mobile &&
-                                                <>
-                                                {/*<Divider hidden/>*/}
                                                 <Label icon='mobile' content={obj.mobile}/>
-                                                </>
                                             }
 
                                             {obj.phone &&
-                                                <>
-                                                {/*<Divider hidden/>*/}
                                                 <Label icon='phone' content={obj.phone}/>
-                                                </>
                                             }
                                         </>
                                         }
@@ -225,8 +205,6 @@ const Card = ({ obj, type, isLink=false, profile=false, ctx=undefined }) => {
                     </Item.Content>
                 </Item>
             }
-
-       {/*</Segment>*/}
         </>
     );
 };
