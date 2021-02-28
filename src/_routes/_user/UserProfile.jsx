@@ -8,12 +8,10 @@ import ParamLoginForm from "../../_components/forms/user/ParamLoginForm";
 import UserCoordForm from "../../_components/forms/user/UserCoordForm";
 import {withTranslation} from "react-i18next";
 import AddressForm from "../../_components/forms/AddressForm";
+import authAPI from "../../_services/authAPI";
 
-const UserProfile = ({t, history }) => {
-    const isAuthenticated = useContext(AuthContext);
-    if (isAuthenticated === true) {
-        history.replace('/');
-    }
+const UserProfile = ({ t, history }) => {
+    if ( !(authAPI.isAuthenticated()) ) {history.replace('/login')}
 
     const [user, setUser] = useState({
         email:"",

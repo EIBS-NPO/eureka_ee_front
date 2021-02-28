@@ -3,6 +3,7 @@ import React, { useContext, useState } from "react";
 import AuthContext from "../../_contexts/AuthContext";
 import UserAPI from "../../_services/userAPI";
 import {Button, Form} from "semantic-ui-react";
+import {useTranslation, withTranslation} from "react-i18next";
 
 /*//todo add optionalFields*/
 const Register = ({ history }) => {
@@ -11,6 +12,8 @@ const Register = ({ history }) => {
     if (isAuthenticated === true) {
         history.replace('/');
     }
+
+    const { t } = useTranslation()
 
     const [user, setUser] = useState({
         email: "",
@@ -116,10 +119,10 @@ const Register = ({ history }) => {
                     placeholder="password confirm..."
                     error={errors.passwordConfirm ? errors.passwordConfirm :null}
                 />
-                <Button content='Login' primary />
+                <Button content= { t('Sign_up') } primary />
             </Form>
         </div>
     );
 };
 
-export default Register;
+export default withTranslation()(Register);

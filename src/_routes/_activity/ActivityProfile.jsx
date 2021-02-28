@@ -66,9 +66,7 @@ const ActivityProfile = ( props ) => {
 
     useEffect(() => {
         if ( !(urlParams[0] === "public") && !(authAPI.isAuthenticated()) ) {
-            console.log('test redirect login')
             props.history.replace('/login')
-           // authAPI.setup();
         }
 
         if(ctx() !== 'public'){

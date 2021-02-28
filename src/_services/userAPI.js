@@ -2,25 +2,29 @@ import Axios from "axios";
 import JwtDecode from "jwt-decode";
 import { USR_API } from "../config";
 
-function register (user)  {
+const register = (user) =>  {
     return Axios.post(USR_API + "/register", user);
 }
 
-function put (user)  {
+const put = (user) =>  {
     return Axios.put(USR_API, user)
 }
 
-function get () {
+const get = () => {
     return Axios.get(USR_API )
 }
 
-function checkRole ()  {
+const resetPass = (passTab) => {
+    return Axios.post(USR_API +"/password", passTab)
+}
+
+const checkRole = () =>  {
     const token = window.localStorage.getItem("authToken");
     const jwtData = JwtDecode(token)
     return jwtData.roles[0]
 }
 
-function checkMail ()  {
+const checkMail = () =>  {
     const token = window.localStorage.getItem("authToken");
     const jwtData = JwtDecode(token)
     return jwtData.username
@@ -47,11 +51,11 @@ function checkFirstName() {
     return JwtDecode(token).id
 }*/
 
-// eslint-disable-next-line import/no-anonymous-default-export
 export default {
     register,
     checkRole,
     checkMail,
     put,
-    get
+    get,
+    resetPass
 };

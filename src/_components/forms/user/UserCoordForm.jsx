@@ -4,7 +4,7 @@ import { Button, Form, Icon, Item, Label} from "semantic-ui-react";
 
 import UserAPI from "../../../_services/userAPI";
 import authAPI from "../../../_services/authAPI";
-import {useTranslation} from "react-i18next";
+import {useTranslation, withTranslation} from "react-i18next";
 
 const UserCoordForm = ({user, setterUser}) => {
 
@@ -15,14 +15,18 @@ const UserCoordForm = ({user, setterUser}) => {
     {
         lastname: "",
         firstname: "",
-        picture:""
+        email:"",
+        phone:"",
+        mobile:""
     })
 
     const [update, setUpdate] = useState(false)
     const [errors, setErrors] = useState({
         lastname: "",
         firstname: "",
-        picture:""
+        email:"",
+        phone:"",
+        mobile:""
     });
 
     const [loader, setLoader] = useState(false);
@@ -32,7 +36,6 @@ const UserCoordForm = ({user, setterUser}) => {
         setUserMail(authAPI.getUserMail())
     },[user])
 
-//gestion des changements des inputs dans le formulaire
     const handleChange = (event) => {
         const { name, value } = event.currentTarget;
         setUpUser({ ...user, [name]: value });
@@ -49,7 +52,7 @@ const UserCoordForm = ({user, setterUser}) => {
                 //todo confirmation
             })
             .catch(error => {
-                setErrors(error.response.data.error)
+                setErrors(error.response.data)
             })
             .finally(()=> {
                 setUpdate(false)
@@ -101,6 +104,18 @@ const UserCoordForm = ({user, setterUser}) => {
                                         onChange={handleChange}
                                         error={errors.lastname ? errors.lastname : null}
                                     />
+                            </Item>
+                            <Item>
+                                <Form.Input
+                                    icon='mail'
+                                    iconPosition='left'
+                                    label={ t("email") }
+                                    name="email"
+                                    type="text"
+                                    value={upUser.email}
+                                    onChange={handleChange}
+                                    error={errors.email ? errors.email : null}
+                                />
                             </Item>
                             <Item>
                                     <Form.Input
@@ -160,6 +175,16 @@ const UserCoordForm = ({user, setterUser}) => {
 
                                 <Item>
                                     <Item.Header>
+                                        <Icon name="mail"/>
+                                    </Item.Header>
+                                    <Item.Content verticalAlign='middle'>
+                                        {user.email}
+                                    </Item.Content>
+                                </Item>
+
+
+                                <Item>
+                                    <Item.Header>
                                         <Icon name="phone"/>
                                     </Item.Header>
                                     <Item.Content verticalAlign='middle'>
@@ -201,4 +226,4 @@ const UserCoordForm = ({user, setterUser}) => {
 }
 
 
-export default UserCoordForm;
+export default withTranslation()(UserCoordForm);

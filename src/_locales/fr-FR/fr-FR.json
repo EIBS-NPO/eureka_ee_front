@@ -3,6 +3,10 @@
   "Sign_up": "Inscription",
   "Login": "Connexion",
   "Logout": "Déconnexion",
+  "change": "modifier",
+  "change_pass": "modifier mot de passe",
+  "password" : "mot de passe",
+  "new_password": "nouveau password",
   "new_org": "Nouvelle Organisation",
   "new_project": "Nouveau Projet",
   "new_activity": "Nouvelle Activité",
@@ -41,7 +45,7 @@
   "remove_confirm": "Retirer cet utilisateur de l'organisation ?",
   "confirm": "confirmer",
   "confirmation": "confirmation",
-  "errors": "Une erreure est survenue.",
+  "errors": "Une erreur est survenue.",
   "add_members" : "ajouter des membres",
 
   "no_def": "non défini",
@@ -80,6 +84,7 @@
   "followers" : "abonnés",
   "team": "equipe",
 
+  "connection settings" : "parametres de connexion",
   "details": "détails",
   "coordinates": "coordonnées",
   "address": "adresse",
