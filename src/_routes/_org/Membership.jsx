@@ -44,16 +44,25 @@ const Membership = ( props ) => {
     const [loader, setLoader] = useState(false)
 
     const addSubmit = () => {
-        setLoader(true)
-        memberAPI.addMember(props.org.id, email)
-            .then(response => {
-                if(response.data[0] !== "DATA_NOT_FOUND"){
-                    setMembers(response.data)
-                }
-                setEmail("")
-            })
-            .catch(error => console.log(error.response))
-            .finally(() => setLoader(false))
+        if(members.filter(m => m.email === email ).length === 0) {
+            setLoader(true)
+            memberAPI.addMember(props.org.id, email)
+                .then(response => {
+                    console.log(response.data)
+                    if (response.data[0] !== "DATA_NOT_FOUND") {
+                        setMembers(response.data)
+                    }
+                    setEmail("")
+                })
+                .catch(error => {
+                    console.log(error.response.data)
+                    setErrors(error.response.data)
+                })
+                .finally(() => setLoader(false))
+        }
+        else {
+            setErrors({email:"member already added"})
+        }
     }
 
     const [userTarget, setUserTarget] =useState()
@@ -77,7 +86,10 @@ const Membership = ( props ) => {
                     setMembers(response.data)
                 }else {setMembers([])}
             })
-            .catch(error => console.log(error.response))
+            .catch(error => {
+                console.log(error.response.data)
+                setErrors(error.response.data)
+            })
             .finally(() => setLoader(false))
     }
 
@@ -110,7 +122,7 @@ const Membership = ( props ) => {
                         <Message
                             success
                             header='Form Completed'
-                            content="You're all signed up for the newsletter"
+                            content="message ici"
                         />
                         <Button fluid animated >
                             <Button.Content visible>{ props.t('send') } </Button.Content>

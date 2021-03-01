@@ -1,17 +1,17 @@
 import React, { useEffect, useState, useContext } from 'react';
 import activityAPI from '../../_services/activityAPI';
-import {Input, Container, Button, Header, Icon, Item, Loader, Menu, Segment } from "semantic-ui-react";
+import { Container, Button, Header, Icon, Item, Loader, Menu, Segment } from "semantic-ui-react";
 import {withTranslation} from "react-i18next";
 import AuthContext from "../../_contexts/AuthContext";
-import fileAPI from "../../_services/fileAPI";
 import FileUpload from "../../_components/upload/FileUpload";
 import userAPI from "../../_services/userAPI";
 import Card from "../../_components/Card";
 import ActivityForm from "./ActivityForm";
-import utilities from "../../_services/utilities";
 import authAPI from "../../_services/authAPI";
 import FileDownload from "../../_components/upload/FileDownload";
 import FileInfos from "../../_components/upload/FileInfos";
+import FollowingActivityForm from "../../_components/FollowingActivityForm";
+import FollowersList from "../_user/FollowersList";
 
 const ActivityProfile = ( props ) => {
     const urlParams = props.match.params.id.split('_')
@@ -19,9 +19,8 @@ const ActivityProfile = ( props ) => {
 
     const isAuth = useContext(AuthContext).isAuthenticated;
 
-    const [activity, setActivity] = useState({
-      //  creator:{}
-    })
+    const [activity, setActivity] = useState({})
+    console.log(activity)
 
     const ctx = () => {
         if (urlParams[0] !=="public" && isAuth === false) {
@@ -36,15 +35,8 @@ const ActivityProfile = ( props ) => {
 
 
     const isOwner = () => {
- //       console.log(activity)
         return userAPI.checkMail() === activity.creator.email
     }
-
-    //handle show for orgs selector
-    const [toggleShow, setToggleShow] = useState(false)
-
-    const [picture, setPicture] = useState()
- //   console.log(activity)
 
     const [activityForm, setActivityForm] = useState(false)
 
@@ -97,12 +89,6 @@ const ActivityProfile = ( props ) => {
         }
     }, []);
 
-    const downloadFile = () => {
-        fileAPI.urlDownload(activity.id)
-            .then(response => {
-                console.log(response)
-            })
-    }
     return (
 
         <div className="card">
@@ -111,6 +97,9 @@ const ActivityProfile = ( props ) => {
                 {activity && activity !== "DATA_NOT_FOUND" ?
                     <>
                         <Container textAlign={"center"}>
+                            {isAuth &&
+                                <FollowingActivityForm activity={activity} setter={setActivity}/>
+                            }
                             <h1>{ activity.title }</h1>
                         </Container>
 
@@ -139,15 +128,6 @@ const ActivityProfile = ( props ) => {
                                     </Menu.Item>
                                 }
 
-                                <Menu.Item
-                                    name='team'
-                                    active={activeItem === 'team'}
-                                    onClick={handleItemClick}
-                                >
-                                    <Header >
-                                        { props.t("team") }
-                                    </Header>
-                                </Menu.Item>
                                 <Menu.Item
                                     name='followers'
                                     active={activeItem === 'followers'}
@@ -206,6 +186,12 @@ const ActivityProfile = ( props ) => {
                                     </Segment>
                                 </>
                             </Segment>
+                            }
+
+                            {activeItem === "followers" &&
+                                <Segment attached='bottom'>
+                                    <FollowersList obj={activity} listFor="activity" />
+                                </Segment>
                             }
                         </Segment>
                     </>

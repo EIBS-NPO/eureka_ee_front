@@ -26,13 +26,12 @@ const FileDownload = ({ file } ) => {
             })
             .finally(() => setLoader(false))
     }
-
     return (
         <Segment placeholder loading={loader}>
                 <>
                     <FileInfos file={ file } />
                     <Container textAlign='center'>
-                        <Button fluid animated onClick={downloadFile}>
+                        <Button fluid animated onClick={downloadFile} disabled={!file.fileType}>
                             <Button.Content visible>
                                 { t('download') }
                             </Button.Content>

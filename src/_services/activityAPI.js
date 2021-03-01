@@ -1,18 +1,18 @@
 
 import Axios from "axios";
-import { ACT_API } from "../config";
+import { ACT_API, FOLW_ACT_API } from "../config";
 
 console.log(ACT_API)
 
-function post(activity) {
+const post = (activity) => {
     return Axios.post(ACT_API, activity)
 }
 
-function put(activity) {
+const put = (activity) => {
     return Axios.put(ACT_API, activity)
 }
 
-function get(context, id = null){
+const get = (context, id = null, orgId = null, projectId = null) => {
     let params = "?cxt="+ context
     if(id !== null){
         params += "&id="+ id
@@ -20,7 +20,7 @@ function get(context, id = null){
     return Axios.get(ACT_API + params)
 }
 
-function getPublic(id =null){
+const getPublic = (id = null) => {
     if(id === null ){
         return Axios.get(ACT_API + "/public")
     }else {
@@ -29,7 +29,7 @@ function getPublic(id =null){
 
 }
 
-function uploadPic(bodyFormData) {
+const uploadPic = (bodyFormData) => {
     return Axios({
         method: 'post',
         url: ACT_API + "/picture",
@@ -38,20 +38,39 @@ function uploadPic(bodyFormData) {
     })
 }
 
-function downloadPic(picture) {
+const downloadPic = (picture) => {
     return Axios.get(ACT_API + "/picture/?pic=" + picture)
 }
 
-function remove(id) {
+const remove = (id) => {
     return Axios.delete(ACT_API + "?id=" + id)
 }
 
-// eslint-disable-next-line import/no-anonymous-default-export
+const addFollow = (activityId) => {
+    return Axios.put(FOLW_ACT_API + "/add", { "activityId":activityId })
+}
+
+const rmvFollow = (activityId) => {
+    return Axios.put(FOLW_ACT_API + "/remove", { "activityId":activityId })
+}
+
+const getFollowers = (id) => {
+    return Axios.get(FOLW_ACT_API + "/public?id="+id)
+}
+
+const getFavorites = () => {
+    return Axios.get(FOLW_ACT_API + "/myFavorites")
+}
+
 export default {
     post,
     put,
     get,
     getPublic,
     downloadPic,
-    remove
+    remove,
+    addFollow,
+    rmvFollow,
+    getFollowers,
+    getFavorites
 };

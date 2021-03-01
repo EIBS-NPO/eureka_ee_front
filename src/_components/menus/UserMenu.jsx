@@ -22,6 +22,12 @@ const UserMenu = ( props ) => {
                             onClick={handleItemClick}
                         />
                         <Menu.Item
+                            as={NavLink} to='/all_activities/follower'
+                            name={ props.t('my_favorites') }
+                            active={activeItem === props.t('my_favorites')}
+                            onClick={handleItemClick}
+                        />
+                        <Menu.Item
                             as={NavLink} to='/all_organizations/my'
                             name={ props.t('my_org') }
                             active={activeItem ===  props.t('my_org')  }

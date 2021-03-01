@@ -1,5 +1,5 @@
 import Axios from "axios";
-import { PROJECT_API } from "../config";
+import {API_URL, PROJECT_API} from "../config";
 
 function post(project) {
     let data = {
@@ -37,8 +37,25 @@ function getPublic(id =null){
     }else {
         return Axios.get(PROJECT_API + "/public?id="+ id)
     }
-
 }
+/*
+const addTeammate = (projectId, email) => {
+    return Axios.put( , {
+        projectId : projectId,
+        email : email
+    })
+}
+
+function getTeam(projectId){
+    return Axios.get()
+}
+
+function rmvTeammate(userId, projectId){
+    return Axios.put(, {
+        userId: userId,
+        projectId : projectId
+    })
+}*/
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {

@@ -22,6 +22,7 @@ const ActivitiesList = ( props ) => {
             return 'public';
         }else {return urlParams}
     }
+    console.log(ctx())
 
     const [activities, setActivities] = useState({})
 
@@ -29,7 +30,16 @@ const ActivitiesList = ( props ) => {
 
     useEffect(() => {
         setLoader(true)
-        if (ctx() !== 'public') {
+        if(ctx() === 'follower'){
+            activityAPI.getFavorites(ctx())
+                .then(response => {
+                    console.log(response)
+                    setActivities(response.data)
+                })
+                .catch(error => console.log(error.response))
+                .finally(() => setLoader(false))
+        }
+        else if (ctx() !== 'public') {
             activityAPI.get(ctx())
                 .then(response => {
                     console.log(response)
@@ -48,13 +58,24 @@ const ActivitiesList = ( props ) => {
         }
     }, [urlParams]);
 
+    const Title = () => {
+        let title = ""
+        switch(ctx()){
+            case "creator":
+                title = <h1>{ props.t('my_activities') }</h1>
+                break;
+            case "follower":
+                title = <h1>{ props.t('my_favorites') }</h1>
+                break;
+            default:
+                title = <h1>{ props.t('public_activities') }</h1>
+        }
+        return title;
+    }
+
     return (
         <div className="card">
-            {ctx() === "creator" ?
-                <h1>{ props.t('my_activities') }</h1>
-                :
-                <h1>{ props.t('public_activities') }</h1>
-            }
+            <Title />
 
             {!loader && activities && activities.length > 0 &&
                 activities.map( activity => (

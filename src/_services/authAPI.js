@@ -2,7 +2,7 @@ import Axios from "axios";
 import jwt_decode from "jwt-decode";
 import { LOGIN_API } from "../config";
 
-function logout() {
+const logout = () => {
     window.localStorage.removeItem("authToken");
     if (Axios.defaults.headers["Authorization"]){
         delete Axios.defaults.headers["Authorization"];
@@ -10,7 +10,7 @@ function logout() {
     }
 }
 
-function authenticate(credentials) {
+const authenticate = (credentials) => {
     return Axios
         .post(LOGIN_API, credentials)
         .then((response) => response.data.token)
@@ -23,7 +23,7 @@ function authenticate(credentials) {
         });
 }
 
-function setAxiosToken(token) {
+const setAxiosToken = (token) => {
     Axios.defaults.headers["Authorization"] = "Bearer " + token;
 }
 
@@ -31,7 +31,7 @@ function setAxiosToken(token) {
  * control auth in loading
  * @returns boolean
  */
-function setup() {
+const setup = () => {
     const token = window.localStorage.getItem("authToken");
     if (token) {
         try {
@@ -59,7 +59,7 @@ function setup() {
  * permet de savoir si on est authentifié ou pas
  * @returns boolean
  */
-function isAuthenticated() {
+const isAuthenticated = () => {
     const token = window.localStorage.getItem("authToken");
 
     if (token) {
@@ -68,20 +68,35 @@ function isAuthenticated() {
     }
 }
 
-function isAdmin() {
+const isAdmin = () => {
     const token = window.localStorage.getItem("authToken");
     return jwt_decode(token).roles[0] === "ROLE_ADMIN";
 }
 
-function getRole() {
+const getRole = () => {
     const token = window.localStorage.getItem("authToken");
     const jwtData = jwt_decode(token)
     return jwtData.roles[0]
 }
 
-function getUserMail() {
+const getUserMail = () => {
     const token = window.localStorage.getItem("authToken");
     return jwt_decode(token).username
+}
+
+const getId = () => {
+    const token = window.localStorage.getItem("authToken");
+    return jwt_decode(token).id
+}
+
+const getFirstname = () => {
+    const token = window.localStorage.getItem("authToken");
+    return jwt_decode(token).firstname
+}
+
+const getLastname = () => {
+    const token = window.localStorage.getItem("authToken");
+    return jwt_decode(token).lastname
 }
 
 export default {
@@ -91,5 +106,8 @@ export default {
     isAuthenticated,
     getRole,
     getUserMail,
-    isAdmin
+    isAdmin,
+    getId,
+    getFirstname,
+    getLastname
 };

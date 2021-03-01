@@ -9,6 +9,7 @@ import userAPI from "../../_services/userAPI";
 import Membership from "./Membership";
 import Card from "../../_components/Card";
 import AddressForm from "../../_components/forms/AddressForm";
+import ActivitiesList from "../_activity/ActivitiesList";
 
 export const OrgContext = createContext({
     org:{ },
@@ -34,6 +35,7 @@ const OrgProfile = (props ) => {
     }
 
     const [ org, setOrg ] = useState({})
+    console.log(org)
 
     const  [ orgForm, setOrgForm ]  = useState(false)
 
@@ -175,6 +177,23 @@ const OrgProfile = (props ) => {
                             {activeItem === 'membership' &&
                                 <Segment attached='bottom'>
                                     <Membership org={org} />
+                                </Segment>
+                            }
+
+                            {activeItem === 'projects' &&
+                                <Segment attached='bottom'>
+                                    {org.projects.map(project => (
+                                        <Card key={project.id} obj={project} type="project" isLink={true}/>
+                                    ))}
+                                </Segment>
+                            }
+
+                            {activeItem === 'activities' &&
+                                <Segment attached='bottom'>
+                                    {org.activities.map(activity => (
+                                        <Card key={activity.id} obj={activity} type="activity" isLink={true}/>
+                                    ))}
+                                    {/*<ActivitiesList obj={org} context="org"/>*/}
                                 </Segment>
                             }
                         </Segment>

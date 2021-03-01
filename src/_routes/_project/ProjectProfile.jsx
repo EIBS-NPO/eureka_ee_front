@@ -46,6 +46,7 @@ const ProjectProfile = (props) => {
     }*/
 
     const [project, setProject] = useState({})
+    console.log(project)
 
     const [loader, setLoader] = useState(true);
 
@@ -158,6 +159,21 @@ const ProjectProfile = (props) => {
                     </Segment>
                     }
 
+                    {activeItem === "team" &&
+                    <Segment attached='bottom'>
+                        {/*{project.team && project.team.map(user => (
+                            <Card key={user.id} obj={user} type="user" isLink={true} />
+                        ))}*/}
+                    </Segment>
+                    }
+
+                    {activeItem === "activities" &&
+                        <Segment attached='bottom'>
+                            {project.activities && project.activities.map(act => (
+                                <Card key={act.id} obj={act} type="activity" isLink={true} />
+                            ))}
+                        </Segment>
+                    }
                 </Segment>
                 </>
                 :
