@@ -58,7 +58,7 @@ const OrgList = ( props ) => {
                     {orgs && orgs.length > 0 &&
                         orgs.map(org => (
                             <Segment key={org.id} raised>
-                                <Card key={org.id} obj={org} type="org" isLink={true} ctx={ctx()}/>
+                                <Card history={props.history} key={org.id} obj={org} type="org" isLink={true} ctx={ctx()}/>
                             </Segment>
                         ))
                     }

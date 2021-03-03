@@ -1,14 +1,16 @@
 import React, {useContext, useEffect, useState} from 'react';
 import projectAPI from '../../_services/projectAPI';
 import {
-    Divider, Container, Header, Item, Menu, Loader, Segment, Icon, Button
+    Container, Header, Item, Menu, Loader, Segment, Button
 } from "semantic-ui-react";
 import {withTranslation} from "react-i18next";
 import AuthContext from "../../_contexts/AuthContext";
-import orgAPI from "../../_services/orgAPI";
 import Card from "../../_components/Card";
 import ProjectForm from "./ProjectForm";
 import userAPI from "../../_services/userAPI";
+import ProjectTeam from "./ProjectTeam";
+import FollowingForm from "../../_components/FollowingForm";
+import authAPI from "../../_services/authAPI";
 
 /**
  * la page qui affiche les détail de projet, doit afficher
@@ -97,6 +99,9 @@ const ProjectProfile = (props) => {
                 {project !== "DATA_NOT_FOUND" ?
                     <>
                         <Container textAlign="center">
+                            {isAuth &&
+                                <FollowingForm obj={project} setter={setProject} type="project" />
+                            }
                             <h1>{ project.title }</h1>
                         </Container>
 
@@ -164,6 +169,7 @@ const ProjectProfile = (props) => {
                         {/*{project.team && project.team.map(user => (
                             <Card key={user.id} obj={user} type="user" isLink={true} />
                         ))}*/}
+                        <ProjectTeam project={project} />
                     </Segment>
                     }
 

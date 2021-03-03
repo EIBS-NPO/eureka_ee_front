@@ -50,7 +50,7 @@ const ProjectSelector = ( {obj, setter} ) => {
         //load projects
         projectAPI.get()
             .then(response => {
-                //          console.log(response.data)
+                          console.log(response.data)
                 setProjectOptions(response.data)
             })
             .catch(error => {

@@ -30,6 +30,11 @@ const ActivitiesList = ( props ) => {
 
     useEffect(() => {
         setLoader(true)
+        //todo ca ca marche pas mal
+        if ( !(urlParams[0] === "public") && !(authAPI.isAuthenticated()) ) {
+            props.history.replace('/login')
+        }
+
         if(ctx() === 'follower'){
             activityAPI.getFavorites(ctx())
                 .then(response => {
@@ -80,7 +85,7 @@ const ActivitiesList = ( props ) => {
             {!loader && activities && activities.length > 0 &&
                 activities.map( activity => (
                     <Segment key={activity.id} raised>
-                        <Card key={activity.id} obj={activity} type="activity" isLink={true} />
+                        <Card history={props.history} key={activity.id} obj={activity} type="activity" isLink={true} />
                     </Segment>
                 ))
             }

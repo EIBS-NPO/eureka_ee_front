@@ -10,12 +10,16 @@ import ActivityForm from "./ActivityForm";
 import authAPI from "../../_services/authAPI";
 import FileDownload from "../../_components/upload/FileDownload";
 import FileInfos from "../../_components/upload/FileInfos";
-import FollowingActivityForm from "../../_components/FollowingActivityForm";
+import FollowingActivityForm from "../../_components/FollowingForm";
 import FollowersList from "../_user/FollowersList";
 
 const ActivityProfile = ( props ) => {
     const urlParams = props.match.params.id.split('_')
     //if anonymous user is on no anonymous context
+
+    if ( urlParams[0] !=="public" ) {
+        authAPI.setup();
+    }
 
     const isAuth = useContext(AuthContext).isAuthenticated;
 
@@ -57,6 +61,10 @@ const ActivityProfile = ( props ) => {
     const handleItemClick = (e, { name }) => setActiveItem(name)
 
     useEffect(() => {
+        /*if ( urlParams[0] !=="public" ) {
+            return authAPI.setup();
+        }*/
+        //todo ca ca marche pas mal
         if ( !(urlParams[0] === "public") && !(authAPI.isAuthenticated()) ) {
             props.history.replace('/login')
         }
@@ -98,7 +106,7 @@ const ActivityProfile = ( props ) => {
                     <>
                         <Container textAlign={"center"}>
                             {isAuth &&
-                                <FollowingActivityForm activity={activity} setter={setActivity}/>
+                                <FollowingActivityForm obj={activity} setter={setActivity} type="activity" />
                             }
                             <h1>{ activity.title }</h1>
                         </Container>

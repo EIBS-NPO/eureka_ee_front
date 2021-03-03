@@ -14,8 +14,8 @@ const MainMenu = ({t, history}) => {
     //supression du token du localStorage
     const handleLogout = () => {
         AuthAPI.logout();
-        setIsAuthenticated(false);
-        history.push("/");
+        //setIsAuthenticated(false);
+        //history.push("/");
     };
 
     return(

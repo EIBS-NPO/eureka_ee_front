@@ -1,12 +1,15 @@
+
 import Axios from "axios";
 import jwt_decode from "jwt-decode";
 import { LOGIN_API } from "../config";
+import React from "react";
+import { Redirect } from "react-router-dom";
 
 const logout = () => {
     window.localStorage.removeItem("authToken");
     if (Axios.defaults.headers["Authorization"]){
         delete Axios.defaults.headers["Authorization"];
-        window.location.href='/login'
+        return <Redirect to="/login" />
     }
 }
 

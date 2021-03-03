@@ -17,7 +17,7 @@ const FollowersList = ( { obj, listFor }) => {
 
     useEffect(()=> {
         setLoader(true)
-        if(obj.followers){
+   //     if(obj.followers){
             if(listFor === "activity"){
                 activityAPI.getFollowers(obj.id)
                     .then(response => {
@@ -41,7 +41,7 @@ const FollowersList = ( { obj, listFor }) => {
                     })
                     .finally(() => setLoader(false))
             }*/
-        }
+   //     }
     }, [obj])
 
     return (

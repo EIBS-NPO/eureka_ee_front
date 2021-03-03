@@ -1,5 +1,5 @@
 import Axios from "axios";
-import {API_URL, PROJECT_API} from "../config";
+import { FOLW_ACT_API, FOLW_PROJECT, PROJECT_API } from "../config";
 
 function post(project) {
     let data = {
@@ -38,6 +38,37 @@ function getPublic(id =null){
         return Axios.get(PROJECT_API + "/public?id="+ id)
     }
 }
+
+const addAssigning = ( projectId, email ) => {
+    return Axios.post(FOLW_PROJECT, {
+        projectId:projectId,
+        email:email,
+        isAssigning:true
+    })
+}
+
+const addFollowing = ( projectId ) => {
+    return Axios.post(FOLW_PROJECT, {
+        projectId:projectId,
+        isFollowing:true
+    })
+}
+
+const rmvAssigning = ( projectId, userId ) => {
+    return Axios.put(FOLW_PROJECT, {
+        projectId:projectId,
+        userId:userId,
+        isAssigning:false
+    })
+}
+
+const rmvFollowing = ( projectId ) => {
+    return Axios.put(FOLW_PROJECT, {
+        projectId:projectId,
+        isFollowing:false
+    })
+}
+
 /*
 const addTeammate = (projectId, email) => {
     return Axios.put( , {
@@ -45,11 +76,17 @@ const addTeammate = (projectId, email) => {
         email : email
     })
 }
+*/
 
 function getTeam(projectId){
-    return Axios.get()
+    return Axios.get(PROJECT_API + "team/public?projectId=" + projectId)
 }
 
+const isFollowing = (projectId) => {
+    return Axios.get(FOLW_PROJECT + "?projectId=" + projectId)
+}
+
+/*
 function rmvTeammate(userId, projectId){
     return Axios.put(, {
         userId: userId,
@@ -62,5 +99,11 @@ export default {
     post,
     put,
     get,
-    getPublic
+    getPublic,
+    addAssigning,
+    addFollowing,
+    rmvAssigning,
+    rmvFollowing,
+    getTeam,
+    isFollowing
 };

@@ -1,7 +1,7 @@
 
 //n'importe qui peut être ajouté à un projet
 import React, {useContext, useState, useEffect } from 'react';
-import { Divider, Message, Label, Segment, Button, Form, Icon } from "semantic-ui-react";
+import {Container, Divider, Message, Label, Segment, Button, Form, Icon, Loader} from "semantic-ui-react";
 import {useTranslation, withTranslation} from "react-i18next";
 import userAPI from "../../_services/userAPI";
 import AuthContext from "../../_contexts/AuthContext";
@@ -9,26 +9,35 @@ import memberAPI from "../../_services/memberAPI";
 import User from "../../_components/cards/user";
 import Modal from "../../_components/Modal";
 import Card from "../../_components/Card";
+import projectAPI from "../../_services/projectAPI";
 
 //todo afficher un bouton si referent pour update
 //todo si update clicquer afficher le compo orgForm sinon le compo organization
-const ProjectTeam = () => {
+/**
+ *
+ * @param project
+ * @returns {JSX.Element}
+ * @constructor
+ */
+const ProjectTeam = ({ project } ) => {
+ //   console.log(project)
     const isAuth = useContext(AuthContext).isAuthenticated;
     const { t } = useTranslation()
 
-    const isCreator = () => {
-        return userAPI.checkMail() === props.project.creator.email
-    }
+    const [isOwner, setIsOwner] = useState(false)
 
     const [team, setTeam] = useState([])
-    const [email, setEmail] = useState()
+ //   console.log(team)
+    const [email, setEmail] = useState("")
     const [errors, setErrors] = useState({
         email:""
     })
 
     useEffect(()=>{
         setLoader(true)
-        projectAPI.getTeam(props.project.id)
+        setIsOwner(userAPI.checkMail() === project.creator.email)
+
+        projectAPI.getTeam( project.id)
             .then(response => {
                 if(response.data[0] !== "DATA_NOT_FOUND"){
                     setTeam(response.data)
@@ -48,9 +57,9 @@ const ProjectTeam = () => {
     const addSubmit = () => {
         if(team.filter(t => t.email === email ).length === 0) {
             setLoader(true)
-            projectAPI.addMember(props.project.id, email)
+            projectAPI.addAssigning( project.id, email)
                 .then(response => {
-                    console.log(response.data)
+     //               console.log(response.data)
                     if (response.data[0] !== "DATA_NOT_FOUND") {
                         setTeam(response.data)
                     }
@@ -79,10 +88,10 @@ const ProjectTeam = () => {
         setUserTarget(undefined)
     }
 
-    const removeUser = (id) => {
+    const removeUser = ( userId ) => {
         hideModal()
         setLoader(true)
-        projectAPI.remove(id, props.project.id)
+        projectAPI.rmvAssigning( project.id, userId )
             .then(response => {
                 if(response.data[0] !== "DATA_NOT_FOUND") {
                     setTeam(response.data)
@@ -97,10 +106,10 @@ const ProjectTeam = () => {
 
     return (
         <>
-            {isAuth && isCreator() &&
+            {isAuth && isOwner &&
             <Segment>
                 <Label attached="top">
-                    { props.t('add_members')}
+                    { t('add_members')}
                 </Label>
                 <Form onSubmit={addSubmit} loading={loader} >
                     <p>
@@ -128,7 +137,7 @@ const ProjectTeam = () => {
                         content="message ici"
                     />
                     <Button fluid animated >
-                        <Button.Content visible>{ props.t('send') } </Button.Content>
+                        <Button.Content visible>{ t('send') } </Button.Content>
                         <Button.Content hidden>
                             <Icon name='send' />
                         </Button.Content>
@@ -140,64 +149,76 @@ const ProjectTeam = () => {
 
             {!loader &&
             <>
-                {members && members.length > 0 &&
-                members.map( (m, key) => (
-                    <>
-                        <Card obj={m} type="user" isLink={true} />
+                {team && team.length > 0 &&
+                team.map( (teammate, key ) => (
+                    <Container key={ key }>
+                        <Card obj={ teammate } type="user" isLink={true} />
 
-                        {isAuth && isReferent() &&
+                        {isAuth && isOwner &&
                         <>
-                            <Button animated onClick={() => showModal(m)}>
+                            <Button animated onClick={() => showModal( teammate )}>
                                 <Button.Content visible>{t('remove')} </Button.Content>
                                 <Button.Content hidden>
                                     <Icon name='remove user'/>
                                 </Button.Content>
                             </Button>
-                            <Divider section />
                         </>
                         }
-                    </>
+                        <Divider section />
+                    </Container>
                 ))
                 }
 
-                <Modal show={show} handleClose={hideModal} title={ props.t('confirmation')} >
+                <Modal show={show} handleClose={hideModal} title={ t('confirmation') } >
                     <div className={"card"}>
                         {userTarget &&
                         <>
                             <div className="messageBox">
                                 <User user={userTarget} />
-                                <p> { props.t('remove_confirm')}</p>
+                                <p> { t('remove_confirm') }</p>
                             </div>
                             <div className="btnBox">
                                 <button type="button" className="btn btn-primary" onClick={() => hideModal()}>
-                                    { props.t('cancel')}
+                                    { t('cancel') }
                                 </button>
                                 <button type="button" className="btn btn-secondary" onClick={() => removeUser(userTarget.id)}>
-                                    { props.t('confirm')}
+                                    { t('confirm') }
                                 </button>
                             </div>
                         </>
                         }
 
                         {!userTarget &&
-                        <p> { props.t('errors')} </p>
+                        <p> { t('errors')} </p>
                         }
 
                     </div>
                 </Modal>
 
-                {members.length === 0 &&
+                {team.length === 0 &&
                 <Segment>
                     <Label attached="top">
-                        { props.t('membership')}
+                        { t('membership')}
                     </Label>
-                    <p> { props.t('no_members')}</p>
+                    <p> { t('no_members')}</p>
                 </Segment>
                 }
             </>
+            }
+
+            {loader &&
+            <Segment>
+                <Loader
+                    active
+                    content={
+                        <p>{ t('loading') +" : " +  t('team') }</p>
+                    }
+                    inline="centered"
+                />
+            </Segment>
             }
         </>
     );
 }
 
-export default withTranslation()(Membership)
+export default withTranslation()(ProjectTeam)

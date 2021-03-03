@@ -1,6 +1,6 @@
 
 import Axios from "axios";
-import { ACT_API, FOLW_ACT_API } from "../config";
+import {ACT_API, FOLW_ACT } from "../config";
 
 console.log(ACT_API)
 
@@ -47,19 +47,23 @@ const remove = (id) => {
 }
 
 const addFollow = (activityId) => {
-    return Axios.put(FOLW_ACT_API + "/add", { "activityId":activityId })
+    return Axios.put(FOLW_ACT + "/add", { "activityId":activityId })
 }
 
 const rmvFollow = (activityId) => {
-    return Axios.put(FOLW_ACT_API + "/remove", { "activityId":activityId })
+    return Axios.put(FOLW_ACT + "/remove", { "activityId":activityId })
 }
 
 const getFollowers = (id) => {
-    return Axios.get(FOLW_ACT_API + "/public?id="+id)
+    return Axios.get(FOLW_ACT + "/public?id="+id)
 }
 
 const getFavorites = () => {
-    return Axios.get(FOLW_ACT_API + "/myFavorites")
+    return Axios.get(FOLW_ACT + "/myFavorites")
+}
+
+const isFollowing = (activityId) => {
+    return Axios.get(FOLW_ACT + "?activityId=" + activityId)
 }
 
 export default {
@@ -72,5 +76,6 @@ export default {
     addFollow,
     rmvFollow,
     getFollowers,
-    getFavorites
+    getFavorites,
+    isFollowing
 };

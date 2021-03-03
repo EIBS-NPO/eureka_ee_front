@@ -64,7 +64,7 @@ const ProjectsList = ( props ) => {
                 {projects && projects.length > 0 &&
                     projects.map( project  => (
                         <Segment key={project.id } raised>
-                            <Card key={project.id} obj={project} type="project" isLink={true} ctx={ctx()}/>
+                            <Card history={ props.history } key={project.id} obj={project} type="project" isLink={true} ctx={ctx()}/>
                         </Segment>
                     ))
                 }

@@ -2,13 +2,14 @@
 import React, {useState, useEffect, useContext} from 'react';
 import '../scss/components/cardOrg.scss';
 import {useTranslation, withTranslation} from 'react-i18next';
-import {Container, Item, Label } from "semantic-ui-react";
+import {Button, Container, Item, Label, Menu} from "semantic-ui-react";
 import Picture from "./Picture";
 import userAPI from "../_services/userAPI";
 import AuthContext from "../_contexts/AuthContext";
 import LabelUser from "./LabelUser";
+import {NavLink} from "react-router-dom";
 
-const Card = ({ obj, type, isLink=false, profile=false, ctx=undefined }) => {
+const Card = ({ history, obj, type, isLink=false, profile=false, ctx=undefined }) => {
 
     const isAuth = useContext(AuthContext).isAuthenticated;
     const {t,  i18n } = useTranslation()
@@ -28,6 +29,10 @@ const Card = ({ obj, type, isLink=false, profile=false, ctx=undefined }) => {
         }else {
             return t('no_' + typeText)
         }
+    }
+
+    const redirectProfile = () => {
+        history.replace( { hrefLink })
     }
 
     useEffect(() => {
@@ -61,8 +66,8 @@ const Card = ({ obj, type, isLink=false, profile=false, ctx=undefined }) => {
                             {type !== "user" && !profile &&
                                 <>
                                 <span><h3> { obj.title ? obj.title : obj.name } </h3></span>
-                                    <span> { obj.type } </span>
-                                    </>
+                                <span> { obj.type } </span>
+                                </>
                             }
 
                             { ctx !== 'public' && type === "activity" &&
@@ -78,6 +83,10 @@ const Card = ({ obj, type, isLink=false, profile=false, ctx=undefined }) => {
                                 </Label>
                             }
 
+                            {!profile &&
+                                <Button as={NavLink} to={hrefLink} content={ t('read_more') } basic/>
+                            }
+
                             {type === "user" &&
                                 <span><h3> { obj.firstname + ' ' + obj.lastname } </h3></span>
                             }
@@ -87,8 +96,7 @@ const Card = ({ obj, type, isLink=false, profile=false, ctx=undefined }) => {
                 </Item.Content>
 
                 <Item.Content>
-                    <Item.Group link={isLink} href={ hrefLink }>
-                        {/*<a href={ hrefLink2 }>vers pageProfile</a>*/}
+                    <Item.Group>
                         <Item>
 
                             <Container textAlign='center'>
