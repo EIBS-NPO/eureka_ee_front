@@ -1,5 +1,5 @@
 import React, {useContext, useState, useEffect } from 'react';
-import { Divider, Message, Label, Segment, Button, Form, Icon } from "semantic-ui-react";
+import { Container, Divider, Message, Label, Segment, Button, Form, Icon } from "semantic-ui-react";
 import {useTranslation, withTranslation} from "react-i18next";
 import userAPI from "../../_services/userAPI";
 import AuthContext from "../../_contexts/AuthContext";
@@ -19,7 +19,7 @@ const Membership = ( props ) => {
     }
 
     const [members, setMembers] = useState([])
-    const [email, setEmail] = useState()
+    const [email, setEmail] = useState("")
     const [errors, setErrors] = useState({
         email:""
     })
@@ -65,7 +65,7 @@ const Membership = ( props ) => {
         }
     }
 
-    const [userTarget, setUserTarget] =useState()
+    const [userTarget, setUserTarget] =useState({})
     const [show, setShow] = useState(false)
 
     const showModal = ( user ) => {
@@ -102,7 +102,7 @@ const Membership = ( props ) => {
                     </Label>
                     <Form onSubmit={addSubmit} loading={loader} >
                         <p>
-                            Entrez ici le mail de la personne à ajouter en tant que membre dans votre organisation.
+                            Entrez l'email de la personne à ajouter à l'organisation.
                             Cette personne doit être préalablement inscrite sur le site.
                         </p>
                         <Form.Input
@@ -139,12 +139,12 @@ const Membership = ( props ) => {
                 <>
                     {members && members.length > 0 &&
                         members.map( (m, key) => (
-                            <>
+                            <Container >
                                 <Card obj={m} type="user" isLink={true} />
 
                                 {isAuth && isReferent() &&
                                     <>
-                                    <Button animated onClick={() => showModal(m)}>
+                                    <Button animated onClick={() => showModal(m)} circular color="red" basic>
                                         <Button.Content visible>{t('remove')} </Button.Content>
                                         <Button.Content hidden>
                                             <Icon name='remove user'/>
@@ -153,7 +153,7 @@ const Membership = ( props ) => {
                                         <Divider section />
                                     </>
                                 }
-                            </>
+                            </Container>
                         ))
                     }
 

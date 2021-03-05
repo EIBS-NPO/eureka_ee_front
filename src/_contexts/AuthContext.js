@@ -4,5 +4,11 @@ import React from "react";
 //prend la forme des infos que je veux passer
 export default React.createContext({
     isAuthenticated: false,
-    setIsAuthenticated: (value) => { },
+    setIsAuthenticated: ( value ) => { },
+    isAdmin:false,
+    setIsAdmin: ( value ) => { },
+    firstname: undefined,
+    setFirstname: ( value ) => { },
+    lastname: undefined,
+    setLastname: ( value ) => { }
 });

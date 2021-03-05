@@ -206,7 +206,7 @@ const UserCoordForm = ({user, setterUser}) => {
                                         }
                                     </Item.Content>
                                 </Item>
-                                {userMail === user.email &&
+                                {(userMail === user.email || authAPI.isAdmin()) &&
                                 <Item>
                                     <Item.Content>
                                         <Button size="small" onClick={switchUpdate}>

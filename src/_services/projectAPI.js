@@ -1,7 +1,7 @@
 import Axios from "axios";
-import { FOLW_ACT_API, FOLW_PROJECT, PROJECT_API } from "../config";
+import { FOLW_PROJECT, PROJECT_API } from "../config";
 
-function post(project) {
+const post = (project) => {
     let data = {
         "title": project.title,
         "description": project.description,
@@ -16,12 +16,18 @@ function post(project) {
     return Axios.post(PROJECT_API, data)
 }
 
-function put(project) {
+const put = (project) => {
     console.log(project)
     return Axios.put(PROJECT_API, project)
 }
 
-function get(context, id = null){
+/**
+ *
+ * @param context
+ * @param id
+ * @returns {Promise<AxiosResponse<any>>}
+ */
+const get = (context, id = null) => {
     let params = "?ctx="+ context
     console.log(params)
     if(id !== null){
@@ -31,12 +37,20 @@ function get(context, id = null){
     return Axios.get(PROJECT_API + params)
 }
 
-function getPublic(id =null){
+const getPublic = (id = null) => {
     if(id === null ){
         return Axios.get(PROJECT_API + "/public")
     }else {
         return Axios.get(PROJECT_API + "/public?id="+ id)
     }
+}
+
+const getAssigned = () => {
+    return Axios.get(PROJECT_API + "/assigned");
+}
+
+const getFollowed = () => {
+    return Axios.get(PROJECT_API + "/followed");
 }
 
 const addAssigning = ( projectId, email ) => {
@@ -78,7 +92,7 @@ const addTeammate = (projectId, email) => {
 }
 */
 
-function getTeam(projectId){
+const getTeam = (projectId) => {
     return Axios.get(PROJECT_API + "team/public?projectId=" + projectId)
 }
 
@@ -105,5 +119,7 @@ export default {
     rmvAssigning,
     rmvFollowing,
     getTeam,
-    isFollowing
+    isFollowing,
+    getFollowed,
+    getAssigned
 };

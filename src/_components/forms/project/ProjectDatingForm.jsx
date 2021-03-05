@@ -4,9 +4,9 @@ import utilities from "../../../_services/utilities";
 import { StepFormContext } from "../../../_routes/_project/CreateProject";
 import {withTranslation} from "react-i18next";
 
-const ProjectDatingForm = ({t, loader, errors, nextStep}) => {
+const ProjectDatingForm = ({ loader, errors, nextStep}) => {
 
-    const { obj, setObj } = useContext(StepFormContext)
+    const  obj = useContext(StepFormContext)
 
     const [dates, setDates] = useState({
         start:"",
@@ -18,7 +18,7 @@ const ProjectDatingForm = ({t, loader, errors, nextStep}) => {
         setDates({ ...dates, [name]: value });
     };
 
-    const minDateForStart = utilities.formatDate(new Date())
+  //  const minDateForStart = utilities.formatDate(new Date())
 
     const minDateForEnd = () => {
         if(dates.start) {

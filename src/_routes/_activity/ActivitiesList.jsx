@@ -9,34 +9,29 @@ import authAPI from "../../_services/authAPI";
 
 const ActivitiesList = ( props ) => {
     const isAuth = useContext(AuthContext).isAuthenticated;
-
     const urlParams = props.match.params.ctx
-    //if anonymous user is on no anonymous context
-    if ( urlParams[0] !=="public" ) {
-        authAPI.setup();
-    }
 
-    const ctx = () => {
+    const checkCtx = () => {
         if (urlParams !=="public" && isAuth === false) {
             //if ctx need auth && have no Auth, public context is forced
             return 'public';
         }else {return urlParams}
     }
-    console.log(ctx())
 
     const [activities, setActivities] = useState({})
 
     const [loader, setLoader] = useState();
 
+    const [ctx, setCtx] = useState("public")
     useEffect(() => {
         setLoader(true)
-        //todo ca ca marche pas mal
-        if ( !(urlParams[0] === "public") && !(authAPI.isAuthenticated()) ) {
-            props.history.replace('/login')
-        }
+        setCtx( checkCtx() )
+        let ctx = checkCtx()
+        console.log(ctx)
 
-        if(ctx() === 'follower'){
-            activityAPI.getFavorites(ctx())
+        if(ctx === 'follower'){
+            console.log("get_follower")
+            activityAPI.getFavorites(ctx)
                 .then(response => {
                     console.log(response)
                     setActivities(response.data)
@@ -44,15 +39,16 @@ const ActivitiesList = ( props ) => {
                 .catch(error => console.log(error.response))
                 .finally(() => setLoader(false))
         }
-        else if (ctx() !== 'public') {
-            activityAPI.get(ctx())
+        else if (ctx !== 'public') {
+            console.log("get_non_public creator ou my ?")
+            activityAPI.get(ctx)
                 .then(response => {
                     console.log(response)
                     setActivities(response.data)
                 })
                 .catch(error => console.log(error.response))
                 .finally(() => setLoader(false))
-        } else {
+        } else {console.log("public")
             activityAPI.getPublic()
                 .then(response => {
                     console.log(response)
@@ -65,7 +61,7 @@ const ActivitiesList = ( props ) => {
 
     const Title = () => {
         let title = ""
-        switch(ctx()){
+        switch(ctx){
             case "creator":
                 title = <h1>{ props.t('my_activities') }</h1>
                 break;

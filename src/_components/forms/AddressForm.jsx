@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import {Button, Form, Icon, Item, Label} from "semantic-ui-react";
+import {Container, Button, Form, Icon, Item} from "semantic-ui-react";
 import {useTranslation, withTranslation} from "react-i18next";
 import addressAPI from "../../_services/addressAPI";
 import userAPI from "../../_services/userAPI";
@@ -9,13 +9,7 @@ const AddressForm = ({ obj, setter }) => {
 
     const { t } = useTranslation()
 
-    const [address, setAddress] = useState({
-        address: "",
-        complement: "",
-        country:"",
-        city:"",
-        zipCode:""
-    })
+    const [address, setAddress] = useState(obj.address)
     const [update,setUpdate] = useState(false)
 
     const [errors, setErrors] = useState({
@@ -28,7 +22,7 @@ const AddressForm = ({ obj, setter }) => {
 
     const [loader, setLoader] = useState(false);
     const [isOwner, setIsOwner] = useState(false)
-    function getIsOwner(){
+    function checkIsOwner(){
         let userMail = userAPI.checkMail()
         let res = false
         if(obj.email){
@@ -41,8 +35,17 @@ const AddressForm = ({ obj, setter }) => {
     }
 
     useEffect(() => {
-        if(obj.address){setAddress(obj.address)}
-        setIsOwner(getIsOwner())
+    //    if(obj.address){setAddress(obj.address)}
+        let userMail = userAPI.checkMail()
+        let res = false
+        if(obj.email){
+            res = obj.email === userMail
+        }
+        if(obj.referent && obj.referent.email){
+            res =  obj.referent.email === userMail
+        }
+        setIsOwner(res);
+     //   setIsOwner(checkIsOwner())
     },[])
 
 //gestion des changements des inputs dans le formulaire
@@ -102,9 +105,6 @@ const AddressForm = ({ obj, setter }) => {
         <Item.Group>
             <Item>
                 <Item.Content>
-                    <Label attached='top'>
-                        <h4>{ t('address') }</h4>
-                    </Label>
                     {update &&
                     <Form onSubmit={handleSubmit} loading={loader}>
                         <Item.Group divided>
@@ -179,28 +179,26 @@ const AddressForm = ({ obj, setter }) => {
                     }
                     {!update &&
                         <Item.Group divided >
+                            <Container textAlign="center">
                             <Item>
-                                <Item.Content verticalAlign='middle'>
-                                    <Item.Header as="h4">
-                                        { t('address') }
-                                    </Item.Header>
-                                    <Item.Description>
-                                        {address ?
-                                            <>
-                                                <p>{ address.address }</p>
-                                                <p>{ address.complement }</p>
-                                                <p>{ address.city }</p>
-                                                <p>{ address.zipCode }</p>
-                                                <p>{ address.country }</p>
-                                            </>
-                                            :
-                                            <p>
-                                                { t('not_specified') }
-                                            </p>
-                                        }
+                                    <Item.Content verticalAlign='middle'>
+                                        <Item.Description>
+                                            {address ?
+                                                <>
+                                                    <p>{ address.address }</p>
+                                                    <p>{ address.complement }</p>
+                                                    <p>{ address.city }</p>
+                                                    <p>{ address.zipCode }</p>
+                                                    <p>{ address.country }</p>
+                                                </>
+                                                :
+                                                <p>
+                                                    { t('not_specified') }
+                                                </p>
+                                            }
 
-                                    </Item.Description>
-                                </Item.Content>
+                                        </Item.Description>
+                                    </Item.Content>
                             </Item>
                             {isOwner &&
                                 <Item>
@@ -211,6 +209,7 @@ const AddressForm = ({ obj, setter }) => {
                                     </Item.Content>
                                 </Item>
                             }
+                            </Container>
                         </Item.Group>
                     }
                 </Item.Content>

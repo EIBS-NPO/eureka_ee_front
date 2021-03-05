@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react'
 import {Message, Icon, Container, Label, Form, Item, Flag} from 'semantic-ui-react'
-import { useTranslation } from 'react-i18next'
+import {useTranslation, withTranslation} from 'react-i18next'
 
 //todo ou en-GB parmas ou en-GB context, mais il faut l=que le champs text modifie bine l'attribut de l'objet géré par le form
 /**
@@ -60,10 +60,8 @@ const TextAreaMultilang = ({ tabText, setter, name, min, max }) => {
             )
         )
     }
-/*//todo useEffect for query lang in backConfig*/
-    /*//todo boucle on boutton*/
+
     useEffect(()=>{
-        //todo recup config LangAllowed
         if(tabText.length === 0 ){
             let initLang = []
             LangOptions.map((lang, index) => {
@@ -106,4 +104,4 @@ const TextAreaMultilang = ({ tabText, setter, name, min, max }) => {
 }
 
 
-export default TextAreaMultilang
+export default withTranslation()(TextAreaMultilang)

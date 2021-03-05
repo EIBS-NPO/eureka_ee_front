@@ -1,3 +1,4 @@
+
 import './scss/main.scss';
 import React, { Suspense, lazy, useState } from 'react';
 import { BrowserRouter as Router, Route, Switch} from 'react-router-dom';
@@ -5,7 +6,7 @@ import 'semantic-ui-css/semantic.min.css'
 import { Loader } from "semantic-ui-react";
 import interreg_logo from "./_resources/logos/Interreg.jpg"
 
-import AuthAPI from "./_services/authAPI";
+import authAPI from "./_services/authAPI";
 import AuthContext from "./_contexts/AuthContext";
 import MainMenu from "./_components/menus/MainMenu";
 import LeftMenu from "./_components/menus/LeftMenu";
@@ -36,18 +37,25 @@ const OrgList = lazy(() => import('./_routes/_org/OrgList'));
 const ProjectsList = lazy(() => import('./_routes/_project/ProjectsList'));
 const ActivitiesList = lazy(() => import('./_routes/_activity/ActivitiesList'));
 
+const AdminUsers = lazy(()=> import('./_routes/_admin/AdminUsers'))
 //footer
 /*const Beweging = lazy(() => import('./_routes/_partners/beweging'));*/
 
  function App({history}) {
-    AuthAPI.setup();
+     authAPI.setup()
 
-    const [isAuthenticated, setIsAuthenticated] = useState(
-        AuthAPI.isAuthenticated()
-    );
+     const [isAuthenticated, setIsAuthenticated] = useState( authAPI.isAuthenticated() )
+     const [firstname, setFirstname] = useState( authAPI.getFirstname())
+     const [lastname, setLastname] = useState( authAPI.getLastname())
+     const [isAdmin, setIsAdmin] = useState(authAPI.isAdmin())
 
   return (
-      <AuthContext.Provider value={{isAuthenticated, setIsAuthenticated}}>
+      <AuthContext.Provider value={{
+          isAuthenticated, setIsAuthenticated,
+          firstname, setFirstname,
+          lastname, setLastname,
+          isAdmin, setIsAdmin
+      }}>
           <Router>
               <div id="main">
                   <div id="main_top">
@@ -81,6 +89,8 @@ const ActivitiesList = lazy(() => import('./_routes/_activity/ActivitiesList'));
               <Route path="/org/:id" component={ProfilOrg}/>
               <Route path="/project/:id" component={ProfilProject}/>
               <Route path="/activity/:id" component={ProfilActivity}/>
+
+              <PrivateRoute path="/admin/users" component={AdminUsers} />
 
               {/*<PrivateRoute path="/activity/:id" component={ProfilActivity} />*/}
 

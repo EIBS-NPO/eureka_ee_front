@@ -9,13 +9,13 @@ const OrgForm = ( props ) => {
 
     const  org  = props.org
 
-    const [updateOrg, setUpdateOrg] = useState({ })
+    const [updateOrg, setUpdateOrg] = useState( org )
 
     const [desc, setDesc] = useState(org.description)
 
-    useEffect(() => {
+    /*useEffect(() => {
         setUpdateOrg(org)
-    },[])
+    },[])*/
 
     const [errors, setErrors] = useState({
         name:"",

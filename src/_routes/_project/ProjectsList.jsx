@@ -15,7 +15,7 @@ const ProjectsList = ( props ) => {
         props.history.replace('/')
     }
 
-    const ctx = () => {
+    const checkCtx = () => {
         if (urlParams !=="public" && isAuth === false) {
             //if ctx need auth && have no Auth, public context is forced
             return 'public';
@@ -29,11 +29,15 @@ const ProjectsList = ( props ) => {
 
     const [loader, setLoader] = useState();
 
+    const [ctx, setCtx] = useState("public")
+
     useEffect(() => {
         setLoader(true)
-        console.log(ctx())
-        if (ctx() !== 'public') {
-            projectAPI.get(ctx())
+        setCtx( checkCtx() )
+        let ctx = checkCtx()
+        console.log(ctx)
+        if (ctx !== 'public') {
+            projectAPI.get(ctx)
                 .then(response => {
                     console.log(response)
                     setProjects(response.data)
@@ -53,7 +57,7 @@ const ProjectsList = ( props ) => {
 
     return (
         <div className="card">
-            {ctx() === "creator" ?
+            {ctx === "creator" ?
                 <h1>{ props.t('my_projects') }</h1>
                 :
                 <h1>{ props.t('public_projects') }</h1>
@@ -64,7 +68,7 @@ const ProjectsList = ( props ) => {
                 {projects && projects.length > 0 &&
                     projects.map( project  => (
                         <Segment key={project.id } raised>
-                            <Card history={ props.history } key={project.id} obj={project} type="project" isLink={true} ctx={ctx()}/>
+                            <Card history={ props.history } key={project.id} obj={project} type="project" isLink={true} ctx={ctx}/>
                         </Segment>
                     ))
                 }

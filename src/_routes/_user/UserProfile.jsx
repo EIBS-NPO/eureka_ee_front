@@ -1,7 +1,7 @@
 
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState } from 'react';
 import userAPI from '../../_services/userAPI';
-import AuthContext from "../../_contexts/AuthContext";
+//import AuthContext from "../../_contexts/AuthContext";
 import {Loader, Grid, Segment, Item } from "semantic-ui-react";
 import PictureForm from "../../_components/forms/PictureForm";
 import ParamLoginForm from "../../_components/forms/user/ParamLoginForm";
@@ -26,7 +26,7 @@ const UserProfile = ({ t, history }) => {
 
     const [loader, setLoader] = useState(false)
 
-    const [activeItem, setActiveItem] = useState('presentation')
+//    const [activeItem, setActiveItem] = useState('presentation')
 
     useEffect(() => {
         setLoader(true)

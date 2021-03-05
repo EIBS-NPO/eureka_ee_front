@@ -2,20 +2,19 @@
 import React, {useState, useEffect, useContext} from 'react';
 import '../scss/components/cardOrg.scss';
 import {useTranslation, withTranslation} from 'react-i18next';
-import {Button, Container, Item, Label, Menu} from "semantic-ui-react";
+import {Button, Container, Item, Label } from "semantic-ui-react";
 import Picture from "./Picture";
 import userAPI from "../_services/userAPI";
 import AuthContext from "../_contexts/AuthContext";
-import LabelUser from "./LabelUser";
 import {NavLink} from "react-router-dom";
 
-const Card = ({ history, obj, type, isLink=false, profile=false, ctx=undefined }) => {
+const Card = ({ obj, type, isLink=false, profile=false, ctx=undefined }) => {
 
     const isAuth = useContext(AuthContext).isAuthenticated;
     const {t,  i18n } = useTranslation()
     const lg = i18n.language.split('-')[0]
 
-    const [hrefLink, setHrefLink] = useState("")
+    const [link, setLink] = useState("")
 
     const [owner, setOwner] = useState({});
 
@@ -31,19 +30,15 @@ const Card = ({ history, obj, type, isLink=false, profile=false, ctx=undefined }
         }
     }
 
-    const redirectProfile = () => {
-        history.replace( { hrefLink })
-    }
-
     useEffect(() => {
         let objMail = ""
         if(obj.creator){
             objMail = obj.creator.email
-            setOwner(obj.creator)
+             setOwner(obj.creator)
         }
         else if (obj.referent){
             objMail = obj.referent.email
-            setOwner(obj.referent)
+             setOwner(obj.referent)
         }
 
         if(isLink){
@@ -52,9 +47,9 @@ const Card = ({ history, obj, type, isLink=false, profile=false, ctx=undefined }
                 if(userAPI.checkMail() === objMail) { h = "/" + type + "/creator_" + obj.id}
             }
 
-            setHrefLink(h);
+            setLink(h);
         }
-    },[])
+    },[isAuth, obj, type, isLink])
 
     return (
         <>
@@ -84,7 +79,7 @@ const Card = ({ history, obj, type, isLink=false, profile=false, ctx=undefined }
                             }
 
                             {!profile &&
-                                <Button as={NavLink} to={hrefLink} content={ t('read_more') } basic/>
+                                <Button as={NavLink} to={link} content={ t('details') } basic/>
                             }
 
                             {type === "user" &&
@@ -142,7 +137,17 @@ const Card = ({ history, obj, type, isLink=false, profile=false, ctx=undefined }
                                     </Item.Header>
                                     <Item.Extra>
                                         {type !== "user" && ctx !=="create" &&
-                                            <LabelUser user={ owner } type={type === "org" ? "referent" : "author"} />
+                                           /* <LabelUser user={ owner } type={type === "org" ? "referent" : "author"} />*/
+                                        <Label as='a' basic image>
+                                            {/* {user.picture &&*/}
+                                            {/*  <Picture size="small" picture={user.picture} isFloat={"left"}/>*/}
+                                            {/*  }*/}
+                                            {owner.lastname + ' ' + owner.firstname}
+
+                                            {type === "referent" && <Label.Detail>{ t('referent') }</Label.Detail>}
+                                            {type === "author" && <Label.Detail>{ t('author') }</Label.Detail>}
+
+                                        </Label>
                                         }
 
                                         {obj.project &&

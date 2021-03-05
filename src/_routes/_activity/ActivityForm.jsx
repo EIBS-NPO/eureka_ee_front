@@ -89,6 +89,7 @@ const ActivityForm = ( { history, activity, setActivity, setForm} ) => {
             })
     };
 
+    //todo modal confirmation
     const handleDelete = () => {
         setLoader(true)
         activityAPI.remove(activity.id)

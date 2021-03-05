@@ -1,15 +1,13 @@
 
 import Axios from "axios";
 import jwt_decode from "jwt-decode";
-import { LOGIN_API } from "../config";
-import React from "react";
-import { Redirect } from "react-router-dom";
+import {LOGIN_API, USR_API} from "../config";
 
 const logout = () => {
     window.localStorage.removeItem("authToken");
     if (Axios.defaults.headers["Authorization"]){
         delete Axios.defaults.headers["Authorization"];
-        return <Redirect to="/login" />
+        window.location.href='/'
     }
 }
 
@@ -58,6 +56,18 @@ const setup = () => {
     }
 }
 
+const refresh = (tok) =>{
+    window.localStorage.setItem("authToken", tok)
+    return setup()
+}
+
+const resetEmail = (email, userId) => {
+    return Axios.put(USR_API +"/email", {
+        email:email,
+        userId:userId
+    })
+}
+
 /**
  * permet de savoir si on est authentifié ou pas
  * @returns boolean
@@ -73,7 +83,10 @@ const isAuthenticated = () => {
 
 const isAdmin = () => {
     const token = window.localStorage.getItem("authToken");
-    return jwt_decode(token).roles[0] === "ROLE_ADMIN";
+    if(token){
+        return jwt_decode(token).roles[0] === "ROLE_ADMIN";
+    }
+    return false
 }
 
 const getRole = () => {
@@ -94,23 +107,30 @@ const getId = () => {
 
 const getFirstname = () => {
     const token = window.localStorage.getItem("authToken");
-    return jwt_decode(token).firstname
+    if (token) {
+        return jwt_decode(token).firstname
+    }else return undefined
 }
 
 const getLastname = () => {
     const token = window.localStorage.getItem("authToken");
-    return jwt_decode(token).lastname
+    if (token) {
+        return jwt_decode(token).lastname
+    }else return undefined
 }
 
+// eslint-disable-next-line import/no-anonymous-default-export
 export default {
     setup,
     logout,
     authenticate,
+    resetEmail,
     isAuthenticated,
     getRole,
     getUserMail,
     isAdmin,
     getId,
     getFirstname,
-    getLastname
+    getLastname,
+    refresh
 };

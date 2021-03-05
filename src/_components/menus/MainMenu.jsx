@@ -1,50 +1,62 @@
 import React, { useContext } from 'react';
 import { NavLink } from "react-router-dom";
-import AuthAPI from "../../_services/authAPI";
 import AuthContext from "../../_contexts/AuthContext";
 import LanguageSelector from "../forms/LanguageSelector";
 import '../../scss/components/mainMenu.scss';
 import { withTranslation } from 'react-i18next';
-import { Menu } from 'semantic-ui-react'
+import {Label, Dropdown, Menu} from 'semantic-ui-react'
+import authAPI from "../../_services/authAPI";
 
 /*//todo do menu boots*/
 const MainMenu = ({t, history}) => {
-    const {isAuthenticated, setIsAuthenticated} = useContext(AuthContext);
+    const isAuthenticated = useContext(AuthContext).isAuthenticated;
+
+        const lastname = useContext(AuthContext).lastname
+        const firstname = useContext(AuthContext).firstname
+
 
     //supression du token du localStorage
     const handleLogout = () => {
-        AuthAPI.logout();
-        //setIsAuthenticated(false);
-        //history.push("/");
+        authAPI.logout();
     };
 
     return(
-        <>
-            <div className="space_row">
-                <Menu>
-                    {!isAuthenticated && (
-                        <>
-                            <Menu.Item as={NavLink} to='/register'>{t('Sign_up')}</Menu.Item>
-                            <Menu.Item as={NavLink} to='/login'>{t('Login')}</Menu.Item>
-                        </>
-                    )}
-                    {isAuthenticated && (
-                        <>
-                            <Menu.Item onClick={handleLogout}>{t('Logout')}</Menu.Item>
-                            <Menu.Item as={NavLink} to="/create_org"> { t('new_org') }</Menu.Item>
-                            <Menu.Item as={NavLink} to="/create_project">{ t('new_project') }</Menu.Item>
-                            <Menu.Item as={NavLink} to="/create_activity">{ t('new_activity') }</Menu.Item>
-                            <Menu.Item as={NavLink} to="/profil_user"> { t('account') }</Menu.Item>
-                        </>
-                    )}
-                </Menu>
-                <Menu className="push">
-                    <LanguageSelector />
+    <div className="space_row">
+        <Menu>
+            <Menu.Item position='right'>
+                <LanguageSelector />
+            </Menu.Item>
+            {!isAuthenticated && (
+                <>
+                    <Menu.Item as={NavLink} to='/register'>{t('Sign_up')}</Menu.Item>
+                    <Menu.Item as={NavLink} to='/login'>{t('Login')}</Menu.Item>
+                </>
+            )}
+            {isAuthenticated && (
+                <>
+                    <Menu.Item onClick={handleLogout}>{t('Logout')}</Menu.Item>
+                    <Dropdown item text= { t("new") }>
+                        <Dropdown.Menu>
+                            <Dropdown.Item>
+                                <NavLink to="/create_activity"> { t('new_activity') }</NavLink>
+                            </Dropdown.Item>
+                            <Dropdown.Item>
+                                <NavLink  to="/create_project"> { t('new_project') }</NavLink>
+                            </Dropdown.Item>
+                            <Dropdown.Item>
+                                <NavLink to="/create_org"> { t('new_org') }</NavLink>
+                            </Dropdown.Item>
+                        </Dropdown.Menu>
+                    </Dropdown>
 
-                    {/*<Menu.Item as={LanguageSelector} />*/}
-                </Menu>
-            </div>
-        </>
+                    <Menu.Item as={NavLink} to="/profil_user"> { t('account') }
+                        <Label color="teal"> { lastname + " " + firstname }</Label>
+                    </Menu.Item>
+
+                </>
+            )}
+        </Menu>
+    </div>
     );
 }
 

@@ -1,7 +1,7 @@
 import React, {useContext, useEffect, useState} from 'react';
 import projectAPI from '../../_services/projectAPI';
 import {
-    Container, Header, Item, Menu, Loader, Segment, Button
+    Container, Header, Item, Menu, Loader, Segment, Button, Dropdown, Message, Input
 } from "semantic-ui-react";
 import {withTranslation} from "react-i18next";
 import AuthContext from "../../_contexts/AuthContext";
@@ -23,8 +23,7 @@ import authAPI from "../../_services/authAPI";
  */
 
 const ProjectProfile = (props) => {
-    const isAuth = useContext(AuthContext).isAuthenticated;
-
+    const isAuth = useContext(AuthContext)
     const urlParams = props.match.params.id.split('_')
 
     //todo project toujour public en faite.
@@ -43,18 +42,20 @@ const ProjectProfile = (props) => {
     }
 
     const [isOwner, setIsOwner] =useState(false)
+    console.log(isOwner)
+    console.log(isAuth)
     /*const isOwner= () => {
         return userAPI.checkMail() === project.creator.email
     }*/
 
     const [project, setProject] = useState({})
-    console.log(project)
 
     const [loader, setLoader] = useState(true);
 
     const [activeItem, setActiveItem] = useState('presentation')
 
     const [projectForm, setProjectForm] = useState(false)
+    console.log(projectForm)
 
     const handleForm = ( ) => {
         if(projectForm === true){
@@ -81,8 +82,11 @@ const ProjectProfile = (props) => {
         }else {*/
             projectAPI.getPublic(urlParams[1])
                 .then(response => {
-                    console.log(response)
+                    console.log(response.data)
                     setProject(response.data[0])
+                    console.log(userAPI.checkMail())
+                    console.log(response.data[0].creator.email)
+                    console.log(userAPI.checkMail() === response.data[0].creator.email)
                     setIsOwner(userAPI.checkMail() === response.data[0].creator.email)
                 })
                 .catch(error => console.log(error.response))
@@ -90,6 +94,26 @@ const ProjectProfile = (props) => {
         /*}*/
 
     }, []);
+
+
+    const [search, setSearch] = useState("")
+    const handleSearch = (event) => {
+        const value = event.currentTarget.value;
+        setSearch(value);
+    }
+
+    /*const filteredList = users.filter(u =>
+        u.firstname.toLowerCase().includes(search.toLowerCase()) ||
+        u.lastname.toLowerCase().includes(search.toLowerCase()) ||
+        u.email.toLowerCase().includes(search.toLowerCase()) ||
+        (u.phone && u.phone.toLowerCase().includes(search.toLowerCase())) ||
+        (u.mobile && u.mobile.toLowerCase().includes(search.toLowerCase())) ||
+        (u.address && u.address.address.toLowerCase().includes(search.toLowerCase())) ||
+        (u.address && u.address.complement.toLowerCase().includes(search.toLowerCase())) ||
+        (u.address && u.address.city.toLowerCase().includes(search.toLowerCase())) ||
+        (u.address && u.address.zipCode.toLowerCase().includes(search.toLowerCase())) ||
+        (u.address && u.address.country.toLowerCase().includes(search.toLowerCase()))
+    )*/
 
     return (
         <div className="card">
@@ -175,6 +199,32 @@ const ProjectProfile = (props) => {
 
                     {activeItem === "activities" &&
                         <Segment attached='bottom'>
+                            <Menu>
+                                <Dropdown item text='Action' >
+                                    <Dropdown.Menu>
+
+                                            <Dropdown.Item>
+                                                { props.t('edit') + " " +  props.t('user')}
+                                            </Dropdown.Item>
+
+                                        <Dropdown.Item>
+                                            <Message size='mini' info>
+                                                Veuillez selectionner un utilisateur
+                                            </Message>
+                                        </Dropdown.Item>
+
+                                    </Dropdown.Menu>
+                                </Dropdown>
+                                <Menu.Item position="right">
+                                    <Input
+                                        name="search"
+                                        value={ search ? search : ""}
+                                        onChange={handleSearch}
+                                        placeholder={  props.t('search') + "..."}
+                                    />
+
+                                </Menu.Item>
+                            </Menu>
                             {project.activities && project.activities.map(act => (
                                 <Card key={act.id} obj={act} type="activity" isLink={true} />
                             ))}

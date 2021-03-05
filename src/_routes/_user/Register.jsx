@@ -7,7 +7,7 @@ import {useTranslation, withTranslation} from "react-i18next";
 
 /*//todo add optionalFields*/
 const Register = ({ history }) => {
-    const { isAuthenticated, setIsAuthenticated } = useContext(AuthContext);
+    const isAuthenticated = useContext(AuthContext).isAuthenticated;
 
     if (isAuthenticated === true) {
         history.replace('/');
@@ -52,8 +52,8 @@ const Register = ({ history }) => {
                 history.replace("/login")
             })
             .catch(error => {
-                console.log(error)
-                setErrors(error.response.data.error)
+                console.log(error.response.data)
+                setErrors(error.response.data)
             })
     };
 

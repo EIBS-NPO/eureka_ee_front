@@ -75,7 +75,7 @@ const ParamLoginForm = ({ entity}) => {
 
             <Modal show={show} handleClose={hideModal} title={ t('confirmation')} >
                 <div className={"card"}>
-                    <Form Loading={loader}>
+                    <Form loading={loader}>
                         <Form.Input
                             icon='lock'
                             iconPosition='left'

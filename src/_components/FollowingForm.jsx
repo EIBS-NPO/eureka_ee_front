@@ -28,7 +28,7 @@ const FollowingForm = ( { obj, setter, type } ) => {
                         console.log(response.data[0])
                         setIsFollow(response.data[0])
                     })
-                    .catch(error => console.log(error))
+                    .catch(error => console.log(error.response.data))
             }
 
             if(type === "activity"){
@@ -37,10 +37,10 @@ const FollowingForm = ( { obj, setter, type } ) => {
                         console.log(response.data[0])
                         setIsFollow(response.data[0])
                     })
-                    .catch(error => console.log(error))
+                    .catch(error => console.log(error.response.data))
                 }
             }
-    }, [])
+    }, [type, obj])
 
     const handleForm = () => {
         setLoader(true)

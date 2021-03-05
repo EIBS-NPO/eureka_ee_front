@@ -6,28 +6,45 @@ const register = (user) =>  {
     return Axios.post(USR_API + "/register", user);
 }
 
-const put = (user) =>  {
+const put = (user) => {
     return Axios.put(USR_API, user)
 }
 
-const get = () => {
-    return Axios.get(USR_API )
+/**
+ * crit = "all" for all users query
+ * crit = userId for userProfile query
+ * crit = null for currentUser query
+ * @param crit
+ * @returns {Promise<AxiosResponse<any>>}
+ */
+const get = (crit = null) => {
+    let param =""
+    if(crit === "all"){ param = "?all=1"
+    }else if ( crit !== null ) { param = "?id=" +crit}
+    return Axios.get(USR_API + param )
 }
 
 const resetPass = (passTab) => {
     return Axios.post(USR_API +"/password", passTab)
 }
 
-const checkRole = () =>  {
+const checkRole = () => {
     const token = window.localStorage.getItem("authToken");
     const jwtData = JwtDecode(token)
     return jwtData.roles[0]
 }
 
-const checkMail = () =>  {
+const checkMail = () => {
     const token = window.localStorage.getItem("authToken");
     const jwtData = JwtDecode(token)
     return jwtData.username
+}
+
+const activ = (userId, isActiv) => {
+    return Axios.put(USR_API + "/activ", {
+        userId:userId,
+        isDisable:isActiv
+    })
 }
 
 /*
@@ -51,11 +68,13 @@ function checkFirstName() {
     return JwtDecode(token).id
 }*/
 
+// eslint-disable-next-line import/no-anonymous-default-export
 export default {
     register,
     checkRole,
     checkMail,
     put,
     get,
-    resetPass
+    resetPass,
+    activ
 };

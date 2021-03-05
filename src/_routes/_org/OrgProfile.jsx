@@ -1,7 +1,7 @@
 
 import React, {useEffect, useState, useContext, createContext} from 'react';
 import orgAPI from '../../_services/orgAPI';
-import {Container, Button, Header, Icon, Image, Item, Label, Loader, Menu, Segment} from "semantic-ui-react";
+import {Container, Button, Header, Icon, Item, Loader, Menu, Segment} from "semantic-ui-react";
 import {withTranslation} from "react-i18next";
 import AuthContext from "../../_contexts/AuthContext";
 import OrgForm from "./OrgForm";
@@ -9,7 +9,7 @@ import userAPI from "../../_services/userAPI";
 import Membership from "./Membership";
 import Card from "../../_components/Card";
 import AddressForm from "../../_components/forms/AddressForm";
-import ActivitiesList from "../_activity/ActivitiesList";
+import authAPI from "../../_services/authAPI";
 
 export const OrgContext = createContext({
     org:{ },
@@ -23,12 +23,14 @@ const OrgProfile = (props ) => {
 
     const urlParams = props.match.params.id.split('_')
 
-    const ctx = () => {
+    const checkCtx = () => {
         if (urlParams[0] !=="public" && isAuth === false) {
             //if ctx need auth && have no Auth, public context is forced
             return 'public';
         } else {return urlParams[0]}
     }
+
+    const [ctx, setCtx] = useState("public")
 
     const isReferent = () => {
         return userAPI.checkMail() === org.referent.email
@@ -52,8 +54,14 @@ const OrgProfile = (props ) => {
     /*//todo cleanup*/
     useEffect(() => {
         setLoader(true)
-        console.log(ctx())
-        if(ctx() === 'my'){
+        setCtx( checkCtx() )
+        /*
+        if ( !(urlParams[0] === "public") && !(authAPI.isAuthenticated()) ) {
+            props.history.replace('/login')
+        }*/
+
+        console.log(ctx)
+        if(ctx === 'my'){
             orgAPI.getMy(urlParams[1])
                 .then(response => {
                     console.log(response)
@@ -148,7 +156,7 @@ const OrgProfile = (props ) => {
                                         <OrgForm org={org} setForm={handleForm} setter={setOrg}/>
                                     :
                                         <>
-                                            <Card obj={org} type="org" profile={true} ctx={ctx()}/>
+                                            <Card obj={org} type="org" profile={true} ctx={ ctx }/>
 
 
 
@@ -182,17 +190,23 @@ const OrgProfile = (props ) => {
 
                             {activeItem === 'projects' &&
                                 <Segment attached='bottom'>
-                                    {org.projects.map(project => (
+                                    {org.projects && org.projects.length > 0 && org.projects.map(project => (
                                         <Card key={project.id} obj={project} type="project" isLink={true}/>
                                     ))}
+                                    {(!org.projects || org.projects.length === 0) &&
+                                        <Container textAlign="center"> { props.t('no_project') }</Container>
+                                    }
                                 </Segment>
                             }
 
                             {activeItem === 'activities' &&
                                 <Segment attached='bottom'>
-                                    {org.activities.map(activity => (
+                                    {org.activities && org.activities.length > 0 && org.activities.map(activity => (
                                         <Card key={activity.id} obj={activity} type="activity" isLink={true}/>
                                     ))}
+                                    {(!org.activities || org.activities.length === 0 ) &&
+                                        <Container textAlign="center"> { props.t("no_activity") }</Container>
+                                    }
                                     {/*<ActivitiesList obj={org} context="org"/>*/}
                                 </Segment>
                             }

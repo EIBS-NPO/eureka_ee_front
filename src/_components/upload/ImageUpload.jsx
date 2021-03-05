@@ -67,11 +67,7 @@ const ImageUpload = ({ refresh, setRefresh, type, entity, parentCallBack }) => {
         <form onSubmit={handleSubmitImage} id="formPicture">
             {
                 inputImg && (
-                    <Modal
-                        show={show}
-                        handleClose={hideModal}
-                        title="Crop Img"
-                    >
+                    <Modal show={show} handleClose={hideModal} title="Crop Img">
                         <div className="ModalCrop">
                             <ImageCropper
                                 getBlob={getBlob}

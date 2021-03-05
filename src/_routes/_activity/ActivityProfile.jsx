@@ -39,7 +39,11 @@ const ActivityProfile = ( props ) => {
 
 
     const isOwner = () => {
-        return userAPI.checkMail() === activity.creator.email
+        console.log(activity.creator)
+        if(activity && activity.creator){
+            return userAPI.checkMail() === activity.creator.email
+        }
+        return false
     }
 
     const [activityForm, setActivityForm] = useState(false)

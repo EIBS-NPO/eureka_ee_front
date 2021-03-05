@@ -66,6 +66,7 @@ const isFollowing = (activityId) => {
     return Axios.get(FOLW_ACT + "?activityId=" + activityId)
 }
 
+// eslint-disable-next-line import/no-anonymous-default-export
 export default {
     post,
     put,

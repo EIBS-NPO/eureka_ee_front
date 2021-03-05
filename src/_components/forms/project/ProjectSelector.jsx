@@ -32,8 +32,32 @@ const ProjectSelector = ( {obj, setter} ) => {
     }
     const [toggleShow, setToggleShow] = useState()
     const [selected, setSelected] = useState("")
-    const [options, setOptions] = useState([])
-    const setProjectOptions = (projects) => {
+    const [creatorOptions, setCreatorOptions] = useState([])
+    const [assignOptions, setAssignOptions] = useState([])
+    const setProjectOptions = (projects, listTarget) => {
+        let table=[]
+        projects.map(p => (
+            table.push({ key:p.id, value:p.id, text:p.title} )
+        ))
+        if(listTarget === "creator"){ setCreatorOptions(table) }
+        else if(listTarget === "assign"){ setAssignOptions(table) }
+        /*if( obj.project){
+            setSelected( obj.project.id)
+        }
+        setToggleShow(!! obj.project)*/
+    }
+
+    const initSelect = () => {
+        if( obj.project){
+            setSelected( obj.project.id)
+        }
+        setToggleShow(!! obj.project)
+    }
+
+    console.log(assignOptions)
+    console.log(creatorOptions)
+/*
+    const addOptions = (projects, listTarget) => {
         let table=[]
         projects.map(p => (
             table.push({ key:p.id, value:p.id, text:p.title} )
@@ -43,20 +67,30 @@ const ProjectSelector = ( {obj, setter} ) => {
             setSelected( obj.project.id)
         }
         setToggleShow(!! obj.project)
-    }
+    }*/
 
     //todo only if toggle and the firstime
     useEffect(() => {
         //load projects
-        projectAPI.get()
+        projectAPI.get("creator")
             .then(response => {
-                          console.log(response.data)
-                setProjectOptions(response.data)
+                console.log(response.data)
+                setProjectOptions(response.data, "creator")
+            })
+            .catch(error => {
+                console.log(error)
+                //    setErrors(error.response)
+            })
+        projectAPI.getAssigned()
+            .then(response => {
+                console.log(response.data)
+                setProjectOptions(response.data, "assign")
             })
             .catch(error => {
                 console.log(error)
             //    setErrors(error.response)
             })
+        initSelect()
     },[])
 
     return (
@@ -84,16 +118,23 @@ const ProjectSelector = ( {obj, setter} ) => {
                 {toggleShow &&
                 <Item>
                     <Dropdown
-                        fluid
-                        search
-                        selection
-
                         placeholder={ t('project_link')}
                         name="projectId"
                         value={selected !== "" ? selected : null}
-                        options={options}
+                        options={ creatorOptions }
                         onChange={handleSelect}
                     />
+                        {/*<Dropdown.Menu>
+                            <Dropdown.Header icon='tags' content={ t('my_project')} />
+                            {creatorOptions.length > 0 && creatorOptions.map(p => (
+                                <Dropdown.Item key={p.id} value={p.id}> { p.title }</Dropdown.Item>
+                            ))}
+                            <Dropdown.Header icon='tags' content={ t('my_assignments')} />
+                            {assignOptions.length > 0 && assignOptions.map(p => (
+                                <Dropdown.Item key={p.id} value={p.id}> { p.title }</Dropdown.Item>
+                            ))}
+                        </Dropdown.Menu>
+                    </Dropdown>*/}
                 </Item>
                 }
             </Item.Group>

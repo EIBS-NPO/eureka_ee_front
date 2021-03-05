@@ -19,7 +19,7 @@ const LanguageSelector = () => {
     return (
             <Dropdown
                 placeholder='Country'
-                compact closeOnBlur selection
+                closeOnBlur
                 value={i18n.language}
                 options={countryOptions}
                 onChange={handleChange}

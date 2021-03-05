@@ -3,12 +3,15 @@ import React, { useContext, useState } from "react";
 import AuthContext from "../../_contexts/AuthContext";
 import AuthAPI from "../../_services/authAPI";
 import {Button, Form } from "semantic-ui-react";
+import authAPI from "../../_services/authAPI";
 
-const Login = ({ history }) => {
-    const { isAuthenticated, setIsAuthenticated } = useContext(AuthContext);
+const Login = ( props ) => {
+    const {
+        isAuthenticated, setIsAuthenticated, setIsAdmin, setFirstname, setLastname
+    } = useContext(AuthContext);
 
     if (isAuthenticated === true) {
-        history.replace('/');
+        props.history.replace('/');
     }
 
     const [credentials, setCredential] = useState({
@@ -32,7 +35,10 @@ const Login = ({ history }) => {
             await AuthAPI.authenticate(credentials);
             setError("");
             setIsAuthenticated(true);
-            history.replace("/");
+            setIsAdmin(authAPI.isAdmin())
+            setFirstname(authAPI.getFirstname())
+            setLastname(authAPI.getLastname())
+            props.history.replace("/");
 
         } catch (error) {
             setError(
