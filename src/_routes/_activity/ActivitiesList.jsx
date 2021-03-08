@@ -8,13 +8,12 @@ import Card from "../../_components/Card";
 import authAPI from "../../_services/authAPI";
 
 const ActivitiesList = ( props ) => {
-    const isAuth = useContext(AuthContext).isAuthenticated;
     const urlParams = props.match.params.ctx
 
     const checkCtx = () => {
-        if (urlParams !=="public" && isAuth === false) {
+        if (urlParams !=="public" && !authAPI.isAuthenticated()) {
             //if ctx need auth && have no Auth, public context is forced
-            return 'public';
+            authAPI.logout()
         }else {return urlParams}
     }
 

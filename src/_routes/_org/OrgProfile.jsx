@@ -10,6 +10,8 @@ import Membership from "./Membership";
 import Card from "../../_components/Card";
 import AddressForm from "../../_components/forms/AddressForm";
 import authAPI from "../../_services/authAPI";
+import Picture from "../../_components/Picture";
+import FollowingActivityForm from "../../_components/FollowingForm";
 
 export const OrgContext = createContext({
     org:{ },
@@ -94,10 +96,18 @@ const OrgProfile = (props ) => {
                     <>
                     {org && org !== "DATA_NOT_FOUND" ?
                         <>
-                            <Container textAlign="center">
-                                <h1>{ org.name }</h1>
-                                <span> { org.type } </span>
-                            </Container>
+                            <Segment basic>
+                                <Header as="h2" floated='left'>
+                                    <Picture size="small" picture={org.picture} />
+                                </Header>
+                                <Header as="h2" floated='right'>
+                                    {isAuth &&
+                                    <FollowingActivityForm obj={org} setter={setOrg} type="org" />
+                                    }
+                                    { org.name }
+                                    <Header.Subheader> {org.type}</Header.Subheader>
+                                </Header>
+                            </Segment>
 
                         <Segment vertical>
                             <Menu attached='top' tabular>
@@ -156,7 +166,7 @@ const OrgProfile = (props ) => {
                                         <OrgForm org={org} setForm={handleForm} setter={setOrg}/>
                                     :
                                         <>
-                                            <Card obj={org} type="org" profile={true} ctx={ ctx }/>
+                                            <Card obj={org} type="org" profile={true} withPicture={false} ctx={ ctx }/>
 
 
 

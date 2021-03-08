@@ -66,6 +66,9 @@ const ActivityForm = ( { history, activity, setActivity, setForm} ) => {
         }
     },[])
 
+    console.log(activity)
+    console.log(updateActivity)
+
     const handleSubmit = () => {
         authAPI.isAuthenticated();
 

@@ -1,45 +1,42 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Loader, Segment} from 'semantic-ui-react'
 import { withTranslation } from 'react-i18next';
 import projectAPI from "../../_services/projectAPI";
-import AuthContext from "../../_contexts/AuthContext";
 import Card from "../../_components/Card";
+import authAPI from "../../_services/authAPI";
 
 const ProjectsList = ( props ) => {
-    const isAuth = useContext(AuthContext).isAuthenticated;
-
     const urlParams = props.match.params.ctx
 
     //forbiden if route for my org and no auth
-    if (urlParams !=="public" && isAuth === undefined) {
-        props.history.replace('/')
-    }
-
     const checkCtx = () => {
-        if (urlParams !=="public" && isAuth === false) {
+        if (urlParams !=="public" && !authAPI.isAuthenticated()) {
             //if ctx need auth && have no Auth, public context is forced
-            return 'public';
-        }
-        else {
-            return urlParams
-        }
+            authAPI.logout()
+        }else {return urlParams}
     }
 
     const [projects, setProjects] = useState()
 
     const [loader, setLoader] = useState();
 
-    const [ctx, setCtx] = useState("public")
+    const [ctx, setCtx] = useState("")
 
     useEffect(() => {
         setLoader(true)
         setCtx( checkCtx() )
         let ctx = checkCtx()
-        console.log(ctx)
-        if (ctx !== 'public') {
+        if(ctx === 'follower'){
+            projectAPI.getFollowed()
+                .then(response => {
+                    setProjects(response.data)
+                })
+                .catch(error => console.log(error.response))
+                .finally(() => setLoader(false))
+        }
+        else if (ctx !== 'public') {
             projectAPI.get(ctx)
                 .then(response => {
-                    console.log(response)
                     setProjects(response.data)
                 })
                 .catch(error => console.log(error.response))
@@ -47,7 +44,6 @@ const ProjectsList = ( props ) => {
         } else {
             projectAPI.getPublic()
                 .then(response => {
-                    console.log(response)
                     setProjects(response.data)
                 })
                 .catch(error => console.log(error.response))
@@ -55,13 +51,24 @@ const ProjectsList = ( props ) => {
         }
     }, [urlParams]);
 
+    const Title = () => {
+        let title = ""
+        switch(ctx){
+            case "creator":
+                title = <h1>{ props.t('my_activities') }</h1>
+                break;
+            case "follower":
+                title = <h1>{ props.t('my_favorites') }</h1>
+                break;
+            default:
+                title = <h1>{ props.t('public_activities') }</h1>
+        }
+        return title;
+    }
+
     return (
         <div className="card">
-            {ctx === "creator" ?
-                <h1>{ props.t('my_projects') }</h1>
-                :
-                <h1>{ props.t('public_projects') }</h1>
-            }
+            <Title />
 
             {!loader &&
                 <>

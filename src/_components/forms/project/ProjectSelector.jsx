@@ -28,6 +28,7 @@ const ProjectSelector = ( {obj, setter} ) => {
             setToggleShow(false)
             //todo j'aoute ca pour voir la gestion du null d'ici
             setSelected(null)
+            setter({ ... obj, "projectId": null })
         }
     }
     const [toggleShow, setToggleShow] = useState()

@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { withTranslation } from 'react-i18next';
 import AuthContext from "../../_contexts/AuthContext";
 import {Button, Checkbox, Form, Icon, Item, Label, Message, Segment, TextArea} from "semantic-ui-react";
@@ -6,12 +6,11 @@ import AuthAPI from "../../_services/authAPI";
 import activityAPI from "../../_services/activityAPI";
 import TextAreaMultilang from "../../_components/forms/TextAreaMultilang";
 import {act} from "@testing-library/react";
+import authAPI from "../../_services/authAPI";
 
 const CreateActivity = ({ history, t }) => {
- //   AuthAPI.setup();
-    const isAuthenticated = useContext(AuthContext);
-    if (isAuthenticated === true) {
-        history.replace('/');
+    if (!authAPI.isAuthenticated()) {
+        authAPI.logout()
     }
 
     const [activity, setActivity] = useState({
@@ -25,7 +24,7 @@ const CreateActivity = ({ history, t }) => {
         setActivity({ ...activity, [name]: value });
     };
 
-    const handlePublication = (event) => {
+    const handlePublication = () => {
         if(!activity.isPublic){
             setActivity({ ...activity, "isPublic": true })
         }else {

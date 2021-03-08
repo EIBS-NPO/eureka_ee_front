@@ -1,4 +1,4 @@
-import React, {createContext, useContext, useState} from "react";
+import React, {createContext, useContext, useState, useEffect } from "react";
 import { withTranslation } from 'react-i18next';
 
 import AuthContext from "../../_contexts/AuthContext";
@@ -24,11 +24,14 @@ export const StepFormContext = createContext({
 })
 
 const CreateProject = ({ history, t }) => {
-    AuthAPI.setup();
+    /*useEffect (()=> {
+        AuthAPI.setup();
+    })*/
+
     const isAuthenticated = useContext(AuthContext);
-    if (isAuthenticated === true) {
+    /*if (isAuthenticated === true) {
         history.replace('/');
-    }
+    }*/
 
     const [stepList, setStepList] = useState([
         {id:0, name:"description", isValid:false, state:"active"},

@@ -39,6 +39,7 @@ const AdminUsers = () => {
         setSearch(value);
     }
 
+    //todo verifier filtrage
     const filteredList = users.filter(u =>
         u.firstname.toLowerCase().includes(search.toLowerCase()) ||
         u.lastname.toLowerCase().includes(search.toLowerCase()) ||

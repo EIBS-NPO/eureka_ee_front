@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { withTranslation } from 'react-i18next';
 import OrgAPI from "../../_services/orgAPI";
 import AuthContext from "../../_contexts/AuthContext";
@@ -8,11 +8,6 @@ import AuthAPI from "../../_services/authAPI";
 import TextAreaMultilang from "../../_components/forms/TextAreaMultilang";
 
 const CreateOrg = ({ history, t }) => {
-    AuthAPI.setup();
-    const isAuthenticated = useContext(AuthContext);
-    if (isAuthenticated === true) {
-        history.replace('/');
-    }
 
     const [org, setOrg] = useState({
         name: "",
@@ -66,9 +61,6 @@ const CreateOrg = ({ history, t }) => {
             <h1> {t('new_org')} </h1>
                 <Form onSubmit={preSubmit}>
                     <Segment>
-                        {/*<Label attached="top">
-                            { t('description') }
-                        </Label>*/}
                             <Item>
                                 <Form.Input
                                     label={t('name')}

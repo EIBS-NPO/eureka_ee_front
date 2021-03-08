@@ -83,6 +83,13 @@ const rmvFollowing = ( projectId ) => {
     })
 }
 
+const manageActivity = (activity, projId) => {
+    return Axios.put(PROJECT_API + "/addActivity", {
+        projectId:projId,
+        activityId:activity.id
+    })
+}
+
 /*
 const addTeammate = (projectId, email) => {
     return Axios.put( , {
@@ -93,11 +100,16 @@ const addTeammate = (projectId, email) => {
 */
 
 const getTeam = (projectId) => {
-    return Axios.get(PROJECT_API + "team/public?projectId=" + projectId)
+    return Axios.get(PROJECT_API + "/team/public?projectId=" + projectId)
 }
 
-const isFollowing = (projectId) => {
-    return Axios.get(FOLW_PROJECT + "?projectId=" + projectId)
+const isFollowing = (projectId, followType) => {
+    console.log(projectId)
+    console.log(followType)
+    let param = "";
+    if(followType === "assign"){ param = "&isAssigning=1" }
+    if(followType === "follow"){ param = "&isFollowing=1" }
+    return Axios.get(FOLW_PROJECT + "?projectId=" + projectId + param)
 }
 
 /*
@@ -121,5 +133,6 @@ export default {
     getTeam,
     isFollowing,
     getFollowed,
-    getAssigned
+    getAssigned,
+    manageActivity
 };

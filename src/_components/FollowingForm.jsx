@@ -22,8 +22,10 @@ const FollowingForm = ( { obj, setter, type } ) => {
     useEffect( () => {
         console.log(obj)
         if(authAPI.isAuthenticated()){
+            let id=obj.id
+            console.log(id)
             if(type === "project"){
-                projectAPI.isFollowing( obj.id )
+                projectAPI.isFollowing( obj.id, "follow" )
                     .then(response => {
                         console.log(response.data[0])
                         setIsFollow(response.data[0])

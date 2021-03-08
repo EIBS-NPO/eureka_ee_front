@@ -2,19 +2,17 @@
 import React, {useState, useEffect, useContext} from 'react';
 import '../scss/components/cardOrg.scss';
 import {useTranslation, withTranslation} from 'react-i18next';
-import {Button, Container, Item, Label } from "semantic-ui-react";
+import {Icon, Header, Segment, Button, Container, Item, Label } from "semantic-ui-react";
 import Picture from "./Picture";
 import userAPI from "../_services/userAPI";
 import AuthContext from "../_contexts/AuthContext";
 import {NavLink} from "react-router-dom";
 
-const Card = ({ obj, type, isLink=false, profile=false, ctx=undefined }) => {
+const Card = ({ obj, type, isLink=false, profile=false, ctx=undefined, withPicture=true }) => {
 
     const isAuth = useContext(AuthContext).isAuthenticated;
     const {t,  i18n } = useTranslation()
     const lg = i18n.language.split('-')[0]
-
-    const [link, setLink] = useState("")
 
     const [owner, setOwner] = useState({});
 
@@ -30,26 +28,30 @@ const Card = ({ obj, type, isLink=false, profile=false, ctx=undefined }) => {
         }
     }
 
+    const getLink = () => {
+        let h = "/" + type + "/public_" + obj.id;
+        if(isAuth){
+            if(userAPI.checkMail() === owner.email) { h = "/" + type + "/creator_" + obj.id}
+        }
+
+       return h
+    }
+
     useEffect(() => {
-        let objMail = ""
-        if(obj.creator){
-            objMail = obj.creator.email
-             setOwner(obj.creator)
+        if(type === "user"){ }
+        switch(type){
+            case "user":
+                setOwner(obj)
+                break
+            case "org":
+                setOwner(obj.referent)
+                break
+            case "project":
+            case "activity":
+                setOwner(obj.creator)
+                break
         }
-        else if (obj.referent){
-            objMail = obj.referent.email
-             setOwner(obj.referent)
-        }
-
-        if(isLink){
-            let h = "/" + type + "/public_" + obj.id;
-            if(isAuth){
-                if(userAPI.checkMail() === objMail) { h = "/" + type + "/creator_" + obj.id}
-            }
-
-            setLink(h);
-        }
-    },[isAuth, obj, type, isLink])
+    },[])
 
     return (
         <>
@@ -58,12 +60,30 @@ const Card = ({ obj, type, isLink=false, profile=false, ctx=undefined }) => {
                 <Item.Content>
                     <Item.Header>
                         <Container textAlign='center'>
-                            {type !== "user" && !profile &&
-                                <>
-                                <span><h3> { obj.title ? obj.title : obj.name } </h3></span>
-                                <span> { obj.type } </span>
-                                </>
-                            }
+
+                            <Segment basic>
+                                <Header as="h2" floated='left'>
+                                    {type !== "user" &&
+                                    <>
+                                        {obj.title ? obj.title : obj.name}
+                                        <Header.Subheader> {obj.type}</Header.Subheader>
+                                    </>
+                                    }
+                                    {type === "user" &&
+                                        obj.firstname + ' ' + obj.lastname
+                                    }
+                                </Header>
+                                {!profile &&
+                                    <Header as={NavLink} to={getLink()} floated='right'>
+                                        <Icon name='chevron circle right' color="purple"/>
+                                        <Header.Content>
+                                            { t('details')}
+                                        </Header.Content>
+                                    </Header>
+                                }
+
+                            </Segment>
+
 
                             { ctx !== 'public' && type === "activity" &&
                                 <Label basic >
@@ -78,14 +98,6 @@ const Card = ({ obj, type, isLink=false, profile=false, ctx=undefined }) => {
                                 </Label>
                             }
 
-                            {!profile &&
-                                <Button as={NavLink} to={link} content={ t('details') } basic/>
-                            }
-
-                            {type === "user" &&
-                                <span><h3> { obj.firstname + ' ' + obj.lastname } </h3></span>
-                            }
-
                         </Container>
                     </Item.Header>
                 </Item.Content>
@@ -94,9 +106,12 @@ const Card = ({ obj, type, isLink=false, profile=false, ctx=undefined }) => {
                     <Item.Group>
                         <Item>
 
-                            <Container textAlign='center'>
-                                <Picture size="small" picture={obj.picture} />
-                            </Container>
+                            {withPicture &&
+                                <Container textAlign='center'>
+                                    <Picture size="small" picture={obj.picture} />
+                                </Container>
+                            }
+
 
                             { (type === "org" || type === "project" ) &&
                                 <Container textAlign='center'>
@@ -142,7 +157,7 @@ const Card = ({ obj, type, isLink=false, profile=false, ctx=undefined }) => {
                                             {/* {user.picture &&*/}
                                             {/*  <Picture size="small" picture={user.picture} isFloat={"left"}/>*/}
                                             {/*  }*/}
-                                            {owner.lastname + ' ' + owner.firstname}
+                                            {owner && (owner.lastname + ' ' + owner.firstname)}
 
                                             {type === "referent" && <Label.Detail>{ t('referent') }</Label.Detail>}
                                             {type === "author" && <Label.Detail>{ t('author') }</Label.Detail>}

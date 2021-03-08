@@ -13,7 +13,7 @@ const put = (activity) => {
 }
 
 const get = (context, id = null, orgId = null, projectId = null) => {
-    let params = "?cxt="+ context
+    let params = "?ctx="+ context
     if(id !== null){
         params += "&id="+ id
     }

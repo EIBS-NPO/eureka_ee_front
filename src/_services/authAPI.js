@@ -69,7 +69,7 @@ const resetEmail = (email, userId) => {
 }
 
 /**
- * permet de savoir si on est authentifié ou pas
+ * return true if the token isn't expired else return false
  * @returns boolean
  */
 const isAuthenticated = () => {
@@ -91,18 +91,24 @@ const isAdmin = () => {
 
 const getRole = () => {
     const token = window.localStorage.getItem("authToken");
-    const jwtData = jwt_decode(token)
-    return jwtData.roles[0]
+    if (token) {
+        const jwtData = jwt_decode(token)
+        return jwtData.roles[0]
+    }
 }
 
 const getUserMail = () => {
     const token = window.localStorage.getItem("authToken");
-    return jwt_decode(token).username
+    if (token) {
+        return jwt_decode(token).username
+    }
 }
 
 const getId = () => {
     const token = window.localStorage.getItem("authToken");
-    return jwt_decode(token).id
+    if (token) {
+        return jwt_decode(token).id
+    }
 }
 
 const getFirstname = () => {

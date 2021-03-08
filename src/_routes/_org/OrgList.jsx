@@ -4,6 +4,7 @@ import orgAPI from "../../_services/orgAPI";
 import { Loader, Segment} from "semantic-ui-react";
 import AuthContext from "../../_contexts/AuthContext";
 import Card from "../../_components/Card";
+import authAPI from "../../_services/authAPI";
 
 const OrgList = ( props ) => {
     const isAuth = useContext(AuthContext).isAuthenticated;
@@ -11,16 +12,14 @@ const OrgList = ( props ) => {
     const urlParams = props.match.params.ctx
 
     //forbiden if route for my org wwith no auth
-    if (urlParams !=="public" && isAuth === undefined) {
-        props.history.replace('/')
+    const checkCtx = () => {
+        if (urlParams !=="public" && !authAPI.isAuthenticated()) {
+            //if ctx need auth && have no Auth, public context is forced
+            authAPI.logout()
+        }else {return urlParams}
     }
 
-    const ctx = () => {
-        if (urlParams ==="my" && isAuth) {
-            //if ctx need auth && have no Auth, public context is forced
-            return 'my';
-        } else {return 'public'}
-    }
+    const [ctx, setCtx] = useState("public")
 
     const [orgs, setOrgs] = useState([])
 
@@ -30,7 +29,8 @@ const OrgList = ( props ) => {
     //donc les object seriliser org du back ne doivent reoutourner que l'id des ref
     useEffect(() => {
         setLoader(true)
-        if(ctx() === 'my'){
+        setCtx( checkCtx() )
+        if(ctx === 'my'){
             orgAPI.getMy()
                 .then(response => {
                     console.log(response)
@@ -51,14 +51,14 @@ const OrgList = ( props ) => {
 
     return (
         <div className="card">
-            { ctx() === 'my' && <h1>{ props.t('my_org') }</h1> }
-            { ctx() !== 'my' && <h1>{ props.t('all_org') }</h1> }
+            { ctx === 'my' && <h1>{ props.t('my_org') }</h1> }
+            { ctx !== 'my' && <h1>{ props.t('all_org') }</h1> }
             {!loader &&
                 <>
                     {orgs && orgs.length > 0 &&
                         orgs.map(org => (
                             <Segment key={org.id} raised>
-                                <Card history={props.history} key={org.id} obj={org} type="org" isLink={true} ctx={ctx()}/>
+                                <Card history={props.history} key={org.id} obj={org} type="org" isLink={true} ctx={ctx}/>
                             </Segment>
                         ))
                     }

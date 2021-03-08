@@ -55,6 +55,8 @@
   "confirmation": "confirmation",
   "errors": "Une erreur est survenue.",
   "add_members" : "ajouter des membres",
+  "add": "ajouter",
+  "other": "autre",
 
   "no_def": "non défini",
   "no_description": "aucune description",
@@ -64,6 +66,8 @@
   "no_summary": "aucun résumé",
   "no_project": "aucun projet",
   "no_activity": "aucune activité",
+  "no_free_activities": "aucune activité disponible",
+  "no_translation": "pas de traduction",
   "file_available": "fichier disponible",
   "file_not_allowed": "fichier non autorisé",
   "review": "vérifications",

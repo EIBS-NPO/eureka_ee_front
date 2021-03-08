@@ -30,14 +30,17 @@ const resetPass = (passTab) => {
 
 const checkRole = () => {
     const token = window.localStorage.getItem("authToken");
-    const jwtData = JwtDecode(token)
-    return jwtData.roles[0]
+    if(token){
+        return JwtDecode(token).roles[0]
+    }
+
 }
 
 const checkMail = () => {
     const token = window.localStorage.getItem("authToken");
-    const jwtData = JwtDecode(token)
-    return jwtData.username
+    if(token){
+        return JwtDecode(token).username
+    }
 }
 
 const activ = (userId, isActiv) => {
