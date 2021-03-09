@@ -38,6 +38,17 @@ const downloadPic = (picture) => {
     return Axios.get(ORG_API + "/picture/?pic=" + picture)
 }
 
+const manageActivity = (activity, orgId) => {
+    return Axios.put(ORG_API + "/manageActivity", {
+            orgId: orgId,
+            activityId: activity.id
+        })
+}
+
+const getMembered = () => {
+    return Axios.get(ORG_API + "/membered")
+}
+
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
     post,
@@ -45,5 +56,7 @@ export default {
     get,
     getMy,
     uploadPic,
-    downloadPic
+    downloadPic,
+    manageActivity,
+    getMembered
 };

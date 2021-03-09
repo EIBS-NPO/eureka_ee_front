@@ -1,7 +1,19 @@
 
 import React, {useEffect, useState, useContext, createContext} from 'react';
 import orgAPI from '../../_services/orgAPI';
-import {Container, Button, Header, Icon, Item, Loader, Menu, Segment} from "semantic-ui-react";
+import {
+    Container,
+    Button,
+    Header,
+    Icon,
+    Item,
+    Loader,
+    Menu,
+    Segment,
+    Dropdown,
+    Message,
+    Input
+} from "semantic-ui-react";
 import {withTranslation} from "react-i18next";
 import AuthContext from "../../_contexts/AuthContext";
 import OrgForm from "./OrgForm";
@@ -12,6 +24,8 @@ import AddressForm from "../../_components/forms/AddressForm";
 import authAPI from "../../_services/authAPI";
 import Picture from "../../_components/Picture";
 import FollowingActivityForm from "../../_components/FollowingForm";
+import projectAPI from "../../_services/projectAPI";
+import activityAPI from "../../_services/activityAPI";
 
 export const OrgContext = createContext({
     org:{ },
@@ -50,18 +64,17 @@ const OrgProfile = (props ) => {
     const [loader, setLoader] = useState(true);
 
     const [activeItem, setActiveItem] = useState('presentation')
-
     const handleItemClick = (e, { name }) => setActiveItem(name)
 
-    /*//todo cleanup*/
+    const [activities, setActivities] = useState([])
+    const [freeActivities, setFreeActivities] =useState([])
+
+    const [isOwner, setIsOwner] =useState(false)
+    const [isAssigned, setIsAssigned] = useState(false)
+
     useEffect(() => {
         setLoader(true)
         setCtx( checkCtx() )
-        /*
-        if ( !(urlParams[0] === "public") && !(authAPI.isAuthenticated()) ) {
-            props.history.replace('/login')
-        }*/
-
         console.log(ctx)
         if(ctx === 'my'){
             orgAPI.getMy(urlParams[1])
@@ -81,6 +94,56 @@ const OrgProfile = (props ) => {
                 .finally(() => setLoader(false))
         }
     }, []);
+
+    const handleRmv = (activity) => {
+        if (!authAPI.isAuthenticated()) {
+            authAPI.logout()
+        }
+        orgAPI.manageActivity(activity, org.id)
+            .then(response => {
+                console.log(response.data)
+                let index = org.activities.indexOf(activity)
+                org.activities.splice(index, 1)
+                freeActivities.push(activity)
+            })
+            .catch(error => {
+                console.log(error)
+            })
+    }
+
+    const handleAdd = (activityId) => {
+        if (!authAPI.isAuthenticated()) {
+            authAPI.logout()
+        }
+        //setLoader2(true)
+        let act = freeActivities.find(a => activityId === a.id)
+        orgAPI.manageActivity(act, org.id)
+            .then(response => {
+                console.log(response.data)
+                if(response.data[0] === "success"){
+                    activities.unshift(freeActivities.find(a => a.id === activityId))
+                    console.log(activities)
+                    setActivities(activities)
+                    setFreeActivities(freeActivities.filter(a => a.id !== activityId))
+                }
+            })
+            .catch(error => console.log(error))
+        //     .finally(()=> setLoader2(false))
+    }
+
+    const [search, setSearch] = useState("")
+    const handleSearch = (event) => {
+        const value = event.currentTarget.value;
+        setSearch(value);
+    }
+
+    const filteredList = (list) => {
+        return list.filter(p =>
+            p.title.toLowerCase().includes(search.toLowerCase()) ||
+            p.creator.firstname.toLowerCase().includes(search.toLowerCase()) ||
+            p.creator.lastname.toLowerCase().includes(search.toLowerCase())
+        )
+    }
 
     return (
 
@@ -188,7 +251,16 @@ const OrgProfile = (props ) => {
 
                             {activeItem === 'address' &&
                             <Segment attached='bottom'>
-                                <AddressForm obj={org} setter={setOrg} />
+                                {org.address ?
+                                    <AddressForm obj={org} setter={setOrg} />
+                                :
+                                    <Container textAlign='center'>
+                                        <Message size='mini' info>
+                                            {props.t("not_specified")}
+                                        </Message>
+                                    </Container>
+                                }
+
                             </Segment>
                             }
 
@@ -211,13 +283,46 @@ const OrgProfile = (props ) => {
 
                             {activeItem === 'activities' &&
                                 <Segment attached='bottom'>
-                                    {org.activities && org.activities.length > 0 && org.activities.map(activity => (
-                                        <Card key={activity.id} obj={activity} type="activity" isLink={true}/>
-                                    ))}
-                                    {(!org.activities || org.activities.length === 0 ) &&
-                                        <Container textAlign="center"> { props.t("no_activity") }</Container>
-                                    }
-                                    {/*<ActivitiesList obj={org} context="org"/>*/}
+                                    <Menu>
+                                        {/*{(isOwner || isAssigned) &&
+                                        <Dropdown item text={props.t('add') + " " + props.t('activity')} >
+                                            <Dropdown.Menu>
+                                                <Dropdown.Item>
+                                                    {freeActivities.length === 0 &&
+                                                    <Message size='mini' info>
+                                                        {props.t("no_free_activities")}
+                                                    </Message>
+                                                    }
+
+                                                </Dropdown.Item>
+                                                {freeActivities.map(a =>
+                                                    <Dropdown.Item key={a.id} onClick={() => handleAdd(a.id)}>
+                                                        <Icon name="plus"/> {a.title}
+                                                    </Dropdown.Item>
+                                                )}
+
+                                            </Dropdown.Menu>
+                                        </Dropdown>
+                                        }*/}
+                                        <Menu.Item position="right">
+                                            <Input
+                                                name="search"
+                                                value={ search ? search : ""}
+                                                onChange={handleSearch}
+                                                placeholder={  props.t('search') + "..."}
+                                            />
+                                        </Menu.Item>
+                                    </Menu>
+                                    {filteredList(org.activities).map(act =>
+                                        <Segment key={act.id}>
+                                            <Card key={act.id} obj={act} type="activity" isLink={true} />
+                                            { act.creator.id === authAPI.getId() &&
+                                            <button onClick={()=>handleRmv(act)}>retirer du projet</button>
+                                            }
+
+                                        </Segment>
+
+                                    )}
                                 </Segment>
                             }
                         </Segment>

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Loader, Segment} from 'semantic-ui-react'
-import { withTranslation } from 'react-i18next';
+import {Container, Header, Input, Loader, Menu, Message, Segment} from 'semantic-ui-react'
 import projectAPI from "../../_services/projectAPI";
 import Card from "../../_components/Card";
 import authAPI from "../../_services/authAPI";
+import {withTranslation} from "react-i18next";
 
 const ProjectsList = ( props ) => {
     const urlParams = props.match.params.ctx
@@ -17,6 +17,7 @@ const ProjectsList = ( props ) => {
     }
 
     const [projects, setProjects] = useState()
+    const [assignProjects, setAssignProjects] = useState()
 
     const [loader, setLoader] = useState();
 
@@ -29,15 +30,24 @@ const ProjectsList = ( props ) => {
         if(ctx === 'follower'){
             projectAPI.getFollowed()
                 .then(response => {
+                    console.log(response.data)
                     setProjects(response.data)
                 })
                 .catch(error => console.log(error.response))
                 .finally(() => setLoader(false))
         }
-        else if (ctx !== 'public') {
+        else if (ctx !== 'public') { //todo gerer le rpojet my (creator + assign)
             projectAPI.get(ctx)
                 .then(response => {
+                    console.log(response.data)
                     setProjects(response.data)
+                    projectAPI.getAssigned()
+                        .then(response =>{
+                            setAssignProjects(response.data)
+                        })
+                        .catch(error => {
+                            console.log(error)
+                        })
                 })
                 .catch(error => console.log(error.response))
                 .finally(() => setLoader(false))
@@ -55,31 +65,118 @@ const ProjectsList = ( props ) => {
         let title = ""
         switch(ctx){
             case "creator":
-                title = <h1>{ props.t('my_activities') }</h1>
+                title = <h1>{ props.t('my_projects') }</h1>
                 break;
             case "follower":
-                title = <h1>{ props.t('my_favorites') }</h1>
+                title = <h1>{ props.t('projects') +" : " + props.t('my_favorites') }</h1>
                 break;
             default:
-                title = <h1>{ props.t('public_activities') }</h1>
+                title = <h1>{ props.t('all_projects') }</h1>
         }
         return title;
+    }
+
+    const [activeItem, setActiveItem] = useState('myProjects')
+    const handleItemClick = (e, { name }) => setActiveItem(name)
+
+    const [search, setSearch] = useState("")
+    const handleSearch = (event) => {
+        const value = event.currentTarget.value;
+        setSearch(value);
+    }
+
+    const filteredList = (list) => {
+        return list.filter(p =>
+            p.title.toLowerCase().includes(search.toLowerCase()) ||
+            p.creator.firstname.toLowerCase().includes(search.toLowerCase()) ||
+            p.creator.lastname.toLowerCase().includes(search.toLowerCase())
+        )
     }
 
     return (
         <div className="card">
             <Title />
-
-            {!loader &&
+            {ctx === "creator" &&
                 <>
-                {projects && projects.length > 0 &&
-                    projects.map( project  => (
-                        <Segment key={project.id } raised>
-                            <Card history={ props.history } key={project.id} obj={project} type="project" isLink={true} ctx={ctx}/>
-                        </Segment>
-                    ))
+                <Segment vertical>
+                    <Menu attached='top' tabular>
+                        <Menu.Item name='myProjects' active={activeItem === 'myProjects'} onClick={handleItemClick}>
+                            <Header>
+                                {props.t("my_projects")}
+                            </Header>
+                        </Menu.Item>
+                        <Menu.Item name='myTakingPart' active={activeItem === 'myTakingPart'} onClick={handleItemClick}>
+                            <Header>
+                                {props.t("my_taking_part")}
+                            </Header>
+                        </Menu.Item>
+                    </Menu>
+                </Segment>
+                {!loader &&
+                    <>
+                    {activeItem === 'myProjects' &&
+                    <Segment attached='bottom'>
+                        <Menu>
+                            <Menu.Item position="right">
+                                <Input name="search" value={ search ? search : ""}
+                                       onChange={handleSearch}
+                                       placeholder={  props.t('search') + "..."}    />
+                            </Menu.Item>
+                        </Menu>
+                        {projects && filteredList(projects).length > 0 ?
+                        filteredList(projects).map(project => (
+                            <Segment key={project.id} raised>
+                                <Card history={props.history} key={project.id} obj={project} type="project" isLink={true}
+                                      ctx={ctx}/>
+                            </Segment>
+                        ))
+                            :
+                            <Container textAlign='center'>
+                                <Message size='mini' info>
+                                    {props.t("no_result")}
+                                </Message>
+                            </Container>
+                        }
+                    </Segment>
+                    }
+
+                    {activeItem === 'myTakingPart' &&
+                    <Segment attached='bottom'>
+                            <Menu>
+                                <Menu.Item position="right">
+                                    <Input name="search" value={ search ? search : ""}
+                                           onChange={handleSearch}
+                                           placeholder={  props.t('search') + "..."}    />
+                                </Menu.Item>
+                            </Menu>
+                        {assignProjects && filteredList(assignProjects).length > 0 ?
+                        filteredList(assignProjects).map(project => (
+                            <Segment key={project.id} raised>
+                                <Card history={props.history} key={project.id} obj={project} type="project" isLink={true}
+                                      ctx={ctx}/>
+                            </Segment>
+                        ))
+                            :
+                            <Container textAlign='center'>
+                                <Message size='mini' info>
+                                    {props.t("no_result")}
+                                </Message>
+                            </Container>
+                        }
+                    </Segment>
+                    }
+                    </>
                 }
                 </>
+            }
+
+            {ctx !== "creator" && !loader &&
+                projects && projects.length > 0 &&
+                projects.map( project  => (
+                    <Segment key={project.id } raised>
+                        <Card history={ props.history } key={project.id} obj={project} type="project" isLink={true} ctx={ctx}/>
+                    </Segment>
+                ))
             }
 
             {loader &&

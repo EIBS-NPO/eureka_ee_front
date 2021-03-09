@@ -84,9 +84,16 @@ const rmvFollowing = ( projectId ) => {
 }
 
 const manageActivity = (activity, projId) => {
-    return Axios.put(PROJECT_API + "/addActivity", {
+    return Axios.put(PROJECT_API + "/manageActivity", {
         projectId:projId,
         activityId:activity.id
+    })
+}
+
+const manageOrg = (org, projId) => {
+    return Axios.put(PROJECT_API + "/manageOrg", {
+        projectId:projId,
+        orgId: org.id
     })
 }
 
@@ -106,10 +113,10 @@ const getTeam = (projectId) => {
 const isFollowing = (projectId, followType) => {
     console.log(projectId)
     console.log(followType)
-    let param = "";
-    if(followType === "assign"){ param = "&isAssigning=1" }
-    if(followType === "follow"){ param = "&isFollowing=1" }
-    return Axios.get(FOLW_PROJECT + "?projectId=" + projectId + param)
+    let params = "?projectId=" + projectId;
+    if(followType === "assign"){ params += "&isAssigning=1" }
+    if(followType === "follow"){ params += "&isFollowing=1" }
+    return Axios.get(FOLW_PROJECT + params)
 }
 
 /*
@@ -134,5 +141,6 @@ export default {
     isFollowing,
     getFollowed,
     getAssigned,
-    manageActivity
+    manageActivity,
+    manageOrg
 };

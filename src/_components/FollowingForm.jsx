@@ -11,21 +11,22 @@ import projectAPI from "../_services/projectAPI";
  * @param obj obj|project
  * @param setter
  * @param type
+ * @param isFollow
+ * @param setIsFollow
  * @returns {JSX.Element}
  * @constructor
  */
-const FollowingForm = ( { obj, setter, type } ) => {
-
-    const [isFollow, setIsFollow] = useState(false)
+const FollowingForm = ( { obj, setter, type, isFollow, setIsFollow } ) => {
+console.log(obj)
     const [loader, setLoader] = useState(false)
 
-    useEffect( () => {
+   /* useEffect( () => {
         console.log(obj)
         if(authAPI.isAuthenticated()){
             let id=obj.id
             console.log(id)
             if(type === "project"){
-                projectAPI.isFollowing( obj.id, "follow" )
+                projectAPI.isFollowing( id, "follow" )
                     .then(response => {
                         console.log(response.data[0])
                         setIsFollow(response.data[0])
@@ -34,7 +35,7 @@ const FollowingForm = ( { obj, setter, type } ) => {
             }
 
             if(type === "activity"){
-                activityAPI.isFollowing( obj.id )
+                activityAPI.isFollowing( id )
                     .then(response => {
                         console.log(response.data[0])
                         setIsFollow(response.data[0])
@@ -42,7 +43,7 @@ const FollowingForm = ( { obj, setter, type } ) => {
                     .catch(error => console.log(error.response.data))
                 }
             }
-    }, [type, obj])
+    }, [])*/
 
     const handleForm = () => {
         setLoader(true)
@@ -121,7 +122,11 @@ const FollowingForm = ( { obj, setter, type } ) => {
     //    <Label as='a' content='Elliot' image={imageProps} />
         <Form onSubmit={handleForm} loading={loader}>
             <Item>
-                <Button basic compact animated >
+                <Button basic>
+                    {isFollow ? <Icon name='star' color="yellow"/> : <Icon name='star outline' />}
+                    BookMark
+                </Button >
+                {/*<Button basic compact animated >
                     <Button.Content visible>
                         {isFollow ? <Icon name='star' color="yellow"/> : <Icon name='star outline' />}
                         BookMark
@@ -130,7 +135,7 @@ const FollowingForm = ( { obj, setter, type } ) => {
                         {isFollow ? <Icon name='star outline' /> :  <Icon name='star' color="yellow"/>}
                         BookMark
                     </Button.Content>
-                </Button>
+                </Button>*/}
             </Item>
         </Form>
 

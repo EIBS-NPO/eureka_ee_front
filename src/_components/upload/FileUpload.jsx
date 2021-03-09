@@ -4,6 +4,7 @@ import { Message, Item, Button, Form, Icon, Loader } from "semantic-ui-react";
 import fileAPI from "../../_services/fileAPI";
 import {useTranslation, withTranslation} from "react-i18next";
 import authAPI from "../../_services/authAPI";
+import FileInfos from "./FileInfos";
 
 //todo config jpa sur type mime accepté par le button
 /**
@@ -14,23 +15,18 @@ import authAPI from "../../_services/authAPI";
  * @returns {JSX.Element}
  * @constructor
  */
-const FileUpload = ( { history, activity, setter} ) => {
-    if ( !authAPI.isAuthenticated ) {
-        console.log('test pour voir')
-        history.replace.push('/login')
-    }
-
+const FileUpload = ( { history, activity, setter, hideModal=false} ) => {
     const { t } = useTranslation()
 
-    const [activityFile, setActivityFile] = useState()
-    const [file, setFile] = useState()
+    const [isSave, setIsSave] = useState(false)
+    const [activityFile, setActivityFile] = useState(undefined)
+    const [file, setFile] = useState(undefined)
     const [loader, setLoader] = useState(false)
 
     const onInputChange = (e) => {
         setFile(e.target.files[0])
         let reader = new FileReader()
 
-        //todo sert a quetchy
         reader.addEventListener('load', () => {
             setActivityFile(reader.result)
         }, false)
@@ -43,6 +39,10 @@ const FileUpload = ( { history, activity, setter} ) => {
     const [error, setError] = useState()
 
     const handleSubmitFile = (event) => {
+        if ( !authAPI.isAuthenticated ) {
+            history.replace.push('/login')
+        }
+
         event.preventDefault()
         setLoader(true)
         let bodyFormData = new FormData();
@@ -55,6 +55,7 @@ const FileUpload = ( { history, activity, setter} ) => {
             .then(response => {
                 console.log(response)
                 setter(response.data[0])
+                setIsSave(true)
             })
             .catch(error => {
                 setError(error.response)
@@ -67,7 +68,10 @@ const FileUpload = ( { history, activity, setter} ) => {
                     console.log(response)
                  //   redirectToNewActivity(response.data.id)
                     setter(response.data[0])
-                    history.replace('/activity/creator_'+response.data[0].id)
+                    setIsSave(true)
+                    if(!hideModal){
+                        history.replace('/activity/creator_' + response.data[0].id)
+                    }
                 })
                 .catch(error => {
                     console.log(error)
@@ -75,15 +79,19 @@ const FileUpload = ( { history, activity, setter} ) => {
                 })
                 .finally(() => setLoader(false))
         }
-
     }
 
     const handleDelete = () => {
+        if ( !authAPI.isAuthenticated ) {
+            history.replace.push('/login')
+        }
+
         setLoader(true)
         fileAPI.remove(activity.id)
             .then(response => {
                 console.log(response)
                 setter(response.data[0])
+                history.replace('/activity/creator_' + response.data[0].id)
             })
             .catch(error => {
                 console.log(error)
@@ -97,7 +105,7 @@ const FileUpload = ( { history, activity, setter} ) => {
                 <Loader
                     active
                     content={
-                        <p>{t('loading') +" : " + t('presentation') }</p>
+                        <p>{t('loading') +" : " + t('upload') }</p>
                     }
                     inline="centered"
                 />
@@ -106,14 +114,9 @@ const FileUpload = ( { history, activity, setter} ) => {
             {!loader &&
                 <Item>
 
-                    {!error && !activity.fileType &&
-                    /*<Header icon>
-                        <Icon name='pdf file outline' />
-
-                        No documents are listed for this customer.
-                    </Header>*/
-                        <Message warning icon="file outline" header={ t('no_file') } />
-                    }
+                    {/*{!error && !activity.fileType &&*/}
+                    {/*    <Message warning icon="file outline" header={ t('no_file') } />*/}
+                    {/*}*/}
 
                     {error &&
                         <Message error icon="file" header={ error.status }>
@@ -128,21 +131,27 @@ const FileUpload = ( { history, activity, setter} ) => {
                          </Header>*/
                     }
 
-                    <Form onSubmit={handleSubmitFile}>
-                        <Form.Input
-                            lang="en"
-                            type='file'
-                         //    accept='.pdf, .csv'
-                            onChange={onInputChange}
-                            /*hidden*/
-                        />
-                        <Button fluid animated >
-                            <Button.Content visible>{ t('save') } </Button.Content>
-                            <Button.Content hidden>
-                                <Icon name='save' />
-                            </Button.Content>
-                        </Button>
-                    </Form>
+                    {file !== undefined && !isSave &&
+                        <Message info icon="file outline" header={ t('ready')} content={t('file_ready')}/>
+                    }
+
+                        <Form onSubmit={handleSubmitFile}>
+                            <Form.Input
+                                lang="en"
+                                type='file'
+                                //    accept='.pdf, .csv'
+                                onChange={onInputChange}
+                                /*hidden*/
+                            />
+                            {file && !isSave &&
+                            <Button fluid animated>
+                                <Button.Content visible>{t('save')} </Button.Content>
+                                <Button.Content hidden>
+                                    <Icon name='save'/>
+                                </Button.Content>
+                            </Button>
+                            }
+                        </Form>
 
                     {activity.fileType &&
                         <Form onSubmit={handleDelete}>
@@ -153,6 +162,17 @@ const FileUpload = ( { history, activity, setter} ) => {
                                 </Button.Content>
                             </Button>
                         </Form>
+                    }
+
+                    {hideModal !== false &&
+                    <Form onSubmit={hideModal}>
+                        <Button fluid animated >
+                            <Button.Content visible>{ t('finish') } </Button.Content>
+                            <Button.Content hidden>
+                                <Icon name='thumbs up' />
+                            </Button.Content>
+                        </Button>
+                    </Form>
                     }
                 </Item>
             }

@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { Loader, Segment } from 'semantic-ui-react'
+import {Container, Header, Input, Loader, Menu, Message, Segment} from 'semantic-ui-react'
 import { withTranslation } from 'react-i18next';
 import activityAPI from "../../_services/activityAPI";
 import activity from "../../_components/cards/activity";
@@ -39,7 +39,7 @@ const ActivitiesList = ( props ) => {
                 .finally(() => setLoader(false))
         }
         else if (ctx !== 'public') {
-            console.log("get_non_public creator ou my ?")
+         //   console.log("get_non_public creator ou my ?")
             activityAPI.get(ctx)
                 .then(response => {
                     console.log(response)
@@ -73,16 +73,111 @@ const ActivitiesList = ( props ) => {
         return title;
     }
 
+    const [activeItem, setActiveItem] = useState('myPublic')
+    const handleItemClick = (e, { name }) => setActiveItem(name)
+
+    const [search, setSearch] = useState("")
+    const handleSearch = (event) => {
+        const value = event.currentTarget.value;
+        setSearch(value);
+    }
+
+    const filteredList = (list) => {
+        return list.filter(p =>
+            p.title.toLowerCase().includes(search.toLowerCase()) ||
+            p.creator.firstname.toLowerCase().includes(search.toLowerCase()) ||
+            p.creator.lastname.toLowerCase().includes(search.toLowerCase())
+        )
+    }
+
     return (
         <div className="card">
             <Title />
+            {!loader &&
+                <>
+                    {ctx === "creator" &&
+                    <>
+                        <Segment vertical>
+                            <Menu attached='top' tabular>
+                                <Menu.Item name='myPublic' active={activeItem === 'myPublic'} onClick={handleItemClick}>
+                                    <Header>
+                                        {props.t("public")}
+                                    </Header>
+                                </Menu.Item>
+                                <Menu.Item name='myPrivate' active={activeItem === 'myPrivate'}
+                                           onClick={handleItemClick}>
+                                    <Header>
+                                        {props.t("private")}
+                                    </Header>
+                                </Menu.Item>
+                            </Menu>
+                        </Segment>
 
-            {!loader && activities && activities.length > 0 &&
-                activities.map( activity => (
+                        {activeItem === 'myPublic' &&
+                        <Segment attached='bottom'>
+                            <Menu>
+                                <Menu.Item position="right">
+                                    <Input name="search" value={search ? search : ""}
+                                           onChange={handleSearch}
+                                           placeholder={props.t('search') + "..."}/>
+                                </Menu.Item>
+                            </Menu>
+                            {activities && filteredList(activities.filter(a => a.isPublic === true)).length > 0 ?
+                                filteredList(activities.filter(a => a.isPublic === true)).map(activity => (
+                                    <Segment key={activity.id} raised>
+                                        <Card history={props.history} key={activity.id} obj={activity} type="activity"
+                                              isLink={true}
+                                              ctx={ctx}/>
+                                    </Segment>
+                                ))
+                                :
+                                <Container textAlign='center'>
+                                    <Message size='mini' info>
+                                        {props.t("no_result")}
+                                    </Message>
+                                </Container>
+                            }
+                        </Segment>
+                        }
+
+                        {activeItem === 'myPrivate' &&
+                        <Segment attached='bottom'>
+                            <Menu>
+                                <Menu.Item position="right">
+                                    <Input name="search" value={search ? search : ""}
+                                           onChange={handleSearch}
+                                           placeholder={props.t('search') + "..."}/>
+                                </Menu.Item>
+                            </Menu>
+                            {activities && filteredList(activities.filter(a => a.isPublic === false)).length > 0 ?
+                                filteredList(activities.filter(a => a.isPublic === false)).map(activity => (
+                                    <Segment key={activity.id} raised>
+                                        <Card history={props.history} key={activity.id} obj={activity} type="activity"
+                                              isLink={true}
+                                              ctx={ctx}/>
+                                    </Segment>
+                                ))
+                                :
+                                <Container textAlign='center'>
+                                    <Message size='mini' info>
+                                        {props.t("no_result")}
+                                    </Message>
+                                </Container>
+                            }
+                        </Segment>
+                        }
+                    </>
+                    }
+
+                {ctx !== "creator" && activities && activities.length > 0 &&
+                    activities.map(activity => (
                     <Segment key={activity.id} raised>
-                        <Card history={props.history} key={activity.id} obj={activity} type="activity" isLink={true} />
+                    <Card history={props.history} key={activity.id} obj={activity} type="activity"
+                    isLink={true}/>
                     </Segment>
-                ))
+                    ))
+                }
+                </>
             }
 
             {loader &&
@@ -95,6 +190,7 @@ const ActivitiesList = ( props ) => {
                     inline="centered"
                 />
             </Segment>
+
             }
         </div>
     );

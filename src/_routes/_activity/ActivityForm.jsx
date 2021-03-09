@@ -113,13 +113,13 @@ const ActivityForm = ( { history, activity, setActivity, setForm} ) => {
                     <PictureForm entityType="activity" entity={ activity } setter={setActivity}/>
 
                 </Segment>
-
+{/*
                 <Segment>
                     <Label attached="top">
                         { t('organization_link') }
                     </Label>
                     <OrgSelector obj={updateActivity} setter={setUpdateActivity}/>
-                </Segment>
+                </Segment>*/}
 
                 <Form onSubmit={handleSubmit} loading={loader}>
                     <Item.Group divided>
@@ -157,7 +157,7 @@ const ActivityForm = ( { history, activity, setActivity, setForm} ) => {
                             </Item>
                         </Segment>
 
-                        <Segment>
+                       {/* <Segment>
                             <Label attached='top'>
                                 <h4>{ t('project_link')}</h4>
                             </Label>
@@ -167,7 +167,7 @@ const ActivityForm = ( { history, activity, setActivity, setForm} ) => {
                                     <ProjectSelector obj={updateActivity} setter={setUpdateActivity} />
                                 </Item.Content>
                             </Item>
-                        </Segment>
+                        </Segment>*/}
 
                         <Segment>
                             <Label attached='top'>

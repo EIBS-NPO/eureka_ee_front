@@ -7,6 +7,7 @@ import Picture from "./Picture";
 import userAPI from "../_services/userAPI";
 import AuthContext from "../_contexts/AuthContext";
 import {NavLink} from "react-router-dom";
+import projectAPI from "../_services/projectAPI";
 
 const Card = ({ obj, type, isLink=false, profile=false, ctx=undefined, withPicture=true }) => {
 
@@ -15,6 +16,8 @@ const Card = ({ obj, type, isLink=false, profile=false, ctx=undefined, withPictu
     const lg = i18n.language.split('-')[0]
 
     const [owner, setOwner] = useState({});
+    const [isAssign, setIsAssign] = useState(undefined)
+    const [isPublic, setIsPublic] = useState(undefined)
 
     function getTranslate(typeText) {
         if(obj[typeText]){
@@ -31,10 +34,10 @@ const Card = ({ obj, type, isLink=false, profile=false, ctx=undefined, withPictu
     const getLink = () => {
         let h = "/" + type + "/public_" + obj.id;
         if(isAuth){
-            if(userAPI.checkMail() === owner.email) { h = "/" + type + "/creator_" + obj.id}
+            if( userAPI.checkMail() === owner.email || isAssign) { ctx = "creator" }
         }
 
-       return h
+       return  h = "/" + type + "/" + ctx + "_" + obj.id;
     }
 
     useEffect(() => {
@@ -44,11 +47,17 @@ const Card = ({ obj, type, isLink=false, profile=false, ctx=undefined, withPictu
                 setOwner(obj)
                 break
             case "org":
-                setOwner(obj.referent)
+                setOwner(obj && obj.referent)
                 break
             case "project":
+                setOwner(obj && obj.creator)
+                projectAPI.isFollowing(obj.id, "assign")
+                    .then(response => { setIsAssign(response.data[0])})
+                    .catch(error => {console.log(error)})
+                break;
             case "activity":
-                setOwner(obj.creator)
+                setOwner(obj && obj.creator)
+                setIsPublic(obj.isPublic)
                 break
         }
     },[])

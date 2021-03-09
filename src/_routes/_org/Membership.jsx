@@ -122,7 +122,7 @@ const Membership = ( props ) => {
                         <Message
                             success
                             header='Form Completed'
-                            content="message ici"
+                            content="success"
                         />
                         <Button fluid animated >
                             <Button.Content visible>{ props.t('send') } </Button.Content>
@@ -140,7 +140,7 @@ const Membership = ( props ) => {
                     {members && members.length > 0 &&
                         members.map( (m, key) => (
                             <Container >
-                                <Card obj={m} type="user" isLink={true} />
+                                <Card obj={m} type="user" isLink={true} ctx="public" />
 
                                 {isAuth && isReferent() &&
                                     <>

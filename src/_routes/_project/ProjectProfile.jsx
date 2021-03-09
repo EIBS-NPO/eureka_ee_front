@@ -1,7 +1,7 @@
 import React, {useContext, useEffect, useState} from 'react';
 import projectAPI from '../../_services/projectAPI';
 import {
-    Container, Header, Item, Menu, Loader, Segment, Button, Dropdown, Message, Input, Icon
+    Container, Header, Item, Menu, Loader, Segment, Button, Dropdown, Message, Input, Icon, Image
 } from "semantic-ui-react";
 import {useTranslation, withTranslation} from "react-i18next";
 import AuthContext from "../../_contexts/AuthContext";
@@ -44,12 +44,18 @@ const ProjectProfile = (props) => {
     }
 
     const [activities, setActivities] = useState([])
+    const [isFollow, setIsFollow] = useState(false)
+
     const [freeActivities, setFreeActivities] =useState([])
 
     const [isOwner, setIsOwner] =useState(false)
-    const [isAssigned, setIsAssigned] = useState(false)
+    const [isAssigned, setIsAssigned] = useState(undefined)
 
-    const [project, setProject] = useState({})
+    const [project, setProject] = useState()
+
+    const [projectOrg, setProjectOrg] = useState(undefined)
+    const [userOrgs, setUserOrgs] = useState([])
+    const [errorOrg, setErrorOrg] = useState("")
 
     const [loader, setLoader] = useState(true);
 
@@ -70,46 +76,96 @@ const ProjectProfile = (props) => {
 
     useEffect(() => {
         setLoader(true)
+        if(ctx() === "public"){
+     /*  if(urlParams[0] === "public"){*/
             projectAPI.getPublic(urlParams[1])
                 .then(response => {
                     console.log(response.data[0])
                     setProject(response.data[0])
-                //    console.log(response.data[0].activities)
+                    //    console.log(response.data[0].activities)
                     setActivities(response.data[0].activities)
+                    if(response.data[0].organization){
+                        setProjectOrg(response.data[0].organization)
+                    }
                     setIsOwner(userAPI.checkMail() === response.data[0].creator.email)
                 })
                 .catch(error => console.log(error.response))
+        }else {
+            projectAPI.get(ctx(), urlParams[1])
+                .then(response => {
+                    console.log(response.data[0])
+                    setProject(response.data[0])
+                    //    console.log(response.data[0].activities)
+                    setActivities(response.data[0].activities)
+                    if(response.data[0].organization){
+                        setProjectOrg(response.data[0].organization)
+                    }
+                    setIsOwner(userAPI.checkMail() === response.data[0].creator.email)
+                })
+                .catch(error => console.log(error.response))
+        }
+
 
         if(isAuth){
+            projectAPI.isFollowing( urlParams[1], "follow" )
+                .then(response => {
+                    console.log(response.data[0])
+                    setIsFollow(response.data[0])
+                })
+                .catch(error => console.log(error.response.data))
+
+
             projectAPI.isFollowing(urlParams[1], "assign")
                 .then(response => {
                     console.log(response.data[0])
                     setIsAssigned(response.data[0])
+                    if(isOwner || response.data[0]){
+                        //load user's selectable activities
+                        activityAPI.get("creator")
+                            .then(response => {
+                                let table = []
+                                response.data.forEach(activity => {
+                                    if(activities.find(a => a.id === activity.id) === undefined){
+                                        table.push(activity)
+                                    }
+                                })
+                                console.log(table)
+                                setFreeActivities(table)
+                            })
+                            .catch(error => {
+                                console.log(error)
+                            })
+                    }
                 })
                 .catch(error => console.log(error))
-        }
-            setLoader(false)
-    }, []);
 
-    useEffect(() => {
-        if(isOwner || isAssigned){
-            //load user's selectable activities
-            activityAPI.get("creator")
-                .then(response => {
-                    let table = []
-                    response.data.forEach(activity => {
-                        if(activities.find(a => a.id === activity.id) === undefined){
-                            table.push(activity)
-                        }
+            if(urlParams[0] === "creator"){
+                orgAPI.getMy()
+                    .then(response => {
+                        //   setUserOrgs(response.data)
+                        let tab = response.data
+                        orgAPI.getMembered()
+                            .then(response => {
+                                console.log(response.data)
+                                if(response.data.length > 0 ){
+                                    setUserOrgs(tab.concat(response.data))
+                                }else {
+                                    setUserOrgs(tab)
+                                }
+                            })
+                            .catch(error => {
+                                console.log(error)
+                                setErrorOrg(error.response.data)
+                            })
                     })
-                    console.log(table)
-                    setFreeActivities(table)
-                })
-                .catch(error => {
-                    console.log(error)
-                })
+                    .catch(error => {
+                        console.log(error)
+                        setErrorOrg(error.response.data)
+                    })
+            }
         }
-    },[isOwner, isAssigned])
+        setLoader(false)
+    }, []);
 
     const [search, setSearch] = useState("")
     const handleSearch = (event) => {
@@ -143,6 +199,9 @@ const ProjectProfile = (props) => {
     }
 
     const handleAdd = (activityId) => {
+        if (!authAPI.isAuthenticated()) {
+            authAPI.logout()
+        }
         //setLoader2(true)
         let act = freeActivities.find(a => activityId === a.id)
         projectAPI.manageActivity(act, project.id)
@@ -164,8 +223,6 @@ const ProjectProfile = (props) => {
     const {t,  i18n } = useTranslation()
     const lg = i18n.language.split('-')[0]
     const LanguageSwitcher = (text) => {
-
-
         if(text){
             if(text[lg]) {
                 return text[lg]
@@ -177,13 +234,49 @@ const ProjectProfile = (props) => {
         }
     }
 
+    const handleRmvOrg= () => {
+        if (!authAPI.isAuthenticated()) {
+            authAPI.logout()
+        }
+        projectAPI.manageOrg(project.organization, project.id)
+            .then(response => {
+                console.log(response.data)
+                project.organization = undefined
+                setProject(project)
+                setProjectOrg(undefined)
+            })
+            .catch(error => {
+                console.log(error)
+            })
+            .finally(() => setLoader2(false))
+    }
+
+    const handleAddOrg = (orgId) => {
+        if (!authAPI.isAuthenticated()) {
+            authAPI.logout()
+        }
+        let org = userOrgs.find(o => orgId === o.id)
+        projectAPI.manageOrg(org, project.id)
+            .then(response => {
+                console.log(response.data)
+                project.organization = org
+                setProject(project)
+                setProjectOrg(org)
+
+            })
+            .catch(error => console.log(error))
+    }
+
+    const getLink = (type) => {
+        let lk = "/"+type;
+    }
 
     return (
         <div className="card">
             <>
             {!loader &&
             <>
-                {project && project.id ?
+                {project && project !== "DATA_NOT_FOUND" ?
                     <>
                         <Segment basic>
                             <Header as="h2" floated='left'>
@@ -211,7 +304,7 @@ const ProjectProfile = (props) => {
                             </Item>*/}
                             <Header as="h2" floated='right'>
                                 {isAuth &&
-                                    <FollowingActivityForm obj={project} setter={setProject} type="project" />
+                                    <FollowingActivityForm obj={project} setter={setProject} type="project" isFollow={isFollow} setIsFollow={setIsFollow} />
                                 }
                                 { project.title }
                             </Header>
@@ -226,9 +319,6 @@ const ProjectProfile = (props) => {
                             active={activeItem === 'presentation'}
                             onClick={handleItemClick}
                         >
-                            <Header >
-                                { props.t("presentation") }
-                            </Header>
                         </Menu.Item>
                         <Menu.Item
                             name='news'
@@ -248,12 +338,25 @@ const ProjectProfile = (props) => {
                             active={activeItem === 'activities'}
                             onClick={handleItemClick}
                         />
-                        <Menu.Item
-                            name='organization'
-                            content={ props.t('organization')}
-                            active={activeItem === 'organization'}
-                            onClick={handleItemClick}
-                        />
+
+                        <Menu.Item name='organization' active={activeItem === 'organization'} onClick={handleItemClick}>
+                            {project.organization &&
+                            <>
+                                <Image src ={`data:image/jpeg;base64,${ project.organization.picture }`}   avatar size="mini"/>
+                                <Header>
+                                    { project.organization.name}
+                                    <Header.Subheader>
+                                        { props.t('organization')}
+                                    </Header.Subheader>
+                                </Header>
+                            </>
+                            }
+                            {!project.organization &&
+                            <Header>
+                                { props.t('organization')}
+                            </Header>
+                            }
+                        </Menu.Item>
                     </Menu>
 
                     {activeItem === "presentation" &&
@@ -263,7 +366,7 @@ const ProjectProfile = (props) => {
                                 <ProjectForm project={project} setProject={setProject} setForm={handleForm}/>
                                 :
                                 <>
-                                    <Card obj={project} type="project" profile={true} withPicture={false} ctx={ctx()}/>
+                                    <Card obj={project} type="project" profile={true} withPicture={false} ctx={ctx()} link={getLink}/>
 
                                     {isAuth && isOwner && !projectForm &&
                                         <Segment basic textAlign="center" >
@@ -286,13 +389,7 @@ const ProjectProfile = (props) => {
                         <Segment attached='bottom'>
                             <Menu>
                                 {(isOwner || isAssigned) &&
-                                    <>
-                                    <Menu.Item>
-                                        {props.t('add') + " " + props.t('activity')}
-
-                                    </Menu.Item>
-
-                                    <Dropdown item text={props.t('other')} >
+                                    <Dropdown item text={props.t('add') + " " + props.t('activity')} >
                                         <Dropdown.Menu>
                                             <Dropdown.Item>
                                             {freeActivities.length === 0 &&
@@ -304,13 +401,12 @@ const ProjectProfile = (props) => {
                                             </Dropdown.Item>
                                             {freeActivities.map(a =>
                                                 <Dropdown.Item key={a.id} onClick={() => handleAdd(a.id)}>
-                                                    {a.title} <Icon name="plus"/>
+                                                    <Icon name="plus"/> {a.title}
                                                 </Dropdown.Item>
                                             )}
 
                                         </Dropdown.Menu>
                                     </Dropdown>
-                                    </>
                                 }
                                 <Menu.Item position="right">
                                     <Input
@@ -323,7 +419,7 @@ const ProjectProfile = (props) => {
                             </Menu>
                             {!loader2 && filteredList.map(act =>
                                 <Segment key={act.id}>
-                                    <Card key={act.id} obj={act} type="activity" isLink={true} />
+                                    <Card obj={act} type="activity" isLink={true} ctx={ctx()}/>
                                     { act.creator.id === authAPI.getId() &&
                                         <button onClick={()=>handleRmv(act)}>retirer du projet</button>
                                     }
@@ -336,11 +432,44 @@ const ProjectProfile = (props) => {
 
                     {activeItem === "organization" &&
                     <Segment attached='bottom'>
-                        <OrgSelector obj={project} setter={setProject}/>
-                        {project.organization &&
-                            <Card obj={project.organization} type="organization" isLink={true}/>
-                        }
+                        {activeItem === "organization" &&
+                        <>
+                            <Menu>
+                                {isOwner && !project.organization &&
+                                <Dropdown item text={props.t('add') + " " + props.t('organization')} >
+                                    <Dropdown.Menu>
+                                        {userOrgs.length === 0 &&
+                                        <Dropdown.Item>
+                                            <Message size='mini' info>
+                                                {props.t("no_org")}
+                                            </Message>
+                                        </Dropdown.Item>
+                                        }
+                                        {userOrgs.map(o =>
+                                            <Dropdown.Item key={o.id} onClick={() => handleAddOrg(o.id)}>
+                                                <Icon name="plus"/> {o.name}
+                                            </Dropdown.Item>
+                                        )}
 
+                                    </Dropdown.Menu>
+                                </Dropdown>
+                                }
+                                {isOwner && project.organization &&
+                                <Menu.Item onClick={handleRmvOrg} position="right">
+                                    <Icon name="remove circle" color="red"/>
+                                    { props.t('remove_to_org')}
+                                </Menu.Item>
+                                }
+
+                            </Menu>
+
+                            {!projectOrg ?
+                                <p> {props.t('no_org')} </p>
+                                :
+                                <Card obj={project.organization} type="org" profile={false} ctx={ctx()}/>
+                            }
+                        </>
+                        }
                     </Segment>
                     }
                 </Segment>

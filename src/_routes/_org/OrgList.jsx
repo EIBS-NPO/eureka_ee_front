@@ -19,7 +19,7 @@ const OrgList = ( props ) => {
         }else {return urlParams}
     }
 
-    const [ctx, setCtx] = useState("public")
+    const [ctx, setCtx] = useState("")
 
     const [orgs, setOrgs] = useState([])
 
@@ -29,8 +29,9 @@ const OrgList = ( props ) => {
     //donc les object seriliser org du back ne doivent reoutourner que l'id des ref
     useEffect(() => {
         setLoader(true)
+        //todo inversion des call
         setCtx( checkCtx() )
-        if(ctx === 'my'){
+        if(urlParams === 'my'){
             orgAPI.getMy()
                 .then(response => {
                     console.log(response)

@@ -199,14 +199,7 @@ const ProjectForm = ( { project, setProject, setForm }) => {
                                 </Item.Content>
                             </Item>
                         </Segment>
-
-                    <Segment>
-                        <Label attached="top">
-                            { t('organization_link') }
-                        </Label>
-                        <OrgSelector obj={upProject} setter={setUpProject}/>
-                    </Segment>
-
+B
                     {/*<Segment>
                         <Label attached="top">
                             { t('publication') }

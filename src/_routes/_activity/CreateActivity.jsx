@@ -1,12 +1,16 @@
 import React, { useContext, useState, useEffect } from "react";
 import { withTranslation } from 'react-i18next';
 import AuthContext from "../../_contexts/AuthContext";
-import {Button, Checkbox, Form, Icon, Item, Label, Message, Segment, TextArea} from "semantic-ui-react";
+import {Button, Checkbox, Container, Form, Icon, Item, Label, Message, Segment, TextArea} from "semantic-ui-react";
 import AuthAPI from "../../_services/authAPI";
 import activityAPI from "../../_services/activityAPI";
 import TextAreaMultilang from "../../_components/forms/TextAreaMultilang";
 import {act} from "@testing-library/react";
 import authAPI from "../../_services/authAPI";
+import FileInfos from "../../_components/upload/FileInfos";
+import FileUpload from "../../_components/upload/FileUpload";
+import Modal from "../../_components/Modal";
+import User from "../../_components/cards/user";
 
 const CreateActivity = ({ history, t }) => {
     if (!authAPI.isAuthenticated()) {
@@ -42,7 +46,7 @@ const CreateActivity = ({ history, t }) => {
         activityAPI.post(activity)
             .then(response => {
                 console.log(response.data)
-                history.replace('/activity/creator_'+response.data[0].id)
+                setActivity(response.data[0])
             }
             )
             .catch(error => {
@@ -50,6 +54,7 @@ const CreateActivity = ({ history, t }) => {
                 setErrors(error.response.data.error);
             })
 
+        setShow(true)//for add file
     };
 
     const [errors, setErrors] = useState({
@@ -59,6 +64,15 @@ const CreateActivity = ({ history, t }) => {
         phone: "",
         summary:""
     });
+
+
+    const [show, setShow] = useState(false)
+
+    const hideModal = () => {
+        setShow(false)
+        history.replace('/activity/creator_' + activity.id)
+      //  setUserTarget(undefined)
+    }
 
     return (
         <div className="card">
@@ -117,6 +131,29 @@ const CreateActivity = ({ history, t }) => {
                     </Button.Content>
                 </Button>
             </Form>
+
+            <Modal show={show} handleClose={hideModal} title={ t('confirmation')} >
+                <div className={"card"}>
+                    {activity &&
+                    <>
+                        <div className="messageBox">
+                            <Segment placeholder>
+                                <Container textAlign='center'>
+                                    <FileInfos file={activity} />
+                                    <FileUpload history={history} activity={ activity } setter={ setActivity } hideModal={hideModal}/>
+                                </Container>
+                            </Segment>
+                        </div>
+                    </>
+                    }
+
+                    {!activity &&
+                    <p> { t('errors')} </p>
+                    }
+
+                </div>
+            </Modal>
+
         </div>
     );
 };
