@@ -31,7 +31,7 @@ const get = (context, id = null) => {
     let params = "?ctx="+ context
     console.log(params)
     if(id !== null){
-           params += "&id="+ id
+           params += "&projectId="+ id
         console.log(params)
     }
     return Axios.get(PROJECT_API + params)
