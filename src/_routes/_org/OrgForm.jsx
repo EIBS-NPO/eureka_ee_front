@@ -78,7 +78,7 @@ const OrgForm = ( props ) => {
         setLoader(true)
         orgAPI.remove(org.id)
             .then(response => {
-                history.replace('/all_organizations/creator')
+                props.history.replace('/all_organizations/creator')
             })
             .catch(error => {
                 console.log(error)
@@ -179,7 +179,7 @@ const OrgForm = ( props ) => {
                     icon='remove circle'
                     color="red"
                     size='large'
-                    content= { t('delete') }
+                    content= { props.t('delete') }
                     onClick={handleDelete}
                 />
             </Segment>

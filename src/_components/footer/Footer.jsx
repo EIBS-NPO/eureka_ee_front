@@ -7,11 +7,11 @@ const Footer = ({ t }) => {
 
     return (
         <div className="footer">
-            <nav>
+           {/* <nav>
                 <ul>
                     <li><NavLink to="/beweging">Beweging</NavLink></li>
                 </ul>
-            </nav>
+            </nav>*/}
         </div>
     );
 };

@@ -112,7 +112,7 @@ const AddressForm = ({ obj, setter }) => {
                                 <Form.Input
                                     label={ t('address') }
                                     name="address"
-                                    value={address.address ? address.address : ""}
+                                    value={address && address.address ? address.address : ""}
                                     onChange={handleChange}
                                     placeholder={t('address') + "..."}
                                     type="textarea"
@@ -124,7 +124,7 @@ const AddressForm = ({ obj, setter }) => {
                                 <Form.Input
                                     label={ t('complement') }
                                     name="complement"
-                                    value={address.complement ? address.complement : ""}
+                                    value={address && address.complement ? address.complement : ""}
                                     onChange={handleChange}
                                     placeholder={t('complement') + "..."}
                                     type="textarea"
@@ -135,7 +135,7 @@ const AddressForm = ({ obj, setter }) => {
                                 <Form.Input
                                     label={ t('city') }
                                     name="city"
-                                    value={address.city ? address.city : ""}
+                                    value={address && address.city ? address.city : ""}
                                     onChange={handleChange}
                                     placeholder={t('city') + "..."}
                                     type="text"
@@ -147,7 +147,7 @@ const AddressForm = ({ obj, setter }) => {
                                 <Form.Input
                                     label={ t('zipCode') }
                                     name="zipCode"
-                                    value={address.zipCode ? address.zipCode : ""}
+                                    value={address && address.zipCode ? address.zipCode : ""}
                                     onChange={handleChange}
                                     placeholder={t('zipCode') + "..."}
                                     type="text"
@@ -159,7 +159,7 @@ const AddressForm = ({ obj, setter }) => {
                                 <Form.Input
                                     label={ t('country') }
                                     name="country"
-                                    value={address.country ? address.country : ""}
+                                    value={address && address.country ? address.country : ""}
                                     onChange={handleChange}
                                     placeholder={t('country') + "..."}
                                     type="text"

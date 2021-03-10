@@ -12,7 +12,7 @@ import {useTranslation, withTranslation} from "react-i18next";
 const UserCoordForm = ({handleSubmit, user, setUser, errors, loader, handleCancel} ) => {
 
     const { t } = useTranslation()
-
+    
     console.log(user)
 
     const handleChange = (event) => {
