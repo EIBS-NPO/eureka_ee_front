@@ -4,7 +4,7 @@ import AuthContext from "../../_contexts/AuthContext";
 import LanguageSelector from "../forms/LanguageSelector";
 import '../../scss/components/mainMenu.scss';
 import { withTranslation } from 'react-i18next';
-import {Icon, Label, Dropdown, Menu} from 'semantic-ui-react'
+import {Icon, Label, Dropdown, Menu, Header} from 'semantic-ui-react'
 import authAPI from "../../_services/authAPI";
 
 /*//todo do menu boots*/
@@ -55,7 +55,6 @@ const MainMenu = ({t, history}) => {
                     <Menu.Item as={NavLink} to="/profil_user"> { t('account') }
                         <Label color="teal" basic > { firstname + " " + lastname }</Label>
                     </Menu.Item>
-
                 </>
             )}
         </Menu>

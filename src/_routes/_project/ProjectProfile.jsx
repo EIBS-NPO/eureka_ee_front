@@ -1,7 +1,7 @@
 import React, {useContext, useEffect, useState} from 'react';
 import projectAPI from '../../_services/projectAPI';
 import {
-    Container, Header, Item, Menu, Loader, Segment, Button, Dropdown, Message, Input, Icon, Image
+    Container, Header, Menu, Loader, Segment, Button, Dropdown, Message, Input, Icon, Image
 } from "semantic-ui-react";
 import {useTranslation, withTranslation} from "react-i18next";
 import AuthContext from "../../_contexts/AuthContext";
@@ -9,26 +9,11 @@ import Card from "../../_components/Card";
 import ProjectForm from "./ProjectForm";
 import userAPI from "../../_services/userAPI";
 import ProjectTeam from "./ProjectTeam";
-import ProjectAddActivity from "./ProjectAddActivity";
 import Picture from "../../_components/Picture";
 import FollowingActivityForm from "../../_components/FollowingForm";
 import authAPI from "../../_services/authAPI";
-import ProjectContext from "../../_contexts/ProjectContext";
 import activityAPI from "../../_services/activityAPI";
 import orgAPI from "../../_services/orgAPI";
-import OrgSelector from "../../_components/forms/org/OrgsSelector";
-import LanguageSelector from "../../_components/forms/LanguageSelector";
-import LanguageSwitcher from "../../_services/LanguageSwitcher";
-
-/**
- * la page qui affiche les détail de projet, doit afficher
- * le projet,
- * la liste des followers,
- * la liste des participants
- * les org liées
- * le nombre de resources? ou la liste des resource publiques
- * la liste des reources privées, si abilitation user suffisante.
- */
 
 const ProjectProfile = (props) => {
     const isAuth = useContext(AuthContext).isAuthenticated
@@ -57,8 +42,6 @@ const ProjectProfile = (props) => {
     const [userOrgs, setUserOrgs] = useState([])
     const [errorOrg, setErrorOrg] = useState("")
 
-    const [loader, setLoader] = useState(true);
-
     const [activeItem, setActiveItem] = useState('presentation')
 
     const [projectForm, setProjectForm] = useState(false)
@@ -83,6 +66,7 @@ const ProjectProfile = (props) => {
         setIsOwner(userAPI.checkMail() === project.creator.email)
     }
 
+    const [loader, setLoader] = useState(true);
     useEffect(() => {
         setLoader(true)
         if(ctx() === "public"){
@@ -93,6 +77,7 @@ const ProjectProfile = (props) => {
                     setDataProject(response.data[0])
                 })
                 .catch(error => console.log(error.response))
+                .finally(() => setLoader(false))
         }else {
             projectAPI.get(ctx(), urlParams[1])
                 .then(response => {
@@ -100,6 +85,7 @@ const ProjectProfile = (props) => {
                     setDataProject(response.data[0])
                 })
                 .catch(error => console.log(error.response))
+                .finally(() => setLoader(false))
         }
 
 
@@ -163,7 +149,6 @@ const ProjectProfile = (props) => {
                     })
             }
         }
-        setLoader(false)
     }, []);
 
     const [search, setSearch] = useState("")
@@ -477,7 +462,7 @@ const ProjectProfile = (props) => {
                     <Loader
                         active
                         content={
-                            <p>{props.t('loading') +" : " + props.t('presentation') }</p>
+                            <p>{props.t('loading') +" : " + props.t('project') }</p>
                         }
                         inline="centered"
                     />

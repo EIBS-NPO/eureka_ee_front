@@ -492,7 +492,7 @@ const OrgProfile = (props ) => {
                     <Loader
                         active
                         content={
-                            <p>{props.t('loading') +" : " + props.t('presentation') }</p>
+                            <p>{props.t('loading') +" : " + props.t('organization') }</p>
                         }
                         inline="centered"
                     />
