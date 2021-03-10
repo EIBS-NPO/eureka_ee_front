@@ -9,7 +9,7 @@ function put(org) {
     return Axios.put(ORG_API, org)
 }
 
-function get(id = null){
+function getPublic(id = null){
     if(id === null){
         return Axios.get(ORG_API + "/public")
     }else {
@@ -45,18 +45,30 @@ const manageActivity = (activity, orgId) => {
         })
 }
 
+const manageProject = (project, orgId) => {
+    return Axios.put(ORG_API + "/manageProject", {
+        orgId: orgId,
+        projectId: project.id
+    })
+}
+
 const getMembered = () => {
     return Axios.get(ORG_API + "/membered")
+}
+
+const remove = (orgId) => {
+    return Axios.delete(ORG_API + "?orgId=" + orgId)
 }
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
     post,
     put,
-    get,
+    getPublic,
     getMy,
     uploadPic,
     downloadPic,
     manageActivity,
+    manageProject,
     getMembered
 };

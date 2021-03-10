@@ -1,18 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react';
 import activityAPI from '../../_services/activityAPI';
-import {
-    Image,
-    Label,
-    Container,
-    Button,
-    Header,
-    Icon,
-    Item,
-    Loader,
-    Menu,
-    Segment,
-    Dropdown,
-    Message, Input
+import {Image, Container, Button, Header, Icon, Loader, Menu, Segment, Dropdown, Message
 } from "semantic-ui-react";
 import {withTranslation} from "react-i18next";
 import AuthContext from "../../_contexts/AuthContext";
@@ -25,13 +13,11 @@ import FileDownload from "../../_components/upload/FileDownload";
 import FileInfos from "../../_components/upload/FileInfos";
 import FollowingActivityForm from "../../_components/FollowingForm";
 import Picture from "../../_components/Picture";
-import {NavLink} from "react-router-dom";
 import projectAPI from "../../_services/projectAPI";
 import orgAPI from "../../_services/orgAPI";
 
 const ActivityProfile = ( props ) => {
     const urlParams = props.match.params.id.split('_')
-    console.log(urlParams[0])
     const [ctx, setCtx] = useState("")
 
     const checkCtx = () => {
@@ -58,8 +44,6 @@ const ActivityProfile = ( props ) => {
     const [userOrgs, setUserOrgs] = useState([])
     const [errorOrg, setErrorOrg] = useState("")
 
- //   console.log(activity)
-
     const isOwner = () => {
   //      console.log(activity.creator)
         if(activity && activity.creator){
@@ -80,7 +64,6 @@ const ActivityProfile = ( props ) => {
     }
 
     const [loader, setLoader] = useState();
-    /*const [activityLoader, setactivityLoader] = useState(false)*/
 
     const [activeItem, setActiveItem] = useState('presentation')
 
@@ -479,11 +462,11 @@ const ActivityProfile = ( props ) => {
                         </Segment>
                     </>
                     :
-                    <Item>
-                        <Item.Content>
-                            { props.t("no_result") }
-                        </Item.Content>
-                    </Item>
+                    <Container textAlign='center'>
+                        <Message size='mini' info>
+                            {props.t("no_result")}
+                        </Message>
+                    </Container>
                 }
             </>
             }

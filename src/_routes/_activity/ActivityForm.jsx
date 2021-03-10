@@ -219,7 +219,8 @@ const ActivityForm = ( { history, activity, setActivity, setForm} ) => {
                 <Segment>
                     <Button
                         basic
-                        icon='delete'
+                        icon='remove circle'
+                        color="red"
                         size='large'
                         content= { t('delete') }
                         onClick={handleDelete}

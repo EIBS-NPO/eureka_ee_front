@@ -2,8 +2,6 @@
 import Axios from "axios";
 import {ACT_API, FOLW_ACT } from "../config";
 
-console.log(ACT_API)
-
 const post = (activity) => {
     return Axios.post(ACT_API, activity)
 }

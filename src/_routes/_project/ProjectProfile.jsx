@@ -74,6 +74,15 @@ const ProjectProfile = (props) => {
 
     const handleItemClick = (e, { name }) => setActiveItem(name)
 
+    const setDataProject = (project) => {
+        setProject(project)
+        setActivities(project.activities)
+        if(project.organization){
+            setProjectOrg(project.organization)
+        }
+        setIsOwner(userAPI.checkMail() === project.creator.email)
+    }
+
     useEffect(() => {
         setLoader(true)
         if(ctx() === "public"){
@@ -81,33 +90,22 @@ const ProjectProfile = (props) => {
             projectAPI.getPublic(urlParams[1])
                 .then(response => {
                     console.log(response.data[0])
-                    setProject(response.data[0])
-                    //    console.log(response.data[0].activities)
-                    setActivities(response.data[0].activities)
-                    if(response.data[0].organization){
-                        setProjectOrg(response.data[0].organization)
-                    }
-                    setIsOwner(userAPI.checkMail() === response.data[0].creator.email)
+                    setDataProject(response.data[0])
                 })
                 .catch(error => console.log(error.response))
         }else {
             projectAPI.get(ctx(), urlParams[1])
                 .then(response => {
                     console.log(response.data[0])
-                    setProject(response.data[0])
-                    //    console.log(response.data[0].activities)
-                    setActivities(response.data[0].activities)
-                    if(response.data[0].organization){
-                        setProjectOrg(response.data[0].organization)
-                    }
-                    setIsOwner(userAPI.checkMail() === response.data[0].creator.email)
+                    setDataProject(response.data[0])
                 })
                 .catch(error => console.log(error.response))
         }
 
 
         if(isAuth){
-            projectAPI.isFollowing( urlParams[1], "follow" )
+            console.log(urlParams[1])
+            projectAPI.isFollowing(urlParams[1] , "follow" )
                 .then(response => {
                     console.log(response.data[0])
                     setIsFollow(response.data[0])
@@ -126,6 +124,7 @@ const ProjectProfile = (props) => {
                                 let table = []
                                 response.data.forEach(activity => {
                                     if(activities.find(a => a.id === activity.id) === undefined){
+                                        //todo filtrer aussi les activity déjà lié à un projet
                                         table.push(activity)
                                     }
                                 })
@@ -180,6 +179,7 @@ const ProjectProfile = (props) => {
     )
 
     const [loader2, setLoader2] = useState(false)
+
     const handleRmv = (activity) => {
         if (!authAPI.isAuthenticated()) {
             authAPI.logout()
@@ -267,10 +267,6 @@ const ProjectProfile = (props) => {
             .catch(error => console.log(error))
     }
 
-    const getLink = (type) => {
-        let lk = "/"+type;
-    }
-
     return (
         <div className="card">
             <>
@@ -282,26 +278,6 @@ const ProjectProfile = (props) => {
                             <Header as="h2" floated='left'>
                                 <Picture size="small" picture={project.picture} />
                             </Header>
-                            {/*<Item>
-                                <Item.Content>
-                                    <Item.Description>
-                                        { project.description }
-                                    </Item.Description>
-                                </Item.Content>
-                            </Item>*/}
-                            {/*<Item>
-                                <Picture size="small" picture={project.picture} isFloat="left"/>
-
-                                <Item.Content floated='right'>
-                                    <Item.Header as="h2">
-                                        {isAuth &&
-                                        <FollowingActivityForm obj={project} setter={setProject} type="project" />
-                                        }
-                                        { project.title }
-                                    </Item.Header>
-                                    <Item.Description> { LanguageSwitcher(project.description) } </Item.Description>
-                                </Item.Content>
-                            </Item>*/}
                             <Header as="h2" floated='right'>
                                 {isAuth &&
                                     <FollowingActivityForm obj={project} setter={setProject} type="project" isFollow={isFollow} setIsFollow={setIsFollow} />
@@ -320,12 +296,12 @@ const ProjectProfile = (props) => {
                             onClick={handleItemClick}
                         >
                         </Menu.Item>
-                        <Menu.Item
+                        {/*<Menu.Item
                             name='news'
                             content={ props.t('news')}
                             active={activeItem === 'news'}
                             onClick={handleItemClick}
-                        />
+                        />*/}
                         <Menu.Item
                             name='team'
                             content={ props.t('team')}
@@ -363,10 +339,10 @@ const ProjectProfile = (props) => {
                     <Segment attached='bottom'>
                         <>
                             {projectForm ?
-                                <ProjectForm project={project} setProject={setProject} setForm={handleForm}/>
+                                <ProjectForm history={props.history} project={project} setProject={setProject} setForm={handleForm}/>
                                 :
                                 <>
-                                    <Card obj={project} type="project" profile={true} withPicture={false} ctx={ctx()} link={getLink}/>
+                                    <Card obj={project} type="project" profile={true} withPicture={false} ctx={ctx()} />
 
                                     {isAuth && isOwner && !projectForm &&
                                         <Segment basic textAlign="center" >
@@ -392,11 +368,11 @@ const ProjectProfile = (props) => {
                                     <Dropdown item text={props.t('add') + " " + props.t('activity')} >
                                         <Dropdown.Menu>
                                             <Dropdown.Item>
-                                            {freeActivities.length === 0 &&
-                                            <Message size='mini' info>
-                                                {props.t("no_free_activities")}
-                                            </Message>
-                                            }
+                                                {freeActivities.length === 0 &&
+                                                <Message size='mini' info>
+                                                    {props.t("no_free_activities")}
+                                                </Message>
+                                                }
 
                                             </Dropdown.Item>
                                             {freeActivities.map(a =>
@@ -417,16 +393,25 @@ const ProjectProfile = (props) => {
                                     />
                                 </Menu.Item>
                             </Menu>
-                            {!loader2 && filteredList.map(act =>
-                                <Segment key={act.id}>
-                                    <Card obj={act} type="activity" isLink={true} ctx={ctx()}/>
-                                    { act.creator.id === authAPI.getId() &&
-                                        <button onClick={()=>handleRmv(act)}>retirer du projet</button>
-                                    }
-
-                                </Segment>
-
-                            )}
+                            {!loader2 &&
+                                <>
+                                {filteredList.length > 0 && filteredList.map(act =>
+                                    <Segment key={act.id}>
+                                        <Card obj={act} type="activity" isLink={true} ctx={ctx()}/>
+                                        { act.creator.id === authAPI.getId() &&
+                                            <button onClick={()=>handleRmv(act)}>{ t('remove_to_project')}</button>
+                                        }
+                                    </Segment>
+                                )}
+                                {filteredList.length === 0 &&
+                                <Container textAlign='center'>
+                                    <Message size='mini' info>
+                                        {props.t("no_result")}
+                                    </Message>
+                                </Container>
+                                }
+                            </>
+                            }
                         </Segment>
                     }
 
@@ -464,7 +449,11 @@ const ProjectProfile = (props) => {
                             </Menu>
 
                             {!projectOrg ?
-                                <p> {props.t('no_org')} </p>
+                                <Container textAlign='center'>
+                                    <Message size='mini' info>
+                                        {props.t("no_org")}
+                                    </Message>
+                                </Container>
                                 :
                                 <Card obj={project.organization} type="org" profile={false} ctx={ctx()}/>
                             }
@@ -475,11 +464,11 @@ const ProjectProfile = (props) => {
                 </Segment>
                 </>
                 :
-                    <Item>
-                        <Item.Content>
-                            { props.t("no_result") }
-                        </Item.Content>
-                    </Item>
+                    <Container textAlign='center'>
+                        <Message size='mini' info>
+                            {props.t("no_result")}
+                        </Message>
+                    </Container>
                 }
             </>
             }

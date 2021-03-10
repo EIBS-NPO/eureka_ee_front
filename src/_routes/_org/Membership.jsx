@@ -139,17 +139,15 @@ const Membership = ( props ) => {
                 <>
                     {members && members.length > 0 &&
                         members.map( (m, key) => (
-                            <Container >
+                            <Container key={key}>
                                 <Card obj={m} type="user" isLink={true} ctx="public" />
 
                                 {isAuth && isReferent() &&
                                     <>
-                                    <Button animated onClick={() => showModal(m)} circular color="red" basic>
-                                        <Button.Content visible>{t('remove')} </Button.Content>
-                                        <Button.Content hidden>
-                                            <Icon name='remove user'/>
-                                        </Button.Content>
-                                    </Button>
+                                        <Button animated onClick={() => showModal(m)} circular color="red" basic>
+                                            <Icon name="remove user" color="red"/>
+                                            { props.t('remove_to_org')}
+                                        </Button>
                                         <Divider section />
                                     </>
                                 }

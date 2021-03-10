@@ -6,12 +6,10 @@ import { StepFormContext } from "../../../_routes/_project/CreateProject";
 import projectAPI from "../../../_services/projectAPI";
 import Card from "../../Card";
 
-//todo virer le props? pour la redir??
+
 const ProjectFormResume = ( props  ) => {
 
     const { obj } = useContext(StepFormContext)
-
-    console.log(obj)
 
     const [loader, setLoader] = useState(false)
 
@@ -21,12 +19,11 @@ const ProjectFormResume = ( props  ) => {
 
         projectAPI.post(obj)
             .then(response => {
-                console.log(response.data[0])
+                console.log(response.data)
                 props.history.replace("/project/creator_" + response.data[0].id)
             })
             .catch(error => {
                 console.log(error)
-                console.log(error.response)
            //     setErrors(error.response.data.error);
             })
             .finally(() => setLoader(false))
@@ -40,7 +37,6 @@ const ProjectFormResume = ( props  ) => {
             <Form onSubmit={handleSubmit} loading={loader}>
 
                 <Card obj={obj} type="project" profile={true} ctx="create"/>
-                {/*<Project project={obj} context="create"/>*/}
 
                 <Button animated >
                     <Button.Content visible>{ props.t("save") }</Button.Content>

@@ -1,18 +1,7 @@
 
 import React, {useEffect, useState, useContext, createContext} from 'react';
 import orgAPI from '../../_services/orgAPI';
-import {
-    Container,
-    Button,
-    Header,
-    Icon,
-    Item,
-    Loader,
-    Menu,
-    Segment,
-    Dropdown,
-    Message,
-    Input
+import {Container, Label, Button, Header, Icon, Loader, Menu, Segment, Dropdown, Message, Input
 } from "semantic-ui-react";
 import {withTranslation} from "react-i18next";
 import AuthContext from "../../_contexts/AuthContext";
@@ -48,87 +37,170 @@ const OrgProfile = (props ) => {
 
     const [ctx, setCtx] = useState("public")
 
-    const isReferent = () => {
-        return userAPI.checkMail() === org.referent.email
-    }
-
     const [ org, setOrg ] = useState({})
-    console.log(org)
-
     const  [ orgForm, setOrgForm ]  = useState(false)
 
     const handleForm = ( ) => {
         orgForm === true ? setOrgForm(false) : setOrgForm(true)
     }
 
-    const [loader, setLoader] = useState(true);
-
     const [activeItem, setActiveItem] = useState('presentation')
     const handleItemClick = (e, { name }) => setActiveItem(name)
 
     const [activities, setActivities] = useState([])
     const [freeActivities, setFreeActivities] =useState([])
+    const [errorActivities, setErrorActivities] = useState("")
 
-    const [isOwner, setIsOwner] =useState(false)
+
+    const [projects, setProjects] = useState([])
+    const [freeProjects, setFreeProjects] = useState([])
+    const [errorProject, setErrorProject] = useState("")
+
+    const [isReferent, setIsReferent] = useState(false)
     const [isAssigned, setIsAssigned] = useState(false)
+
+    const [loader, setLoader] = useState(true);
 
     useEffect(() => {
         setLoader(true)
-        setCtx( checkCtx() )
-        console.log(ctx)
-        if(ctx === 'my'){
+        if(checkCtx() === 'creator'){//for user's org or assign members
             orgAPI.getMy(urlParams[1])
                 .then(response => {
-                    console.log(response)
+                    console.log(response.data[0])
                     setOrg(response.data[0])
+                    setActivities(response.data[0].activities ? response.data[0].activities : [])
+                    setProjects(response.data[0].projects ? response.data[0].org.projects : [])
+                    //manage access
+                    setIsReferent(userAPI.checkMail() === response.data[0].referent.email)
+                    response.data[0].membership.forEach( m => {
+                        if(m.id ===  authAPI.getId()){ setIsAssigned(true)}
+                    })
                 })
                 .catch(error => console.log(error.response))
                 .finally(() => setLoader(false))
         }else {//for anonymous
-            orgAPI.get(urlParams[1])
+            orgAPI.getPublic(urlParams[1])
                 .then(response => {
-                    console.log(response)
+                    console.log(response.data[0])
                     setOrg(response.data[0])
+                    setActivities(response.data[0].activities ? response.data[0].activities : [])
+                    setProjects(response.data[0].projects ? response.data[0].projects : [])
+                    //manage access
+                    setIsReferent(userAPI.checkMail() === response.data[0].referent.email)
+                    response.data[0].membership.forEach( m => {
+                        if(m.id ===  authAPI.getId()){ setIsAssigned(true)}
+                    })
                 })
                 .catch(error => console.log(error.response))
                 .finally(() => setLoader(false))
         }
     }, []);
 
-    const handleRmv = (activity) => {
+    useEffect(() => {
+        if(isReferent || isAssigned){
+            //load user's selectable activities
+            activityAPI.get("creator")
+                .then(response => {
+                    let table = []
+                    response.data.forEach(activity => {
+                        if(activities.find(a => a.id === activity.id) === undefined){
+                            table.push(activity)
+                        }
+                    })
+                    setFreeActivities(table)
+                })
+                .catch(error => {
+                    console.log(error)
+                })
+
+            projectAPI.get("creator")
+                .then(response => {
+                    let table = []
+                    response.data.forEach(project => {
+                        if(projects.find(p => p.id === project.id) === undefined){
+                            table.push(project)
+                        }
+                    })
+                    setFreeProjects(table)
+                })
+                .catch(error => {
+                    console.log(error)
+                })
+        }
+    },[isReferent, isAssigned])
+
+    const [activityLoader, setActivityLoader] = useState(false)
+    const handleRmvActivity = (activity) => {
+        setActivityLoader(true)
         if (!authAPI.isAuthenticated()) {
             authAPI.logout()
         }
         orgAPI.manageActivity(activity, org.id)
             .then(response => {
-                console.log(response.data)
                 let index = org.activities.indexOf(activity)
-                org.activities.splice(index, 1)
-                freeActivities.push(activity)
+                activities.splice(index, 1)
+                freeActivities.unshift(activity)
+                org.activities = activities
             })
             .catch(error => {
                 console.log(error)
             })
+            .finally(() => setActivityLoader(false))
     }
 
-    const handleAdd = (activityId) => {
+    const handleAddActivity = (activityId) => {
         if (!authAPI.isAuthenticated()) {
             authAPI.logout()
         }
-        //setLoader2(true)
+        setActivityLoader(true)
         let act = freeActivities.find(a => activityId === a.id)
         orgAPI.manageActivity(act, org.id)
             .then(response => {
-                console.log(response.data)
                 if(response.data[0] === "success"){
                     activities.unshift(freeActivities.find(a => a.id === activityId))
-                    console.log(activities)
                     setActivities(activities)
                     setFreeActivities(freeActivities.filter(a => a.id !== activityId))
                 }
             })
             .catch(error => console.log(error))
-        //     .finally(()=> setLoader2(false))
+            .finally(()=> setActivityLoader(false))
+    }
+
+    const [projectLoader, setProjectLoader] = useState(false)
+    const handleRmvProject = (project) => {
+        setProjectLoader(true)
+        if (!authAPI.isAuthenticated()) {
+            authAPI.logout()
+        }
+        orgAPI.manageProject(project, org.id)
+            .then(response => {
+                let index = org.activities.indexOf(project)
+                projects.splice(index, 1)
+                freeProjects.unshift(project)
+                org.projects = projects
+            })
+            .catch(error => {
+                console.log(error)
+            })
+            .finally(() => setProjectLoader(false))
+    }
+
+    const handleAddProject = (projectId) => {
+        if (!authAPI.isAuthenticated()) {
+            authAPI.logout()
+        }
+        setProjectLoader(true)
+        let proj = freeProjects.find(a => projectId === a.id)
+        orgAPI.manageProject(proj, org.id)
+            .then(response => {
+                if(response.data[0] === "success"){
+                    projects.unshift(freeProjects.find(a => a.id === projectId))
+                    freeProjects(projects)
+                    setFreeProjects(freeProjects.filter(a => a.id !== projectId))
+                }
+            })
+            .catch(error => console.log(error))
+            .finally(() => setProjectLoader(false))
     }
 
     const [search, setSearch] = useState("")
@@ -138,11 +210,13 @@ const OrgProfile = (props ) => {
     }
 
     const filteredList = (list) => {
-        return list.filter(p =>
-            p.title.toLowerCase().includes(search.toLowerCase()) ||
-            p.creator.firstname.toLowerCase().includes(search.toLowerCase()) ||
-            p.creator.lastname.toLowerCase().includes(search.toLowerCase())
-        )
+       if(list) {
+           return list.filter(e =>
+               e.title.toLowerCase().includes(search.toLowerCase()) ||
+               e.creator.firstname.toLowerCase().includes(search.toLowerCase()) ||
+               e.creator.lastname.toLowerCase().includes(search.toLowerCase())
+           )
+       }else { return []}
     }
 
     return (
@@ -233,7 +307,7 @@ const OrgProfile = (props ) => {
 
 
 
-                                            {isAuth && isReferent() && !orgForm &&
+                                            {isAuth && isReferent && !orgForm &&
                                             <Button onClick={handleForm} fluid animated>
                                                 <Button.Content visible>
                                                     { props.t('edit') }
@@ -271,21 +345,77 @@ const OrgProfile = (props ) => {
                             }
 
                             {activeItem === 'projects' &&
-                                <Segment attached='bottom'>
-                                    {org.projects && org.projects.length > 0 && org.projects.map(project => (
-                                        <Card key={project.id} obj={project} type="project" isLink={true}/>
-                                    ))}
-                                    {(!org.projects || org.projects.length === 0) &&
-                                        <Container textAlign="center"> { props.t('no_project') }</Container>
+                                <Segment attached='bottom' loading={projectLoader}>
+                                    <Menu>
+                                        {(isReferent || isAssigned) &&
+                                        <Dropdown item text={props.t('add') + " " + props.t('project')} loading={projectLoader} scrolling>
+                                            <Dropdown.Menu>
+                                                <Dropdown.Item>
+                                                    {freeProjects.length === 0 &&
+                                                    <Message size='mini' info>
+                                                        {props.t("no_free_projects")}
+                                                    </Message>
+                                                    }
+                                                </Dropdown.Item>
+
+                                                {freeProjects.map(p =>
+                                                    <Dropdown.Item key={p.id} onClick={() => handleAddProject(p.id)} disabled={!!p.project} >
+                                                        <Icon name="plus"/>
+                                                        {p.title + " "}
+                                                        {p.isPublic ?
+                                                            <Label color='teal' size="mini" basic horizontal> {props.t('public')} </Label>
+                                                            :
+                                                            <Label color='orange' size="mini" basic horizontal > {props.t('private')} </Label>
+                                                        }
+                                                        {p.project &&
+                                                        <Label size="mini" color="purple" basic >
+                                                            <Icon name="attention" /> { props.t('already_use')}
+                                                        </Label>
+                                                        }
+                                                    </Dropdown.Item>
+                                                )}
+
+                                            </Dropdown.Menu>
+                                        </Dropdown>
+                                        }
+                                        <Menu.Item position="right">
+                                            <Input
+                                                name="search"
+                                                value={ search ? search : ""}
+                                                onChange={handleSearch}
+                                                placeholder={  props.t('search') + "..."}
+                                            />
+                                        </Menu.Item>
+                                    </Menu>
+                                    {filteredList(org.projects).length > 0 && filteredList(org.projects).map(project =>
+                                        <Segment key={project.id}>
+                                            <Card key={project.id} obj={project} type="project" isLink={true} />
+                                            { project.creator.id === authAPI.getId() &&
+                                                <Button onClick={()=>handleRmvProject(project)} basic>
+                                                    <Icon name="remove circle" color="red"/>
+                                                    { props.t('remove_to_org')}
+                                                </Button>
+                                            }
+
+                                        </Segment>
+
+                                    )}
+
+                                    {filteredList(org.projects).length === 0 &&
+                                        <Container textAlign='center'>
+                                            <Message size='mini' info>
+                                                {props.t("no_result")}
+                                            </Message>
+                                        </Container>
                                     }
                                 </Segment>
                             }
 
                             {activeItem === 'activities' &&
-                                <Segment attached='bottom'>
+                                <Segment attached='bottom' loading={activityLoader}>
                                     <Menu>
-                                        {/*{(isOwner || isAssigned) &&
-                                        <Dropdown item text={props.t('add') + " " + props.t('activity')} >
+                                        {(isReferent || isAssigned) &&
+                                        <Dropdown item text={props.t('add') + " " + props.t('activity')} loading={activityLoader} scrolling >
                                             <Dropdown.Menu>
                                                 <Dropdown.Item>
                                                     {freeActivities.length === 0 &&
@@ -296,14 +426,25 @@ const OrgProfile = (props ) => {
 
                                                 </Dropdown.Item>
                                                 {freeActivities.map(a =>
-                                                    <Dropdown.Item key={a.id} onClick={() => handleAdd(a.id)}>
-                                                        <Icon name="plus"/> {a.title}
+                                                    <Dropdown.Item key={a.id} onClick={() => handleAddActivity(a.id)} disabled={!!a.organization}>
+                                                        <Icon name="plus"/>
+                                                        {a.title + " "}
+                                                        {a.isPublic ?
+                                                            <Label color='teal' size="mini" basic horizontal> {props.t('public')} </Label>
+                                                        :
+                                                            <Label color='orange' size="mini" basic horizontal > {props.t('private')} </Label>
+                                                        }
+                                                        {a.organization &&
+                                                        <Label size="mini" color="purple" basic >
+                                                            <Icon name="attention" /> { props.t('already_use')}
+                                                        </Label>
+                                                        }
                                                     </Dropdown.Item>
                                                 )}
 
                                             </Dropdown.Menu>
                                         </Dropdown>
-                                        }*/}
+                                        }
                                         <Menu.Item position="right">
                                             <Input
                                                 name="search"
@@ -313,26 +454,36 @@ const OrgProfile = (props ) => {
                                             />
                                         </Menu.Item>
                                     </Menu>
-                                    {filteredList(org.activities).map(act =>
+
+                                    {filteredList(activities).length > 0 && filteredList(activities).map(act =>
                                         <Segment key={act.id}>
                                             <Card key={act.id} obj={act} type="activity" isLink={true} />
                                             { act.creator.id === authAPI.getId() &&
-                                            <button onClick={()=>handleRmv(act)}>retirer du projet</button>
+                                            <Button onClick={()=>handleRmvProject(act)} basic>
+                                                <Icon name="remove circle" color="red"/>
+                                                { props.t('remove_to_org')}
+                                            </Button>
                                             }
-
                                         </Segment>
-
                                     )}
+
+                                    {filteredList(activities).length === 0 &&
+                                        <Container textAlign='center'>
+                                            <Message size='mini' info>
+                                                {props.t("no_result")}
+                                            </Message>
+                                        </Container>
+                                    }
                                 </Segment>
                             }
                         </Segment>
                         </>
                         :
-                        <Item>
-                            <Item.Content>
-                                { props.t("no_result") }
-                            </Item.Content>
-                        </Item>
+                        <Container textAlign='center'>
+                            <Message size='mini' info>
+                                {props.t("no_result")}
+                            </Message>
+                        </Container>
                     }
                 </>
                 }

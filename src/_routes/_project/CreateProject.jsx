@@ -1,15 +1,14 @@
-import React, {createContext, useContext, useState, useEffect } from "react";
+
+import React, {createContext, useContext, useState } from "react";
 import { withTranslation } from 'react-i18next';
 
 import AuthContext from "../../_contexts/AuthContext";
 import {Form, Step, Button, Item, Segment, Icon, Message} from "semantic-ui-react";
-import AuthAPI from "../../_services/authAPI";
 import projectAPI from "../../_services/projectAPI";
 
 import ProjectDescForm from "../../_components/forms/project/ProjectDescForm";
 import ProjectDatingForm from "../../_components/forms/project/ProjectDatingForm";
 import OrgLinkForm from "../../_components/forms/org/OrgLinkForm";
-import PublicationForm from "../../_components/forms/PublicationForm";
 import ProjectFormResume from "../../_components/forms/project/ProjectFormResume";
 
 export const StepFormContext = createContext({
@@ -17,27 +16,16 @@ export const StepFormContext = createContext({
     setObj: ( value ) => { },
     errors: { },
     setErrors: ( value ) => { }
-    /*currentStep:{ },
-    setCurrentStep: ( value ) =>{ },
-    stepList:[ ],
-    setStepList: ( value ) => { }*/
 })
 
 const CreateProject = ({ history, t }) => {
-    /*useEffect (()=> {
-        AuthAPI.setup();
-    })*/
 
     const isAuthenticated = useContext(AuthContext);
-    /*if (isAuthenticated === true) {
-        history.replace('/');
-    }*/
 
     const [stepList, setStepList] = useState([
         {id:0, name:"description", isValid:false, state:"active"},
         {id:1, name:"dating", isValid:false, state:"disabled"},
         {id:2, name:"linking", isValid:false, state:"disabled"},
-        /*{id:3, name:"publication", isValid:false, state:"disabled"},*/
         {id:3, name:"resume", isValid:false, state:"disabled"}
     ])
     const [currentStep, setCurrentStep] = useState({id:0, name:"description", isValid:false})
@@ -48,7 +36,6 @@ const CreateProject = ({ history, t }) => {
         organization: {},
         startDate: "",
         endDate: ""
-        /*isPublic:false*/
     })
 
     const handleNext = () => {
@@ -59,9 +46,6 @@ const CreateProject = ({ history, t }) => {
             setCurrentStep(stepList[currentStep.id + 1])
             stepList[currentStep.id + 1].state = "active"
         }
-    /*todo sinon on est a la fin de from fair epage de requete et de resultat*/
-        console.log(stepList)
-        console.log(obj)
     }
 
     const stepReturn = ({id}) => {
@@ -106,8 +90,6 @@ const CreateProject = ({ history, t }) => {
                 return <ProjectDatingForm loader={loader} errors={errors} nextStep={handleNext}/>
             case "linking":
                 return <OrgLinkForm loader={loader} errors={errors} nextStep={handleNext}/>
-            /*case "publication":
-                return <PublicationForm loader={loader} errors={errors} nextStep={handleNext}/>*/
             case "resume":
                 return <ProjectFormResume loader={loader} errors={errors} nexStep={handleNext} history />
         }
@@ -136,7 +118,6 @@ const CreateProject = ({ history, t }) => {
         organization: "",
         startDate: "",
         endDate: ""
-        /*isPublic:""*/
     });
 
     /*//todo verifier par isValid aussi, avec retour erreurs.*/
@@ -169,7 +150,6 @@ const CreateProject = ({ history, t }) => {
                     content={ t('about_project') }
                 />
                     <Form onSubmit={handleSubmit}>
-                        {/*<StepsRow />*/}
                         <Step.Group size='mini'>
                             {stepList && stepList.map(s => (
                                 <GetStepState key={s.id} step={s}/>

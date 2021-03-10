@@ -2,13 +2,14 @@
 import React, { useEffect, useState} from 'react';
 import projectAPI from '../../_services/projectAPI';
 import {
-    Grid, Item, Label, Segment, Form, Button
+    Grid, Item, Label, Segment, Form, Button, Icon
 } from "semantic-ui-react";
 import {useTranslation, withTranslation} from "react-i18next";
 import PictureForm from "../../_components/forms/PictureForm";
 import utilities from "../../_services/utilities";
 import TextAreaMultilang from "../../_components/forms/TextAreaMultilang";
 import OrgSelector from "../../_components/forms/org/OrgsSelector";
+import activityAPI from "../../_services/activityAPI";
 
 /**
  * la page qui affiche les détail de projet, doit afficher
@@ -20,7 +21,7 @@ import OrgSelector from "../../_components/forms/org/OrgsSelector";
  * la liste des reources privées, si abilitation user suffisante.
  */
 
-const ProjectForm = ( { project, setProject, setForm }) => {
+const ProjectForm = ( { history, project, setProject, setForm }) => {
 
     const { t } = useTranslation()
 
@@ -80,6 +81,20 @@ const ProjectForm = ( { project, setProject, setForm }) => {
         }else {
             setUpProject({ ...upProject, "isPublic": false })
         }
+    }
+
+    //todo modal confirmation
+    const handleDelete = (event) => {
+        event.preventDefault()
+        setLoader(true)
+        projectAPI.deleteProject(project.id)
+            .then(response => {
+                history.replace('/all_projects/creator')
+            })
+            .catch(error => {
+                console.log(error)
+            })
+            .finally(() => setLoader(false))
     }
 
     useEffect(() => {
@@ -199,7 +214,7 @@ const ProjectForm = ( { project, setProject, setForm }) => {
                                 </Item.Content>
                             </Item>
                         </Segment>
-B
+
                     {/*<Segment>
                         <Label attached="top">
                             { t('publication') }
@@ -246,6 +261,17 @@ B
                                     />
                             </Grid.Column>
                         </Grid>
+                    </Segment>
+
+                    <Segment>
+                        <Button
+                            basic
+                            icon='remove circle'
+                            color="red"
+                            size='large'
+                            content= { t('delete') }
+                            onClick={handleDelete}
+                        />
                     </Segment>
 
                 </Item.Group>
