@@ -2,7 +2,6 @@ export const LOCAL_URL = process.env.REACT_APP_URL_LOCAL;
 
 export const API_URL = process.env.REACT_APP_URL_EXTERNAL;
 
-console.log(API_URL)
 export const LOGIN_API = API_URL + "/security/login";
 
 export const USR_API = API_URL + "/user";
