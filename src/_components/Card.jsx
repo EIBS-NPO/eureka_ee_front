@@ -43,29 +43,29 @@ const Card = ({ obj, type, isLink=false, profile=false, ctx=undefined, withPictu
         if(type === "user"){ }
         switch(type){
             case "user":
-                setIsOwner(obj.id === authAPI.getId())
+                setIsOwner(obj && obj.id === authAPI.getId())
                 setOwner(obj)
                 break
             case "org":
-                setIsOwner(obj.referent.id === authAPI.getId())
-                obj.membership.forEach( m => {
+                setIsOwner(obj && obj.referent && obj.referent.id === authAPI.getId())
+                obj && obj.membership && obj.membership.forEach( m => {
                     if(m.id ===  authAPI.getId()){ setIsOwner(true)}
                 })
-                setOwner(obj.referent)
+                setOwner(obj && obj.referent)
                 break
             case "project":
-                setIsOwner(obj.creator.id === authAPI.getId())
+                setIsOwner(obj && obj.creator && obj.creator.id === authAPI.getId())
 
                 //todo check follow with follower list in project...
                 projectAPI.isFollowing(obj.id, "assign")
                     .then(response => { setIsAssign(response.data[0])})
                     .catch(error => {console.log(error)})
-                setOwner(obj.creator)
+                setOwner(obj && obj.creator)
                 break;
             case "activity":
-                setIsOwner(obj.creator.id === authAPI.getId())
-                setIsPublic(obj.isPublic)
-                setOwner(obj.creator)
+                setIsOwner(obj && obj.creator && obj.creator.id === authAPI.getId())
+                setIsPublic(obj && obj.isPublic)
+                setOwner(obj && obj.creator)
                 break
         }
     },[obj])

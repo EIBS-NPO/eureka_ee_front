@@ -63,13 +63,14 @@ const OrgProfile = (props ) => {
 
     useEffect(() => {
         setLoader(true)
+        console.log(checkCtx())
         if(checkCtx() === 'creator'){//for user's org or assign members
             orgAPI.getMy(urlParams[1])
                 .then(response => {
                     console.log(response.data[0])
                     setOrg(response.data[0])
                     setActivities(response.data[0].activities ? response.data[0].activities : [])
-                    setProjects(response.data[0].projects ? response.data[0].org.projects : [])
+                    setProjects(response.data[0].projects ? response.data[0].projects : [])
                     //manage access
                     setIsReferent(authAPI.getId() === response.data[0].referent.id)
                     response.data[0].membership.forEach( m => {
@@ -388,7 +389,7 @@ const OrgProfile = (props ) => {
                                     {filteredList(org.projects).length > 0 && filteredList(org.projects).map(project =>
                                         <Segment key={project.id}>
                                             <Card key={project.id} obj={project} type="project" isLink={true} />
-                                            { project.creator.id === authAPI.getId() &&
+                                            { (isReferent || project.creator.id === authAPI.getId()) &&
                                                 <Button onClick={()=>handleRmvProject(project)} basic>
                                                     <Icon name="remove circle" color="red"/>
                                                     { props.t('remove_to_org')}
@@ -456,7 +457,7 @@ const OrgProfile = (props ) => {
                                     {filteredList(activities).length > 0 && filteredList(activities).map(act =>
                                         <Segment key={act.id}>
                                             <Card key={act.id} obj={act} type="activity" isLink={true} />
-                                            { act.creator.id === authAPI.getId() &&
+                                            { (isReferent || act.creator.id === authAPI.getId()) &&
                                             <Button onClick={()=>handleRmvProject(act)} basic>
                                                 <Icon name="remove circle" color="red"/>
                                                 { props.t('remove_to_org')}

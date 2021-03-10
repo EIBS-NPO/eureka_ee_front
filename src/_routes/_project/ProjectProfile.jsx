@@ -40,6 +40,7 @@ const ProjectProfile = (props) => {
 
     const [projectOrg, setProjectOrg] = useState(undefined)
     const [userOrgs, setUserOrgs] = useState([])
+    console.log(userOrgs)
     const [errorOrg, setErrorOrg] = useState("")
 
     const [activeItem, setActiveItem] = useState('presentation')
@@ -110,7 +111,6 @@ const ProjectProfile = (props) => {
                                 let table = []
                                 response.data.forEach(activity => {
                                     if(activities.find(a => a.id === activity.id) === undefined){
-                                        //todo filtrer aussi les activity déjà lié à un projet
                                         table.push(activity)
                                     }
                                 })
@@ -133,6 +133,7 @@ const ProjectProfile = (props) => {
                             .then(response => {
                                 console.log(response.data)
                                 if(response.data.length > 0 ){
+
                                     setUserOrgs(tab.concat(response.data))
                                 }else {
                                     setUserOrgs(tab)
@@ -383,7 +384,7 @@ const ProjectProfile = (props) => {
                                 {filteredList.length > 0 && filteredList.map(act =>
                                     <Segment key={act.id}>
                                         <Card obj={act} type="activity" isLink={true} ctx={ctx()}/>
-                                        { act.creator.id === authAPI.getId() &&
+                                        { (isOwner || act.creator.id === authAPI.getId()) &&
                                             <button onClick={()=>handleRmv(act)}>{ t('remove_to_project')}</button>
                                         }
                                     </Segment>
@@ -415,8 +416,8 @@ const ProjectProfile = (props) => {
                                             </Message>
                                         </Dropdown.Item>
                                         }
-                                        {userOrgs.map(o =>
-                                            <Dropdown.Item key={o.id} onClick={() => handleAddOrg(o.id)}>
+                                        {userOrgs.map((o, key)=>
+                                            <Dropdown.Item key={key} onClick={() => handleAddOrg(o.id)}>
                                                 <Icon name="plus"/> {o.name}
                                             </Dropdown.Item>
                                         )}
