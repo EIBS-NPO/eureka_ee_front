@@ -1,18 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react';
 import activityAPI from '../../_services/activityAPI';
-import {
-    Image,
-    Label,
-    Container,
-    Button,
-    Header,
-    Icon,
-    Item,
-    Loader,
-    Menu,
-    Segment,
-    Dropdown,
-    Message, Input
+import {Image, Container, Button, Header, Icon, Loader, Menu, Segment, Dropdown, Message
 } from "semantic-ui-react";
 import {withTranslation} from "react-i18next";
 import AuthContext from "../../_contexts/AuthContext";
@@ -25,13 +13,11 @@ import FileDownload from "../../_components/upload/FileDownload";
 import FileInfos from "../../_components/upload/FileInfos";
 import FollowingActivityForm from "../../_components/FollowingForm";
 import Picture from "../../_components/Picture";
-import {NavLink} from "react-router-dom";
 import projectAPI from "../../_services/projectAPI";
 import orgAPI from "../../_services/orgAPI";
 
 const ActivityProfile = ( props ) => {
     const urlParams = props.match.params.id.split('_')
-    console.log(urlParams[0])
     const [ctx, setCtx] = useState("")
 
     const checkCtx = () => {
@@ -58,8 +44,6 @@ const ActivityProfile = ( props ) => {
     const [userOrgs, setUserOrgs] = useState([])
     const [errorOrg, setErrorOrg] = useState("")
 
- //   console.log(activity)
-
     const isOwner = () => {
   //      console.log(activity.creator)
         if(activity && activity.creator){
@@ -80,7 +64,6 @@ const ActivityProfile = ( props ) => {
     }
 
     const [loader, setLoader] = useState();
-    /*const [activityLoader, setactivityLoader] = useState(false)*/
 
     const [activeItem, setActiveItem] = useState('presentation')
 
@@ -101,10 +84,10 @@ const ActivityProfile = ( props ) => {
                 .then(response => {
                     console.log(response)
                     if(response.data[0] !== "DATA_NOT_FOUND"){
-                        if(response.data[0].organization){
+                        /*if(response.data[0].organization){
                             //todo ??
                             response.data[0].activityId = response.data[0].organization.id
-                        }
+                        }*/
                     }
                     setActivity(response.data[0])
                     if(response.data[0].project){
@@ -118,6 +101,7 @@ const ActivityProfile = ( props ) => {
                     console.log(error.response)
                     setError(error.response.data[0])
                 })
+                .finally(() => setLoader(false))
 
             if(urlParams[0] === "creator"){
                 projectAPI.get(urlParams[0])
@@ -131,6 +115,7 @@ const ActivityProfile = ( props ) => {
                                 console.log(error)
                                 setErrorProject(error.response.data[0])
                             })
+                            .finally(() => setLoader(false))
                     })
                     .catch(error => {
                         console.log(error)
@@ -144,28 +129,28 @@ const ActivityProfile = ( props ) => {
                         })
                         .catch(error => console.log(error.response.data))
 
-                orgAPI.getMy()
-                    .then(response => {
-                     //   setUserOrgs(response.data)
-                        let tab = response.data
-                        orgAPI.getMembered()
-                            .then(response => {
-                                console.log(response.data)
-                                if(response.data.length > 0 ){
-                                    setUserOrgs(tab.concat(response.data))
-                                }else {
-                                    setUserOrgs(tab)
-                                }
-                            })
-                            .catch(error => {
-                                console.log(error)
-                                setErrorOrg(error.response.data)
-                            })
-                    })
-                    .catch(error => {
-                        console.log(error)
-                        setErrorOrg(error.response.data)
-                    })
+                    orgAPI.getMy()
+                        .then(response => {
+                         //   setUserOrgs(response.data)
+                            let tab = response.data
+                            orgAPI.getMembered()
+                                .then(response => {
+                                    console.log(response.data)
+                                    if(response.data.length > 0 ){
+                                        setUserOrgs(tab.concat(response.data))
+                                    }else {
+                                        setUserOrgs(tab)
+                                    }
+                                })
+                                .catch(error => {
+                                    console.log(error)
+                                    setErrorOrg(error.response.data)
+                                })
+                        })
+                        .catch(error => {
+                            console.log(error)
+                            setErrorOrg(error.response.data)
+                        })
             }
         }else {
             activityAPI.getPublic(urlParams[1])
@@ -179,8 +164,9 @@ const ActivityProfile = ( props ) => {
                     console.log(error.response)
                     setError(error.response.data[0])
                 })
+                .finally(() => setLoader(false))
         }
-        setLoader(false)
+      //  setLoader(false)
     }, []);
 
     const [loader2, setLoader2] = useState(false)
@@ -258,7 +244,7 @@ const ActivityProfile = ( props ) => {
     return (
 
         <div className="card">
-            {loader === false &&
+            {!loader &&
             <>
                 {activity && activity !== "DATA_NOT_FOUND" ?
                     <>
@@ -479,11 +465,11 @@ const ActivityProfile = ( props ) => {
                         </Segment>
                     </>
                     :
-                    <Item>
-                        <Item.Content>
-                            { props.t("no_result") }
-                        </Item.Content>
-                    </Item>
+                    <Container textAlign='center'>
+                        <Message size='mini' info>
+                            {props.t("no_result")}
+                        </Message>
+                    </Container>
                 }
             </>
             }
@@ -492,7 +478,7 @@ const ActivityProfile = ( props ) => {
                 <Loader
                     active
                     content={
-                        <p>{props.t('loading') +" : " + props.t('presentation') }</p>
+                        <p>{props.t('loading') +" : " + props.t('activities') }</p>
                     }
                     inline="centered"
                 />

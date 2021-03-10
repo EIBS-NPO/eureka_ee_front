@@ -171,12 +171,29 @@ const ProjectsList = ( props ) => {
             }
 
             {ctx !== "creator" && !loader &&
-                projects && projects.length > 0 &&
-                projects.map( project  => (
-                    <Segment key={project.id } raised>
-                        <Card history={ props.history } key={project.id} obj={project} type="project" isLink={true} ctx={ctx}/>
-                    </Segment>
-                ))
+                <>
+                <Menu>
+                    <Menu.Item position="right">
+                        <Input name="search" value={ search ? search : ""}
+                               onChange={handleSearch}
+                               placeholder={  props.t('search') + "..."}    />
+                    </Menu.Item>
+                </Menu>
+                    {projects && filteredList(projects).length > 0 ?
+                    filteredList(projects).map(project => (
+                        <Segment key={project.id} raised>
+                            <Card history={props.history} key={project.id} obj={project} type="project" isLink={true}
+                                  ctx={ctx}/>
+                        </Segment>
+                    ))
+                    :
+                        <Container textAlign='center'>
+                            <Message size='mini' info>
+                                {props.t("no_result")}
+                            </Message>
+                        </Container>
+                    }
+                </>
             }
 
             {loader &&

@@ -17,7 +17,7 @@ import projectAPI from "../_services/projectAPI";
  * @constructor
  */
 const FollowingForm = ( { obj, setter, type, isFollow, setIsFollow } ) => {
-console.log(obj)
+
     const [loader, setLoader] = useState(false)
 
    /* useEffect( () => {

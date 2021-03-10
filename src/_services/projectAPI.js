@@ -97,6 +97,10 @@ const manageOrg = (org, projId) => {
     })
 }
 
+const deleteProject = (projectId) => {
+    return Axios.delete(PROJECT_API + "?projectId=" + projectId)
+}
+
 /*
 const addTeammate = (projectId, email) => {
     return Axios.put( , {
@@ -142,5 +146,6 @@ export default {
     getFollowed,
     getAssigned,
     manageActivity,
-    manageOrg
+    manageOrg,
+    deleteProject
 };

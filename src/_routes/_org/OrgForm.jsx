@@ -4,6 +4,7 @@ import {Button, Form, Icon, Item, Label, Segment} from "semantic-ui-react";
 import {withTranslation} from "react-i18next";
 import PictureForm from "../../_components/forms/PictureForm";
 import TextAreaMultilang from "../../_components/forms/TextAreaMultilang";
+import activityAPI from "../../_services/activityAPI";
 
 const OrgForm = ( props ) => {
 
@@ -72,6 +73,19 @@ const OrgForm = ( props ) => {
                 abortController.abort()
             }
     }
+
+    const handleDelete = () => {
+        setLoader(true)
+        orgAPI.remove(org.id)
+            .then(response => {
+                history.replace('/all_organizations/creator')
+            })
+            .catch(error => {
+                console.log(error)
+            })
+            .finally(() => setLoader(false))
+    }
+
 
     return (
         <>
@@ -159,6 +173,16 @@ const OrgForm = ( props ) => {
                     </Button.Content>
                 </Button>
             </Form>
+            <Segment>
+                <Button
+                    basic
+                    icon='remove circle'
+                    color="red"
+                    size='large'
+                    content= { t('delete') }
+                    onClick={handleDelete}
+                />
+            </Segment>
         </>
     );
 };

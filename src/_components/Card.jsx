@@ -8,6 +8,7 @@ import userAPI from "../_services/userAPI";
 import AuthContext from "../_contexts/AuthContext";
 import {NavLink} from "react-router-dom";
 import projectAPI from "../_services/projectAPI";
+import authAPI from "../_services/authAPI";
 
 const Card = ({ obj, type, isLink=false, profile=false, ctx=undefined, withPicture=true }) => {
 
@@ -15,7 +16,8 @@ const Card = ({ obj, type, isLink=false, profile=false, ctx=undefined, withPictu
     const {t,  i18n } = useTranslation()
     const lg = i18n.language.split('-')[0]
 
-    const [owner, setOwner] = useState({});
+    const [owner, setOwner] = useState(false);
+    const [isOwner, setIsOwner] = useState(false);
     const [isAssign, setIsAssign] = useState(undefined)
     const [isPublic, setIsPublic] = useState(undefined)
 
@@ -32,35 +34,41 @@ const Card = ({ obj, type, isLink=false, profile=false, ctx=undefined, withPictu
     }
 
     const getLink = () => {
-        let h = "/" + type + "/public_" + obj.id;
-        if(isAuth){
-            if( userAPI.checkMail() === owner.email || isAssign) { ctx = "creator" }
-        }
-
-       return  h = "/" + type + "/" + ctx + "_" + obj.id;
+        let ctx = ""
+        if(isOwner || isAssign ){ ctx = "creator"} else { ctx = "public"}
+       return  ("/" + type + "/" + ctx + "_" + obj.id);
     }
 
     useEffect(() => {
         if(type === "user"){ }
         switch(type){
             case "user":
+                setIsOwner(obj && obj.id === authAPI.getId())
                 setOwner(obj)
                 break
             case "org":
+                setIsOwner(obj && obj.referent && obj.referent.id === authAPI.getId())
+                obj && obj.membership && obj.membership.forEach( m => {
+                    if(m.id ===  authAPI.getId()){ setIsOwner(true)}
+                })
                 setOwner(obj && obj.referent)
                 break
             case "project":
-                setOwner(obj && obj.creator)
+                setIsOwner(obj && obj.creator && obj.creator.id === authAPI.getId())
+
+                //todo check follow with follower list in project...
                 projectAPI.isFollowing(obj.id, "assign")
                     .then(response => { setIsAssign(response.data[0])})
                     .catch(error => {console.log(error)})
+                setOwner(obj && obj.creator)
                 break;
             case "activity":
+                setIsOwner(obj && obj.creator && obj.creator.id === authAPI.getId())
+                setIsPublic(obj && obj.isPublic)
                 setOwner(obj && obj.creator)
-                setIsPublic(obj.isPublic)
                 break
         }
-    },[])
+    },[obj])
 
     return (
         <>
@@ -161,11 +169,7 @@ const Card = ({ obj, type, isLink=false, profile=false, ctx=undefined, withPictu
                                     </Item.Header>
                                     <Item.Extra>
                                         {type !== "user" && ctx !=="create" &&
-                                           /* <LabelUser user={ owner } type={type === "org" ? "referent" : "author"} />*/
                                         <Label as='a' basic image>
-                                            {/* {user.picture &&*/}
-                                            {/*  <Picture size="small" picture={user.picture} isFloat={"left"}/>*/}
-                                            {/*  }*/}
                                             {owner && (owner.lastname + ' ' + owner.firstname)}
 
                                             {type === "referent" && <Label.Detail>{ t('referent') }</Label.Detail>}
@@ -187,7 +191,6 @@ const Card = ({ obj, type, isLink=false, profile=false, ctx=undefined, withPictu
                                             </Label>
                                         }
 
-                                        {/*//todo tout s affiche?*/}
                                         {(obj.email || obj.phone) &&
                                         <>
                                             {

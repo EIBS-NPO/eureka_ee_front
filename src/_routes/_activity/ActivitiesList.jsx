@@ -17,7 +17,7 @@ const ActivitiesList = ( props ) => {
         }else {return urlParams}
     }
 
-    const [activities, setActivities] = useState({})
+    const [activities, setActivities] = useState([])
 
     const [loader, setLoader] = useState();
 
@@ -169,13 +169,29 @@ const ActivitiesList = ( props ) => {
                     </>
                     }
 
-                {ctx !== "creator" && activities && activities.length > 0 &&
-                    activities.map(activity => (
+                {ctx !== "creator" &&
+                <>
+                    <Menu>
+                        <Menu.Item position="right">
+                            <Input name="search" value={ search ? search : ""}
+                                   onChange={handleSearch}
+                                   placeholder={  props.t('search') + "..."}    />
+                        </Menu.Item>
+                    </Menu>
+                    {activities && filteredList(activities).length > 0 ?
+                    filteredList(activities).map(activity => (
                     <Segment key={activity.id} raised>
-                    <Card history={props.history} key={activity.id} obj={activity} type="activity"
-                    isLink={true}/>
+                        <Card history={props.history} key={activity.id} obj={activity} type="activity" isLink={true}/>
                     </Segment>
                     ))
+                    :
+                        <Container textAlign='center'>
+                            <Message size='mini' info>
+                                {props.t("no_result")}
+                            </Message>
+                        </Container>
+                    }
+                </>
                 }
                 </>
             }
