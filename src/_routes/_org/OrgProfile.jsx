@@ -71,7 +71,7 @@ const OrgProfile = (props ) => {
                     setActivities(response.data[0].activities ? response.data[0].activities : [])
                     setProjects(response.data[0].projects ? response.data[0].org.projects : [])
                     //manage access
-                    setIsReferent(userAPI.checkMail() === response.data[0].referent.email)
+                    setIsReferent(authAPI.getId() === response.data[0].referent.id)
                     response.data[0].membership.forEach( m => {
                         if(m.id ===  authAPI.getId()){ setIsAssigned(true)}
                     })
@@ -86,7 +86,7 @@ const OrgProfile = (props ) => {
                     setActivities(response.data[0].activities ? response.data[0].activities : [])
                     setProjects(response.data[0].projects ? response.data[0].projects : [])
                     //manage access
-                    setIsReferent(userAPI.checkMail() === response.data[0].referent.email)
+                    setIsReferent(authAPI.getId() === response.data[0].referent.id)
                     response.data[0].membership.forEach( m => {
                         if(m.id ===  authAPI.getId()){ setIsAssigned(true)}
                     })
@@ -305,9 +305,7 @@ const OrgProfile = (props ) => {
                                         <>
                                             <Card obj={org} type="org" profile={true} withPicture={false} ctx={ ctx }/>
 
-
-
-                                            {isAuth && isReferent && !orgForm &&
+                                            {isReferent &&
                                             <Button onClick={handleForm} fluid animated>
                                                 <Button.Content visible>
                                                     { props.t('edit') }
