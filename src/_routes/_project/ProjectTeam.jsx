@@ -172,7 +172,8 @@ const ProjectTeam = ({ project } ) => {
                         {userTarget &&
                         <>
                             <div className="messageBox">
-                                <User user={userTarget} />
+                                <Card obj={userTarget} type="user" isLink={true} />
+                                {/*<User user={userTarget} />*/}
                                 <p> { t('remove_confirm') }</p>
                             </div>
                             <div className="btnBox">
