@@ -45,7 +45,7 @@ const checkMail = () => {
 
 const activ = (userId, isActiv) => {
     return Axios.put(USR_API + "/activ", {
-        userId:userId,
+        id:userId,
         isDisable:isActiv
     })
 }

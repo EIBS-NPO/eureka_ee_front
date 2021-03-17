@@ -99,7 +99,7 @@ const ActivityProfile = ( props ) => {
                 })
                 .catch(error => {
                     console.log(error.response)
-                    setError(error.response.data[0])
+                    setError(error.response)
                 })
                 .finally(() => setLoader(false))
 
@@ -158,6 +158,9 @@ const ActivityProfile = ( props ) => {
                     setActivity(response.data[0])
                     if(response.data[0].project){
                         setActivityProject(response.data[0].project)
+                    }
+                    if(response.data[0].organization){
+                        setActivityOrg(response.data[0].organization)
                     }
                 })
                 .catch(error => {
@@ -300,7 +303,9 @@ const ActivityProfile = ( props ) => {
                                 <Menu.Item name='project' active={activeItem === 'project'} onClick={handleItemClick}>
                                     {activity.project &&
                                         <>
-                                        <Image src ={`data:image/jpeg;base64,${ activity.project.picture }`}   avatar size="mini"/>
+                                        {activity.project.picture &&
+                                            <Image src ={`data:image/jpeg;base64,${ activity.project.picture }`}   avatar size="mini"/>
+                                        }
                                         <Header>
                                             { activity.project.title}
                                             <Header.Subheader>
@@ -319,7 +324,9 @@ const ActivityProfile = ( props ) => {
                                 <Menu.Item name='organization' active={activeItem === 'organization'} onClick={handleItemClick}>
                                 {activity.organization &&
                                         <>
-                                            <Image src ={`data:image/jpeg;base64,${ activity.organization.picture }`}   avatar size="mini"/>
+                                            {activity.organization.picture &&
+                                                <Image src ={`data:image/jpeg;base64,${ activity.organization.picture }`}   avatar size="mini"/>
+                                            }
                                             <Header>
                                                 { activity.organization.name}
                                                 <Header.Subheader>
@@ -388,37 +395,43 @@ const ActivityProfile = ( props ) => {
 
                             {activeItem === "project" && (
                                 <>
-                                <Menu>
-                                    {isOwner() && !activity.project &&
-                                    <Dropdown item text={props.t('add') + " " + props.t('project')} >
-                                        <Dropdown.Menu>
-                                            {userProjects.length === 0 &&
-                                            <Dropdown.Item>
-                                                <Message size='mini' info>
-                                                    {props.t("no_project")}
-                                                </Message>
-                                            </Dropdown.Item>
-                                            }
-                                            {userProjects.map(p =>
-                                                <Dropdown.Item key={p.id} onClick={() => handleAddProject(p.id)}>
-                                                    <Icon name="plus"/> {p.title}
+                                    {isOwner() &&
+                                    <Menu>
+                                        {!activity.project &&
+                                        <Dropdown item text={props.t('add') + " " + props.t('project')}>
+                                            <Dropdown.Menu>
+                                                {userProjects.length === 0 &&
+                                                <Dropdown.Item>
+                                                    <Message size='mini' info>
+                                                        {props.t("no_project")}
+                                                    </Message>
                                                 </Dropdown.Item>
-                                            )}
+                                                }
+                                                {userProjects.map(p =>
+                                                    <Dropdown.Item key={p.id} onClick={() => handleAddProject(p.id)}>
+                                                        <Icon name="plus"/> {p.title}
+                                                    </Dropdown.Item>
+                                                )}
 
-                                        </Dropdown.Menu>
-                                    </Dropdown>
-                                    }
-                                    {isOwner() && activity.project &&
+                                            </Dropdown.Menu>
+                                        </Dropdown>
+                                        }
+                                        {activity.project &&
                                         <Menu.Item onClick={handleRmvProject} position="right">
                                             <Icon name="remove circle" color="red"/>
-                                            { props.t('remove_to_project')}
+                                            {props.t('remove_to_project')}
                                         </Menu.Item>
+                                        }
+
+                                    </Menu>
                                     }
 
-                                </Menu>
-
                                     {!activityProject ?
-                                        <p> {props.t('no_project')} </p>
+                                        <Container textAlign='center'>
+                                            <Message size='mini' info>
+                                                {props.t("no_project")}
+                                            </Message>
+                                        </Container>
                                         :
                                         <Card obj={activity.project} type="project" profile={false} ctx={ctx}/>
                                     }
@@ -427,9 +440,10 @@ const ActivityProfile = ( props ) => {
 
                             {activeItem === "organization" &&
                             <>
+                                {isOwner() &&
                                 <Menu>
-                                    {isOwner() && !activity.organization &&
-                                    <Dropdown item text={props.t('add') + " " + props.t('organization')} >
+                                    {!activity.organization &&
+                                    <Dropdown item text={props.t('add') + " " + props.t('organization')}>
                                         <Dropdown.Menu>
                                             {userOrgs.length === 0 &&
                                             <Dropdown.Item>
@@ -447,16 +461,20 @@ const ActivityProfile = ( props ) => {
                                         </Dropdown.Menu>
                                     </Dropdown>
                                     }
-                                    {isOwner() && activity.organization &&
+                                    {activity.organization &&
                                     <Menu.Item onClick={handleRmvOrg} position="right">
-                                        { props.t('remove_to_org')}
+                                        {props.t('remove_to_org')}
                                     </Menu.Item>
                                     }
 
                                 </Menu>
-
+                                }
                                 {!activityOrg ?
-                                    <p> {props.t('no_org')} </p>
+                                    <Container textAlign='center'>
+                                        <Message size='mini' info>
+                                            {props.t("no_org")}
+                                        </Message>
+                                    </Container>
                                     :
                                     <Card obj={activity.organization} type="org" profile={false} ctx={ctx}/>
                                 }

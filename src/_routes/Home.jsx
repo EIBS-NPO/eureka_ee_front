@@ -27,7 +27,7 @@ const Home = ({ t }) => {
                         </Grid.Column>
 
                         <Grid.Column>
-                            <Image src={interreg_carte} floated="top right" size='big' fluid/>
+                            <Image src={interreg_carte} floated="right" size='big' fluid/>
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>

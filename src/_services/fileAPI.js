@@ -28,7 +28,6 @@ const putFile = ( bodyFormData ) => {
     })
 }
 
-//todo ca marche!!! suffit de config la reponse, on demande comment a v aetre servit!
 const download = (isPublic, id) => {
     let url = "/file/download"
     if(isPublic){

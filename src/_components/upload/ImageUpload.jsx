@@ -49,7 +49,7 @@ const ImageUpload = ({ refresh, setRefresh, type, entity, parentCallBack }) => {
             })
             .catch(error => {
                 //handle error
-                console.log(error);
+                console.log(error.response);
             });
         hideModal()
     }

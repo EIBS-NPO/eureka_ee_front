@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react'
 import {Input, Menu, Label, Radio, Dropdown, Button, Item, Message, Container, Grid, Loader, Segment, Form} from "semantic-ui-react";
 import {useTranslation, withTranslation} from "react-i18next";
 import Picture from "../../_components/Picture";
-import User from "../../_components/cards/user";
 import Modal from "../../_components/Modal";
 import AddressForm2 from "../../_components/AddressForm2";
 import UserCoordForm from "../_user/UserCoordForm";
@@ -166,7 +165,7 @@ const AdminUsers = () => {
                                 {t('edit') + " " + t('address')}
                             </Dropdown.Item>
                             <Dropdown.Item onClick={handleEnabling}>
-                                {selectedUser.roles === "ROLE_DISABLE" ? t('enable') : t('disable') }
+                                {selectedUser.roles === "" ? t('enable') : t('disable') }
                             </Dropdown.Item>
                         </>
                         }
@@ -209,7 +208,7 @@ const AdminUsers = () => {
                                     checked={!!(selectedUser && selectedUser.id === u.id)}
                                     onChange={handChange}
                                 />
-                                <p>{ u.roles === "ROLE_DISABLE" ?
+                                <p>{ u.roles === "" ?
                                     <Label color="pink">{t('disabled')} </Label>
                                     :
                                     <Label color="blue">{t('enabled') } </Label>

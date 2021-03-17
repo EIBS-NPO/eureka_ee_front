@@ -6,7 +6,6 @@ import {Container, Label, Button, Header, Icon, Loader, Menu, Segment, Dropdown,
 import {withTranslation} from "react-i18next";
 import AuthContext from "../../_contexts/AuthContext";
 import OrgForm from "./OrgForm";
-import userAPI from "../../_services/userAPI";
 import Membership from "./Membership";
 import Card from "../../_components/Card";
 import AddressForm from "../../_components/forms/AddressForm";
@@ -239,9 +238,6 @@ const OrgProfile = (props ) => {
                                     <Picture size="small" picture={org.picture} />
                                 </Header>
                                 <Header as="h2" floated='right'>
-                                    {isAuth &&
-                                    <FollowingActivityForm obj={org} setter={setOrg} type="org" />
-                                    }
                                     { org.name }
                                     <Header.Subheader> {org.type}</Header.Subheader>
                                 </Header>

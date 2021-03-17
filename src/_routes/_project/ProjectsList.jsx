@@ -16,8 +16,8 @@ const ProjectsList = ( props ) => {
         }else {return urlParams}
     }
 
-    const [projects, setProjects] = useState()
-    const [assignProjects, setAssignProjects] = useState()
+    const [projects, setProjects] = useState([])
+    const [assignProjects, setAssignProjects] = useState([])
 
     const [loader, setLoader] = useState();
 
@@ -40,9 +40,14 @@ const ProjectsList = ( props ) => {
             projectAPI.get(ctx)
                 .then(response => {
                     console.log(response.data)
-                    setProjects(response.data)
+                    let myProjects = response.data
                     projectAPI.getAssigned()
                         .then(response =>{
+                            console.log(response.data)
+                            response.data.forEach(assignedP => {
+                                myProjects = myProjects.filter(myP => assignedP.id !== myP.id)
+                            })
+                            setProjects(myProjects)
                             setAssignProjects(response.data)
                         })
                         .catch(error => {
@@ -54,6 +59,7 @@ const ProjectsList = ( props ) => {
         } else {
             projectAPI.getPublic()
                 .then(response => {
+                    console.log(response.data)
                     setProjects(response.data)
                 })
                 .catch(error => console.log(error.response))
@@ -86,6 +92,7 @@ const ProjectsList = ( props ) => {
     }
 
     const filteredList = (list) => {
+        console.log(list)
         return list.filter(p =>
             p.title.toLowerCase().includes(search.toLowerCase()) ||
             p.creator.firstname.toLowerCase().includes(search.toLowerCase()) ||

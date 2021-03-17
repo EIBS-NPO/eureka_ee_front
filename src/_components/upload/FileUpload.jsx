@@ -12,6 +12,7 @@ import FileInfos from "./FileInfos";
  * @param history
  * @param activity
  * @param setter
+ * @param hideModal
  * @returns {JSX.Element}
  * @constructor
  */
@@ -74,7 +75,7 @@ const FileUpload = ( { history, activity, setter, hideModal=false} ) => {
                     }
                 })
                 .catch(error => {
-                    console.log(error)
+                    console.log(error.response)
                     setError(error.response)
                 })
                 .finally(() => setLoader(false))
@@ -94,7 +95,7 @@ const FileUpload = ( { history, activity, setter, hideModal=false} ) => {
                 history.replace('/activity/creator_' + response.data[0].id)
             })
             .catch(error => {
-                console.log(error)
+                console.log(error.response)
             })
             .finally(() => setLoader(false))
     }

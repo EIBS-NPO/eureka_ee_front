@@ -17,23 +17,12 @@ const post = (project) => {
 }
 
 const put = (project) => {
-    console.log(project)
     return Axios.put(PROJECT_API, project)
 }
 
-/**
- *
- * @param context
- * @param id
- * @returns {Promise<AxiosResponse<any>>}
- */
 const get = (context, id = null) => {
     let params = "?ctx="+ context
-    console.log(params)
-    if(id !== null){
-           params += "&projectId="+ id
-        console.log(params)
-    }
+    if(id !== null){ params += "&projectId="+ id }
     return Axios.get(PROJECT_API + params)
 }
 

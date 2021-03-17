@@ -73,7 +73,7 @@ const OrgList = ( props ) => {
 
     return (
         <div className="card">
-            { ctx === 'my' && <h1>{ props.t('my_org') }</h1> }
+            { ctx === 'my' && <h1>{ props.t('my_orgs') }</h1> }
             { ctx !== 'my' && <h1>{ props.t('all_org') }</h1> }
                 <>
                     {ctx === "my" &&

@@ -5,8 +5,6 @@ import {Container, Divider, Message, Label, Segment, Button, Form, Icon, Loader}
 import {useTranslation, withTranslation} from "react-i18next";
 import userAPI from "../../_services/userAPI";
 import AuthContext from "../../_contexts/AuthContext";
-import memberAPI from "../../_services/memberAPI";
-import User from "../../_components/cards/user";
 import Modal from "../../_components/Modal";
 import Card from "../../_components/Card";
 import projectAPI from "../../_services/projectAPI";

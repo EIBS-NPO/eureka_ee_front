@@ -10,7 +10,6 @@ import authAPI from "../../_services/authAPI";
 import FileInfos from "../../_components/upload/FileInfos";
 import FileUpload from "../../_components/upload/FileUpload";
 import Modal from "../../_components/Modal";
-import User from "../../_components/cards/user";
 
 const CreateActivity = ({ history, t }) => {
     if (!authAPI.isAuthenticated()) {

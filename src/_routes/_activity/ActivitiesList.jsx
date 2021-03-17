@@ -2,7 +2,6 @@ import React, { useEffect, useState, useContext } from 'react';
 import {Container, Header, Input, Loader, Menu, Message, Segment} from 'semantic-ui-react'
 import { withTranslation } from 'react-i18next';
 import activityAPI from "../../_services/activityAPI";
-import activity from "../../_components/cards/activity";
 import AuthContext from "../../_contexts/AuthContext";
 import Card from "../../_components/Card";
 import authAPI from "../../_services/authAPI";
@@ -26,10 +25,8 @@ const ActivitiesList = ( props ) => {
         setLoader(true)
         setCtx( checkCtx() )
         let ctx = checkCtx()
-        console.log(ctx)
 
         if(ctx === 'follower'){
-            console.log("get_follower")
             activityAPI.getFavorites(ctx)
                 .then(response => {
                     console.log(response)
@@ -43,11 +40,11 @@ const ActivitiesList = ( props ) => {
             activityAPI.get(ctx)
                 .then(response => {
                     console.log(response)
-                    setActivities(response.data)
+                    setActivities(response.data.filter(a => a.creator.id === authAPI.getId()))
                 })
                 .catch(error => console.log(error.response))
                 .finally(() => setLoader(false))
-        } else {console.log("public")
+        } else {
             activityAPI.getPublic()
                 .then(response => {
                     console.log(response)

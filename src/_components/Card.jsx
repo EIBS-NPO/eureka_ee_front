@@ -35,10 +35,12 @@ const Card = ({ obj, type, isLink=false, profile=false, ctx=undefined, withPictu
 
     const getLink = () => {
         let ctx = ""
-        if(isOwner || isAssign ){ ctx = "creator"} else { ctx = "public"}
+        if(isAssign){ ctx = "assign"}
+        if(isOwner ){ ctx = "creator"} else { ctx = "public"}
        return  ("/" + type + "/" + ctx + "_" + obj.id);
     }
-
+console.log(getLink())
+console.log(obj)
     useEffect(() => {
         if(type === "user"){ }
         switch(type){
@@ -57,9 +59,12 @@ const Card = ({ obj, type, isLink=false, profile=false, ctx=undefined, withPictu
                 setIsOwner(obj && obj.creator && obj.creator.id === authAPI.getId())
 
                 //todo check follow with follower list in project...
-                projectAPI.isFollowing(obj.id, "assign")
-                    .then(response => { setIsAssign(response.data[0])})
-                    .catch(error => {console.log(error)})
+                if(isAuth){
+                    projectAPI.isFollowing(obj.id, "assign")
+                        .then(response => { setIsAssign(response.data[0])})
+                        .catch(error => {console.log(error)})
+                }
+
                 setOwner(obj && obj.creator)
                 break;
             case "activity":

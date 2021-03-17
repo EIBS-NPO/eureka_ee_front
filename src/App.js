@@ -14,10 +14,6 @@ import Footer from "./_components/footer/Footer";
 
 import PrivateRoute from "./_routes/PrivateRoute";
 
-
-/*const ProfilePage = lazy(() => import("./_routes/ProfilePage"));*/
-
-
 const Home = lazy(() => import('./_routes/Home'));
 const About = lazy(() => import('./_routes/About'));
 const Login = lazy(() => import('./_routes/_user/Login'));
@@ -38,8 +34,6 @@ const ProjectsList = lazy(() => import('./_routes/_project/ProjectsList'));
 const ActivitiesList = lazy(() => import('./_routes/_activity/ActivitiesList'));
 
 const AdminUsers = lazy(()=> import('./_routes/_admin/AdminUsers'))
-//footer
-/*const Beweging = lazy(() => import('./_routes/_partners/beweging'));*/
 
  function App({history}) {
      authAPI.setup()
@@ -92,13 +86,7 @@ const AdminUsers = lazy(()=> import('./_routes/_admin/AdminUsers'))
 
               <PrivateRoute path="/admin/users" component={AdminUsers} />
 
-              {/*<PrivateRoute path="/activity/:id" component={ProfilActivity} />*/}
-
-              {/*<Route path="/profile/:id" component={ProfilePage} />*/}
-
               <Route path="/about" component={About}/>
-
-             {/* <Route path="/beweging" component={Beweging}/>*/}
           </Switch>
                           </Suspense>
                       </div>

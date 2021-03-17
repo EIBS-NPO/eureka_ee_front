@@ -100,7 +100,7 @@ const ActivityForm = ( { history, activity, setActivity, setForm} ) => {
                 history.replace('/all_activities/creator')
             })
             .catch(error => {
-                console.log(error)
+                console.log(error.response)
             })
             .finally(() => setLoader(false))
     }
@@ -137,7 +137,7 @@ const ActivityForm = ( { history, activity, setActivity, setForm} ) => {
                                         value={updateActivity.title}
                                         onChange={handleChange}
                                         placeholder="title..."
-                                        error={errors.title ? errors.title : null}
+                                        error={errors && errors.title ? errors.title : null}
                                         required
                                     />
                                 </Item.Content>

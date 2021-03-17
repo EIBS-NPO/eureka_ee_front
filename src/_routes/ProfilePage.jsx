@@ -1,8 +1,7 @@
 
 import React, {useEffect, useState, useContext, createContext} from 'react';
 import orgAPI from "../_services/orgAPI";
-import {Icon, Image, Header, Label, Segment, Menu, Item, Loader, Button, Container} from "semantic-ui-react";
-import Organization from "../_components/cards/organization";
+import {Icon, Header, Segment, Menu, Item, Loader, Button } from "semantic-ui-react";
 import Membership from "./_org/Membership";
 import {withTranslation} from "react-i18next";
 import AuthContext from "../_contexts/AuthContext";
