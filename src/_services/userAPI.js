@@ -10,13 +10,6 @@ const put = (user) => {
     return Axios.put(USR_API, user)
 }
 
-/**
- * crit = "all" for all users query
- * crit = userId for userProfile query
- * crit = null for currentUser query
- * @param crit
- * @returns {Promise<AxiosResponse<any>>}
- */
 const get = (crit = null) => {
     let param =""
     if(crit === "all"){ param = "?all=1"
@@ -26,6 +19,17 @@ const get = (crit = null) => {
 
 const resetPass = (passTab) => {
     return Axios.post(USR_API +"/password", passTab)
+}
+
+const resetEmail = (email, id = null) => {
+    let data = {
+        email:email
+    }
+    if(id !== null) {
+        data[id] = id
+    }
+    console.log(email)
+    return Axios.post(USR_API +"/email", data)
 }
 
 const checkRole = () => {
@@ -79,5 +83,6 @@ export default {
     put,
     get,
     resetPass,
+    resetEmail,
     activ
 };

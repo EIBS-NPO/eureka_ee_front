@@ -4,9 +4,10 @@ import {Button, Form, Icon, Item, Label} from "semantic-ui-react";
 import Modal from "../../Modal";
 import userAPI from "../../../_services/userAPI";
 import { useTranslation, withTranslation } from "react-i18next";
+import Axios from "axios";
 
 
-const ParamLoginForm = ({ entity}) => {
+const PassChangeForm = ({ entity}) => {
 
     const { t } = useTranslation()
 
@@ -39,6 +40,8 @@ const ParamLoginForm = ({ entity}) => {
         userAPI.resetPass(passTab)
             .then((response) => {
                 console.log(response)
+                window.localStorage.setItem("authToken", response.data.token);
+                Axios.defaults.headers["Authorization"] = "Bearer " + response.data.token;
                 hideModal()
             })
             .catch((error) => {
@@ -133,4 +136,4 @@ const ParamLoginForm = ({ entity}) => {
     );
 }
 
-export default withTranslation()(ParamLoginForm);
+export default withTranslation()(PassChangeForm);

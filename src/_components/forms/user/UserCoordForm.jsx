@@ -11,11 +11,9 @@ const UserCoordForm = ({user, setterUser}) => {
     const { t } = useTranslation()
 
     const [userMail, setUserMail] = useState()
-    const [upUser, setUpUser] = useState(
-    {
+    const [upUser, setUpUser] = useState({
         lastname: "",
         firstname: "",
-        email:"",
         phone:"",
         mobile:""
     })
@@ -24,7 +22,6 @@ const UserCoordForm = ({user, setterUser}) => {
     const [errors, setErrors] = useState({
         lastname: "",
         firstname: "",
-        email:"",
         phone:"",
         mobile:""
     });
@@ -75,14 +72,11 @@ const UserCoordForm = ({user, setterUser}) => {
         <Item.Group>
             <Item>
                 <Item.Content>
-                    <Label attached='top'>
-                        <h4>{ t('coordinates') }</h4>
-                    </Label>
                     {update &&
                     <Form onSubmit={handleSubmit} loading={loader}>
                         <Item.Group divided>
                             <Item>
-                                    <Form.Input
+                                <Form.Input
                                         icon='user'
                                         iconPosition='left'
                                         label={ t("firstname") }
@@ -104,18 +98,6 @@ const UserCoordForm = ({user, setterUser}) => {
                                         onChange={handleChange}
                                         error={errors.lastname ? errors.lastname : null}
                                     />
-                            </Item>
-                            <Item>
-                                <Form.Input
-                                    icon='mail'
-                                    iconPosition='left'
-                                    label={ t("email") }
-                                    name="email"
-                                    type="text"
-                                    value={upUser.email}
-                                    onChange={handleChange}
-                                    error={errors.email ? errors.email : null}
-                                />
                             </Item>
                             <Item>
                                     <Form.Input
@@ -172,16 +154,6 @@ const UserCoordForm = ({user, setterUser}) => {
                                         {user.lastname}
                                     </Item.Content>
                                 </Item>
-
-                                <Item>
-                                    <Item.Header>
-                                        <Icon name="mail"/>
-                                    </Item.Header>
-                                    <Item.Content verticalAlign='middle'>
-                                        {user.email}
-                                    </Item.Content>
-                                </Item>
-
 
                                 <Item>
                                     <Item.Header>

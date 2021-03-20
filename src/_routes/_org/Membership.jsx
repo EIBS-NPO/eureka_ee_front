@@ -160,7 +160,6 @@ const Membership = ( props ) => {
                                     <>
                                         <div className="messageBox">
                                             <Card obj={userTarget} type="user" isLink={true} />
-                                            {/*<User user={userTarget} />*/}
                                             <p> { props.t('remove_confirm')}</p>
                                         </div>
                                             <div className="btnBox">

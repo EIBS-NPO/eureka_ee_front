@@ -1,10 +1,10 @@
 
 import React, { useEffect, useState } from 'react';
 import userAPI from '../../_services/userAPI';
-//import AuthContext from "../../_contexts/AuthContext";
 import {Loader, Grid, Segment, Item } from "semantic-ui-react";
 import PictureForm from "../../_components/forms/PictureForm";
-import ParamLoginForm from "../../_components/forms/user/ParamLoginForm";
+import PassChangeForm from "../../_components/forms/user/PassChangeForm";
+import EmailChangeForm from "../../_components/forms/user/EmailChangeForm";
 import UserCoordForm from "../../_components/forms/user/UserCoordForm";
 import {withTranslation} from "react-i18next";
 import AddressForm from "../../_components/forms/AddressForm";
@@ -64,7 +64,17 @@ const UserProfile = ({ t, history }) => {
                                     <Loader active inline="centered" />
                                 </Item>
                                 :
-                                <ParamLoginForm entity={user} />
+                                <EmailChangeForm entity={user} setter={setUser}/>
+                            }
+                        </Segment>
+
+                        <Segment>
+                            {loader ?
+                                <Item>
+                                    <Loader active inline="centered" />
+                                </Item>
+                                :
+                                <PassChangeForm entity={user} />
                             }
                         </Segment>
                     </Grid.Column>
