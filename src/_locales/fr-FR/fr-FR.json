@@ -18,6 +18,7 @@
   "action": "action",
   "enable": "activer",
   "disable": "désactiver",
+  "partner": "partner",
 
 
   "my_activities" : "mes activités",
@@ -27,6 +28,12 @@
   "my_partners" : "mes partenaires",
   "my_assignments": "mes assignements",
   "my_taking_part": "mes participations",
+
+  "admin_users": "administration des utilisateurs",
+  "admin_orgs": "administration des organisations",
+  "admin_projects": "administration des projets",
+  "admin_activities": "administration des activités",
+
 
 
   "all_projects": "Tous les projets",
@@ -46,6 +53,7 @@
   "yes": "oui",
   "no": "non",
   "save": "enregistrer",
+  "creation": "création",
   "cancel": "annuler",
   "delete": "supprimer",
   "download": "télécharger",
@@ -61,9 +69,15 @@
   "confirmation": "confirmation",
   "errors": "Une erreur est survenue.",
   "add_members" : "ajouter des membres",
+  "tag": "tagger",
+  "untag": "détagger",
   "add": "ajouter",
   "other": "autre",
   "later": "plus tard",
+  "ask_select_user": "Veuillez selectionner un utilisateur",
+  "ask_select_org": "Veuillez selectionner une organisation",
+  "ask_select_project": "Veuillez selectionner un projet",
+  "ask_select_activity": "Veuillez selectionner une activité",
 
   "no_def": "non défini",
   "no_description": "aucune description",
@@ -86,6 +100,7 @@
   "firstname": "prénom",
   "name" : "nom",
   "title": "titre",
+  "picture": "image",
   "description": "description",
   "summary": "resumé",
   "default_language": "langage par defaut",
@@ -109,6 +124,8 @@
   "personal_project": "projet personnel",
   "followers" : "abonnés",
   "team": "equipe",
+
+  "my_plural": "mes",
 
   "connection settings" : "parametres de connexion",
   "details": "détails",

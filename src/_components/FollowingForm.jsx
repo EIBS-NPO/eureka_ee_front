@@ -1,9 +1,8 @@
 
-import React, { useState, useEffect } from "react"
+import React, { useState } from "react"
 import {withTranslation} from "react-i18next";
 import { Form, Button, Icon, Item } from "semantic-ui-react";
 import activityAPI from "../_services/activityAPI";
-import authAPI from "../_services/authAPI";
 import projectAPI from "../_services/projectAPI";
 
 /**
@@ -19,31 +18,6 @@ import projectAPI from "../_services/projectAPI";
 const FollowingForm = ( { obj, setter, type, isFollow, setIsFollow } ) => {
 
     const [loader, setLoader] = useState(false)
-
-   /* useEffect( () => {
-        console.log(obj)
-        if(authAPI.isAuthenticated()){
-            let id=obj.id
-            console.log(id)
-            if(type === "project"){
-                projectAPI.isFollowing( id, "follow" )
-                    .then(response => {
-                        console.log(response.data[0])
-                        setIsFollow(response.data[0])
-                    })
-                    .catch(error => console.log(error.response.data))
-            }
-
-            if(type === "activity"){
-                activityAPI.isFollowing( id )
-                    .then(response => {
-                        console.log(response.data[0])
-                        setIsFollow(response.data[0])
-                    })
-                    .catch(error => console.log(error.response.data))
-                }
-            }
-    }, [])*/
 
     const handleForm = () => {
         setLoader(true)
@@ -118,27 +92,14 @@ const FollowingForm = ( { obj, setter, type, isFollow, setIsFollow } ) => {
     }
 
     return (
-       // icon: star outline
-    //    <Label as='a' content='Elliot' image={imageProps} />
         <Form onSubmit={handleForm} loading={loader}>
             <Item>
                 <Button basic>
                     {isFollow ? <Icon name='star' color="yellow"/> : <Icon name='star outline' />}
                     BookMark
                 </Button >
-                {/*<Button basic compact animated >
-                    <Button.Content visible>
-                        {isFollow ? <Icon name='star' color="yellow"/> : <Icon name='star outline' />}
-                        BookMark
-                    </Button.Content>
-                    <Button.Content hidden>
-                        {isFollow ? <Icon name='star outline' /> :  <Icon name='star' color="yellow"/>}
-                        BookMark
-                    </Button.Content>
-                </Button>*/}
             </Item>
         </Form>
-
     )
 }
 

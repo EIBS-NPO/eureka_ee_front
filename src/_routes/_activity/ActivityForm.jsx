@@ -5,9 +5,7 @@ import {Button, Checkbox, Form, Grid, Item, Label, Segment } from "semantic-ui-r
 import PictureForm from "../../_components/forms/PictureForm";
 import activityAPI from "../../_services/activityAPI";
 import TextAreaMultilang from "../../_components/forms/TextAreaMultilang";
-import ProjectSelector from "../../_components/forms/project/ProjectSelector";
 import authAPI from "../../_services/authAPI";
-import OrgSelector from "../../_components/forms/org/OrgsSelector";
 
 const ActivityForm = ( { history, activity, setActivity, setForm} ) => {
 
@@ -66,9 +64,6 @@ const ActivityForm = ( { history, activity, setActivity, setForm} ) => {
         }
     },[])
 
-    console.log(activity)
-    console.log(updateActivity)
-
     const handleSubmit = () => {
         authAPI.isAuthenticated();
 
@@ -78,7 +73,7 @@ const ActivityForm = ( { history, activity, setActivity, setForm} ) => {
         //update Project
         activityAPI.put(updateActivity)
             .then(response => {
-                console.log(response.data[0])
+            //    console.log(response.data[0])
                 setActivity(response.data[0])
                 setForm(false)
                 //  setErrors({});
@@ -96,7 +91,7 @@ const ActivityForm = ( { history, activity, setActivity, setForm} ) => {
     const handleDelete = () => {
         setLoader(true)
         activityAPI.remove(activity.id)
-            .then(response => {
+            .then(() => {
                 history.replace('/all_activities/creator')
             })
             .catch(error => {

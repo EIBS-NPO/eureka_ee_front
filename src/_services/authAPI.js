@@ -83,8 +83,8 @@ const isAuthenticated = () => {
 
 const isAdmin = () => {
     const token = window.localStorage.getItem("authToken");
-    if(token){
-        return jwt_decode(token).roles[0] === "ROLE_ADMIN";
+    if(token && jwt_decode(token).roles[0] === "ROLE_ADMIN"){
+        return true
     }
     return false
 }

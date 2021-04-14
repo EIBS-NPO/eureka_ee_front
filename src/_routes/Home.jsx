@@ -1,18 +1,17 @@
 
 import React, {useContext} from 'react';
-import utilities from "../_services/utilities";
 import { withTranslation } from 'react-i18next';
 import AuthContext from "../_contexts/AuthContext";
-import {Divider, Grid, Image, Segment, Header, Container} from "semantic-ui-react";
+import {Divider, Grid, Image, Segment } from "semantic-ui-react";
 
 import interreg_carte from "../_resources/carteinterregfwv.png"
 import interreg_banniere from "../_resources/interreg_banniere.jpg";
 
-const Home = ({ t }) => {
-    const isAuth = useContext(AuthContext).isAuthenticated;
+const Home = ( ) => {
+ //   const isAuth = useContext(AuthContext).isAuthenticated;
     return (
         <div className="card">
-            <Segment vert>
+            <Segment vertical>
                 <Image src={interreg_banniere} />
                 <Grid columns={2} stackable textAlign='center'>
                     <Divider ><h1>Eureka Empowerment Environment</h1></Divider>
@@ -27,7 +26,7 @@ const Home = ({ t }) => {
                         </Grid.Column>
 
                         <Grid.Column>
-                            <Image src={interreg_carte} floated="right" size='big' fluid/>
+                            <Image src={interreg_carte} floated="right" size='big' />
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>

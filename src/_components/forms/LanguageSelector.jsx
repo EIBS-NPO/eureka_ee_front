@@ -14,8 +14,10 @@ const LanguageSelector = () => {
 
     //don't touche (e, {value}) event is important for Dropdown (onClick event)
     const handleChange = (e, {value}) => {
-        i18n.changeLanguage( value )
-    }
+        i18n.changeLanguage(value)
+            .then(r => { return r}
+            )
+     }
 
     return (
             <Dropdown

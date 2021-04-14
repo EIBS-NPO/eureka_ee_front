@@ -1,7 +1,6 @@
 import React from 'react';
 import '../../scss/components/footer.scss';
 import { withTranslation } from 'react-i18next';
-import {NavLink} from "react-router-dom";
 
 const Footer = ({ t }) => {
 

@@ -3,14 +3,13 @@ import React, { useEffect, useState } from 'react';
 import userAPI from '../../_services/userAPI';
 import {Loader, Grid, Segment, Item } from "semantic-ui-react";
 import PictureForm from "../../_components/forms/PictureForm";
-import PassChangeForm from "../../_components/forms/user/PassChangeForm";
 import EmailChangeForm from "../../_components/forms/user/EmailChangeForm";
 import UserCoordForm from "../../_components/forms/user/UserCoordForm";
 import {withTranslation} from "react-i18next";
 import AddressForm from "../../_components/forms/AddressForm";
 import authAPI from "../../_services/authAPI";
 
-const UserProfile = ({ t, history }) => {
+const UserProfile = ({ history }) => {
     if ( !(authAPI.isAuthenticated()) ) {history.replace('/login')}
 
     const [user, setUser] = useState({
@@ -68,7 +67,8 @@ const UserProfile = ({ t, history }) => {
                             }
                         </Segment>
 
-                        <Segment>
+                        {/*PassChange not functional*/}
+                        {/*<Segment>
                             {loader ?
                                 <Item>
                                     <Loader active inline="centered" />
@@ -76,7 +76,7 @@ const UserProfile = ({ t, history }) => {
                                 :
                                 <PassChangeForm entity={user} />
                             }
-                        </Segment>
+                        </Segment>*/}
                     </Grid.Column>
 
                     <Grid.Column>

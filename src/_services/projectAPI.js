@@ -12,12 +12,19 @@ const post = (project) => {
     if(project.organization) {
         data["orgId"] = project.organization.id
     }
-    console.log(data)
     return Axios.post(PROJECT_API, data)
 }
 
 const put = (project) => {
-    return Axios.put(PROJECT_API, project)
+    let data = {
+        "projectId": project.id,
+        "title": project.title,
+        "description": project.description,
+        "startDate": project.startDate,
+        "endDate": project.endDate,
+        "isPublic": project.isPublic,
+    }
+    return Axios.put(PROJECT_API, data)
 }
 
 const get = (context, id = null) => {
@@ -104,8 +111,6 @@ const getTeam = (projectId) => {
 }
 
 const isFollowing = (projectId, followType) => {
-    console.log(projectId)
-    console.log(followType)
     let params = "?projectId=" + projectId;
     if(followType === "assign"){ params += "&isAssigning=1" }
     if(followType === "follow"){ params += "&isFollowing=1" }

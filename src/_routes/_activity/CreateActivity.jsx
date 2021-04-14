@@ -1,11 +1,8 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useState } from "react";
 import { withTranslation } from 'react-i18next';
-import AuthContext from "../../_contexts/AuthContext";
-import {Button, Checkbox, Container, Form, Icon, Item, Label, Message, Segment, TextArea} from "semantic-ui-react";
-import AuthAPI from "../../_services/authAPI";
+import {Button, Checkbox, Container, Form, Icon, Item, Label, Segment } from "semantic-ui-react";
 import activityAPI from "../../_services/activityAPI";
 import TextAreaMultilang from "../../_components/forms/TextAreaMultilang";
-import {act} from "@testing-library/react";
 import authAPI from "../../_services/authAPI";
 import FileInfos from "../../_components/upload/FileInfos";
 import FileUpload from "../../_components/upload/FileUpload";
@@ -40,20 +37,17 @@ const CreateActivity = ({ history, t }) => {
     const handleSubmit = (event) => {
         event.preventDefault()
         activity.summary = summary
-        console.log(activity)
 
         activityAPI.post(activity)
             .then(response => {
-                console.log(response.data)
+            //    console.log(response.data)
                 setActivity(response.data[0])
-            }
-            )
+                setShow(true)//for add file
+            })
             .catch(error => {
                 console.log(error.response)
                 setErrors(error.response.data.error);
             })
-
-        setShow(true)//for add file
     };
 
     const [errors, setErrors] = useState({

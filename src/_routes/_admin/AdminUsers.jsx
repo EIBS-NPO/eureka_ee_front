@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react'
-import {Input, Menu, Label, Radio, Dropdown, Button, Item, Message, Container, Grid, Loader, Segment, Form} from "semantic-ui-react";
+import {Input, Menu, Label, Radio, Dropdown, Item, Message, Container, Grid, Loader, Segment, Form} from "semantic-ui-react";
 import {useTranslation, withTranslation} from "react-i18next";
 import Picture from "../../_components/Picture";
 import Modal from "../../_components/Modal";
@@ -12,7 +12,8 @@ import userAPI from "../../_services/userAPI";
 import ChangeEmailForm from "../../_components/forms/user/ChangeEmailForm";
 
 
-const AdminUsers = () => {
+const AdminUsers = ( history ) => {
+  //  if ( !(authAPI.isAuthenticated()) ) {history.replace('/login')}
     const { t } = useTranslation()
 
     const [users, setUsers] = useState([])
@@ -20,6 +21,9 @@ const AdminUsers = () => {
     const [loader, setLoader] = useState(false)
 
     useEffect(() => {
+        if(!authAPI.isAdmin()){
+            history.replace('/')
+        }
         setLoader(true)
         userAPI.get("all")
             .then(response => {
@@ -31,7 +35,6 @@ const AdminUsers = () => {
             .finally( () => setLoader(false))
     },[])
 
-    console.log(users)
     const [search, setSearch] = useState("")
     const handleSearch = (event) => {
         const value = event.currentTarget.value;
@@ -54,6 +57,7 @@ const AdminUsers = () => {
 
     const [loader2, setLoader2] = useState(false)
     const [actionSelected, setActionSelected] = useState(undefined)
+    const [show, setShow] = useState(false)
     const handleAction = ( type ) => {
         setActionSelected(type)
         setShow(true)
@@ -66,8 +70,6 @@ const AdminUsers = () => {
         let user = users.find(u => u.id === value)
         setSelectedUser(user);
     }
-
-    const [show, setShow] = useState(false)
 
     const cancelForm = (e) => {
         e.preventDefault()
@@ -86,7 +88,7 @@ const AdminUsers = () => {
         if(selectedUser.roles !== "ROLE_ADMIN"){
             userAPI.activ(selectedUser.id, selectedUser.roles !== "ROLE_USER")
                 .then(response => {
-                    console.log(response.data[0])
+      //              console.log(response.data[0])
                     let u = users.find(u => u.id === selectedUser.id)
                     u.roles = response.data[0]
                     let index = users.indexOf(u)
@@ -104,7 +106,7 @@ const AdminUsers = () => {
         setLoader2(true)
         userAPI.put(selectedUser)
             .then(response => {
-                console.log(response.data)
+        //        console.log(response.data)
                 let index = users.indexOf(users.find(u => u.id === selectedUser.id))
                 users.splice(index, 1, response.data[0]);
                 hideModal()
@@ -115,18 +117,32 @@ const AdminUsers = () => {
 
     const handleAddress = () => {
         setLoader2(true)
-  //      console.log(selectedUser)
-        addressAPI.put(selectedUser.address)
-            .then(response => {
-                console.log(response)
+        if(selectedUser.address.id !== undefined){
+            addressAPI.put(selectedUser.address)
+                .then(response => {
+           //         console.log(response)
+                    let u = users.find(u => u.id === selectedUser.id)
+                    u.address = response.data[0];
+                    let index = users.indexOf(u)
+                    users.splice(index, 1, u);
+                    hideModal()
+                })
+                .catch(error => console.log(error))
+                .finally(()=>setLoader2(false))
+        }else {
+            addressAPI.post("user", selectedUser.id, selectedUser.address)
+                .then(response => {
+          //      console.log(response)
                 let u = users.find(u => u.id === selectedUser.id)
                 u.address = response.data[0];
                 let index = users.indexOf(u)
                 users.splice(index, 1, u);
                 hideModal()
             })
-            .catch(error => console.log(error))
-            .finally(()=>setLoader2(false))
+                .catch(error => console.log(error))
+                .finally(()=>setLoader2(false))
+        }
+
     }
 
     const handleEmail = () => {
@@ -135,7 +151,7 @@ const AdminUsers = () => {
             .then(response => {
                 if(selectedUser.id === authAPI.getId()){
                     authAPI.refresh(response.data.token)
-                    console.log(response.data.token)
+         //           console.log(response.data.token)
                 }
                 let index = users.indexOf(users.find(u => u.id === selectedUser.id))
                 users.splice(index, 1, response.data[0]);
@@ -145,11 +161,9 @@ const AdminUsers = () => {
             .finally(()=>setLoader2(false))
     }
 
-//    console.log(selectedUser)
-
     return (
         <Segment classname="card">
-            <h1>Administration des utilisateurs</h1>
+            <h1> {t("admin_users")}</h1>
             <Menu >
                 <Dropdown item text='Action' loading={loader2}>
                     <Dropdown.Menu>
@@ -164,15 +178,21 @@ const AdminUsers = () => {
                             <Dropdown.Item onClick={() => handleAction("editAddress")}>
                                 {t('edit') + " " + t('address')}
                             </Dropdown.Item>
+                            <Dropdown.Item>
+                                {t('delete') + " " + t("picture")}
+                            </Dropdown.Item>
                             <Dropdown.Item onClick={handleEnabling}>
                                 {selectedUser.roles === "" ? t('enable') : t('disable') }
+                            </Dropdown.Item>
+                            <Dropdown.Item>
+                                {t("delete")}
                             </Dropdown.Item>
                         </>
                         }
                         {!selectedUser &&
                         <Dropdown.Item>
                             <Message size='mini' info>
-                                Veuillez selectionner un utilisateur
+                                {t('ask_select_user')}
                             </Message>
                         </Dropdown.Item>
                         }
@@ -196,7 +216,7 @@ const AdminUsers = () => {
                         <Grid.Column width="4"> { t('user') } </Grid.Column>
                         <Grid.Column width="4"> { t('contact') } </Grid.Column>
                         <Grid.Column width="4"> { t('address') } </Grid.Column>
-                        <Grid.Column width="4"> { t('action') } </Grid.Column>
+                        <Grid.Column width="4"> { t('picture') } </Grid.Column>
                     </Grid.Row>
                     {filteredList.map( u => (
                         <Grid.Row key={u.id}>
@@ -268,10 +288,6 @@ const AdminUsers = () => {
                             </Grid.Column>
                             <Grid.Column>
                                 <Picture size="tiny" picture={u.picture} />
-
-                            {/*    <DropdownAction user={u} />*/}
-
-
                             </Grid.Column>
                         </Grid.Row>
                     ))}
@@ -302,7 +318,7 @@ const AdminUsers = () => {
                     <Loader
                         active
                         content={
-                            <p>{ t('loading') +" : " +  t('project') }</p>
+                            <p>{ t('loading') +" : " +  t('user') }</p>
                         }
                         inline="centered"
                     />
@@ -360,18 +376,3 @@ const AdminUsers = () => {
 }
 
 export default withTranslation()(AdminUsers)
-
-/*
-<Item>
-      <Item.Image size='tiny' src='https://react.semantic-ui.com/images/wireframe/image.png' />
-
-      <Item.Content>
-        <Item.Header as='a'>Header</Item.Header>
-        <Item.Meta>Description</Item.Meta>
-        <Item.Description>
-          <Image src='https://react.semantic-ui.com/images/wireframe/short-paragraph.png' />
-        </Item.Description>
-        <Item.Extra>Additional Details</Item.Extra>
-      </Item.Content>
-    </Item>
- */

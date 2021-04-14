@@ -11,7 +11,6 @@ import Card from "../../_components/Card";
 import AddressForm from "../../_components/forms/AddressForm";
 import authAPI from "../../_services/authAPI";
 import Picture from "../../_components/Picture";
-import FollowingActivityForm from "../../_components/FollowingForm";
 import projectAPI from "../../_services/projectAPI";
 import activityAPI from "../../_services/activityAPI";
 
@@ -48,12 +47,12 @@ const OrgProfile = (props ) => {
 
     const [activities, setActivities] = useState([])
     const [freeActivities, setFreeActivities] =useState([])
-    const [errorActivities, setErrorActivities] = useState("")
+//    const [errorActivities, setErrorActivities] = useState("")
 
 
     const [projects, setProjects] = useState([])
     const [freeProjects, setFreeProjects] = useState([])
-    const [errorProject, setErrorProject] = useState("")
+  //  const [errorProject, setErrorProject] = useState("")
 
     const [isReferent, setIsReferent] = useState(false)
     const [isAssigned, setIsAssigned] = useState(false)
@@ -62,11 +61,10 @@ const OrgProfile = (props ) => {
 
     useEffect(() => {
         setLoader(true)
-        console.log(checkCtx())
         if(checkCtx() === 'creator'){//for user's org or assign members
             orgAPI.getMy(urlParams[1])
                 .then(response => {
-                    console.log(response.data[0])
+        //            console.log(response.data[0])
                     setOrg(response.data[0])
                     setActivities(response.data[0].activities ? response.data[0].activities : [])
                     setProjects(response.data[0].projects ? response.data[0].projects : [])
@@ -81,7 +79,7 @@ const OrgProfile = (props ) => {
         }else {//for anonymous
             orgAPI.getPublic(urlParams[1])
                 .then(response => {
-                    console.log(response.data[0])
+       //             console.log(response.data[0])
                     setOrg(response.data[0])
                     setActivities(response.data[0].activities ? response.data[0].activities : [])
                     setProjects(response.data[0].projects ? response.data[0].projects : [])
@@ -136,7 +134,7 @@ const OrgProfile = (props ) => {
             authAPI.logout()
         }
         orgAPI.manageActivity(activity, org.id)
-            .then(response => {
+            .then(() => {
                 let index = org.activities.indexOf(activity)
                 activities.splice(index, 1)
                 freeActivities.unshift(activity)
@@ -173,7 +171,7 @@ const OrgProfile = (props ) => {
             authAPI.logout()
         }
         orgAPI.manageProject(project, org.id)
-            .then(response => {
+            .then(() => {
                 let index = org.activities.indexOf(project)
                 projects.splice(index, 1)
                 freeProjects.unshift(project)
@@ -195,7 +193,7 @@ const OrgProfile = (props ) => {
             .then(response => {
                 if(response.data[0] === "success"){
                     projects.unshift(freeProjects.find(a => a.id === projectId))
-                    freeProjects(projects)
+                    setProjects(projects)
                     setFreeProjects(freeProjects.filter(a => a.id !== projectId))
                 }
             })
@@ -320,7 +318,8 @@ const OrgProfile = (props ) => {
 
                             {activeItem === 'address' &&
                             <Segment attached='bottom'>
-                                {org.address ?
+                                <AddressForm type="org" id={org.id} obj={org} setter={setOrg} />
+                                {/*{org.address ?
                                     <AddressForm obj={org} setter={setOrg} />
                                 :
                                     <Container textAlign='center'>
@@ -328,7 +327,7 @@ const OrgProfile = (props ) => {
                                             {props.t("not_specified")}
                                         </Message>
                                     </Container>
-                                }
+                                }*/}
 
                             </Segment>
                             }
@@ -345,23 +344,19 @@ const OrgProfile = (props ) => {
                                         {(isReferent || isAssigned) &&
                                         <Dropdown item text={props.t('add') + " " + props.t('project')} loading={projectLoader} scrolling>
                                             <Dropdown.Menu>
+                                                {freeProjects.length === 0 &&
                                                 <Dropdown.Item>
-                                                    {freeProjects.length === 0 &&
                                                     <Message size='mini' info>
                                                         {props.t("no_free_projects")}
                                                     </Message>
-                                                    }
+
                                                 </Dropdown.Item>
+                                                }
 
                                                 {freeProjects.map(p =>
                                                     <Dropdown.Item key={p.id} onClick={() => handleAddProject(p.id)} disabled={!!p.project} >
                                                         <Icon name="plus"/>
                                                         {p.title + " "}
-                                                        {p.isPublic ?
-                                                            <Label color='teal' size="mini" basic horizontal> {props.t('public')} </Label>
-                                                            :
-                                                            <Label color='orange' size="mini" basic horizontal > {props.t('private')} </Label>
-                                                        }
                                                         {p.project &&
                                                         <Label size="mini" color="purple" basic >
                                                             <Icon name="attention" /> { props.t('already_use')}
@@ -454,7 +449,7 @@ const OrgProfile = (props ) => {
                                         <Segment key={act.id}>
                                             <Card key={act.id} obj={act} type="activity" isLink={true} />
                                             { (isReferent || act.creator.id === authAPI.getId()) &&
-                                            <Button onClick={()=>handleRmvProject(act)} basic>
+                                            <Button onClick={()=>handleRmvActivity(act)} basic>
                                                 <Icon name="remove circle" color="red"/>
                                                 { props.t('remove_to_org')}
                                             </Button>

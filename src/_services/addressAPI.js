@@ -1,8 +1,18 @@
 import Axios from "axios";
 import { ADRS_API } from "../config";
 
-function post(address) {
-    return Axios.post(ADRS_API, address)
+//todo descrim user org
+function post(type, id, address) {
+    console.log(address)
+    let data = {
+        "address": address.address,
+        "country": address.country,
+        "city": address.city,
+        "zipCode": address.zipCode
+    }
+    if(type === "org"){data["orgId"] = id}
+    else if(type === "user"){data["userId"] = id}
+    return Axios.post(ADRS_API, data)
 }
 
 function put(address) {

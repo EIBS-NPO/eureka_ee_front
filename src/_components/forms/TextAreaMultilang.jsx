@@ -29,7 +29,6 @@ const TextAreaMultilang = ({ tabText, setter, name, min, max }) => {
         }
         else return ""
     }
-    console.log(tabText)
 
     const LangOptions = [
         {key: 'en', value: 'en', flag: 'gb', text: ''},
@@ -71,7 +70,6 @@ const TextAreaMultilang = ({ tabText, setter, name, min, max }) => {
         }
     },[])
 
-    console.log(LangOptions.find(txt => txt.key === 'en'))
     return (
         <>
             <Item>

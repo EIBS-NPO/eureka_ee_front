@@ -1,6 +1,6 @@
 
 import React, {useContext, useState} from "react";
-import {Container, Button, Icon, TextArea, Form, Item, Label, Segment} from "semantic-ui-react";
+import {Container, Button, Icon, Form, Item, Label } from "semantic-ui-react";
 import { StepFormContext } from "../../../_routes/_project/CreateProject";
 import {withTranslation} from "react-i18next";
 import TextAreaMultilang from "../TextAreaMultilang";
@@ -24,7 +24,7 @@ const ProjectDescForm = ({t, loader, errors, nextStep}) => {
     const handleSub = () => {
         obj.title = title
         obj.description = desc
-        console.log(obj)
+   //     console.log(obj)
         nextStep()
     }
 

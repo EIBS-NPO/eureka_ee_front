@@ -6,7 +6,18 @@ function post(org) {
 }
 
 function put(org) {
-    return Axios.put(ORG_API, org)
+    let data = {
+        "orgId" : org.id,
+        "name" : org.name,
+        "type": org.type,
+        "email": org.email,
+        "phone" : org.phone,
+        'description': org.description
+    }
+    if(org.partner !== undefined){
+        data["isPartner"] = org.partner
+    }
+    return Axios.put(ORG_API, data)
 }
 
 function getPublic(id = null){
@@ -64,6 +75,7 @@ const remove = (orgId) => {
 export default {
     post,
     put,
+    remove,
     getPublic,
     getMy,
     uploadPic,

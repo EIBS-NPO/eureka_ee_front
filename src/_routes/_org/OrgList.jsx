@@ -1,13 +1,12 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState } from 'react';
 import { withTranslation } from 'react-i18next';
 import orgAPI from "../../_services/orgAPI";
 import {Container, Header, Input, Loader, Menu, Message, Segment} from "semantic-ui-react";
-import AuthContext from "../../_contexts/AuthContext";
 import Card from "../../_components/Card";
 import authAPI from "../../_services/authAPI";
 
 const OrgList = ( props ) => {
-    const isAuth = useContext(AuthContext).isAuthenticated;
+ //   const isAuth = useContext(AuthContext).isAuthenticated;
 
     const urlParams = props.match.params.ctx
 
@@ -34,10 +33,9 @@ const OrgList = ( props ) => {
         //todo inversion des call
         setCtx( checkCtx() )
         if(urlParams === 'my'){
-            orgAPI.getMy()
+            orgAPI.getMembered()
                 .then(response => {
-                    console.log(response)
-                    console.log(response.data.filter(o => o.referent.id === authAPI.getId()))
+   //                 console.log(response)
                     setMyOrgs(response.data.filter(o => o.referent.id === authAPI.getId()))
                     setPartnerOrgs(response.data.filter(o => o.referent.id !== authAPI.getId()))
                 })
@@ -46,7 +44,7 @@ const OrgList = ( props ) => {
         }else {
             orgAPI.getPublic()
                 .then(response => {
-                    console.log(response)
+//                    console.log(response)
                     setOrgs(response.data)
                 })
                 .catch(error => console.log(error.response))
@@ -82,7 +80,7 @@ const OrgList = ( props ) => {
                             <Menu attached='top' tabular>
                                 <Menu.Item name='myOrgs' active={activeItem === 'myOrgs'} onClick={handleItemClick}>
                                     <Header>
-                                        {props.t("my_orgs")}
+                                        {props.t("my_plural") + " " + props.t("organization") + "s"}
                                     </Header>
                                 </Menu.Item>
                                 <Menu.Item name='myPartners' active={activeItem === 'myPartners'} onClick={handleItemClick}>

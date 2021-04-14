@@ -1,8 +1,7 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState } from 'react';
 import {Container, Header, Input, Loader, Menu, Message, Segment} from 'semantic-ui-react'
 import { withTranslation } from 'react-i18next';
 import activityAPI from "../../_services/activityAPI";
-import AuthContext from "../../_contexts/AuthContext";
 import Card from "../../_components/Card";
 import authAPI from "../../_services/authAPI";
 
@@ -29,7 +28,7 @@ const ActivitiesList = ( props ) => {
         if(ctx === 'follower'){
             activityAPI.getFavorites(ctx)
                 .then(response => {
-                    console.log(response)
+        //            console.log(response)
                     setActivities(response.data)
                 })
                 .catch(error => console.log(error.response))
@@ -39,7 +38,7 @@ const ActivitiesList = ( props ) => {
          //   console.log("get_non_public creator ou my ?")
             activityAPI.get(ctx)
                 .then(response => {
-                    console.log(response)
+      //              console.log(response)
                     setActivities(response.data.filter(a => a.creator.id === authAPI.getId()))
                 })
                 .catch(error => console.log(error.response))
@@ -47,7 +46,7 @@ const ActivitiesList = ( props ) => {
         } else {
             activityAPI.getPublic()
                 .then(response => {
-                    console.log(response)
+      //              console.log(response)
                     setActivities(response.data)
                 })
                 .catch(error => console.log(error.response))

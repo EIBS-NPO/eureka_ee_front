@@ -1,13 +1,13 @@
 
 import React, { useState } from 'react';
-import {Button, Form, Icon, Item, Label} from "semantic-ui-react";
+import {Button, Form, Icon, Item } from "semantic-ui-react";
 import Modal from "../../Modal";
 import userAPI from "../../../_services/userAPI";
 import { useTranslation, withTranslation } from "react-i18next";
 import Axios from "axios";
 
 
-const PassChangeForm = ({ entity}) => {
+const PassChangeForm = ( ) => {
 
     const { t } = useTranslation()
 
@@ -39,7 +39,7 @@ const PassChangeForm = ({ entity}) => {
         setLoader(true)
         userAPI.resetPass(passTab)
             .then((response) => {
-                console.log(response)
+           //     console.log(response)
                 window.localStorage.setItem("authToken", response.data.token);
                 Axios.defaults.headers["Authorization"] = "Bearer " + response.data.token;
                 hideModal()

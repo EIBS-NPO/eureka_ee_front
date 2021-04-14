@@ -1,14 +1,13 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useState } from "react";
 import { withTranslation } from 'react-i18next';
 import OrgAPI from "../../_services/orgAPI";
-import AuthContext from "../../_contexts/AuthContext";
-import {Label, Segment, Button, Form, Icon, Item} from "semantic-ui-react";
-import AuthAPI from "../../_services/authAPI";
+import {Label, Segment, Button, Form, Icon, Item, Loader} from "semantic-ui-react";
 
 import TextAreaMultilang from "../../_components/forms/TextAreaMultilang";
 
 const CreateOrg = ({ history, t }) => {
 
+    const [loader, setLoader] = useState(false)
     const [org, setOrg] = useState({
         name: "",
         type: "",
@@ -30,23 +29,23 @@ const CreateOrg = ({ history, t }) => {
 
     const preSubmit = (event) => {
         event.preventDefault()
-        console.log(desc)
         org.description = desc;
      //   setOrg({...org, description: desc})
-        console.log(org)
         handleSubmit()
     }
 
     const handleSubmit = () => {
+        setLoader(true)
         OrgAPI.post(org)
             .then(response => {
-                console.log(response.data)
+            //    console.log(response.data)
                 history.replace("/org/creator_" + response.data[0].id)
             })
             .catch(error => {
                 console.log(error.response.data)
                 setErrors(error.response.data);
             })
+            .finally(() => { setLoader(false)})
     };
 
     const [errors, setErrors] = useState({
@@ -59,6 +58,7 @@ const CreateOrg = ({ history, t }) => {
     return (
         <div className="card">
             <h1> {t('new_org')} </h1>
+            {!loader &&
                 <Form onSubmit={preSubmit}>
                     <Segment>
                             <Item>
@@ -131,8 +131,18 @@ const CreateOrg = ({ history, t }) => {
                         </Button.Content>
                     </Button>
                 </Form>
-
-
+            }
+            {loader &&
+            <Segment>
+                <Loader
+                    active
+                    content={
+                        <p>{t('loading') +" : " + t('creation') }</p>
+                    }
+                    inline="centered"
+                />
+            </Segment>
+            }
         </div>
     );
 };

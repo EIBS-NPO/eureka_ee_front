@@ -23,25 +23,25 @@ const LeftMenu = ( ) => {
                             <Menu.Header>{ t('admin') }</Menu.Header>
                             <Menu.Item
                                 as={NavLink} to='/admin/users'
-                                name={ t('admin_users') }
+                                name={ t('users') }
                                 active={activeItem === t('admin_users')}
                                 onClick={handleItemClick}
                             />
                             <Menu.Item
                                 as={NavLink} to='/admin/orgs'
-                                name={ t('admin_orgs') }
+                                name={ t('organization') +"s" }
                                 active={activeItem === t('admin_orgs')}
                                 onClick={handleItemClick}
                             />
                             <Menu.Item
                                 as={NavLink} to='/admin/projects'
-                                name={ t('admin_projects') }
+                                name={ t('projects') }
                                 active={activeItem === t('admin_projects')}
                                 onClick={handleItemClick}
                             />
                             <Menu.Item
                                 as={NavLink} to='/admin/activities'
-                                name={ t('admin_activities') }
+                                name={ t('activities') }
                                 active={activeItem === t('admin_activities')}
                                 onClick={handleItemClick}
                             />

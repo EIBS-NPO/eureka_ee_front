@@ -30,7 +30,7 @@ const ProjectsList = ( props ) => {
         if(ctx === 'follower'){
             projectAPI.getFollowed()
                 .then(response => {
-                    console.log(response.data)
+                  //  console.log(response.data)
                     setProjects(response.data)
                 })
                 .catch(error => console.log(error.response))
@@ -39,11 +39,11 @@ const ProjectsList = ( props ) => {
         else if (ctx !== 'public') { //todo gerer le rpojet my (creator + assign)
             projectAPI.get(ctx)
                 .then(response => {
-                    console.log(response.data)
+                 //   console.log(response.data)
                     let myProjects = response.data
                     projectAPI.getAssigned()
                         .then(response =>{
-                            console.log(response.data)
+                      //      console.log(response.data)
                             response.data.forEach(assignedP => {
                                 myProjects = myProjects.filter(myP => assignedP.id !== myP.id)
                             })
@@ -59,7 +59,7 @@ const ProjectsList = ( props ) => {
         } else {
             projectAPI.getPublic()
                 .then(response => {
-                    console.log(response.data)
+         //           console.log(response.data)
                     setProjects(response.data)
                 })
                 .catch(error => console.log(error.response))
@@ -92,7 +92,7 @@ const ProjectsList = ( props ) => {
     }
 
     const filteredList = (list) => {
-        console.log(list)
+    //    console.log(list)
         return list.filter(p =>
             p.title.toLowerCase().includes(search.toLowerCase()) ||
             p.creator.firstname.toLowerCase().includes(search.toLowerCase()) ||

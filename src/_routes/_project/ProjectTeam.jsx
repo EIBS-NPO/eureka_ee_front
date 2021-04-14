@@ -1,5 +1,4 @@
 
-//n'importe qui peut être ajouté à un projet
 import React, {useContext, useState, useEffect } from 'react';
 import {Container, Divider, Message, Label, Segment, Button, Form, Icon, Loader} from "semantic-ui-react";
 import {useTranslation, withTranslation} from "react-i18next";
@@ -18,14 +17,14 @@ import projectAPI from "../../_services/projectAPI";
  * @constructor
  */
 const ProjectTeam = ({ project } ) => {
- //   console.log(project)
+
     const isAuth = useContext(AuthContext).isAuthenticated;
     const { t } = useTranslation()
 
     const [isOwner, setIsOwner] = useState(false)
 
     const [team, setTeam] = useState([])
- //   console.log(team)
+
     const [email, setEmail] = useState("")
     const [errors, setErrors] = useState({
         email:""
@@ -53,11 +52,11 @@ const ProjectTeam = ({ project } ) => {
     const [loader, setLoader] = useState(false)
 
     const addSubmit = () => {
+        if(errors.email !== "" ){ setErrors({email:""})}
         if(team.filter(t => t.email === email ).length === 0) {
             setLoader(true)
             projectAPI.addAssigning( project.id, email)
                 .then(response => {
-     //               console.log(response.data)
                     if (response.data[0] !== "DATA_NOT_FOUND") {
                         setTeam(response.data)
                     }
@@ -91,9 +90,13 @@ const ProjectTeam = ({ project } ) => {
         setLoader(true)
         projectAPI.rmvAssigning( project.id, userId )
             .then(response => {
-                if(response.data[0] !== "DATA_NOT_FOUND") {
-                    setTeam(response.data)
-                }else {setTeam([])}
+            //    console.log(response)
+                if(response.data[0] !== "success") {
+                    setErrors({email:"failed"})
+                }else {
+                    setTeam(team.filter(m => m.id !== userId))
+                  //  setTeam([])
+                }
             })
             .catch(error => {
                 console.log(error.response.data)

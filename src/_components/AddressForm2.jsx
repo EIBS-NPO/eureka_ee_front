@@ -5,10 +5,10 @@ import {Button, Form, Item} from "semantic-ui-react";
 import {useTranslation, withTranslation} from "react-i18next";
 
 
-const AddressForm2 = ({handleSubmit, obj, setObj, errors, loader, handleCancel}) => {
+const AddressForm2 = ({handleSubmit, obj, errors, loader, handleCancel}) => {
     const { t } = useTranslation()
 
-    const [address, setAddress] = useState(obj.address)
+    const [address, setAddress] = useState(obj.address ? obj.address : {})
     const handleChange = (event) => {
         const { name, value } = event.currentTarget;
         setAddress({ ...address, [name]: value });
@@ -17,7 +17,7 @@ const AddressForm2 = ({handleSubmit, obj, setObj, errors, loader, handleCancel})
     const preSubmit = () => {
     obj.address = address
     //    setObj({...obj, "address" : address})
-        console.log(obj)
+  //      console.log(obj)
         handleSubmit()
     }
 

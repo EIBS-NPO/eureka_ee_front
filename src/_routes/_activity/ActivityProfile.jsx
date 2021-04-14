@@ -63,7 +63,7 @@ const ActivityProfile = ( props ) => {
         }
     }
 
-    const [loader, setLoader] = useState();
+    const [loader, setLoader] = useState(false);
 
     const [activeItem, setActiveItem] = useState('presentation')
 
@@ -72,17 +72,15 @@ const ActivityProfile = ( props ) => {
     useEffect(() => {
         setLoader(true)
         setCtx(checkCtx())
-        console.log(ctx)
-        //todo ca ca marche pas mal
+
         if ( !(urlParams[0] === "public") && !(authAPI.isAuthenticated()) ) {
             props.history.replace('/login')
         }
 
-        console.log(urlParams[0] !== 'public')
         if(urlParams[0] !== 'public'){
             activityAPI.get(urlParams[0], urlParams[1])
                 .then(response => {
-                    console.log(response)
+                  //  console.log(response.data[0])
                     if(response.data[0] !== "DATA_NOT_FOUND"){
                         /*if(response.data[0].organization){
                             //todo ??
@@ -109,6 +107,7 @@ const ActivityProfile = ( props ) => {
                         let tab = response.data
                         projectAPI.getAssigned()
                             .then(response => {
+                     //           console.log(response.data)
                                 setUserProjects(tab.concat(response.data))
                             })
                             .catch(error => {
@@ -124,33 +123,20 @@ const ActivityProfile = ( props ) => {
 
                     activityAPI.isFollowing( urlParams[1] )
                         .then(response => {
-                            console.log(response.data[0])
+                  //          console.log(response.data[0])
                             setIsFollow(response.data[0])
                         })
                         .catch(error => console.log(error.response.data))
 
-                    orgAPI.getMy()
-                        .then(response => {
-                         //   setUserOrgs(response.data)
-                            let tab = response.data
-                            orgAPI.getMembered()
-                                .then(response => {
-                                    console.log(response.data)
-                                    if(response.data.length > 0 ){
-                                        setUserOrgs(tab.concat(response.data))
-                                    }else {
-                                        setUserOrgs(tab)
-                                    }
-                                })
-                                .catch(error => {
-                                    console.log(error)
-                                    setErrorOrg(error.response.data)
-                                })
-                        })
-                        .catch(error => {
-                            console.log(error)
-                            setErrorOrg(error.response.data)
-                        })
+                orgAPI.getMembered()
+                    .then(response => {
+               //         console.log(response.data)
+                        setUserOrgs(response.data)
+                    })
+                    .catch(error => {
+                        console.log(error)
+                        setErrorOrg(error.response.data)
+                    })
             }
         }else {
             activityAPI.getPublic(urlParams[1])
@@ -179,8 +165,8 @@ const ActivityProfile = ( props ) => {
         }
         setLoader2(true)
         projectAPI.manageActivity(activity, activity.project.id)
-            .then(response => {
-                console.log(response.data)
+            .then(() => {
+        //        console.log(response.data)
                 activity.project = undefined
                 setActivity(activity)
                 setActivityProject(undefined)
@@ -195,29 +181,28 @@ const ActivityProfile = ( props ) => {
         if (!authAPI.isAuthenticated()) {
             authAPI.logout()
         }
-        //setLoader2(true)
+        setLoader2(true)
         let proj = userProjects.find(p => projectId === p.id)
         projectAPI.manageActivity(activity, proj.id)
-            .then(response => {
-                console.log(proj)
-                console.log(response.data)
+            .then(() => {
+            //    console.log(response.data)
                 activity.project = proj
                 setActivity(activity)
-                console.log(activity)
                 setActivityProject(proj)
 
             })
             .catch(error => console.log(error))
-        //     .finally(()=> setLoader2(false))
+             .finally(()=> setLoader2(false))
     }
 
     const handleRmvOrg= () => {
         if (!authAPI.isAuthenticated()) {
             authAPI.logout()
         }
+        setLoader2(true)
         orgAPI.manageActivity(activity, activity.organization.id)
             .then(response => {
-                console.log(response.data)
+        //        console.log(response.data)
                 activity.organization = undefined
                 setActivity(activity)
                 setActivityOrg(undefined)
@@ -232,16 +217,18 @@ const ActivityProfile = ( props ) => {
         if (!authAPI.isAuthenticated()) {
             authAPI.logout()
         }
+        setLoader2(true)
         let org = userOrgs.find(o => orgId === o.id)
         orgAPI.manageActivity(activity, org.id)
-            .then(response => {
-                console.log(response.data)
+            .then(() => {
+      //          console.log(response.data)
                 activity.organization = org
                 setActivity(activity)
                 setActivityOrg(org)
 
             })
             .catch(error => console.log(error))
+            .finally( ()=> {setLoader2(false)})
     }
 
     return (
@@ -394,11 +381,11 @@ const ActivityProfile = ( props ) => {
                             }
 
                             {activeItem === "project" && (
-                                <>
+                                <Segment attached='bottom' loading={loader2}>
                                     {isOwner() &&
                                     <Menu>
                                         {!activity.project &&
-                                        <Dropdown item text={props.t('add') + " " + props.t('project')}>
+                                        <Dropdown item text={props.t('add') + " " + props.t('project')} loading={loader2}>
                                             <Dropdown.Menu>
                                                 {userProjects.length === 0 &&
                                                 <Dropdown.Item>
@@ -417,9 +404,12 @@ const ActivityProfile = ( props ) => {
                                         </Dropdown>
                                         }
                                         {activity.project &&
-                                        <Menu.Item onClick={handleRmvProject} position="right">
+                                        <Menu.Item onClick={handleRmvProject} position="right" disabled={loader2}>
                                             <Icon name="remove circle" color="red"/>
                                             {props.t('remove_to_project')}
+                                            {loader2 &&
+                                            <Loader active />
+                                            }
                                         </Menu.Item>
                                         }
 
@@ -435,15 +425,15 @@ const ActivityProfile = ( props ) => {
                                         :
                                         <Card obj={activity.project} type="project" profile={false} ctx={ctx}/>
                                     }
-                                </>
+                                </Segment>
                             )}
 
                             {activeItem === "organization" &&
-                            <>
+                            <Segment attached='bottom' loading={loader2}>
                                 {isOwner() &&
                                 <Menu>
                                     {!activity.organization &&
-                                    <Dropdown item text={props.t('add') + " " + props.t('organization')}>
+                                    <Dropdown item text={props.t('add') + " " + props.t('organization')} loading={loader2}>
                                         <Dropdown.Menu>
                                             {userOrgs.length === 0 &&
                                             <Dropdown.Item>
@@ -462,8 +452,12 @@ const ActivityProfile = ( props ) => {
                                     </Dropdown>
                                     }
                                     {activity.organization &&
-                                    <Menu.Item onClick={handleRmvOrg} position="right">
+                                    <Menu.Item onClick={handleRmvOrg} position="right" disabled={loader2}>
+                                        <Icon name="remove circle" color="red"/>
                                         {props.t('remove_to_org')}
+                                        {loader2 &&
+                                        <Loader active />
+                                        }
                                     </Menu.Item>
                                     }
 
@@ -478,7 +472,7 @@ const ActivityProfile = ( props ) => {
                                     :
                                     <Card obj={activity.organization} type="org" profile={false} ctx={ctx}/>
                                 }
-                            </>
+                            </Segment>
                             }
                         </Segment>
                     </>

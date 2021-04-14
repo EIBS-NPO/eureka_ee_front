@@ -36,7 +36,7 @@ const EmailChangeForm = ({ entity, setter}) => {
         setLoader(true)
         userAPI.resetEmail(email.email)
             .then((response) => {
-                console.log(response)
+             //   console.log(response)
                 window.localStorage.setItem("authToken", response.data.token);
                 Axios.defaults.headers["Authorization"] = "Bearer " + response.data.token;
                 setter(response.data[0])

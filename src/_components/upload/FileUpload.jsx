@@ -4,7 +4,6 @@ import { Message, Item, Button, Form, Icon, Loader } from "semantic-ui-react";
 import fileAPI from "../../_services/fileAPI";
 import {useTranslation, withTranslation} from "react-i18next";
 import authAPI from "../../_services/authAPI";
-import FileInfos from "./FileInfos";
 
 //todo config jpa sur type mime accepté par le button
 /**
@@ -54,7 +53,7 @@ const FileUpload = ( { history, activity, setter, hideModal=false} ) => {
         if(activity.fileType){
             fileAPI.putFile(bodyFormData)
             .then(response => {
-                console.log(response)
+        //        console.log(response)
                 setter(response.data[0])
                 setIsSave(true)
             })
@@ -66,7 +65,7 @@ const FileUpload = ( { history, activity, setter, hideModal=false} ) => {
         }else {
             fileAPI.postFile(bodyFormData)
                 .then(response => {
-                    console.log(response)
+        //            console.log(response)
                  //   redirectToNewActivity(response.data.id)
                     setter(response.data[0])
                     setIsSave(true)
@@ -90,7 +89,7 @@ const FileUpload = ( { history, activity, setter, hideModal=false} ) => {
         setLoader(true)
         fileAPI.remove(activity.id)
             .then(response => {
-                console.log(response)
+         //       console.log(response)
                 setter(response.data[0])
                 history.replace('/activity/creator_' + response.data[0].id)
             })

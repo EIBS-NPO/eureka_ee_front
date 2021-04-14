@@ -1,5 +1,5 @@
 import React, {useContext, useState, useEffect } from 'react';
-import { Container, Divider, Message, Label, Segment, Button, Form, Icon } from "semantic-ui-react";
+import { Loader, Container, Divider, Message, Label, Segment, Button, Form, Icon } from "semantic-ui-react";
 import {useTranslation, withTranslation} from "react-i18next";
 import userAPI from "../../_services/userAPI";
 import AuthContext from "../../_contexts/AuthContext";
@@ -47,7 +47,7 @@ const Membership = ( props ) => {
             setLoader(true)
             memberAPI.addMember(props.org.id, email)
                 .then(response => {
-                    console.log(response.data)
+             //       console.log(response.data)
                     if (response.data[0] !== "DATA_NOT_FOUND") {
                         setMembers(response.data)
                     }
@@ -137,21 +137,23 @@ const Membership = ( props ) => {
             {!loader &&
                 <>
                     {members && members.length > 0 &&
-                        members.map( (m, key) => (
-                            <Container key={key}>
-                                <Card obj={m} type="user" isLink={true} ctx="public" />
 
-                                {isAuth && isReferent() &&
+                            members.map((m, key) => (
+                                <Container key={key}>
+                                    <Card obj={m} type="user" isLink={true} ctx="public"/>
+
+                                    {isAuth && isReferent() &&
                                     <>
                                         <Button animated onClick={() => showModal(m)} circular color="red" basic>
                                             <Icon name="remove user" color="red"/>
-                                            { props.t('remove_to_org')}
+                                            {props.t('remove_to_org')}
                                         </Button>
-                                        <Divider section />
+                                        <Divider section/>
                                     </>
-                                }
-                            </Container>
-                        ))
+                                    }
+                                </Container>
+                            ))
+
                     }
 
                     <Modal show={show} handleClose={hideModal} title={ props.t('confirmation')} >
@@ -180,15 +182,21 @@ const Membership = ( props ) => {
                             </div>
                     </Modal>
 
-                    {members.length === 0 &&
-                        <Segment>
-                            <Label attached="top">
-                                { props.t('membership')}
-                            </Label>
-                            <p> { props.t('no_members')}</p>
-                        </Segment>
+                    {members && members.length === 0 &&
+
+                            <Container textAlign='center'>
+                                <Message size='mini' info>
+                                    {props.t("no_result")}
+                                </Message>
+                            </Container>
                     }
                 </>
+            }
+            {loader &&
+                <Container textAlign="center">
+                    <Loader active />
+                </Container>
+
             }
         </>
     );

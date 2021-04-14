@@ -28,24 +28,33 @@ const Login = ( props ) => {
         setCredential({ ...credentials, [name]: value });
     };
 
-    const handleSubmit = async (event) => {
+    const handleSubmit = (event) => {
         event.preventDefault();
-        setLoader(true)
-        try {
-            await AuthAPI.authenticate(credentials);
-            setError("");
-            setIsAuthenticated(true);
-            setIsAdmin(authAPI.isAdmin())
-            setFirstname(authAPI.getFirstname())
-            setLastname(authAPI.getLastname())
-            props.history.replace("/");
 
-        } catch (error) {
-            setError(
-                "Echec, veuillez vérifier vos identifiants"
-            );
-        } finally {
-            setLoader(false)
+        const abortController = new AbortController()
+        const signal = abortController.signal
+
+        setLoader(true)
+        AuthAPI.authenticate(credentials, {signal:signal})
+            .then( () => {
+                setError("")
+                setIsAuthenticated(true)
+                setIsAdmin(authAPI.isAdmin())
+                setFirstname(authAPI.getFirstname())
+                setLastname(authAPI.getLastname())
+                props.history.replace("/")
+            })
+            .catch( () => {
+                setError(
+                    "Echec, veuillez vérifier vos identifiants"
+                )
+            })
+            .finally( () => {
+                setLoader(false)
+            })
+
+        return function cleanup(){
+            abortController.abort()
         }
     };
 

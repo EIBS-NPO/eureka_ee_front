@@ -47,12 +47,12 @@ const CreateProject = ({ history, t }) => {
             stepList[currentStep.id + 1].state = "active"
         }
     }
-
+/*
     const stepReturn = ({id}) => {
         console.log(id)
         console.log(stepList.find(step => step.id === {id}))
         setCurrentStep(stepList.find(step => step.id === id))
-    }
+    }*/
 
     const GetStepState = ({step}) => {
         switch(step.state){
@@ -91,7 +91,7 @@ const CreateProject = ({ history, t }) => {
             case "linking":
                 return <OrgLinkForm loader={loader} errors={errors} nextStep={handleNext}/>
             case "resume":
-                return <ProjectFormResume loader={loader} errors={errors} nexStep={handleNext} history />
+                return <ProjectFormResume loader={loader} errors={errors} nexStep={handleNext} history={history} />
         }
     }
 
@@ -102,8 +102,10 @@ const CreateProject = ({ history, t }) => {
         event.preventDefault()
 
         projectAPI.post(obj)
-            .then(response =>
-                console.log(response.data)
+            .then(response => {
+                //        console.log(response.data)
+                history.replace("/project/creator_" + response.data[0].id)
+                }
             )
             .catch(error => {
                 console.log(error.response.data.error)
@@ -120,7 +122,6 @@ const CreateProject = ({ history, t }) => {
         endDate: ""
     });
 
-    /*//todo verifier par isValid aussi, avec retour erreurs.*/
     const isRegistrable = () => {
         let c = true;
         stepList.map(s => {
@@ -130,10 +131,6 @@ const CreateProject = ({ history, t }) => {
         })
         return c
     }
-
-    /*//todo possibilité de lier a une org ?  */
-    /*//todo faire un truc etape par etape?*/
-    /*//todo public ou non */
 
     return (
         <div className="card">

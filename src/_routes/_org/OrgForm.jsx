@@ -1,11 +1,16 @@
-import React, { useEffect, useState} from 'react';
+import React, { useState} from 'react';
 import orgAPI from '../../_services/orgAPI';
 import {Button, Form, Icon, Item, Label, Segment} from "semantic-ui-react";
 import {withTranslation} from "react-i18next";
 import PictureForm from "../../_components/forms/PictureForm";
 import TextAreaMultilang from "../../_components/forms/TextAreaMultilang";
-import activityAPI from "../../_services/activityAPI";
 
+/**
+ *
+ * @param props (org, setter )
+ * @returns {JSX.Element}
+ * @constructor
+ */
 const OrgForm = ( props ) => {
 
     const  org  = props.org
@@ -42,8 +47,12 @@ const OrgForm = ( props ) => {
     }
 
     const cancelForm = (e) => {
-        e.preventDefault()
-        props.setForm(false)
+        if(props.hideModal !== undefined){
+            props.hideModal()
+        }else {
+            e.preventDefault()
+            props.setForm(false)
+        }
     }
 
 
@@ -53,20 +62,23 @@ const OrgForm = ( props ) => {
             const signal = abortController.signal
 
             preSubmit()
-
             setLoader(true);
             orgAPI.put(org, {signal:signal})
                 .then(response => {
-                    console.log(response.data[0])
-                    props.setForm(false)
+      //              console.log(response.data[0])
+                    if(props.setForm !== undefined){ props.setForm(false) }
+                    if(props.handleEditOrg !== undefined){ props.handleEditOrg(response.data[0]) }
                     //todo confirmation
                 })
                 .catch(error => {
                     console.log(error)
-                    setErrors(error.response.data)
+                    setErrors(error)
                 })
                 .finally(() => {
                     setLoader(false)
+                    if(props.hideModal !== undefined){
+                        props.hideModal()
+                    }
                 })
             //specify how to cleanup after this effect
             return function cleanup(){
@@ -77,7 +89,7 @@ const OrgForm = ( props ) => {
     const handleDelete = () => {
         setLoader(true)
         orgAPI.remove(org.id)
-            .then(response => {
+            .then(() => {
                 props.history.replace('/all_organizations/creator')
             })
             .catch(error => {
@@ -99,7 +111,7 @@ const OrgForm = ( props ) => {
                         <Form.Input
                             label={props.t('name')}
                             name="name"
-                            value={updateOrg.name ? updateOrg.name : ""}
+                            value={updateOrg && updateOrg.name ? updateOrg.name : ""}
                             onChange={handleChange}
                             placeholder={props.t('name') + "..."}
                             type="text"
@@ -112,7 +124,7 @@ const OrgForm = ( props ) => {
                             label={props.t('type')}
                             name="type"
                             type="text"
-                            value={updateOrg.type ? updateOrg.type : ""}
+                            value={updateOrg && updateOrg.type ? updateOrg.type : ""}
                             onChange={handleChange}
                             placeholder={props.t('type') + "..."}
                             error={ errors.type ? errors.type : null}
@@ -132,7 +144,7 @@ const OrgForm = ( props ) => {
                         label={props.t('email')}
                         name="email"
                         type="email"
-                        value={updateOrg.email ? updateOrg.email : ""}
+                        value={updateOrg && updateOrg.email ? updateOrg.email : ""}
                         onChange={handleChange}
                         placeholder={props.t('email') + "..."}
                         error={ errors.email ? errors.email : null}
@@ -144,7 +156,7 @@ const OrgForm = ( props ) => {
                         label={props.t('phone')}
                         name="phone"
                         type="phone"
-                        value={updateOrg.phone ? updateOrg.phone : ""}
+                        value={updateOrg && updateOrg.phone ? updateOrg.phone : ""}
                         onChange={handleChange}
                         placeholder={props.t('phone') + "..."}
                         error={ errors.phone ? errors.phone : null}

@@ -3,7 +3,7 @@ import ImageCropper from './ImageCropper'
 import Modal from "../Modal";
 import fileAPI from '../../_services/fileAPI';
 
-const ImageUpload = ({ refresh, setRefresh, type, entity, parentCallBack }) => {
+const ImageUpload = ({ setRefresh, type, entity }) => {
 
     const [blob, setBlob] = useState(null)
     const [inputImg, setInputImg] = useState('')
@@ -16,7 +16,7 @@ const ImageUpload = ({ refresh, setRefresh, type, entity, parentCallBack }) => {
     const onInputChange = (e) => {
         // convert image file to base64 string
         const file = e.target.files[0]
-        //todo if noworking i've changing const reader for let reader
+        //todo if noworking i've changed const reader for let reader
         let reader = new FileReader()
 
         reader.addEventListener('load', () => {
@@ -43,7 +43,7 @@ const ImageUpload = ({ refresh, setRefresh, type, entity, parentCallBack }) => {
             .then(response => {
             //    notification.successNotif('nouvelle photo de profil bien enregistrée')
                 setRefresh(response.data[0].picture)
-                console.log(response)
+           //     console.log(response)
                // parentCallBack()
                 hideModal()
             })

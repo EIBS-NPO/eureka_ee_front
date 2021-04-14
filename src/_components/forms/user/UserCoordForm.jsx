@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Button, Form, Icon, Item, Label} from "semantic-ui-react";
+import { Button, Form, Icon, Item } from "semantic-ui-react";
 
 import UserAPI from "../../../_services/userAPI";
 import authAPI from "../../../_services/authAPI";

@@ -2,15 +2,14 @@
 import React, {useState, useEffect, useContext} from 'react';
 import '../scss/components/cardOrg.scss';
 import {useTranslation, withTranslation} from 'react-i18next';
-import {Icon, Header, Segment, Button, Container, Item, Label } from "semantic-ui-react";
+import {Icon, Header, Segment, Container, Item, Label } from "semantic-ui-react";
 import Picture from "./Picture";
-import userAPI from "../_services/userAPI";
 import AuthContext from "../_contexts/AuthContext";
 import {NavLink} from "react-router-dom";
 import projectAPI from "../_services/projectAPI";
 import authAPI from "../_services/authAPI";
 
-const Card = ({ obj, type, isLink=false, profile=false, ctx=undefined, withPicture=true }) => {
+const Card = ({ obj, type, profile=false, ctx=undefined, withPicture=true }) => {
 
     const isAuth = useContext(AuthContext).isAuthenticated;
     const {t,  i18n } = useTranslation()
@@ -39,8 +38,7 @@ const Card = ({ obj, type, isLink=false, profile=false, ctx=undefined, withPictu
         if(isOwner ){ ctx = "creator"} else { ctx = "public"}
        return  ("/" + type + "/" + ctx + "_" + obj.id);
     }
-console.log(getLink())
-console.log(obj)
+
     useEffect(() => {
         if(type === "user"){ }
         switch(type){
@@ -59,7 +57,7 @@ console.log(obj)
                 setIsOwner(obj && obj.creator && obj.creator.id === authAPI.getId())
 
                 //todo check follow with follower list in project...
-                if(isAuth){
+                if(isAuth && obj.id){
                     projectAPI.isFollowing(obj.id, "assign")
                         .then(response => { setIsAssign(response.data[0])})
                         .catch(error => {console.log(error)})

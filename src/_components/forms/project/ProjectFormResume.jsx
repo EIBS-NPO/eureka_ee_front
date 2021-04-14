@@ -19,7 +19,7 @@ const ProjectFormResume = ( props  ) => {
 
         projectAPI.post(obj)
             .then(response => {
-                console.log(response.data)
+       //         console.log(response.data)
                 props.history.replace("/project/creator_" + response.data[0].id)
             })
             .catch(error => {

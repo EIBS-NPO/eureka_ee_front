@@ -17,9 +17,8 @@ const OrgSelector = ({obj, setter} ) => {
         setter({ ...obj, "orgId": value })
         // set id org in the select
         setSelected(value)
-        console.log(selected)
-        console.log(obj)
     };
+
     const handleShow = () => {
         if(!toggleShow){
             setToggleShow(true)

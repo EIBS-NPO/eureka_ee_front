@@ -5,14 +5,13 @@ import {Loader, Checkbox, Icon, Button, Form, Item, Label, Dropdown} from "seman
 import orgAPI from "../../../_services/orgAPI";
 import { StepFormContext } from "../../../_routes/_project/CreateProject";
 
-const OrgLinkForm = ({t, loader, errors, nextStep}) => {
+const OrgLinkForm = ({t, nextStep}) => {
 
     const { obj, setObj } = useContext(StepFormContext)
 
     const [selected, setSelected] = useState("")
 
     const handleChange = (e, { value }) => {
-        console.log(value)
         setSelected(value)
     };
 
@@ -30,9 +29,8 @@ const OrgLinkForm = ({t, loader, errors, nextStep}) => {
 
     const [orgs, setOrgs] = useState([])
     const [options, setOptions] = useState([])
-    console.log(options)
+
     const setOrgsOptions = (orgs) => {
-        console.log(orgs)
         setOrgs(orgs)
         let table=[];
         orgs.map(org => (
@@ -53,7 +51,7 @@ const OrgLinkForm = ({t, loader, errors, nextStep}) => {
     {/*todo rechercher les org en-GB tant que referrent et en-GB tant que membre!*/}
     useEffect(() => {
             setOrgLoader(true)
-            orgAPI.getMy()
+            orgAPI.getMembered()
                 .then(response => {
                     //console.log(response.data)
                     setOrgsOptions(response.data)

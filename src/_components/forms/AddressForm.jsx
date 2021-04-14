@@ -5,7 +5,7 @@ import {useTranslation, withTranslation} from "react-i18next";
 import addressAPI from "../../_services/addressAPI";
 import userAPI from "../../_services/userAPI";
 
-const AddressForm = ({ obj, setter }) => {
+const AddressForm = ({ type, obj, setter }) => {
 
     const { t } = useTranslation()
 
@@ -22,7 +22,7 @@ const AddressForm = ({ obj, setter }) => {
 
     const [loader, setLoader] = useState(false);
     const [isOwner, setIsOwner] = useState(false)
-    function checkIsOwner(){
+   /* function checkIsOwner(){
         let userMail = userAPI.checkMail()
         let res = false
         if(obj.email){
@@ -32,7 +32,7 @@ const AddressForm = ({ obj, setter }) => {
             res =  obj.referent.email === userMail
         }
         return res
-    }
+    }*/
 
     useEffect(() => {
     //    if(obj.address){setAddress(obj.address)}
@@ -62,11 +62,11 @@ const AddressForm = ({ obj, setter }) => {
         }
         //update User
         if(obj.address){
-            addressAPI.put(address)
+            addressAPI.put(type, obj.id, address)
                 .then(response => {
                     setter({...obj, address: response.data[0]})
                     setUpdate(false)
-                    console.log(response)
+            //        console.log(response)
                 })
                 .catch(error => {
                     setErrors(error.response.data)
@@ -77,11 +77,11 @@ const AddressForm = ({ obj, setter }) => {
                 })
         }
         else {
-            addressAPI.post(address)
+            addressAPI.post(type, obj.id, address)
                 .then(response => {
                     setter({...obj, address: response.data[0]})
                     setUpdate(false)
-                    console.log(response)
+              //      console.log(response)
                 })
                 .catch(error => {
                     setErrors(error.response.data)

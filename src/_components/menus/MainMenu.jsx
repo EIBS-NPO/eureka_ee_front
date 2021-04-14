@@ -4,18 +4,17 @@ import AuthContext from "../../_contexts/AuthContext";
 import LanguageSelector from "../forms/LanguageSelector";
 import '../../scss/components/mainMenu.scss';
 import { withTranslation } from 'react-i18next';
-import {Icon, Label, Dropdown, Menu, Header} from 'semantic-ui-react'
+import {Icon, Label, Dropdown, Menu } from 'semantic-ui-react'
 import authAPI from "../../_services/authAPI";
 
-/*//todo do menu boots*/
-const MainMenu = ({t, history}) => {
+const MainMenu = ({ t }) => {
     const isAuthenticated = useContext(AuthContext).isAuthenticated;
 
         const lastname = useContext(AuthContext).lastname
         const firstname = useContext(AuthContext).firstname
 
 
-    //supression du token du localStorage
+    //delete token form localStorage
     const handleLogout = () => {
         authAPI.logout();
     };
