@@ -140,14 +140,14 @@
   "file": "Fichier",
 
   "OrgCreate_title": "Enregistrer votre organisation",
-  "choose_language_translation": "Choisissez le langage pour votre texte",
+  "choose_language_translation": "Choisissez la langue pour votre texte",
   "your_translation_here": "Votre texte ici",
-  "remember_english": "Pensez à traduire en anglais. En tant que langage par défaut, il sera affiché en cas de traduction manquante.",
+  "remember_english": "Pensez à traduire en anglais. En tant que langue par défaut, il sera affiché en cas de traduction manquante.",
   "about_orgLink":"Il faut être membre d'une organisation pour pouvoir y associer un projet.",
   "about_project": "Un projet permet de regrouper des collaborateurs autour d'une thématique et de pouvoir y partager des activités sans que celles-ci ne soient forcément publiques.",
   "missing_field": "Champs manquant",
   "missing_summary": "Le résumé doit exister dans au moins une langue",
   "missing_desc": "La description doit exister dans au moins une langue",
 
-  "Unsupported Media Type": "format de fichier non supporté"
+  "Unsupported Media Type": "Format de fichier non supporté"
 }
