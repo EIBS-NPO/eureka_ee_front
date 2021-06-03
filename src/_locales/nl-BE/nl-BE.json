@@ -1,9 +1,9 @@
 {
   "Welcome": "Welkom",
-  "Sign_up": "Inschrijving",
-  "Login": "Inloggen",
+  "Sign_up": "Inschrijven",
+  "Login": "Log in",
   "Logout": "Uitloggen",
-  "change": "Bewerken",
+  "change": "Bewerk",
   "change_pass": "Verander het wachtwoord",
   "password" : "Wachtwoord",
   "new": "Nieuw",
