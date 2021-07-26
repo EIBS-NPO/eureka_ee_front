@@ -4,7 +4,7 @@ import React, {Suspense, lazy, useState } from 'react';
 import { BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 import 'semantic-ui-css/semantic.min.css'
 import { Loader } from "semantic-ui-react";
-import interreg_logo from "./_resources/logos/Interreg.jpg"
+import interreg_logo from "./_resources/logos/Interreg.jpg";
 
 import authAPI from "./_services/authAPI";
 import AuthContext from "./_contexts/AuthContext";
