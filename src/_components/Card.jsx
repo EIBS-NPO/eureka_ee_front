@@ -40,36 +40,31 @@ const Card = ({ obj, type, profile=false, ctx=undefined, withPicture=true }) => 
     }
 
     useEffect(() => {
-        if(type === "user"){ }
-        switch(type){
-            case "user":
-                setIsOwner(obj && obj.id === authAPI.getId())
-                setOwner(obj)
-                break
-            case "org":
-                setIsOwner(obj && obj.referent && obj.referent.id === authAPI.getId())
-                obj && obj.membership && obj.membership.forEach( m => {
-                    if(m.id ===  authAPI.getId()){ setIsOwner(true)}
-                })
-                setOwner(obj && obj.referent)
-                break
-            case "project":
-                setIsOwner(obj && obj.creator && obj.creator.id === authAPI.getId())
+        if(type === "user"){
+            setIsOwner(obj && obj.id === authAPI.getId())
+            setOwner(obj)
+        }else if(type === "org"){
+            setIsOwner(obj && obj.referent && obj.referent.id === authAPI.getId())
+            obj && obj.membership && obj.membership.forEach( m => {
+                if(m.id ===  authAPI.getId()){ setIsOwner(true)}
+            })
+            setOwner(obj && obj.referent)
+        }else if (type === "project"){
+            setIsOwner(obj && obj.creator && obj.creator.id === authAPI.getId())
 
-                //todo check follow with follower list in project...
-                if(isAuth && obj.id){
-                    projectAPI.isFollowing(obj.id, "assign")
-                        .then(response => { setIsAssign(response.data[0])})
-                        .catch(error => {console.log(error)})
-                }
+            //todo check follow with follower list in project...
+            //todo add param for no check, if useless requete
+            if(isAuth && obj.id){
+                projectAPI.isFollowing(obj.id, "assign")
+                    .then(response => { setIsAssign(response.data[0])})
+                    .catch(error => {console.log(error)})
+            }
 
-                setOwner(obj && obj.creator)
-                break;
-            case "activity":
-                setIsOwner(obj && obj.creator && obj.creator.id === authAPI.getId())
-                setIsPublic(obj && obj.isPublic)
-                setOwner(obj && obj.creator)
-                break
+            setOwner(obj && obj.creator)
+        }else if (type === "activity"){
+            setIsOwner(obj && obj.creator && obj.creator.id === authAPI.getId())
+            setIsPublic(obj && obj.isPublic)
+            setOwner(obj && obj.creator)
         }
     },[obj])
 
@@ -94,14 +89,13 @@ const Card = ({ obj, type, profile=false, ctx=undefined, withPicture=true }) => 
                                     }
                                 </Header>
                                 {!profile &&
-                                    <Header as={NavLink} to={getLink()} floated='right'>
-                                        <Icon name='chevron circle right' color="purple"/>
-                                        <Header.Content>
-                                            { t('details')}
-                                        </Header.Content>
-                                    </Header>
+                                <Header as={NavLink} to={getLink()} floated='left' >
+                                    <Icon name='chevron circle right' color="purple"/>
+                                    <Header.Content>
+                                        { t('details')}
+                                    </Header.Content>
+                                </Header>
                                 }
-
                             </Segment>
 
 

@@ -5,11 +5,14 @@ import ImageUpload from "../upload/ImageUpload";
 
 const PictureForm = ({ entityType, entity, setter}) => {
 
-    const [picture, setPicture] = useState(entity.picture);
+    const [picture, setPicture] = useState(undefined);
 
     useEffect(()=> {
-        setter({...entity, "picture":picture })
-    },[picture])
+        console.log(entity)
+        if(entity && entity.picture){
+            setPicture(entity.picture)
+        }
+    },[entity])
 
     return (
         <Item>

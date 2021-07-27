@@ -3,7 +3,7 @@ import React from "react";
 import {Item} from "semantic-ui-react";
 
 
-const Picture = ( { size, picture, isFloat=null, isLocal = false, isLink = false, linkTo = null} ) => {
+const Picture = ( { size, picture, isFloat=null, isLink = false, linkTo = null} ) => {
 
    /* const [src, setSrc] = useState("")
 
@@ -21,7 +21,7 @@ const Picture = ( { size, picture, isFloat=null, isLocal = false, isLink = false
             {picture ?
                 <Item.Image
                     size = {size}
-                    src ={isLocal ? picture :`data:image/jpeg;base64,${ picture }`}
+                    src ={`data:image/jpeg;base64,${ picture }`}
                     floated = {isFloat}
                     as = {isLink? "a" : ""}
                     href = {isLink? linkTo : ""}

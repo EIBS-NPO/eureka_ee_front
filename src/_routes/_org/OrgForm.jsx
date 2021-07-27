@@ -8,6 +8,8 @@ import TextAreaMultilang from "../../_components/forms/TextAreaMultilang";
 /**
  *
  * @param props (org, setter )
+ * props.hideModal (optionnal)
+ * props.setForm (optionnal)
  * @returns {JSX.Element}
  * @constructor
  */

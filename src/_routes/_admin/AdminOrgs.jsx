@@ -52,9 +52,11 @@ const AdminOrgs = ( history ) => {
                 return o[typeText][lg]
             }else if(o[typeText]['en']) {
                 return o[typeText]['en']
+            }else {
+                return t('no_' + lg + "_" + typeText)
             }
         }else {
-            return t('no_' + typeText)
+            return t('no_' + lg + "_" + typeText )
         }
     }
 
@@ -69,11 +71,12 @@ const AdminOrgs = ( history ) => {
         const value = event.currentTarget.value;
         setSearch(value);
     }
-    const filteredList = orgs.filter(u =>
-        u.type.toLowerCase().includes(search.toLowerCase()) ||
-        u.name.toLowerCase().includes(search.toLowerCase()) ||
-        u.email.toLowerCase().includes(search.toLowerCase()) ||
-        (u.phone && u.phone.toLowerCase().includes(search.toLowerCase()))
+    const filteredList = orgs.filter(e =>
+        e.type.toLowerCase().includes(search.toLowerCase())
+        || getTranslate(e, "description").toLowerCase().includes(search.toLowerCase())
+        || e.name.toLowerCase().includes(search.toLowerCase())
+        || e.email.toLowerCase().includes(search.toLowerCase())
+        || (e.phone && e.phone.toLowerCase().includes(search.toLowerCase()))
     )
 
     const [loader2, setLoader2] = useState(false)

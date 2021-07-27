@@ -20,12 +20,19 @@ function put(org) {
     return Axios.put(ORG_API, data)
 }
 
-function getPublic(id = null){
+function getPublic(id = null, isPartner=null){
+    let endPoint = ORG_API;
     if(id === null){
-        return Axios.get(ORG_API + "/public")
+        if(isPartner !== null){
+            endPoint += "/public?isPartner=true"
+        }
+        else{
+            endPoint += "/public";
+        }
     }else {
-        return Axios.get(ORG_API + "/public?id=" + id)
+        endPoint += "/public?id=" + id;
     }
+    return Axios.get(endPoint)
 }
 
 function getMy(id= null){

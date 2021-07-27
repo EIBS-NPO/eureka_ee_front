@@ -2,26 +2,22 @@
 import React, { useEffect, useState} from 'react';
 import projectAPI from '../../_services/projectAPI';
 import {
-    Grid, Item, Label, Segment, Form, Button, Icon
+    Grid, Item, Label, Segment, Form, Button
 } from "semantic-ui-react";
 import {useTranslation, withTranslation} from "react-i18next";
 import PictureForm from "../../_components/forms/PictureForm";
 import utilities from "../../_services/utilities";
 import TextAreaMultilang from "../../_components/forms/TextAreaMultilang";
-import OrgSelector from "../../_components/forms/org/OrgsSelector";
-import activityAPI from "../../_services/activityAPI";
 
 /**
- * la page qui affiche les détail de projet, doit afficher
- * le projet,
- * la liste des followers,
- * la liste des participants
- * les org liées
- * le nombre de resources? ou la liste des resource publiques
- * la liste des reources privées, si abilitation user suffisante.
+ *
+ * @param props (project, setter )
+ * props.hideModal (optionnal)
+ * props.setForm (optionnal)
+ * @returns {JSX.Element}
+ * @constructor
  */
-
-const ProjectForm = ( { history, project, setProject, setForm }) => {
+const ProjectForm = ( props ) => {
 
     const { t } = useTranslation()
 
@@ -57,8 +53,12 @@ const ProjectForm = ( { history, project, setProject, setForm }) => {
     };
 
     const cancelForm = (e) => {
-        e.preventDefault()
-        setForm(false)
+        if(props.hideModal !== undefined){
+            props.hideModal()
+        }else {
+            e.preventDefault()
+            props.setForm(false)
+        }
     }
 
     const minDateForEnd = () => {
@@ -87,20 +87,24 @@ const ProjectForm = ( { history, project, setProject, setForm }) => {
     const handleDelete = (event) => {
         event.preventDefault()
         setLoader(true)
-        projectAPI.deleteProject(project.id)
-            .then(response => {
-                history.replace('/all_projects/creator')
-            })
-            .catch(error => {
-                console.log(error)
-            })
-            .finally(() => setLoader(false))
+        if(props.project){
+            projectAPI.deleteProject(props.project.id)
+                .then(response => {
+                    props.history.replace('/all_projects/creator')
+                })
+                .catch(error => {
+                    console.log(error)
+                })
+                .finally(() => setLoader(false))
+        }
     }
 
     useEffect(() => {
-        setUpProject(project)
-        if(project.description){
-            setDesc(project.description)
+        if(props.project){
+            setUpProject(props.project)
+            if(props.project.description){
+                setDesc(props.project.description)
+            }
         }
     },[])
 
@@ -111,8 +115,12 @@ const ProjectForm = ( { history, project, setProject, setForm }) => {
         projectAPI.put(upProject)
             .then(response => {
                 console.log(response.data[0])
-                setProject(response.data[0])
-                setForm(false)
+                /**
+                 * //todo comme dans orgForm setForm dans props et handle et tout
+                 * */
+                if(props.handleEditProject !== undefined){ props.handleEditProject(response.data[0])}
+                else{ props.setProject(response.data[0])}
+                props.setForm(false)
                 //todo confirmation
             })
             .catch(error => {
@@ -121,6 +129,9 @@ const ProjectForm = ( { history, project, setProject, setForm }) => {
             })
             .finally(()=> {
                 setLoader(false)
+                if(props.hideModal !== undefined){
+                    props.hideModal()
+                }
             })
     };
 
@@ -128,7 +139,7 @@ const ProjectForm = ( { history, project, setProject, setForm }) => {
         <>
         <Item>
             <Segment>
-                <PictureForm entityType="project" entity={project} setter={setProject}/>
+                <PictureForm entityType="project" entity={props.project} setter={props.setProject}/>
             </Segment>
 
             <Form onSubmit={handleSubmit} loading={loader}>
@@ -147,7 +158,7 @@ const ProjectForm = ( { history, project, setProject, setForm }) => {
                                     value={upProject.title}
                                     onChange={handleChange}
                                     placeholder="Titre..."
-                                    error={errors.title ? errors.title : null}
+                                    error={errors && errors.title ? errors.title : null}
                                     required
                                 />
                             </Item.Content>
@@ -185,7 +196,7 @@ const ProjectForm = ( { history, project, setProject, setForm }) => {
                                                 value={upProject.startDate}
                                                 onChange={handleChange}
                                                 max={maxDateToStart()}
-                                                error={errors.startDate ? errors.startDate : null}
+                                                error={errors && errors.startDate ? errors.startDate : null}
                                             />
                                         </>
                                     }
@@ -208,7 +219,7 @@ const ProjectForm = ( { history, project, setProject, setForm }) => {
                                             value={upProject.endDate}
                                             onChange={handleChange}
                                             min={minDateForEnd()}
-                                            error={errors.endDate ? errors.endDate : null}
+                                            error={errors && errors.endDate ? errors.endDate : null}
                                         />
                                     }
                                 </Item.Content>
