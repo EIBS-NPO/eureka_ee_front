@@ -9,7 +9,7 @@ import {withTranslation} from "react-i18next";
 import AddressForm from "../../_components/forms/AddressForm";
 import authAPI from "../../_services/authAPI";
 
-const UserProfile = ({ history }) => {
+const UserProfile = ({ history, t }) => {
     if ( !(authAPI.isAuthenticated()) ) {history.replace('/login')}
 
     const [user, setUser] = useState({
@@ -44,65 +44,58 @@ const UserProfile = ({ history }) => {
 
     return (
         <div className="card">
+            <h1> {t('my_account')} </h1>
             {user &&
-                <Grid columns={3}>
-                    <Grid.Column>
-                        <Segment>
-                            {loader ?
-                                <Item>
-                                    <Loader active inline="centered" />
-                                </Item>
-                                :
-                                <PictureForm entityType="user" entity={user} setter={setUser}/>
-                            }
-                        </Segment>
+                <>
+                    <Segment>
+                        {loader ?
+                            <Item>
+                                <Loader active inline="centered" />
+                            </Item>
+                            :
+                            <PictureForm entityType="user" entity={user} setter={setUser}/>
+                        }
+                    </Segment>
 
-                        <Segment>
-                            {loader ?
-                                <Item>
-                                    <Loader active inline="centered" />
-                                </Item>
-                                :
-                                <EmailChangeForm entity={user} setter={setUser}/>
-                            }
-                        </Segment>
+                    <Segment>
+                        {loader ?
+                            <Item>
+                                <Loader active inline="centered" />
+                            </Item>
+                            :
+                            <EmailChangeForm entity={user} setter={setUser}/>
+                        }
+                    </Segment>
 
-                        {/*PassChange not functional*/}
-                        {/*<Segment>
-                            {loader ?
-                                <Item>
-                                    <Loader active inline="centered" />
-                                </Item>
-                                :
-                                <PassChangeForm entity={user} />
-                            }
-                        </Segment>*/}
-                    </Grid.Column>
-
-                    <Grid.Column>
-                        <Segment>
-                            {loader ?
-                                <Item>
-                                    <Loader active inline="centered"/>
-                                </Item>
-                                :
-                                <UserCoordForm user={user} setterUser={setUser}/>
-                            }
-                        </Segment>
-                    </Grid.Column>
-
-                    <Grid.Column>
-                        <Segment>
-                            {loader ?
-                                <Item>
-                                    <Loader active inline="centered"/>
-                                </Item>
-                                :
-                                <AddressForm obj={user} setter={setUser} />
-                            }
-                        </Segment>
-                    </Grid.Column>
-                </Grid>
+                    {/*PassChange not functional*/}
+                    {/*<Segment>
+                        {loader ?
+                            <Item>
+                                <Loader active inline="centered" />
+                            </Item>
+                            :
+                            <PassChangeForm entity={user} />
+                        }
+                    </Segment>*/}
+                    <Segment>
+                        {loader ?
+                            <Item>
+                                <Loader active inline="centered"/>
+                            </Item>
+                            :
+                            <UserCoordForm user={user} setterUser={setUser}/>
+                        }
+                    </Segment>
+                    <Segment>
+                        {loader ?
+                            <Item>
+                                <Loader active inline="centered"/>
+                            </Item>
+                            :
+                            <AddressForm obj={user} setter={setUser} />
+                        }
+                    </Segment>
+                </>
             }
         </div>
     );

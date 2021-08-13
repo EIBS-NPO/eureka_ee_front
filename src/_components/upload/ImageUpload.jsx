@@ -2,9 +2,11 @@ import React, { useState } from 'react'
 import ImageCropper from './ImageCropper'
 import Modal from "../Modal";
 import fileAPI from '../../_services/fileAPI';
+import '../../scss/components/Modal.scss';
 
 const ImageUpload = ({ setRefresh, type, entity }) => {
 
+    //todo canceled, => keep the old picture for restore
     const [blob, setBlob] = useState(null)
     const [inputImg, setInputImg] = useState('')
 
@@ -16,7 +18,7 @@ const ImageUpload = ({ setRefresh, type, entity }) => {
     const onInputChange = (e) => {
         // convert image file to base64 string
         const file = e.target.files[0]
-        //todo if noworking i've changed const reader for let reader
+
         let reader = new FileReader()
 
         reader.addEventListener('load', () => {
@@ -79,16 +81,16 @@ const ImageUpload = ({ setRefresh, type, entity }) => {
                     </Modal>
                 )
             }
-            {/*<label htmlFor="inputUploadImg" className="inputUploadImg">
+            <label htmlFor="inputUploadImg" className="inputUploadImg">
                 Changer votre photo de profil
-            </label>*/}
+            </label>
             <input
                 lang="en"
                 type='file'
                 accept='image/png, image/jpeg'
                 onChange={onInputChange}
                 id="inputUploadImg"
-                /*hidden*/
+                hidden
             />
 
         </form>

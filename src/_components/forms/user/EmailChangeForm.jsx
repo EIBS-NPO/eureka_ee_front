@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import {Button, Form, Icon, Item } from "semantic-ui-react";
+import {Button, Form, Icon, Item, Label} from "semantic-ui-react";
 import Modal from "../../Modal";
 import userAPI from "../../../_services/userAPI";
 import { useTranslation, withTranslation } from "react-i18next";
@@ -54,6 +54,9 @@ const EmailChangeForm = ({ entity, setter}) => {
         <Item.Group>
             <Item>
                 <Item.Content>
+                    <Label attached='top'>
+                        <h4>Email</h4>
+                    </Label>
                     <Item.Description>
                         <Item.Group divided>
                             <Item>
@@ -77,7 +80,7 @@ const EmailChangeForm = ({ entity, setter}) => {
                 <div className={"card"}>
                     <Form loading={loader}>
                         <Form.Input
-                            icon='email'
+                            icon='mail'
                             iconPosition='left'
                             name="email"
                             value={email.email}

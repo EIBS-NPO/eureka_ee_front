@@ -1,13 +1,18 @@
 
 import './scss/main.scss';
-import React, {Suspense, lazy, useState } from 'react';
+
+import React, {useContext, Suspense, lazy, useState } from 'react';
+import { createMedia } from "@artsy/fresnel";
 import { BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 import 'semantic-ui-css/semantic.min.css'
-import { Loader } from "semantic-ui-react";
+import { Loader, Image } from "semantic-ui-react";
 import interreg_logo from "./_resources/logos/Interreg.jpg";
 
 import authAPI from "./_services/authAPI";
 import AuthContext from "./_contexts/AuthContext";
+import MediaContext from "./_contexts/MediaContext";
+
+import Header from "./_components/Header";
 import MainMenu from "./_components/menus/MainMenu";
 import LeftMenu from "./_components/menus/LeftMenu";
 import Footer from "./_components/footer/Footer";
@@ -44,26 +49,43 @@ const AdminProjects = lazy(()=> import('./_routes/_admin/AdminProjects'))
      const [lastname, setLastname] = useState( authAPI.getLastname())
      const [isAdmin, setIsAdmin] = useState(authAPI.isAdmin())
 
+     const AppMedia = createMedia({
+         breakpoints: {
+             xs:0,
+             mobile: 351,
+             tablet: 601,
+             computer: 992,
+             largeScreen: 1200,
+             widescreen: 1920
+         }
+     });
+     const mediaStyles = AppMedia.createMediaStyle();
+     const { Media, MediaContextProvider } = AppMedia;
+
   return (
-      <AuthContext.Provider value={{
-          isAuthenticated, setIsAuthenticated,
-          firstname, setFirstname,
-          lastname, setLastname,
-          isAdmin, setIsAdmin
-      }}>
-          <Router>
-              <div id="main">
-                  <div id="main_top">
+      <>
+        <style>{mediaStyles}</style>
+        <MediaContext.Provider value={{Media, mediaStyles, MediaContextProvider }}>
+          <AuthContext.Provider value={{
+              isAuthenticated, setIsAuthenticated,
+              firstname, setFirstname,
+              lastname, setLastname,
+              isAdmin, setIsAdmin
+          }}>
+            <Router>
+                  <Header>
+                     {/*<div id={"main"}>*/}
+                  {/*<div id="main_top">
                       <div id="logo">
                           <img src={interreg_logo} alt="Eurekal logo"/>
                       </div>
                       <div id="main_menu" className="main_left">
                           <MainMenu props={history}/>
                       </div>
-                  </div>
-                  <div id="main_middle">
-                      <LeftMenu />
-                      <div id="main_content" className="main_left">
+                  </div>*/}
+                      {/*<Image src="https://react.semantic-ui.com/images/wireframe/paragraph.png" />*/}
+                      {/*<LeftMenu />*/}
+                      {/*<div >*/}
                           <Suspense fallback={<Loader content='Loading' />}>
                               <Switch>
                                   <Route exact path="/" component={Home}/>
@@ -92,12 +114,14 @@ const AdminProjects = lazy(()=> import('./_routes/_admin/AdminProjects'))
                                   <Route path="/about" component={About}/>
                               </Switch>
                           </Suspense>
-                      </div>
-                  </div>
-                 <Footer/>
-              </div>
+                      {/*</div>*/}
+                      {/*</div>*/}
+                  </Header>
+                  <Footer/>
           </Router>
-      </AuthContext.Provider>
+          </AuthContext.Provider>
+        </MediaContext.Provider>
+      </>
   );
 }
 

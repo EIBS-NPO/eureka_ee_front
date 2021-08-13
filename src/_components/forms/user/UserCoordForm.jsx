@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Button, Form, Icon, Item } from "semantic-ui-react";
+import {Button, Form, Icon, Item, Label} from "semantic-ui-react";
 
 import UserAPI from "../../../_services/userAPI";
 import authAPI from "../../../_services/authAPI";
@@ -72,6 +72,9 @@ const UserCoordForm = ({user, setterUser}) => {
         <Item.Group>
             <Item>
                 <Item.Content>
+                    <Label attached='top'>
+                        <h4>Informations</h4>
+                    </Label>
                     {update &&
                     <Form onSubmit={handleSubmit} loading={loader}>
                         <Item.Group divided>

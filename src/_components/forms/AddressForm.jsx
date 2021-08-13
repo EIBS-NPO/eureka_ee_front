@@ -1,9 +1,10 @@
 
 import React, { useState, useEffect } from 'react';
-import {Container, Button, Form, Icon, Item} from "semantic-ui-react";
+import {Container, Button, Form, Icon, Item, Label} from "semantic-ui-react";
 import {useTranslation, withTranslation} from "react-i18next";
 import addressAPI from "../../_services/addressAPI";
 import userAPI from "../../_services/userAPI";
+import utilities from "../../_services/utilities";
 
 const AddressForm = ({ type, obj, setter }) => {
 
@@ -105,6 +106,9 @@ const AddressForm = ({ type, obj, setter }) => {
         <Item.Group>
             <Item>
                 <Item.Content>
+                    <Label attached='top'>
+                        <h4>{utilities.strUcFirst(t("address"))}</h4>
+                    </Label>
                     {update &&
                     <Form onSubmit={handleSubmit} loading={loader}>
                         <Item.Group divided>
