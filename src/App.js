@@ -12,7 +12,7 @@ import authAPI from "./_services/authAPI";
 import AuthContext from "./_contexts/AuthContext";
 import MediaContext from "./_contexts/MediaContext";
 
-import Header from "./_components/Header";
+import Header from "./_components/HeaderPage";
 import MainMenu from "./_components/menus/MainMenu";
 import LeftMenu from "./_components/menus/LeftMenu";
 import Footer from "./_components/footer/Footer";

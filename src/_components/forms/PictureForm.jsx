@@ -8,7 +8,7 @@ const PictureForm = ({ entityType, entity, setter}) => {
     const [picture, setPicture] = useState(undefined);
 
     useEffect(()=> {
-        console.log(entity)
+     //   console.log(entity)
         if(entity && entity.picture){
             setPicture(entity.picture)
         }

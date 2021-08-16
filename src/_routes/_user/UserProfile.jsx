@@ -25,14 +25,12 @@ const UserProfile = ({ history, t }) => {
 
     const [loader, setLoader] = useState(false)
 
-//    const [activeItem, setActiveItem] = useState('presentation')
-
     useEffect(() => {
         setLoader(true)
      //   setPicLoader(true)
         userAPI.get()
             .then(response => {
-                console.log(response.data[0])
+  //              console.log(response.data[0])
                 setUser(response.data[0])
                 setLoader(false)
             })
@@ -48,23 +46,15 @@ const UserProfile = ({ history, t }) => {
             {user &&
                 <>
                     <Segment>
-                        {loader ?
-                            <Item>
-                                <Loader active inline="centered" />
-                            </Item>
-                            :
+
                             <PictureForm entityType="user" entity={user} setter={setUser}/>
-                        }
+
                     </Segment>
 
                     <Segment>
-                        {loader ?
-                            <Item>
-                                <Loader active inline="centered" />
-                            </Item>
-                            :
+
                             <EmailChangeForm entity={user} setter={setUser}/>
-                        }
+
                     </Segment>
 
                     {/*PassChange not functional*/}
@@ -78,22 +68,14 @@ const UserProfile = ({ history, t }) => {
                         }
                     </Segment>*/}
                     <Segment>
-                        {loader ?
-                            <Item>
-                                <Loader active inline="centered"/>
-                            </Item>
-                            :
+
                             <UserCoordForm user={user} setterUser={setUser}/>
-                        }
+
                     </Segment>
                     <Segment>
-                        {loader ?
-                            <Item>
-                                <Loader active inline="centered"/>
-                            </Item>
-                            :
+
                             <AddressForm obj={user} setter={setUser} />
-                        }
+
                     </Segment>
                 </>
             }

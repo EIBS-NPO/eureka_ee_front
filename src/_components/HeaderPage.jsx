@@ -18,6 +18,7 @@ const HeaderPage = (props ) => {
     const contentChildren = props.children;
 
     const { isAuthenticated, isAdmin, lastname, firstname } = useContext(AuthContext)
+
     const Media = useContext(MediaContext).Media
 
     const [activeItem, setActiveItem] = useState()
@@ -42,11 +43,11 @@ const HeaderPage = (props ) => {
                         {item.header && <Dropdown.Header>{utilities.strUcFirst(t(item.header))}</Dropdown.Header>}
                         {item.options.map((option) => (
                             <Dropdown.Item >
-                                <NavLink className={'testHeaderIcon'} to={option.to} key={option.key}>
+                                {/*<NavLink className={'testHeaderIcon'} to={option.to} key={option.key}>
                                     {option.icon && <Icon name={option.icon} />}
                                     {t(option.content)}
-                                </NavLink>
-                                {/*{buildItem(option)}*/}
+                                </NavLink>*/}
+                                {buildItem(option)}
                             </Dropdown.Item>
                             ))}
                     </Dropdown.Menu>
@@ -247,7 +248,10 @@ const HeaderPage = (props ) => {
                             rightItems={rightItems}
                             leftMenu={subNav}
                         />
-                        <NavBarChildren><LeftMenu/>{children}</NavBarChildren>
+                        <NavBarChildren>
+                            <LeftMenu/>
+                            {children}
+                        </NavBarChildren>
                     </Media>
                 </div>
             );
@@ -255,8 +259,12 @@ const HeaderPage = (props ) => {
     }
 
     const authMenu = [
-        {as:"a", content:'account', to:"/profil_user", key:"account"},
-        {content: <a onClick={handleLogout}>{t('Logout')}</a>, key: "logout"}
+        {as: "d", text: firstname + ' ' + lastname,
+            options: [
+                {as:"a", content:t("my_account"), to:"/profil_user", key:"account"},
+                {content: <a onClick={handleLogout}>{t('Logout')}</a>, key: "logout"}
+            ],
+            key:"accountMenu"}
     ]
 
     const unAuthMenu = [
@@ -294,7 +302,6 @@ const HeaderPage = (props ) => {
     const [subNav, setSubNav] = useState([]);
 
     useEffect( () => {
-        console.log(isAuthenticated)
         let left = baseLeft
         let right = [baseRight]
         if(!isAuthenticated || isAuthenticated === "undefined") { //unAuthenticate
@@ -310,7 +317,7 @@ const HeaderPage = (props ) => {
         setRightItems(right);
         setLeftItems(left);
 
-    },[isAuthenticated])
+    },[isAuthenticated, firstname, lastname])
 
     return(
             <NavBar children={contentChildren} leftItems={leftItems} rightItems={rightItems} />

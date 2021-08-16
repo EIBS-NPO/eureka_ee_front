@@ -1,10 +1,15 @@
-import React, { useState } from 'react'
+import React, {useContext, useState} from 'react'
 import ImageCropper from './ImageCropper'
 import Modal from "../Modal";
 import fileAPI from '../../_services/fileAPI';
 import '../../scss/components/Modal.scss';
+import MediaContext from "../../_contexts/MediaContext";
 
 const ImageUpload = ({ setRefresh, type, entity }) => {
+
+    const Media = useContext(MediaContext).Media
+
+    //todo harmoniser les différents média? => placer picture dans un context local au pictForm
 
     //todo canceled, => keep the old picture for restore
     const [blob, setBlob] = useState(null)
@@ -65,6 +70,7 @@ const ImageUpload = ({ setRefresh, type, entity }) => {
         document.getElementById('formPicture').reset()
     }
 
+    //todo make dynamique Id depend on media
     return (
         <form onSubmit={handleSubmitImage} id="formPicture">
             {
@@ -81,7 +87,47 @@ const ImageUpload = ({ setRefresh, type, entity }) => {
                     </Modal>
                 )
             }
-            <label htmlFor="inputUploadImg" className="inputUploadImg">
+            <Media at="xs">
+                <label htmlFor="inputUploadImg_Atxs" className="inputUploadImg">
+                    Changer votre photo de profil
+                </label>
+                <input
+                    lang="en"
+                    type='file'
+                    accept='image/png, image/jpeg'
+                    onChange={onInputChange}
+                    id="inputUploadImg_Atxs"
+                    hidden
+                />
+            </Media>
+            <Media at="mobile">
+                <label htmlFor="inputUploadImg_Atmobile" className="inputUploadImg">
+                    Changer votre photo de profil
+                </label>
+                <input
+                    lang="en"
+                    type='file'
+                    accept='image/png, image/jpeg'
+                    onChange={onInputChange}
+                    id="inputUploadImg_Atmobile"
+                    hidden
+                />
+            </Media>
+            <Media greaterThan="mobile">
+                <label htmlFor="inputUploadImg_GTmobile" className="inputUploadImg">
+                    Changer votre photo de profil
+                </label>
+                <input
+                    lang="en"
+                    type='file'
+                    accept='image/png, image/jpeg'
+                    onChange={onInputChange}
+                    id="inputUploadImg_GTmobile"
+                    hidden
+                />
+            </Media>
+
+            {/*<label htmlFor="inputUploadImg" className="inputUploadImg">
                 Changer votre photo de profil
             </label>
             <input
@@ -91,7 +137,7 @@ const ImageUpload = ({ setRefresh, type, entity }) => {
                 onChange={onInputChange}
                 id="inputUploadImg"
                 hidden
-            />
+            />*/}
 
         </form>
     )
