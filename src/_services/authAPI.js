@@ -79,6 +79,7 @@ const isAuthenticated = () => {
         const jwtData = jwt_decode(token);
         return jwtData.exp * 1000 > new Date().getTime();
     }
+    return false;
 }
 
 const isAdmin = () => {

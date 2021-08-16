@@ -42,7 +42,7 @@ const UserProfile = ({ history, t }) => {
 
     return (
         <div className="card">
-            <h1> {t('my_account')} </h1>
+            <h1> {t('account')} </h1>
             {user &&
                 <>
                     <Segment>

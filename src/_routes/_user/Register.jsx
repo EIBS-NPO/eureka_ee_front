@@ -64,7 +64,7 @@ const Register = ({ history }) => {
                     icon='mail'
                     iconPosition='left'
 
-                    label="Email"
+                    label={t("email")}
                     name="email"
                     type="email"
                     value={user.email}
@@ -76,7 +76,7 @@ const Register = ({ history }) => {
                     icon='user'
                     iconPosition='left'
 
-                    label="Firstname"
+                    label={t("firstname")}
                     name="firstname"
                     type="text"
                     value={user.firstname}
@@ -87,7 +87,7 @@ const Register = ({ history }) => {
                     icon='user'
                     iconPosition='left'
 
-                    label="Lastname"
+                    label={t("lastname")}
                     name="lastname"
                     type="text"
                     value={user.lastname}
@@ -101,7 +101,7 @@ const Register = ({ history }) => {
 
                     name="password"
                     value={user.password}
-                    label='Password'
+                    label={t("password")}
                     type='password'
                     onChange={handleChange}
                     error={errors.password ? errors.password : null}
@@ -111,12 +111,12 @@ const Register = ({ history }) => {
                     icon='lock'
                     iconPosition='left'
 
-                    label="Confirmation"
+                    label={t("confirmation")}
                     name="passwordConfirm"
                     type="password"
                     value={user.passwordConfirm}
                     onChange={handleChange}
-                    placeholder="password confirm..."
+                   // placeholder="password confirm..."
                     error={errors.passwordConfirm ? errors.passwordConfirm :null}
                 />
                 <Button content= { t('Sign_up') } primary />

@@ -4,6 +4,7 @@ import AuthContext from "../../_contexts/AuthContext";
 import AuthAPI from "../../_services/authAPI";
 import {Button, Form } from "semantic-ui-react";
 import authAPI from "../../_services/authAPI";
+import {useTranslation, withTranslation} from "react-i18next";
 
 const Login = ( props ) => {
     const {
@@ -13,6 +14,8 @@ const Login = ( props ) => {
     if (isAuthenticated === true) {
         props.history.replace('/');
     }
+
+    const { t } = useTranslation()
 
     const [credentials, setCredential] = useState({
         email: "",
@@ -68,7 +71,7 @@ const Login = ( props ) => {
                     iconPosition='left'
                     name="email"
                     value={credentials.email}
-                    label='Email'
+                    label={t('email')}
                     placeholder='Email'
                     onChange={handleChange}
                     error={error ? error : null}
@@ -78,15 +81,15 @@ const Login = ( props ) => {
                     iconPosition='left'
                     name="password"
                     value={credentials.password}
-                    label='Password'
+                    label={t('password')}
                     type='password'
                     onChange={handleChange}
                     error={error ? error : null}
                 />
-                <Button className="ui primary basic button" content='Login' />
+                <Button className="ui primary basic button" content={t('Login')} />
             </Form>
         </div>
     );
 };
 
-export default Login;
+export default withTranslation()(Login);

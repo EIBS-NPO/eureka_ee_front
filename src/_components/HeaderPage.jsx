@@ -1,16 +1,14 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext, useState} from 'react';
 import { NavLink } from "react-router-dom";
 import AuthContext from "../_contexts/AuthContext";
 import MediaContext from "../_contexts/MediaContext";
 import '../scss/components/mainMenu.scss';
 import { withTranslation } from 'react-i18next';
-import {Header, Icon, Label, Dropdown, Menu, Sidebar, Image, Container, Item, Button} from 'semantic-ui-react'
+import {Icon, Dropdown, Menu, Sidebar, Image } from 'semantic-ui-react'
 import authAPI from "../_services/authAPI";
 
 import interreg_logo from "../_resources/logos/Interreg.jpg";
-import MainMenu from "./menus/MainMenu";
 import LanguageSelector from "./forms/LanguageSelector";
-import LeftMenu from "./menus/LeftMenu";
 import utilities from "../_services/utilities";
 
 const HeaderPage = (props ) => {
@@ -19,58 +17,74 @@ const HeaderPage = (props ) => {
 
     const { isAuthenticated, isAdmin, lastname, firstname } = useContext(AuthContext)
 
+    console.log(isAdmin)
     const Media = useContext(MediaContext).Media
 
-    const [activeItem, setActiveItem] = useState()
-    const handleItemClick = (e, { name }) => setActiveItem({ activeItem: name })
+   /* const [activeItem, setActiveItem] = useState()
+    const handleItemClick = (e, { name }) => setActiveItem({ activeItem: name })*/
 
     //delete token form localStorage
     const handleLogout = () => {
         authAPI.logout();
     };
 
-    //<Dropdown.Item icon='edit' text='Edit Profile' />
     const buildItem = ( item ) => {
-        if(item.as === "a"){
-            return <Menu.Item className={'testHeaderIcon'} as={NavLink} to={item.to} icon={item.icon} content={ t(item.content)} key={item.key}
-            onClick={item.onClick !== null ? item.onClick : null}
-            />
-        }
-        else if(item.as ==="d"){
-            return (
-                <Dropdown item text={ t(item.text)} key={item.text}>
-                    <Dropdown.Menu className="DropMenuBottom">
-                        {item.header && <Dropdown.Header>{utilities.strUcFirst(t(item.header))}</Dropdown.Header>}
-                        {item.options.map((option) => (
-                            <Dropdown.Item >
-                                {/*<NavLink className={'testHeaderIcon'} to={option.to} key={option.key}>
-                                    {option.icon && <Icon name={option.icon} />}
-                                    {t(option.content)}
-                                </NavLink>*/}
-                                {buildItem(option)}
-                            </Dropdown.Item>
+        if(isAuthenticated.toString() === item.authstate || (item.adminstate && item.adminstate === isAdmin) || item.authstate === "always"){
+
+            if(item.as === "a"){
+                return <Menu.Item
+                    className={item.icon?'HeaderIcon':null}
+                    as={NavLink} to={item.to}
+                    icon={item.icon?item.icon:null}
+                    content={ t(item.content)} key={item.key}
+                    onClick={item.onClick ? item.onClick : null}
+                />
+            }
+            else if(item.as ==="d"){
+                return (
+                    <Dropdown item text={ t(item.text)} key={item.key}>
+                        <Dropdown.Menu className="DropMenuBottom">
+                           {/* {item.header && <Dropdown.Header>{utilities.strUcFirst(t(item.header))}</Dropdown.Header>}*/}
+                            {item.options.map((option) => (
+                                <Dropdown.Item key={option.key}>
+                                    {buildItem(option)}
+                                </Dropdown.Item>
                             ))}
-                    </Dropdown.Menu>
-                </Dropdown>
+                        </Dropdown.Menu>
+                    </Dropdown>
                 )
+            }
+            else if(item.as ==="m"){
+                return (
+                    <Menu.Item id={item.id?item.id:null} key={item.key}>
+                        {item.header && <Menu.Header>{utilities.strUcFirst(t(item.header))}</Menu.Header>}
+                        <Menu.Menu>
+                            {item.options.map((option) => (
+                                buildItem(option)
+                            ))}
+                        </Menu.Menu>
+                    </Menu.Item>
+                )
+            }
+            else if(item.as ==="s"){
+                return <Menu.Item content={item.content} key={item.key}/>
+            }
+            else {return <Menu.Item {...item} /> }
         }
-        else if(item.as ==="s"){
-            return <Menu.Item content={item.content} key={item.key}/>
-        }
-        else {return <Menu.Item {...item} /> }
+
     }
 
     const NavBarMobile = (props) => {
         const {
             children,
-            leftItems,
             onPusherClick,
             onToggle,
             rightItems,
             visible
         } = props;
 
-        //todo add className for sideBar et gestion largeur
+        let leftItems = baseLeft.concat(menuNew, subLeft)
+
         return (
             <>
                 <div id="logo">
@@ -79,20 +93,12 @@ const HeaderPage = (props ) => {
                 <Sidebar.Pushable>
                     <Sidebar
                         as={Menu}
-                        /*width="50%"*/
                         animation="overlay"
                         icon="labeled"
-                        // inverted
-                        //items={leftItems}
-                     //   items={leftItems.map((item) => (buildItem(item)))}
                         vertical
                         visible={visible}
                     >
-                        <>
-                            {leftItems.map((item) => (buildItem(item)))}
-                            <LeftMenu/>
-                        </>
-
+                        {leftItems.map((item) => (buildItem(item)))}
                     </Sidebar>
                     <Sidebar.Pusher
                         dimmed={visible}
@@ -106,7 +112,6 @@ const HeaderPage = (props ) => {
                             <Menu.Menu position="right">
                                 {rightItems.map((item) => (
                                     buildItem(item)
-                                  /*  <Menu.Item {...item} />*/
                                 ))}
                             </Menu.Menu>
                         </Menu>
@@ -121,27 +126,22 @@ const HeaderPage = (props ) => {
     const NavBarTablet = (props) => {
         const {
             children,
-            leftItems,
             onPusherClick,
             onToggle,
             rightItems,
             visible
         } = props;
+        let leftItems = baseLeft.concat(menuNew, subLeft)
         return (
             <Sidebar.Pushable>
                 <Sidebar
                     as={Menu}
                     animation="overlay"
                     icon="labeled"
-                    /*inverted*/
-                    items={leftItems}
                     vertical
                     visible={visible}
                 >
-                    <>
-                        {leftItems.map((item) => (buildItem(item)))}
-                        <LeftMenu/>
-                    </>
+                    {leftItems.map((item) => (buildItem(item)))}
                 </Sidebar>
                 <Sidebar.Pusher
                     dimmed={visible}
@@ -157,9 +157,7 @@ const HeaderPage = (props ) => {
                                 <Icon name="sidebar" />
                             </Menu.Item>
                             <Menu.Menu position="right">
-                                {rightItems.map((item) => (
-                                    buildItem(item)
-                                ))}
+                                {rightItems.map((item) => (buildItem(item)))}
                             </Menu.Menu>
                         </Menu>
                     </div>
@@ -171,21 +169,18 @@ const HeaderPage = (props ) => {
     }
 
     const NavBarDesktop = (props) => {
-        const { leftItems, rightItems} = props;
+        const { rightItems } = props;
+        let leftItems = baseLeft.concat(menuNew)
         return (
             <div id={"main_top"}>
                 <div id="logo">
                     <img src={interreg_logo} alt="Eurekal logo"/>
                 </div>
                 <Menu id={"main_menu"} className={"wrapped"}>
-                    {leftItems.map((item ) => (
-                        buildItem(item)
-                    ))}
+                    {leftItems.map((item ) => (buildItem(item)))}
 
                     <Menu.Menu position="right">
-                        {rightItems.map((item) => (
-                            buildItem(item)
-                        ))}
+                        {rightItems.map((item) => (buildItem(item)))}
                     </Menu.Menu>
                 </Menu>
             </div>
@@ -244,12 +239,16 @@ const HeaderPage = (props ) => {
 
                     <Media greaterThan="mobile">
                         <NavBarDesktop
-                            leftItems={leftItems}
+                            /*leftItems={leftItems}*/
                             rightItems={rightItems}
-                            leftMenu={subNav}
+                            /*leftMenu={subNav}*/
                         />
                         <NavBarChildren>
-                            <LeftMenu/>
+                            <Menu id="left_menu" vertical >
+                                {subLeft.map((item ) => (
+                                    buildItem(item)
+                                ))}
+                            </Menu>
                             {children}
                         </NavBarChildren>
                     </Media>
@@ -258,69 +257,71 @@ const HeaderPage = (props ) => {
         }
     }
 
-    const authMenu = [
-        {as: "d", text: firstname + ' ' + lastname,
-            options: [
-                {as:"a", content:t("my_account"), to:"/profil_user", key:"account"},
-                {content: <a onClick={handleLogout}>{t('Logout')}</a>, key: "logout"}
-            ],
-            key:"accountMenu"}
-    ]
-
-    const unAuthMenu = [
-        { as:"a", content:'Sign_up', to:"/register", key:'Sign_up' },
-        { as:"a", content:'Login', to: "/login", key:"Login"},
-    ]
-
     const menuNew = {
         as: "d", text: "new",
         options: [
-            {as:"a", icon:'file', content:'activity', to:"/create_activity", key: 'new_activity'},
-            {as:"a", icon:'idea', content:'project', to:"/create_project", key: 'new_project'},
-            {as:"a", icon:'group', content:'organisation', to:"/create_org", key: 'new_org'},
+            {as:"a", icon:'file', content:'activity', to:"/create_activity", key: 'new_activity',authstate:"always"},
+            {as:"a", icon:'idea', content:'project', to:"/create_project", key: 'new_project',authstate:"always"},
+            {as:"a", icon:'group', content:'organization', to:"/create_org", key: 'new_org', authstate:"always"},
         ],
-        key:"menuNew"
+        key:"menuNew", authstate:"always"
     }
 
     const baseLeft = [
-        { as:"a", icon:"home", to:"/", key: "home"}
+        { as:"a", icon:"home", to:"/", key: "home", authstate:"always"}
     ]
 
-    const baseRight = [
-        { as:"s", content:<LanguageSelector />, key: "language"}
+    const rightItems = [
+        {as: "d", text: firstname + ' ' + lastname,
+            options: [
+                {as:"a", content:"account", to:"/profil_user", key:"account", authstate:"true"},
+                {content: <a onClick={handleLogout}>{t('Logout')}</a>, key: "logout", authstate:"true"}
+            ],
+            key:"accountMenu", authstate:"true"
+        },
+        { as:"a", content:'Sign_up', to:"/register", key:'Sign_up', authstate:"false" },
+        { as:"a", content:'Login', to: "/login", key:"Login", authstate:"false"},
+        { as:"s", content:<LanguageSelector />, key: "language", authstate:"always"}
     ]
 
-    /*const baseSubNav = [
-        { as:"header", content:t('activity'), key:'header_activity'},
-        {as:"a"
-
-        }
-    ]*/
-
-    const [leftItems, setLeftItems] = useState([]);
-    const [rightItems, setRightItems] = useState( []);
-    const [subNav, setSubNav] = useState([]);
-
-    useEffect( () => {
-        let left = baseLeft
-        let right = [baseRight]
-        if(!isAuthenticated || isAuthenticated === "undefined") { //unAuthenticate
-            Array.prototype.unshift.apply(right,unAuthMenu)
-        }
-        else { //authenticate
-            left.push(menuNew)
-            Array.prototype.unshift.apply(right,authMenu)
-            if(isAdmin){
-
-            }
-        }
-        setRightItems(right);
-        setLeftItems(left);
-
-    },[isAuthenticated, firstname, lastname])
+    const subLeft = [
+        {as:"m", id:"", header:'admin',
+            options: [
+                {as:"a", to:'/admin/users', content:'users', key:"adminUsers", adminstate:true},
+                {as:"a", to:'/admin/orgs', content:'organizations', key:"adminOrgs", adminstate:true},
+                {as:"a", to:'/admin/projects', content:'projects', key:"adminProjects", adminstate:true},
+                {as:"a", to:'/admin/activities', content:'activities', key:"adminActivities", adminstate:true},
+            ],
+            key:"menuAdmin", adminstate: true
+        },
+        {as:"m", id:"left_menu", header:'activity',
+            options: [
+                {as:"a", to:'/all_activities/creator', content:'my_activities', key:"myActivities", authstate:"true"},
+                {as:"a", to:'/all_activities/follower', content:'my_favorites', key:"favoriteActivities", authstate:"true"},
+                {as:"a", to:'/all_activities/public', content:'public_activities', key:"publicActivities", authstate:"always"}
+            ],
+            key:"menuActivities", authstate:"always"
+        },
+        { as:"m", id:"", header:'projects',
+            options: [
+                {as:"a", to:'/all_projects/creator', content:'my_projects', key:"myProjects", authstate:"true"},
+                {as:"a", to:'/all_projects/follower', content:'my_favorites', key:"favoriteProjects", authstate:"true"},
+                {as:"a", to:'/all_projects/public', content:'all_projects', key:"allProjects", authstate:"always"}
+            ] ,
+            key:'menuProjects', authstate:"always"
+        },
+        { as:"m", id:"", header:'organization',
+            options: [
+                {as:"a", to:'/all_organizations/my', content:'my_orgs', key:"myOrgs", authstate:"true"},
+                /*{as:"a", to:'/all_projects/follower', content:t('my_favorites'), key:"favoriteProjects", authstate:"true"},*/
+                {as:"a", to:'/all_organizations/public', content:'all_org', key:"allOrgs", authstate:"always"}
+            ] ,
+            key:'menuOrgs', authstate:"always"
+        },
+    ]
 
     return(
-            <NavBar children={contentChildren} leftItems={leftItems} rightItems={rightItems} />
+            <NavBar children={contentChildren} rightItems={rightItems} />
     );
 }
 
