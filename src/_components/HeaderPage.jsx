@@ -42,7 +42,11 @@ const HeaderPage = (props ) => {
             }
             else if(item.as ==="d"){
                 return (
-                    <Dropdown item text={ t(item.text)} key={item.key}>
+                    <Dropdown item
+                              icon={item.icon?item.icon:'dropdown'}
+                              text={item.text?t(item.text):null}
+                              key={item.key}
+                    >
                         <Dropdown.Menu className="DropMenuBottom">
                            {/* {item.header && <Dropdown.Header>{utilities.strUcFirst(t(item.header))}</Dropdown.Header>}*/}
                             {item.options.map((option) => (
@@ -88,7 +92,7 @@ const HeaderPage = (props ) => {
         return (
             <>
                 <div id="logo">
-                <Image src={interreg_logo} />
+                    <Image src={interreg_logo} />
                 </div>
                 <Sidebar.Pushable>
                     <Sidebar
@@ -150,7 +154,7 @@ const HeaderPage = (props ) => {
                 >
                     <div id={"main_top"}>
                         <div id="logo">
-                            <img src={interreg_logo} alt="Eurekal logo"/>
+                            <Image src={interreg_logo} />
                         </div>
                         <Menu id={"main_menu"}>
                             <Menu.Item onClick={onToggle}>
@@ -225,7 +229,7 @@ const HeaderPage = (props ) => {
                         </NavBarMobile>
                     </Media>
 
-                    <Media at="mobile">
+                    {/*<Media at="mobile">
                         <NavBarTablet
                             leftItems={leftItems}
                             onPusherClick={this.handlePusher}
@@ -235,9 +239,10 @@ const HeaderPage = (props ) => {
                         >
                             <NavBarChildren>{children}</NavBarChildren>
                         </NavBarTablet>
-                    </Media>
+                    </Media>*/}
 
-                    <Media greaterThan="mobile">
+                    {/*//mobile*/}
+                    <Media greaterThan="xs">
                         <NavBarDesktop
                             /*leftItems={leftItems}*/
                             rightItems={rightItems}
@@ -260,11 +265,11 @@ const HeaderPage = (props ) => {
     const menuNew = {
         as: "d", text: "new",
         options: [
-            {as:"a", icon:'file', content:'activity', to:"/create_activity", key: 'new_activity',authstate:"always"},
-            {as:"a", icon:'idea', content:'project', to:"/create_project", key: 'new_project',authstate:"always"},
-            {as:"a", icon:'group', content:'organization', to:"/create_org", key: 'new_org', authstate:"always"},
+            {as:"a", icon:'file', content:'activity', to:"/create_activity", key: 'new_activity',authstate:"true"},
+            {as:"a", icon:'idea', content:'project', to:"/create_project", key: 'new_project',authstate:"true"},
+            {as:"a", icon:'group', content:'organization', to:"/create_org", key: 'new_org', authstate:"true"},
         ],
-        key:"menuNew", authstate:"always"
+        key:"menuNew", authstate:"true"
     }
 
     const baseLeft = [
@@ -279,8 +284,13 @@ const HeaderPage = (props ) => {
             ],
             key:"accountMenu", authstate:"true"
         },
-        { as:"a", content:'Sign_up', to:"/register", key:'Sign_up', authstate:"false" },
-        { as:"a", content:'Login', to: "/login", key:"Login", authstate:"false"},
+        {as:"d", text:"Login",
+            options:[
+                { as:"a", content:'Login', to: "/login", key:"Login", authstate:"false"},
+                { as:"a", content:'Sign_up', to:"/register", key:'Sign_up', authstate:"false" },
+            ],
+            key:"logMenu", authstate: "false"
+        },
         { as:"s", content:<LanguageSelector />, key: "language", authstate:"always"}
     ]
 

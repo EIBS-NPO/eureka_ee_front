@@ -5,7 +5,8 @@ import fileAPI from '../../_services/fileAPI';
 import '../../scss/components/Modal.scss';
 import MediaContext from "../../_contexts/MediaContext";
 
-const ImageUpload = ({ setRefresh, type, entity }) => {
+//todo traduction
+const ImageUpload = ({ setter, type, entity}) => {
 
     const Media = useContext(MediaContext).Media
 
@@ -13,12 +14,9 @@ const ImageUpload = ({ setRefresh, type, entity }) => {
 
     //todo canceled, => keep the old picture for restore
     const [blob, setBlob] = useState(null)
-    const [inputImg, setInputImg] = useState('')
 
-    const getBlob = (blob) => {
-        // pass blob up from the ImageCropper component
-        setBlob(blob)
-    }
+    //inputImage c'est l'image que l'on va chercher passé en base64
+    const [inputImg, setInputImg] = useState('')
 
     const onInputChange = (e) => {
         // convert image file to base64 string
@@ -37,27 +35,37 @@ const ImageUpload = ({ setRefresh, type, entity }) => {
     }
 
     const handleSubmitImage = (e) => {
-        // upload blob to firebase 'images' folder with filename 'image'
+       // console.log(blob)
         e.preventDefault()
-        let bodyFormData = new FormData();
-        bodyFormData.append('image', blob)
+        if(entity.id !== undefined){
+            console.log("savePicture")
+            // upload blob to firebase 'images' folder with filename 'image'
+            let bodyFormData = new FormData();
+            bodyFormData.append('image', blob)
 
-        if(type !== "user"){
             bodyFormData.append('id', entity.id)
+            /*if(type !== "user"){
+                bodyFormData.append('id', entity.id)
+            }*/
+
+            fileAPI.uploadPic(type, bodyFormData)
+                .then(response => {
+                    //    notification.successNotif('nouvelle photo de profil bien enregistrée')
+                    setter({ ...entity, "picture": response.data[0].picture })
+                  //  setPicture(response.data[0].picture)
+                    //     console.log(response)
+                    // parentCallBack()
+                    hideModal()
+                })
+                .catch(error => {
+                    //handle error
+                    console.log(error.response);
+                });
+        }
+        else { //if no entityId is null, case of a new Entity just pass picture. it will be created with the entity
+            setter({ ...entity, "picture": blob })
         }
 
-        fileAPI.uploadPic(type, bodyFormData)
-            .then(response => {
-            //    notification.successNotif('nouvelle photo de profil bien enregistrée')
-                setRefresh(response.data[0].picture)
-           //     console.log(response)
-               // parentCallBack()
-                hideModal()
-            })
-            .catch(error => {
-                //handle error
-                console.log(error.response);
-            });
         hideModal()
     }
 
@@ -67,7 +75,7 @@ const ImageUpload = ({ setRefresh, type, entity }) => {
     }
     const hideModal = () => {
         setShow(false)
-        document.getElementById('formPicture').reset()
+    //    document.getElementById('formPicture').reset()
     }
 
     //todo make dynamique Id depend on media
@@ -78,8 +86,9 @@ const ImageUpload = ({ setRefresh, type, entity }) => {
                     <Modal show={show} handleClose={hideModal} title="Crop Img">
                         <div className="ModalCrop">
                             <ImageCropper
-                                getBlob={getBlob}
+                                setBlob={setBlob}
                                 inputImg={inputImg}
+                                form={entity.id === null ? null : "blob"}
                             />
                             <button type='submit' className="btn btn-secondary">Submit</button>
                             <button type='submit' className="btn btn-secondary" onClick={hideModal}>Cancel</button>
@@ -87,6 +96,7 @@ const ImageUpload = ({ setRefresh, type, entity }) => {
                     </Modal>
                 )
             }
+
             <Media at="xs">
                 <label htmlFor="inputUploadImg_Atxs" className="inputUploadImg">
                     Changer votre photo de profil
@@ -126,18 +136,6 @@ const ImageUpload = ({ setRefresh, type, entity }) => {
                     hidden
                 />
             </Media>
-
-            {/*<label htmlFor="inputUploadImg" className="inputUploadImg">
-                Changer votre photo de profil
-            </label>
-            <input
-                lang="en"
-                type='file'
-                accept='image/png, image/jpeg'
-                onChange={onInputChange}
-                id="inputUploadImg"
-                hidden
-            />*/}
 
         </form>
     )

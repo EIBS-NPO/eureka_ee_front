@@ -52,8 +52,8 @@ const AdminProjects = lazy(()=> import('./_routes/_admin/AdminProjects'))
      const AppMedia = createMedia({
          breakpoints: {
              xs:0,
-             mobile: 351,
-             tablet: 601,
+             mobile: 601,//361
+            // tablet: 601,
              computer: 992,
              largeScreen: 1200,
              widescreen: 1920

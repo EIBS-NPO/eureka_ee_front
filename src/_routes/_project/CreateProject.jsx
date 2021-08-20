@@ -23,10 +23,10 @@ const CreateProject = ({ history, t }) => {
     const isAuthenticated = useContext(AuthContext);
 
     const [stepList, setStepList] = useState([
-        {id:0, name:"description", isValid:false, state:"active"},
-        {id:1, name:"dating", isValid:false, state:"disabled"},
-        {id:2, name:"linking", isValid:false, state:"disabled"},
-        {id:3, name:"resume", isValid:false, state:"disabled"}
+        {id:0, name:t('summary'), isValid:false, state:"active"},
+        {id:1, name:t("dating"), isValid:false, state:"disabled"},
+        {id:2, name:t('linking'), isValid:false, state:"disabled"},
+        {id:3, name:t('finish'), isValid:false, state:"disabled"}
     ])
     const [currentStep, setCurrentStep] = useState({id:0, name:"description", isValid:false})
 

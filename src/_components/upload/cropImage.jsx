@@ -8,7 +8,7 @@ const createImage = (url) =>
         image.src = url
     })
 
-export const getCroppedImg = async (imageSrc, crop) => {
+export const getCroppedImg = async (imageSrc, crop, form=null) => {
     const image = await createImage(imageSrc)
     const canvas = document.createElement('canvas')
     const ctx = canvas.getContext('2d')
@@ -31,8 +31,12 @@ export const getCroppedImg = async (imageSrc, crop) => {
     )
 
     return new Promise((resolve) => {
-        canvas.toBlob((blob) => {
-            resolve(blob)
-        }, 'image/jpeg')
+        canvas.toBlob(
+            (blob) => {
+                resolve(blob)
+            },
+            'image/jpeg')
     })
+
+
 }

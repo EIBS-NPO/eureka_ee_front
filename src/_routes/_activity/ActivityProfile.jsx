@@ -36,6 +36,8 @@ const ActivityProfile = ( props ) => {
     const [isFollow, setIsFollow] = useState(false)
     const [error, setError] = useState("")
 
+    console.log(activity)
+
     const [activityProject, setActivityProject] = useState(undefined)
     const [userProjects, setUserProjects] = useState([])
     const [errorProject, setErrorProject] = useState("")
@@ -150,7 +152,7 @@ const ActivityProfile = ( props ) => {
                     }
                 })
                 .catch(error => {
-                    console.log(error.response)
+                    console.log(error)
                     setError(error.response.data[0])
                 })
                 .finally(() => setLoader(false))
@@ -342,10 +344,7 @@ const ActivityProfile = ( props ) => {
                                             <Segment.Group horizontal>
                                                 <Segment>
                                                     <Card obj={activity} type="activity" profile={true} withPicture={false} ctx={ctx}/>
-                                                </Segment>
-                                                <Segment placeholder >
-
-                                                    <FileDownload file={activity} setter={setActivity}/>
+                                                    <FileDownload activity={activity} setter={setActivity}/>
                                                 </Segment>
 
                                             </Segment.Group>
@@ -372,7 +371,7 @@ const ActivityProfile = ( props ) => {
                                     {/*todo dropzone*/}
                                     <Segment placeholder>
                                         <Container textAlign='center'>
-                                            <FileInfos file={activity} />
+                                            {/*<FileInfos activity={activity} />*/}
                                             <FileUpload history={props.history} activity={ activity } setter={ setActivity }/>
                                         </Container>
                                     </Segment>

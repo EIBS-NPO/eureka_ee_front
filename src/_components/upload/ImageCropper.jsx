@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import Cropper from 'react-easy-crop'
 import { getCroppedImg } from './cropImage'
 
-const ImageCropper = ({ getBlob, inputImg }) => {
+const ImageCropper = ({ setBlob, inputImg }) => {
     const [crop, setCrop] = useState({ x: 0, y: 0 })
     const [zoom, setZoom] = useState(1)
 
@@ -14,7 +14,8 @@ const ImageCropper = ({ getBlob, inputImg }) => {
             inputImg,
             croppedAreaPixels
         )
-        getBlob(croppedImage)
+    //    console.log(croppedImage)
+        setBlob(croppedImage)
     }
 
     return (

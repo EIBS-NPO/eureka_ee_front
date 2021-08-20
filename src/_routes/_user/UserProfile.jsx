@@ -15,11 +15,14 @@ const UserProfile = ({ history, t }) => {
     const [user, setUser] = useState({
         email:"",
         lastname: "",
+        picture:"",
         firstname: "",
         phone:"",
         mobile:"",
         address:undefined
     })
+
+    console.log(user)
 
     {/*todo modal pour change password et email?*/}
 

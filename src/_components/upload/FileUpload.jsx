@@ -4,69 +4,102 @@ import { Message, Item, Button, Form, Icon, Loader } from "semantic-ui-react";
 import fileAPI from "../../_services/fileAPI";
 import {useTranslation, withTranslation} from "react-i18next";
 import authAPI from "../../_services/authAPI";
+import FileInfos from "./FileInfos";
 
 //todo config jpa sur type mime accepté par le button
+//todo hideModal useLess?
 /**
  *
  * @param history
  * @param activity
  * @param setter
  * @param hideModal
+ * @param handleDirect
+ * @param errrors
  * @returns {JSX.Element}
  * @constructor
  */
-const FileUpload = ( { history, activity, setter, hideModal=false} ) => {
+const FileUpload = ( { history=undefined, activity, setter, hideModal=false, handleDirect=true, errors=undefined}) => {
     const { t } = useTranslation()
+    console.log(activity)
 
     const [isSave, setIsSave] = useState(false)
     const [activityFile, setActivityFile] = useState(undefined)
-    const [file, setFile] = useState(undefined)
     const [loader, setLoader] = useState(false)
 
+    const currentFile = activity.file ? activity.file :  activity
+
+    //todo add error by param?
+    const [error, setError] = useState(errors?errors:undefined)
+
+    /*
+    //todo controle sur mime GPA
+    //todo requete recup mime autorisé.
+    //todo compare avec le format du fichier, lever une erreur et désactivé le form
+    ou
+    //todo envoie le mime fichier au back pour lui demander si autorisé !
+    //todo sauf que ca revient a envoiyé le fichier est avoir une réponse négative du back, sauf que la on préviens l'utilisateur.
+    //todo donc il faudrait pouvoir bloquer la création si le fichier n'est pas bon. a voir dans le back. si existance de fichier et si il est bon. puis dans le front gérer le retour errur mime en restant sur le form.
+     */
+
     const onInputChange = (e) => {
-        setFile(e.target.files[0])
+        let file = e.target.files[0]
+    //    setCurrentFile(file)
+        console.log("inputChange")
+//console.log(file)
         let reader = new FileReader()
 
+        //todo useless?
         reader.addEventListener('load', () => {
             setActivityFile(reader.result)
         }, false)
 
         if (file) {
             reader.readAsDataURL(file)
+
+            console.log(handleDirect)
+            if(!handleDirect){ //case of the file will be handled by a parent form. just pass the file
+                console.log("give the file to createForm")
+              //  activity.file=file;
+              //  setter(activity)
+
+            }
+            setter({...activity, "file": file})
         }
     }
 
-    const [error, setError] = useState()
+
 
     const handleSubmitFile = (event) => {
-        if ( !authAPI.isAuthenticated ) {
-            history.replace.push('/login')
-        }
-
         event.preventDefault()
+        /*if ( !authAPI.isAuthenticated ) {
+            history.replace.push('/login')
+        }*/
+
         setLoader(true)
+
         let bodyFormData = new FormData();
-        bodyFormData.append('file', file)
+
+        bodyFormData.append('file', currentFile)
         bodyFormData.append('id', activity.id)
 
-        //todo controle sur mimi GPA
-        if(activity.fileType){
+        if(activity.fileType){ //for update a file
             fileAPI.putFile(bodyFormData)
-            .then(response => {
-        //        console.log(response)
-                setter(response.data[0])
-                setIsSave(true)
-            })
-            .catch(error => {
-                setError(error.response)
-            })
-            .finally(() => setLoader(false))
+                .then(response => {
+                    console.log(response)
+                    setter(response.data[0])
+                    setIsSave(true)
+                })
+                .catch(error => {
+                    setError(error.response)
+                })
+                .finally(() => setLoader(false))
 
-        }else {
+        }else { //for create a new file
             fileAPI.postFile(bodyFormData)
                 .then(response => {
-        //            console.log(response)
-                 //   redirectToNewActivity(response.data.id)
+                    //            console.log(response)
+                    //   redirectToNewActivity(response.data.id)
                     setter(response.data[0])
                     setIsSave(true)
                     if(!hideModal){
@@ -79,6 +112,7 @@ const FileUpload = ( { history, activity, setter, hideModal=false} ) => {
                 })
                 .finally(() => setLoader(false))
         }
+
     }
 
     const handleDelete = () => {
@@ -110,14 +144,14 @@ const FileUpload = ( { history, activity, setter, hideModal=false} ) => {
                     inline="centered"
                 />
             }
-{/*file pdf outline*/}
+
             {!loader &&
                 <Item>
 
                     {/*{!error && !activity.fileType &&*/}
                     {/*    <Message warning icon="file outline" header={ t('no_file') } />*/}
                     {/*}*/}
-
+                    <FileInfos file={ currentFile } />
                     {error &&
                         <Message error icon="file" header={ error.status }>
                             <p> { error.data }</p>
@@ -131,7 +165,7 @@ const FileUpload = ( { history, activity, setter, hideModal=false} ) => {
                          </Header>*/
                     }
 
-                    {file !== undefined && !isSave &&
+                    {activity.file !== undefined && !isSave &&
                         <Message info icon="file outline" header={ t('ready')} content={t('file_ready')}/>
                     }
 
@@ -143,7 +177,7 @@ const FileUpload = ( { history, activity, setter, hideModal=false} ) => {
                                 onChange={onInputChange}
                                 /*hidden*/
                             />
-                            {file && !isSave &&
+                            {activity.file && !isSave && handleDirect &&
                             <Button fluid animated>
                                 <Button.Content visible>{t('save')} </Button.Content>
                                 <Button.Content hidden>

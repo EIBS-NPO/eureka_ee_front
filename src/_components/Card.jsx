@@ -133,7 +133,7 @@ const Card = ({ obj, type, profile=false, ctx=undefined, withPicture=true }) => 
                                         <Item.Header as="h4">
                                             { t('description') }
                                         </Item.Header>
-                                        <Item.Description>
+                                        <Item.Description className="wordWrap">
                                             { getTranslate("description") }
                                         </Item.Description>
                                     </Item.Content>
@@ -146,7 +146,7 @@ const Card = ({ obj, type, profile=false, ctx=undefined, withPicture=true }) => 
                                     <Item.Header as="h4">
                                         { t('summary') }
                                     </Item.Header>
-                                    <Item.Description>
+                                    <Item.Description className="wordWrap">
                                         { getTranslate("summary") }
                                     </Item.Description>
                                 </Item.Content>

@@ -5,27 +5,25 @@ import utilities from "../../_services/utilities";
 import {useTranslation, withTranslation} from "react-i18next";
 
 
-const FileInfos = ( { file } ) => {
+const FileInfos = ( { file} ) => {
 
     const { t } = useTranslation()
 
- //   console.log(file)
-
     return (
         <>
-            {!file.fileType &&
+            {file === undefined || (file && file.size === undefined) &&
                 <Header icon>
-                    <Icon name='pdf file outline' />
-                    { t('no_file') }
+                    <Icon name='pdf file outline'/>
+                    {t('no_file')}
                 </Header>
             }
 
-            {file.fileType &&
-                <Header icon>
-                    <Icon name='file pdf' />
-                    <p>{file.filename}</p>
-                    <p>{utilities.octetsToKilos(file.size) + "kB"}</p>
-                </Header>
+            {file && file.size &&
+                    <Header icon>
+                        <Icon name='file pdf' />
+                        <p>{file.name?file.name:file.filename}</p>
+                        <p>{utilities.octetsToKilos(file.size) + "kB"}</p>
+                    </Header>
             }
         </>
     )

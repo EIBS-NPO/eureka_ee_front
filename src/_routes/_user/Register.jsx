@@ -119,7 +119,7 @@ const Register = ({ history }) => {
                    // placeholder="password confirm..."
                     error={errors.passwordConfirm ? errors.passwordConfirm :null}
                 />
-                <Button content= { t('Sign_up') } primary />
+                <Button className="ui primary basic button" content= { t('Sign_up') } />
             </Form>
         </div>
     );

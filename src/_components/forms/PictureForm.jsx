@@ -3,16 +3,12 @@ import React, { useState, useEffect } from 'react';
 import {Image, Item, Label} from "semantic-ui-react";
 import ImageUpload from "../upload/ImageUpload";
 
+//si l'entité est nouvelle, on peut faire en sorte de stocker l'image cropée dans l'entité et faire gérer la convertion par un service vers le blob
 const PictureForm = ({ entityType, entity, setter}) => {
 
-    const [picture, setPicture] = useState(undefined);
-
-    useEffect(()=> {
-     //   console.log(entity)
-        if(entity && entity.picture){
-            setPicture(entity.picture)
-        }
-    },[entity])
+    const srcImgToBlob = (blob) => {
+        return  URL.createObjectURL(blob);
+    }
 
     return (
         <Item>
@@ -23,8 +19,11 @@ const PictureForm = ({ entityType, entity, setter}) => {
                             <h4>Picture</h4>
                         </Label>
                         <Item.Description text-align="center">
-                            {picture ?
-                                <Image src={`data:image/jpeg;base64,${picture}`} size='small' centered />
+                            {entity.picture?
+                                entity.picture instanceof Blob  ?
+                                        <Image src={srcImgToBlob(entity.picture)} size='small' centered />
+                                        :
+                                        <Image src={`data:image/jpeg;base64,${entity.picture}`} size='small' centered />
                                 :
                                 <Image src='https://react.semantic-ui.com/images/wireframe/image.png' size='small'
                                        centered/>
@@ -34,7 +33,7 @@ const PictureForm = ({ entityType, entity, setter}) => {
                 </Item>
                 <Item>
                     <ImageUpload
-                        setRefresh={setPicture}
+                        setter={setter}
                         type={entityType}
                         entity={entity}
                     />
