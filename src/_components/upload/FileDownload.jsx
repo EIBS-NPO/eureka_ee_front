@@ -5,13 +5,20 @@ import fileAPI from "../../_services/fileAPI";
 import {useTranslation, withTranslation} from "react-i18next";
 import FileInfos from "./FileInfos";
 
+/**
+ *
+ * @param activity
+ * @returns {JSX.Element}
+ * @constructor
+ * @author Thierry Fauconnier <th.fauconnier@outlook.fr>
+ */
 const FileDownload = ({ activity } ) => {
 
 
     const { t } = useTranslation()
 
     const [loader, setLoader]= useState(false)
-console.log(activity)
+
     const downloadFile = () => {
         setLoader(true)
         fileAPI.download(activity.isPublic, activity.id)
@@ -29,7 +36,7 @@ console.log(activity)
     return (
         <Segment className="heightLess w-70 margAuto" placeholder loading={loader}>
                 <>
-                    <FileInfos file={ activity } />
+                    <FileInfos file={ activity } isValid={true} />
                     <Container textAlign='center'>
                         <Button fluid animated onClick={downloadFile} disabled={!activity.fileType}>
                             <Button.Content visible>

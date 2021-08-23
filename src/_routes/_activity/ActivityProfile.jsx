@@ -10,12 +10,12 @@ import Card from "../../_components/Card";
 import ActivityForm from "./ActivityForm";
 import authAPI from "../../_services/authAPI";
 import FileDownload from "../../_components/upload/FileDownload";
-import FileInfos from "../../_components/upload/FileInfos";
 import FollowingActivityForm from "../../_components/FollowingForm";
 import Picture from "../../_components/Picture";
 import projectAPI from "../../_services/projectAPI";
 import orgAPI from "../../_services/orgAPI";
 
+//todo make context for activityData
 const ActivityProfile = ( props ) => {
     const urlParams = props.match.params.id.split('_')
     const [ctx, setCtx] = useState("")
@@ -36,8 +36,6 @@ const ActivityProfile = ( props ) => {
     const [isFollow, setIsFollow] = useState(false)
     const [error, setError] = useState("")
 
-    console.log(activity)
-
     const [activityProject, setActivityProject] = useState(undefined)
     const [userProjects, setUserProjects] = useState([])
     const [errorProject, setErrorProject] = useState("")
@@ -47,7 +45,6 @@ const ActivityProfile = ( props ) => {
     const [errorOrg, setErrorOrg] = useState("")
 
     const isOwner = () => {
-  //      console.log(activity.creator)
         if(activity && activity.creator){
             return userAPI.checkMail() === activity.creator.email
         }
@@ -168,7 +165,6 @@ const ActivityProfile = ( props ) => {
         setLoader2(true)
         projectAPI.manageActivity(activity, activity.project.id)
             .then(() => {
-        //        console.log(response.data)
                 activity.project = undefined
                 setActivity(activity)
                 setActivityProject(undefined)
@@ -187,7 +183,6 @@ const ActivityProfile = ( props ) => {
         let proj = userProjects.find(p => projectId === p.id)
         projectAPI.manageActivity(activity, proj.id)
             .then(() => {
-            //    console.log(response.data)
                 activity.project = proj
                 setActivity(activity)
                 setActivityProject(proj)
@@ -204,7 +199,6 @@ const ActivityProfile = ( props ) => {
         setLoader2(true)
         orgAPI.manageActivity(activity, activity.organization.id)
             .then(response => {
-        //        console.log(response.data)
                 activity.organization = undefined
                 setActivity(activity)
                 setActivityOrg(undefined)
@@ -223,7 +217,6 @@ const ActivityProfile = ( props ) => {
         let org = userOrgs.find(o => orgId === o.id)
         orgAPI.manageActivity(activity, org.id)
             .then(() => {
-      //          console.log(response.data)
                 activity.organization = org
                 setActivity(activity)
                 setActivityOrg(org)

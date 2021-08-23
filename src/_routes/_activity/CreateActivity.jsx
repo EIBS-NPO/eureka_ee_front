@@ -105,7 +105,6 @@ const CreateActivity = ({ history, t }) => {
                 </Segment>
                 <Segment placeholder>
                     <Container textAlign='center'>
-                        {/*<FileInfos activity={activity} />*/}
                         <FileUpload activity={ activity } setter={ setActivity } handleDirect={false} errors={errors.file?errors.file:undefined}/>
                     </Container>
                 </Segment>

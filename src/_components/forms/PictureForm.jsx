@@ -28,15 +28,16 @@ const PictureForm = ({ entityType, entity, setter}) => {
                                 <Image src='https://react.semantic-ui.com/images/wireframe/image.png' size='small'
                                        centered/>
                             }
+                            <ImageUpload
+                                setter={setter}
+                                type={entityType}
+                                entity={entity}
+                            />
                         </Item.Description>
                     </Item.Content>
-                </Item>
-                <Item>
-                    <ImageUpload
-                        setter={setter}
-                        type={entityType}
-                        entity={entity}
-                    />
+                {/*</Item>
+                <Item>*/}
+
                 </Item>
             </Item.Group>
         </Item>

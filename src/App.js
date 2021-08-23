@@ -1,23 +1,21 @@
 
 import './scss/main.scss';
 
-import React, {useContext, Suspense, lazy, useState } from 'react';
+import React, {Suspense, lazy, useState, useEffect} from 'react';
 import { createMedia } from "@artsy/fresnel";
 import { BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 import 'semantic-ui-css/semantic.min.css'
-import { Loader, Image } from "semantic-ui-react";
-import interreg_logo from "./_resources/logos/Interreg.jpg";
+import { Loader } from "semantic-ui-react";
 
 import authAPI from "./_services/authAPI";
 import AuthContext from "./_contexts/AuthContext";
 import MediaContext from "./_contexts/MediaContext";
 
 import Header from "./_components/HeaderPage";
-import MainMenu from "./_components/menus/MainMenu";
-import LeftMenu from "./_components/menus/LeftMenu";
 import Footer from "./_components/footer/Footer";
 
 import PrivateRoute from "./_routes/PrivateRoute";
+import fileAPI from "./_services/fileAPI";
 
 const Home = lazy(() => import('./_routes/Home'));
 const About = lazy(() => import('./_routes/About'));
@@ -62,10 +60,25 @@ const AdminProjects = lazy(()=> import('./_routes/_admin/AdminProjects'))
      const mediaStyles = AppMedia.createMediaStyle();
      const { Media, MediaContextProvider } = AppMedia;
 
+     const [allowedMimes, setAllowedMimes] = useState([])
+     useEffect(async()=>{
+         console.log("test34")
+         /*setLoader(true)*/
+         let response = await fileAPI.getAllowedMime()
+             .catch(error =>{
+                 console.log(error.response)
+             })
+         if(response && response.status === 200){
+             setAllowedMimes(response.data)
+         }
+         /*setLoader(false)*/
+     },[])
+
+     console.log(allowedMimes)
   return (
       <>
         <style>{mediaStyles}</style>
-        <MediaContext.Provider value={{Media, mediaStyles, MediaContextProvider }}>
+        <MediaContext.Provider value={{Media, mediaStyles, MediaContextProvider, allowedMimes }}>
           <AuthContext.Provider value={{
               isAuthenticated, setIsAuthenticated,
               firstname, setFirstname,
@@ -74,18 +87,6 @@ const AdminProjects = lazy(()=> import('./_routes/_admin/AdminProjects'))
           }}>
             <Router>
                   <Header>
-                     {/*<div id={"main"}>*/}
-                  {/*<div id="main_top">
-                      <div id="logo">
-                          <img src={interreg_logo} alt="Eurekal logo"/>
-                      </div>
-                      <div id="main_menu" className="main_left">
-                          <MainMenu props={history}/>
-                      </div>
-                  </div>*/}
-                      {/*<Image src="https://react.semantic-ui.com/images/wireframe/paragraph.png" />*/}
-                      {/*<LeftMenu />*/}
-                      {/*<div >*/}
                           <Suspense fallback={<Loader content='Loading' />}>
                               <Switch>
                                   <Route exact path="/" component={Home}/>
@@ -114,8 +115,6 @@ const AdminProjects = lazy(()=> import('./_routes/_admin/AdminProjects'))
                                   <Route path="/about" component={About}/>
                               </Switch>
                           </Suspense>
-                      {/*</div>*/}
-                      {/*</div>*/}
                   </Header>
                   <Footer/>
           </Router>

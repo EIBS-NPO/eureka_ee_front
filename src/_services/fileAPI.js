@@ -42,11 +42,16 @@ const remove = (id) => {
     return Axios.delete(API_URL + "/file?id=" +id)
 }
 
+const getAllowedMime = () =>{
+    return Axios.get(API_URL + "/file/allowed")
+}
+
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
     uploadPic,
     postFile,
     putFile,
     download,
-    remove
+    remove,
+    getAllowedMime
 }

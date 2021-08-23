@@ -1,15 +1,17 @@
 import React, {useContext, useState} from 'react'
+import {Button, Input, Label} from "semantic-ui-react";
 import ImageCropper from './ImageCropper'
 import Modal from "../Modal";
 import fileAPI from '../../_services/fileAPI';
 import '../../scss/components/Modal.scss';
 import MediaContext from "../../_contexts/MediaContext";
+import {useTranslation} from "react-i18next";
 
 //todo traduction
 const ImageUpload = ({ setter, type, entity}) => {
 
     const Media = useContext(MediaContext).Media
-
+    const { t } = useTranslation()
     //todo harmoniser les différents média? => placer picture dans un context local au pictForm
 
     //todo canceled, => keep the old picture for restore
@@ -90,30 +92,29 @@ const ImageUpload = ({ setter, type, entity}) => {
                                 inputImg={inputImg}
                                 form={entity.id === null ? null : "blob"}
                             />
-                            <button type='submit' className="btn btn-secondary">Submit</button>
-                            <button type='submit' className="btn btn-secondary" onClick={hideModal}>Cancel</button>
+                            <button type='submit' className="btn btn-secondary">{ t("confirm")}</button>
+                            <button type='submit' className="btn btn-secondary" onClick={hideModal}>{ t("cancel")}</button>
                         </div>
                     </Modal>
                 )
             }
 
             <Media at="xs">
-                <label htmlFor="inputUploadImg_Atxs" className="inputUploadImg">
-                    Changer votre photo de profil
+                <label htmlFor="inputUploadImg_Atxs" className="ui basic button mini">
+                    { t('change')}
+                    <input
+                        lang="en"
+                        type='file'
+                        accept='image/png, image/jpeg'
+                        onChange={onInputChange}
+                        id="inputUploadImg_Atxs"
+                        hidden
+                    />
                 </label>
-                <input
-                    lang="en"
-                    type='file'
-                    accept='image/png, image/jpeg'
-                    onChange={onInputChange}
-                    id="inputUploadImg_Atxs"
-                    hidden
-                />
             </Media>
             <Media at="mobile">
-                <label htmlFor="inputUploadImg_Atmobile" className="inputUploadImg">
-                    Changer votre photo de profil
-                </label>
+                <label htmlFor="inputUploadImg_Atmobile" className="ui basic button mini">
+                    { t('change')}
                 <input
                     lang="en"
                     type='file'
@@ -122,11 +123,11 @@ const ImageUpload = ({ setter, type, entity}) => {
                     id="inputUploadImg_Atmobile"
                     hidden
                 />
+                </label>
             </Media>
             <Media greaterThan="mobile">
-                <label htmlFor="inputUploadImg_GTmobile" className="inputUploadImg">
-                    Changer votre photo de profil
-                </label>
+                <label htmlFor="inputUploadImg_GTmobile" className="ui basic button mini">
+                    { t('change')}
                 <input
                     lang="en"
                     type='file'
@@ -135,6 +136,7 @@ const ImageUpload = ({ setter, type, entity}) => {
                     id="inputUploadImg_GTmobile"
                     hidden
                 />
+                </label>
             </Media>
 
         </form>

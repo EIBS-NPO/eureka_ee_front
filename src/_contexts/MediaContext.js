@@ -1,5 +1,6 @@
 import React from "react";
 import {createMedia} from "@artsy/fresnel";
+import fileAPI from "../_services/fileAPI";
 /*
 
 const AppMedia = createMedia({
@@ -20,4 +21,5 @@ export default React.createContext({
     media: "",
     mediaStyles: "",
     mediaContext: "",
+    allowedMimes: []
 });

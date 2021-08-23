@@ -53,6 +53,8 @@
 
   "yes": "oui",
   "no": "non",
+  "choose": "choisir",
+  "confirm": "valider",
   "save": "enregistrer",
   "creation": "création",
   "cancel": "annuler",
@@ -66,7 +68,6 @@
   "remove_confirm": "Retirer cet utilisateur de l'organisation ?",
   "remove_to_project": "retirer du projet",
   "remove_to_org": "retirer de l'organisation",
-  "confirm": "confirmer",
   "confirmation": "confirmation",
   "errors": "Une erreur est survenue.",
   "add_members" : "ajouter des membres",
@@ -80,6 +81,7 @@
   "ask_select_org": "Veuillez selectionner une organisation",
   "ask_select_project": "Veuillez selectionner un projet",
   "ask_select_activity": "Veuillez selectionner une activité",
+  "select": "selectionner",
 
   "no_def": "non défini",
   "no_description": "aucune description",
@@ -153,5 +155,6 @@
   "missing_summary": "Le resumé doit exister dans au moins une langue",
   "missing_desc": "La description doit exister dans au moins une langue",
 
-  "Unsupported Media Type": "format de fichier non supporté"
+  "Unsupported Media Type": "format de fichier non supporté",
+  "Supported_Media_Type": "Les formats supportés sont : "
 }
