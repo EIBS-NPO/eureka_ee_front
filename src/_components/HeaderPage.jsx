@@ -17,7 +17,6 @@ const HeaderPage = (props ) => {
 
     const { isAuthenticated, isAdmin, lastname, firstname } = useContext(AuthContext)
 
-    console.log(isAdmin)
     const Media = useContext(MediaContext).Media
 
    /* const [activeItem, setActiveItem] = useState()

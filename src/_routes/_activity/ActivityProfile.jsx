@@ -14,9 +14,13 @@ import FollowingActivityForm from "../../_components/FollowingForm";
 import Picture from "../../_components/Picture";
 import projectAPI from "../../_services/projectAPI";
 import orgAPI from "../../_services/orgAPI";
+import MediaContext from "../../_contexts/MediaContext";
 
 //todo make context for activityData
+//todo make compo for more modulable page and easymake media breakpoint
 const ActivityProfile = ( props ) => {
+    const Media = useContext(MediaContext).Media
+
     const urlParams = props.match.params.id.split('_')
     const [ctx, setCtx] = useState("")
 
@@ -226,6 +230,176 @@ const ActivityProfile = ( props ) => {
             .finally( ()=> {setLoader2(false)})
     }
 
+    const PresentationCompo = (activityForm) =>{
+        return(
+            isOwner() && activityForm ?
+                <ActivityForm history={props.history} activity={activity} setActivity={setActivity} setForm={handleForm}/>
+                :
+                <>
+                    <Segment.Group horizontal>
+                        <Segment>
+                            <Card obj={activity} type="activity" profile={true} withPicture={false} ctx={ctx}/>
+                            <FileDownload activity={activity} setter={setActivity}/>
+                        </Segment>
+
+                    </Segment.Group>
+
+                    {isAuth && isOwner() && !activityForm &&
+                    <Button onClick={handleForm} fluid animated>
+                        <Button.Content visible>
+                            { props.t('edit') }
+                        </Button.Content>
+                        <Button.Content hidden>
+                            <Icon name='edit'/>
+                        </Button.Content>
+                    </Button>
+                    }
+                </>
+        )
+    }
+
+    const UploadCompo = () => {
+        //todo dropZone
+        return (
+            <Segment placeholder>
+                <Container textAlign='center'>
+                    {/*<FileInfos activity={activity} />*/}
+                    <FileUpload history={props.history} activity={ activity } setter={ setActivity }/>
+                </Container>
+            </Segment>
+        )
+    }
+
+    const ProjectCompo = () => {
+        return (
+            <>
+                {isOwner() &&
+                <Menu>
+                    {!activity.project &&
+                    <Dropdown item text={props.t('add') + " " + props.t('project')} loading={loader2}>
+                        <Dropdown.Menu>
+                            {userProjects.length === 0 &&
+                            <Dropdown.Item>
+                                <Message size='mini' info>
+                                    {props.t("no_project")}
+                                </Message>
+                            </Dropdown.Item>
+                            }
+                            {userProjects.map(p =>
+                                <Dropdown.Item key={p.id} onClick={() => handleAddProject(p.id)}>
+                                    <Icon name="plus"/> {p.title}
+                                </Dropdown.Item>
+                            )}
+
+                        </Dropdown.Menu>
+                    </Dropdown>
+                    }
+
+                    {activity.project &&
+                    <Menu.Item onClick={handleRmvProject} position="right" disabled={loader2}>
+                        <Icon name="remove circle" color="red"/>
+                        {props.t('remove_to_project')}
+                        {loader2 &&
+                        <Loader active/>
+                        }
+                    </Menu.Item>
+                    }
+                </Menu>
+                }
+
+
+                {!activityProject ?
+                    <Container textAlign='center'>
+                        <Message size='mini' info>
+                            {props.t("no_project")}
+                        </Message>
+                    </Container>
+                    :
+                    <Card obj={activity.project} type="project" profile={false} ctx={ctx}/>
+                }
+            </>
+        )
+    }
+
+    const OrgCompo = () => {
+        return (
+            <>
+                {isOwner() &&
+                    <Menu>
+                        {!activity.organization &&
+                        <Dropdown item text={props.t('add') + " " + props.t('organization')} loading={loader2}>
+                            <Dropdown.Menu>
+                                {userOrgs.length === 0 &&
+                                <Dropdown.Item>
+                                    <Message size='mini' info>
+                                        {props.t("no_org")}
+                                    </Message>
+                                </Dropdown.Item>
+                                }
+                                {userOrgs.map(o =>
+                                    <Dropdown.Item key={o.id} onClick={() => handleAddOrg(o.id)}>
+                                        <Icon name="plus"/> {o.name}
+                                    </Dropdown.Item>
+                                )}
+
+                            </Dropdown.Menu>
+                        </Dropdown>
+                        }
+                        {activity.organization &&
+                        <Menu.Item onClick={handleRmvOrg} position="right" disabled={loader2}>
+                            <Icon name="remove circle" color="red"/>
+                            {props.t('remove_to_org')}
+                            {loader2 &&
+                            <Loader active/>
+                            }
+                        </Menu.Item>
+                        }
+                    </Menu>
+                }
+
+                {!activityOrg ?
+                    <Container textAlign='center'>
+                        <Message size='mini' info>
+                            {props.t("no_org")}
+                        </Message>
+                    </Container>
+                    :
+                    <Card obj={activity.organization} type="org" profile={false} ctx={ctx}/>
+                }
+            </>
+        )
+    }
+
+    const OngletsContent = () => {
+        return (
+            <>
+                {/* Presentation Tab */}
+                {activeItem === "presentation" &&
+                <Segment attached='bottom' >
+                    <PresentationCompo activityForm={activityForm} />
+                </Segment>
+                }
+
+                {activeItem === "upload" && (ctx==="creator" || ctx==="asssigned") &&
+                <Segment attached='bottom'>
+                    <UploadCompo />
+                </Segment>
+                }
+
+                {activeItem === "project" && (
+                    <Segment attached='bottom'  loading={loader2}>
+                        <ProjectCompo />
+                    </Segment>
+                )}
+
+                {activeItem === "organization" &&
+                    <Segment attached='bottom' loading={loader2}>
+                        <OrgCompo />
+                    </Segment>
+                }
+            </>
+        )
+    }
     return (
 
         <div className="card">
@@ -248,224 +422,113 @@ const ActivityProfile = ( props ) => {
                             </Header>
                         </Segment>
 
-                       {/* <Picture size="small" picture={obj.picture} />
-                        <Container textAlign={"center"}>
-                            {isAuth &&
-                                <FollowingActivityForm obj={activity} setter={setActivity} type="activity" />
-                            }
-                            <h1>{ activity.title }</h1>
-                        </Container>*/}
-
                         <Segment vertical >
-                            <Menu attached='top' tabular>
-                                <Menu.Item
-                                    name='presentation'
-                                    active={activeItem === 'presentation'}
-                                    onClick={handleItemClick}
-                                >
-                                    <Header >
-                                        { props.t("presentation") }
-                                    </Header>
-                                </Menu.Item>
-
-                                {/* show upload tab for creator or assigned member*/}
-                                {(ctx=== 'creator' || ctx=== 'assigned') &&
-                                    <Menu.Item
-                                        name='upload'
-                                        active={activeItem === 'upload'}
-                                        onClick={handleItemClick}
-                                    >
-                                        <Header >
-                                            { props.t("upload") }
-                                        </Header>
-                                    </Menu.Item>
-                                }
-
-
-                                <Menu.Item name='project' active={activeItem === 'project'} onClick={handleItemClick}>
-                                    {activity.project &&
-                                        <>
-                                        {activity.project.picture &&
-                                            <Image src ={`data:image/jpeg;base64,${ activity.project.picture }`}   avatar size="mini"/>
-                                        }
-                                        <Header>
-                                            { activity.project.title}
-                                            <Header.Subheader>
-                                            { props.t('project')}
-                                            </Header.Subheader>
-                                        </Header>
-                                        </>
-                                    }
-                                    {!activity.project &&
-                                        <Header>
-                                            { props.t('project')}
-                                        </Header>
-                                    }
-                                </Menu.Item>
-
-                                <Menu.Item name='organization' active={activeItem === 'organization'} onClick={handleItemClick}>
-                                {activity.organization &&
-                                        <>
-                                            {activity.organization.picture &&
-                                                <Image src ={`data:image/jpeg;base64,${ activity.organization.picture }`}   avatar size="mini"/>
-                                            }
-                                            <Header>
-                                                { activity.organization.name}
-                                                <Header.Subheader>
-                                                    { props.t('organization')}
-                                                </Header.Subheader>
+                        <Media greaterThan="xs">
+                                <Menu attached='top' tabular>
+                                        <Menu.Item
+                                            name='presentation'
+                                            active={activeItem === 'presentation'}
+                                            onClick={handleItemClick}
+                                        >
+                                            <Header >
+                                                { props.t("presentation") }
                                             </Header>
-                                        </>
-                                }
-                                {!activity.organization &&
-                                    <Header>
-                                    { props.t('organization')}
-                                    </Header>
-                                }
-                                </Menu.Item>
+                                        </Menu.Item>
 
-                            </Menu>
-
-                            {/* Presentation Tab */}
-                            {activeItem === "presentation" &&
-                            <Segment attached='bottom' >
-                                <>
-                                    {activityForm ?
-                                        <ActivityForm history={props.history} activity={activity} setActivity={setActivity} setForm={handleForm}/>
-                                        :
-                                        <>
-                                            <Segment.Group horizontal>
-                                                <Segment>
-                                                    <Card obj={activity} type="activity" profile={true} withPicture={false} ctx={ctx}/>
-                                                    <FileDownload activity={activity} setter={setActivity}/>
-                                                </Segment>
-
-                                            </Segment.Group>
-
-                                            {isAuth && isOwner() && !activityForm &&
-                                            <Button onClick={handleForm} fluid animated>
-                                                <Button.Content visible>
-                                                    { props.t('edit') }
-                                                </Button.Content>
-                                                <Button.Content hidden>
-                                                    <Icon name='edit'/>
-                                                </Button.Content>
-                                            </Button>
-                                            }
-                                        </>
-                                    }
-                                </>
-                            </Segment>
-                            }
-
-                            {activeItem === "upload" && (ctx==="creator" || ctx==="asssigned") &&
-                            <Segment attached='bottom'>
-                                <>
-                                    {/*todo dropzone*/}
-                                    <Segment placeholder>
-                                        <Container textAlign='center'>
-                                            {/*<FileInfos activity={activity} />*/}
-                                            <FileUpload history={props.history} activity={ activity } setter={ setActivity }/>
-                                        </Container>
-                                    </Segment>
-                                </>
-                            </Segment>
-                            }
-
-                            {activeItem === "project" && (
-                                <Segment attached='bottom' loading={loader2}>
-                                    {isOwner() &&
-                                    <Menu>
-                                        {!activity.project &&
-                                        <Dropdown item text={props.t('add') + " " + props.t('project')} loading={loader2}>
-                                            <Dropdown.Menu>
-                                                {userProjects.length === 0 &&
-                                                <Dropdown.Item>
-                                                    <Message size='mini' info>
-                                                        {props.t("no_project")}
-                                                    </Message>
-                                                </Dropdown.Item>
-                                                }
-                                                {userProjects.map(p =>
-                                                    <Dropdown.Item key={p.id} onClick={() => handleAddProject(p.id)}>
-                                                        <Icon name="plus"/> {p.title}
-                                                    </Dropdown.Item>
-                                                )}
-
-                                            </Dropdown.Menu>
-                                        </Dropdown>
+                                        {/* show upload tab for creator or assigned member*/}
+                                        {(ctx=== 'creator' || ctx=== 'assigned') &&
+                                            <Menu.Item
+                                                name='upload'
+                                                active={activeItem === 'upload'}
+                                                onClick={handleItemClick}
+                                            >
+                                                <Header >
+                                                    { props.t("upload") }
+                                                </Header>
+                                            </Menu.Item>
                                         }
-                                        {activity.project &&
-                                        <Menu.Item onClick={handleRmvProject} position="right" disabled={loader2}>
-                                            <Icon name="remove circle" color="red"/>
-                                            {props.t('remove_to_project')}
-                                            {loader2 &&
-                                            <Loader active />
+
+
+                                        <Menu.Item name='project' active={activeItem === 'project'} onClick={handleItemClick}>
+                                            {activity.project &&
+                                                <>
+                                                {activity.project.picture &&
+                                                    <Image src ={`data:image/jpeg;base64,${ activity.project.picture }`}   avatar size="mini"/>
+                                                }
+                                                <Header>
+                                                    { activity.project.title}
+                                                    <Header.Subheader>
+                                                    { props.t('project')}
+                                                    </Header.Subheader>
+                                                </Header>
+                                                </>
+                                            }
+                                            {!activity.project &&
+                                                <Header>
+                                                    { props.t('project')}
+                                                </Header>
                                             }
                                         </Menu.Item>
+
+                                        <Menu.Item name='organization' active={activeItem === 'organization'} onClick={handleItemClick}>
+                                        {activity.organization &&
+                                                <>
+                                                    {activity.organization.picture &&
+                                                        <Image src ={`data:image/jpeg;base64,${ activity.organization.picture }`}   avatar size="mini"/>
+                                                    }
+                                                    <Header>
+                                                        { activity.organization.name}
+                                                        <Header.Subheader>
+                                                            { props.t('organization')}
+                                                        </Header.Subheader>
+                                                    </Header>
+                                                </>
                                         }
+                                        {!activity.organization &&
+                                            <Header>
+                                            { props.t('organization')}
+                                            </Header>
+                                        }
+                                        </Menu.Item>
+                                </Menu>
+                                <OngletsContent />
+                        </Media>
 
-                                    </Menu>
-                                    }
-
-                                    {!activityProject ?
-                                        <Container textAlign='center'>
-                                            <Message size='mini' info>
-                                                {props.t("no_project")}
-                                            </Message>
-                                        </Container>
-                                        :
-                                        <Card obj={activity.project} type="project" profile={false} ctx={ctx}/>
-                                    }
-                                </Segment>
-                            )}
-
-                            {activeItem === "organization" &&
-                            <Segment attached='bottom' loading={loader2}>
-                                {isOwner() &&
-                                <Menu>
-                                    {!activity.organization &&
-                                    <Dropdown item text={props.t('add') + " " + props.t('organization')} loading={loader2}>
-                                        <Dropdown.Menu>
-                                            {userOrgs.length === 0 &&
-                                            <Dropdown.Item>
-                                                <Message size='mini' info>
-                                                    {props.t("no_org")}
-                                                </Message>
+                        <Media at="xs">
+                                <Menu attached='top' tabular>
+                                    <Dropdown text={activeItem}>
+                                        <Dropdown.Menu >
+                                            <Dropdown.Item name='presentation' active={activeItem === 'presentation'} onClick={handleItemClick}>
+                                                <Header >
+                                                    { props.t("presentation") }
+                                                </Header>
                                             </Dropdown.Item>
-                                            }
-                                            {userOrgs.map(o =>
-                                                <Dropdown.Item key={o.id} onClick={() => handleAddOrg(o.id)}>
-                                                    <Icon name="plus"/> {o.name}
+                                            <Dropdown.Item name='project' active={activeItem === 'project'} onClick={handleItemClick}>
+                                                <Header >
+                                                    { props.t("project") }
+                                                </Header>
+                                            </Dropdown.Item>
+                                            {(ctx === 'creator' || ctx === 'assigned') &&
+                                                <Dropdown.Item name='upload' active={activeItem === 'upload'}
+                                                               onClick={handleItemClick}>
+                                                    <Header>
+                                                        {props.t("upload")}
+                                                    </Header>
                                                 </Dropdown.Item>
-                                            )}
-
+                                            }
+                                            <Dropdown.Item name='organization' active={activeItem === 'organization'} onClick={handleItemClick}>
+                                                <Header >
+                                                    { props.t("organization") }
+                                                </Header>
+                                            </Dropdown.Item>
                                         </Dropdown.Menu>
                                     </Dropdown>
-                                    }
-                                    {activity.organization &&
-                                    <Menu.Item onClick={handleRmvOrg} position="right" disabled={loader2}>
-                                        <Icon name="remove circle" color="red"/>
-                                        {props.t('remove_to_org')}
-                                        {loader2 &&
-                                        <Loader active />
-                                        }
-                                    </Menu.Item>
-                                    }
-
                                 </Menu>
-                                }
-                                {!activityOrg ?
-                                    <Container textAlign='center'>
-                                        <Message size='mini' info>
-                                            {props.t("no_org")}
-                                        </Message>
-                                    </Container>
-                                    :
-                                    <Card obj={activity.organization} type="org" profile={false} ctx={ctx}/>
-                                }
-                            </Segment>
-                            }
+
+                            <OngletsContent />
+
+                        </Media>
+
                         </Segment>
                     </>
                     :
