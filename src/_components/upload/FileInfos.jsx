@@ -15,7 +15,7 @@ import {useTranslation, withTranslation} from "react-i18next";
 const FileInfos = ( { file, isValid } ) => {
 
     const { t } = useTranslation()
-
+console.log(isValid)
     return (
         <>
             {file === undefined || (file && file.size === undefined) &&

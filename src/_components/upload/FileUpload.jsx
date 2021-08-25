@@ -34,17 +34,18 @@ const FileUpload = ( { history=undefined, activity, setter, hideModal=false, han
 
     const [error, setError] = useState(errors?errors:undefined)
 
-    const [isValid, setIsValid] = useState(true)
+  //  const [isValid, setIsValid] = useState(true)
 
-   // const [allowedMimes, setAllowedMimes] = useState([])
-
-    //todo it's work!!
     const allowedMimes = useContext(MediaContext).allowedMimes
-console.log(allowedMimes)
+
+    const isValid = () => {
+        let fileType = currentFile.type ? currentFile.type : currentFile.fileType
+        return allowedMimes.includes(fileType)
+    }
 
     const onInputChange = (e) => {
 
-        setIsValid(false)
+    //    setIsValid(false)
         let file = e.target.files[0]
 
         let reader = new FileReader()
@@ -56,11 +57,6 @@ console.log(allowedMimes)
 
         if (file) {
             reader.readAsDataURL(file)
-
-            allowedMimes.map(mime => {
-                if(mime === file.type){setIsValid(true)}
-            })
-
             setter({...activity, "file": file})
         }
     }
@@ -138,7 +134,7 @@ console.log(allowedMimes)
 
             {!loader &&
                 <Item>
-                    <FileInfos file={ currentFile } isValid={isValid} />
+                    <FileInfos file={ currentFile } isValid={isValid()} />
                     {error &&
                         <Message error icon="file" header={ error.status }>
                             <p> { error.data }</p>
@@ -146,13 +142,13 @@ console.log(allowedMimes)
                         </Message>
                     }
 
-                    {activity.file !== undefined && !error && !isValid &&
+                    {activity.file !== undefined && !error && !isValid() &&
                         <Message error icon="file" >
                             <p>{t("Supported_Media_Type") + allowedMimes.join(',')} </p>
                         </Message>
                     }
 
-                    {activity.file !== undefined && !isSave && isValid &&
+                    {activity.file !== undefined && !isSave && isValid() &&
                         <Message info icon="file outline" header={ t('ready')} content={t('file_ready')}/>
                     }
 
@@ -169,8 +165,8 @@ console.log(allowedMimes)
                                 />
                             </label>
 
-                            {activity.file && !isSave && handleDirect &&
-                            <Button fluid animated disabled={!isValid}>
+                            {activity.file && handleDirect &&
+                            <Button fluid animated disabled={!isValid()}>
                                 <Button.Content visible >{t('save')} </Button.Content>
                                 <Button.Content hidden>
                                     <Icon name='save'/>
