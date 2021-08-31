@@ -23,14 +23,27 @@
 
 #main {
     display:flex;
+ //   position: fixed;
+    top: 20%;
    // flex-direction: column;
   //  max-width: 300px;
   //  height:100vh;
     bottom:0px;
-    top:0px;
+  //  top:0px;
     left:0px;
     right:0px;
-    overflow:auto;
+//    overflow:auto;
+    max-height:100vh;
+    justify-content: center;
+    /*@media screen and (max-width: 601px)
+    {
+        justify-content: center;
+    }
+    @media screen and (min-width: 601px)
+    {
+        justify-content: space-between;
+    }
+    justify-content: center;*/
 }
 
 #main_top {
@@ -58,6 +71,7 @@
 }
 
 #left_menu {
+width:auto;
    // background-color: rgb(253,198,8);
    // min-width: 20%;
 }
@@ -90,18 +104,28 @@
 }
 
 .card{
-    width:90%;
+    //width:75%;
     background-color: white;
    /* border:2px #A36298 solid;
     border-radius: 10px;*/
     margin: 15px;
+    @media screen and (min-width: 601px)
+    {
+        margin-left: auto;
+    }
   /*  box-shadow: 10px 10px 10px rgba(black,0.5);*/
     padding-top: 50px;
+    overflow: auto;
+    width:100%;
    // overflow-y:auto;
 }
 
-.wordWrap{
-    word-wrap: break-word;
+.unmarged {
+    margin:0!important;
+}
+
+.breakWord{
+    word-break: break-word;
 }
 
 .user{
@@ -119,6 +143,15 @@
     display: flex!important;
     flex-direction: column!important;
     color:black!important;
+}
+
+.borderless {
+    border:none!important;
+    box-shadow: none!important;
+}
+
+.minH-50{
+    min-height: 50%;
 }
 
 .DropMenuBottom {
@@ -161,6 +194,14 @@
     width:70%!important;
 }
 
+.w-25{
+    width:25%!important;
+}
+
+.w-50{
+    width:50%!important;
+}
+
 .margAuto {
     margin:auto!important;
 }
@@ -195,4 +236,8 @@ li {
 
 h1 {
     text-align: center;
+}
+
+h2 {
+    word-break: break-word;
 }
