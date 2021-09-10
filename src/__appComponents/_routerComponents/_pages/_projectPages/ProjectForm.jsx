@@ -26,14 +26,13 @@ const ProjectForm = ( props ) => {
         description:[ ],
         startDate:"",
         endDate:"",
-        /*isPublic:{ },*/
         orgId:null
     })
 
     const [desc, setDesc] = useState({
-        en:"",
-        fr:"",
-        nl:""
+        "en-GB":"",
+        "fr-FR":"",
+        "nl-BE":""
     })
 
     const [errors, setErrors] = useState({
@@ -41,7 +40,6 @@ const ProjectForm = ( props ) => {
         description:"",
         startDate:"",
         endDate:"",
-        /*isPublic:"",*/
         organization:""
     });
 
@@ -75,13 +73,13 @@ const ProjectForm = ( props ) => {
         else return null
     }
 
-    const handlePublication = () => {
+    /*const handlePublication = () => {
         if(!upProject.isPublic){
             setUpProject({ ...upProject, "isPublic": true })
         }else {
             setUpProject({ ...upProject, "isPublic": false })
         }
-    }
+    }*/
 
     //todo modal confirmation
     const handleDelete = (event) => {

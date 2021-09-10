@@ -2,12 +2,13 @@
 import React, { useContext, useState } from "react";
 import AuthContext from "../../../__appContexts/AuthContext";
 import UserAPI from "../../../__services/_API/userAPI";
-import {Button, Form} from "semantic-ui-react";
+import {Button, Form, Message, Segment} from "semantic-ui-react";
 import {useTranslation, withTranslation} from "react-i18next";
 
 /*//todo add optionalFields*/
 const RegisterPage = ({ history }) => {
-    const isAuthenticated = useContext(AuthContext).isAuthenticated;
+  //  const isAuthenticated = useContext(AuthContext).isAuthenticated;
+    const { isAuthenticated, setNeedConfirm } = useContext(AuthContext)
 
     if (isAuthenticated === true) {
         history.replace('/');
@@ -16,6 +17,7 @@ const RegisterPage = ({ history }) => {
     const { t } = useTranslation()
 
     const [user, setUser] = useState({
+        picture: undefined,
         email: "",
         lastname: "",
         firstname: "",
@@ -24,6 +26,7 @@ const RegisterPage = ({ history }) => {
     });
 
     const [errors, setErrors] = useState({
+        picture: "",
         email: "",
         lastname: "",
         firstname: "",
@@ -36,30 +39,41 @@ const RegisterPage = ({ history }) => {
         setUser({ ...user, [name]: value });
     };
 
-    /**
-     * Call ajax lors de la soumission du formulaire pour créer l'admin et l'utilisateur associé
-     */
+    const [loader, setLoader] = useState(false)
     const handleSubmit = async (event) => {
         event.preventDefault();
+        setLoader(true)
         if (user.password !== user.passwordConfirm) {
             setErrors({ ...errors, "passwordConfirm": "confirmation incorrecte" });
             return;
         }
         //todo vérification des autres param avant requete
 
+        //todo si ok, renvoyer sur la pas d'activation du compte.
         UserAPI.register(user)
             .then(response => {
-                history.replace("/login")
+                //todo demander au back l'envoie d'un mail de confirmation passer le mail user
+                UserAPI.askActivation(response.data[0].email)
+                    .then(() => {
+                        setNeedConfirm("needConfirm")
+                        history.replace('/login')
+                    })
+                    .catch(error => {
+                        console.log(error)
+                    })
+                //history.replace("/login")
+            //    history.replace("/activation");
             })
             .catch(error => {
-                console.log(error.response.data)
-                setErrors(error.response.data)
+                console.log(error.response)
+            //    setErrors(error.response)
             })
+        setLoader(false)
     };
 
     return (
         <div className="card">
-            <Form onSubmit={handleSubmit}>
+            <Form onSubmit={handleSubmit} loading={loader}>
                 <Form.Input
                     icon='mail'
                     iconPosition='left'
@@ -119,7 +133,7 @@ const RegisterPage = ({ history }) => {
                    // placeholder="password confirm..."
                     error={errors.passwordConfirm ? errors.passwordConfirm :null}
                 />
-                <Button className="ui primary basic button" content= { t('Sign_up') } />
+               <Button className="ui primary basic button" content= { t('Sign_up') } />
             </Form>
         </div>
     );

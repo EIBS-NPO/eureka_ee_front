@@ -52,7 +52,7 @@ const CreateActivity = ({ history, t }) => {
             newActivity = response.data[0]
         }
 
-        //add picture to the created activity
+        /*//add picture to the created activity
         if(activity.picture){
             let bodyFormData = new FormData();
             bodyFormData.append('image', activity.picture)
@@ -62,10 +62,10 @@ const CreateActivity = ({ history, t }) => {
                     console.log(error.response)
                     setErrors({...error,"picture":error.response})
                 })
-        }
+        }*/
 
         //add file to the created activity
-        if(activity.file){
+       /* if(activity.file){
             let bodyFormData = new FormData();
             bodyFormData.append('file', activity.file)
             bodyFormData.append('id', newActivity.id)
@@ -79,9 +79,9 @@ const CreateActivity = ({ history, t }) => {
                 newActivity = response.data[0]
             }
 
-        }
+        }*/
         setActivity(newActivity)
-        history.replace('/activity/creator_' + newActivity.id)
+        history.replace('/activity/owned_' + newActivity.id)
     };
 
     const [errors, setErrors] = useState({

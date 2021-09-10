@@ -1,12 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import { withTranslation } from 'react-i18next';
 import orgAPI from "../../../../__services/_API/orgAPI";
 import {Container, Header, Input, Loader, Menu, Message, Segment} from "semantic-ui-react";
 import Card from "../__CommonComponents/Card";
 import authAPI from "../../../../__services/_API/authAPI";
+import AuthContext from "../../../../__appContexts/AuthContext";
 
 const OrgList = ( props ) => {
- //   const isAuth = useContext(AuthContext).isAuthenticated;
+    const isAuth = useContext(AuthContext).isAuthenticated;
 
     const urlParams = props.match.params.ctx
 
@@ -20,36 +21,48 @@ const OrgList = ( props ) => {
 
     const [ctx, setCtx] = useState("")
 
+    const getLinkContext = (org) => {
+        let linkCtx = 'public'
+        if(isAuth){
+            if(org.referent.id === authAPI.getId()) { linkCtx = 'owned'}
+            else if(org.membership && org.membership.find(m => m.id === authAPI.getId()) !== undefined){ linkCtx = 'assigned'}
+        }
+        return linkCtx
+    }
+
     const [orgs, setOrgs] = useState([])
     const [myOrgs, setMyOrgs] = useState([])
     const [partnerOrgs, setPartnerOrgs] =useState([])
 
     const [loader, setLoader] = useState();
 
-    //todo charger les referent dans un tableau a part pour limiter les requetes doublons
-    //donc les object seriliser org du back ne doivent reoutourner que l'id des ref
-    useEffect(() => {
+    useEffect(async() => {
         setLoader(true)
-        //todo inversion des call
-        setCtx( checkCtx() )
-        if(urlParams === 'my'){
-            orgAPI.getMembered()
-                .then(response => {
-   //                 console.log(response)
-                    setMyOrgs(response.data.filter(o => o.referent.id === authAPI.getId()))
-                    setPartnerOrgs(response.data.filter(o => o.referent.id !== authAPI.getId()))
-                })
+        setCtx( await checkCtx() )
+        if(urlParams === 'public'){
+            let response = await orgAPI.getPublic()
                 .catch(error => console.log(error.response))
-                .finally(() => setLoader(false))
+            if(response && response.status === 200){
+                console.log(response.data)
+                setOrgs(response.data)
+            }
         }else {
-            orgAPI.getPublic()
-                .then(response => {
-//                    console.log(response)
-                    setOrgs(response.data)
-                })
+            let response = await orgAPI.getOrg('owned')
                 .catch(error => console.log(error.response))
-                .finally(() => setLoader(false))
+            if(response && response.status === 200){
+                console.log(response.data)
+                setMyOrgs(response.data)
+            }
+
+            if(urlParams === 'owned'){
+                let response = await orgAPI.getOrg('assigned')
+                    .catch(error => console.log(error.response))
+                if(response && response.status === 200){
+                    setPartnerOrgs(response.data)
+                }
+            }
         }
+        setLoader(false)
     }, [urlParams]);
 
     const [activeItem, setActiveItem] = useState('myOrgs')
@@ -71,10 +84,10 @@ const OrgList = ( props ) => {
 
     return (
         <div className="card">
-            { ctx === 'my' && <h1>{ props.t('my_orgs') }</h1> }
-            { ctx !== 'my' && <h1>{ props.t('all_org') }</h1> }
+            { ctx === 'owned' && <h1>{ props.t('my_orgs') }</h1> }
+            { ctx !== 'owned' && <h1>{ props.t('all_org') }</h1> }
                 <>
-                    {ctx === "my" &&
+                    {ctx === "owned" &&
                     <>
                         <Segment vertical>
                             <Menu attached='top' tabular>
@@ -104,7 +117,11 @@ const OrgList = ( props ) => {
                                 {myOrgs && filteredList(myOrgs).length > 0 ?
                                     filteredList(myOrgs).map(org => (
                                         <Segment key={org.id} raised>
-                                            <Card history={props.history} key={org.id} obj={org} type="org" isLink={true}
+                                            <Card history={props.history}
+                                                  key={org.id}
+                                                  obj={org}
+                                                  type="org"
+                                                  isLink={true}
                                                   ctx={ctx}/>
                                         </Segment>
                                     ))
@@ -148,7 +165,7 @@ const OrgList = ( props ) => {
                     </>
                     }
 
-                    {ctx !== "my" &&
+                    {ctx !== "owned" &&
                     <>
                         <Menu>
                             <Menu.Item position="right">
@@ -160,7 +177,12 @@ const OrgList = ( props ) => {
                         {orgs && filteredList(orgs).length > 0 ?
                             filteredList(orgs).map(org => (
                                 <Segment key={org.id} raised>
-                                    <Card history={props.history} key={org.id} obj={org} type="org" isLink={true} ctx={ctx}/>
+                                    <Card history={props.history}
+                                          key={org.id}
+                                          obj={org}
+                                          type="org"
+                                          isLink={true}
+                                          ctx={getLinkContext(org)}/>
                                 </Segment>
                             ))
                         :

@@ -23,6 +23,8 @@ import './scss/main.scss';
      const [firstname, setFirstname] = useState( authAPI.getFirstname())
      const [lastname, setLastname] = useState( authAPI.getLastname())
      const [isAdmin, setIsAdmin] = useState(authAPI.isAdmin())
+     const [partnerList, setPartnerList] = useState([])
+     const [needConfirm, setNeedConfirm] = useState(undefined)
 
      const AppMedia = createMedia({
          breakpoints: {
@@ -58,9 +60,11 @@ import './scss/main.scss';
               isAuthenticated, setIsAuthenticated,
               firstname, setFirstname,
               lastname, setLastname,
-              isAdmin, setIsAdmin
+              isAdmin, setIsAdmin,
+              partnerList, setPartnerList,
+              needConfirm, setNeedConfirm
           }}>
-            <AppRouter />
+            <AppRouter history={history}/>
           </AuthContext.Provider>
         </MediaContext.Provider>
       </>

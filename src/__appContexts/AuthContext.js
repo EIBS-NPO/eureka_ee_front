@@ -1,7 +1,5 @@
 import React from "react";
 
-//création d'un context, permet de passer a tous mes composant les infos du context
-//prend la forme des infos que je veux passer
 export default React.createContext({
     isAuthenticated: false,
     setIsAuthenticated: ( value ) => { },
@@ -10,5 +8,7 @@ export default React.createContext({
     firstname: undefined,
     setFirstname: ( value ) => { },
     lastname: undefined,
-    setLastname: ( value ) => { }
+    setLastname: ( value ) => { },
+    needConfirm: undefined,
+    setNeedConfirm:(value) => {}
 });

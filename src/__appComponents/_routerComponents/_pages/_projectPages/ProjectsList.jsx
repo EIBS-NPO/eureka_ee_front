@@ -23,11 +23,38 @@ const ProjectsList = ( props ) => {
 
     const [ctx, setCtx] = useState("")
 
-    useEffect(() => {
+    useEffect(async () => {
+        /*
+            ctx maybe be private, owner(created), follower, assigned
+            oui pour retrouver les relation assign et follow
+         */
         setLoader(true)
         setCtx( checkCtx() )
         let ctx = checkCtx()
-        if(ctx === 'follower'){
+        if(ctx === 'public'){
+           let response = await projectAPI.getPublic()
+               .catch(error => console.log(error.response))
+            if(response.status === 200){
+                setProjects(response.data)
+            }
+        }else {
+            let response = await projectAPI.getProject(ctx)
+                .catch(error => console.log(error.response))
+            if(response && response.status === 200){
+                setProjects(response.data)
+            }
+
+            if(ctx === 'owned'){ // assigned project for myProject page
+                let response = await projectAPI.getProject("assigned")
+                    .catch(error => console.log(error.response))
+                if(response && response.status === 200){
+                    console.log(response.data)
+                    setAssignProjects(response.data)
+                }
+            }
+        }
+        setLoader(false)
+        /*if(ctx === 'follower'){
             projectAPI.getFollowed()
                 .then(response => {
                   //  console.log(response.data)
@@ -64,16 +91,16 @@ const ProjectsList = ( props ) => {
                 })
                 .catch(error => console.log(error.response))
                 .finally(() => setLoader(false))
-        }
+        }*/
     }, [urlParams]);
 
     const Title = () => {
         let title = ""
         switch(ctx){
-            case "creator":
+            case "owned":
                 title = <h1>{ props.t('my_projects') }</h1>
                 break;
-            case "follower":
+            case "followed":
                 title = <h1>{ props.t('projects') +" : " + props.t('my_favorites') }</h1>
                 break;
             default:
@@ -92,7 +119,7 @@ const ProjectsList = ( props ) => {
     }
 
     const filteredList = (list) => {
-    //    console.log(list)
+        console.log(list)
         return list.filter(p =>
             p.title.toLowerCase().includes(search.toLowerCase()) ||
             p.creator.firstname.toLowerCase().includes(search.toLowerCase()) ||
@@ -103,7 +130,7 @@ const ProjectsList = ( props ) => {
     return (
         <div className="card">
             <Title />
-            {ctx === "creator" &&
+            {ctx === "owned" &&
                 <>
                 <Segment vertical>
                     <Menu attached='top' tabular>
@@ -127,14 +154,19 @@ const ProjectsList = ( props ) => {
                             <Menu.Item position="right">
                                 <Input name="search" value={ search ? search : ""}
                                        onChange={handleSearch}
-                                       placeholder={  props.t('search') + "..."}    />
+                                       placeholder={  props.t('search') + "..."}
+                                />
                             </Menu.Item>
                         </Menu>
                         {projects && filteredList(projects).length > 0 ?
                         filteredList(projects).map(project => (
                             <Segment key={project.id} raised>
-                                <Card history={props.history} key={project.id} obj={project} type="project" isLink={true}
-                                      ctx={ctx}/>
+                                <Card history={props.history}
+                                      key={project.id}
+                                      obj={project}
+                                      type="project"
+                                      isLink={true}
+                                      ctx='owned'/>
                             </Segment>
                         ))
                             :
@@ -159,8 +191,12 @@ const ProjectsList = ( props ) => {
                         {assignProjects && filteredList(assignProjects).length > 0 ?
                         filteredList(assignProjects).map(project => (
                             <Segment key={project.id} raised>
-                                <Card history={props.history} key={project.id} obj={project} type="project" isLink={true}
-                                      ctx={ctx}/>
+                                <Card history={props.history}
+                                      key={project.id}
+                                      obj={project}
+                                      type="project"
+                                      isLink={true}
+                                      ctx="assigned"/>
                             </Segment>
                         ))
                             :
@@ -177,7 +213,7 @@ const ProjectsList = ( props ) => {
                 </>
             }
 
-            {ctx !== "creator" && !loader &&
+            {ctx !== "owned" && !loader &&
                 <>
                 <Menu>
                     <Menu.Item position="right">
@@ -189,8 +225,13 @@ const ProjectsList = ( props ) => {
                     {projects && filteredList(projects).length > 0 ?
                     filteredList(projects).map(project => (
                         <Segment key={project.id} raised>
-                            <Card history={props.history} key={project.id} obj={project} type="project" isLink={true}
-                                  ctx={ctx}/>
+                            <Card history={props.history}
+                                  key={project.id}
+                                  obj={project}
+                                  type="project"
+                                  isLink={true}
+                                  ctx={ctx}
+                            />
                         </Segment>
                     ))
                     :

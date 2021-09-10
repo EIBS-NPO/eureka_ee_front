@@ -8,11 +8,12 @@ import FileInfos from "./FileInfos";
 /**
  *
  * @param activity
+ * @param access
  * @returns {JSX.Element}
  * @constructor
  * @author Thierry Fauconnier <th.fauconnier@outlook.fr>
  */
-const FileDownload = ({ activity } ) => {
+const FileDownload = ({ activity, access } ) => {
 
 
     const { t } = useTranslation()
@@ -21,7 +22,18 @@ const FileDownload = ({ activity } ) => {
 
     const downloadFile = () => {
         setLoader(true)
-        fileAPI.download(activity.isPublic, activity.id)
+        fileAPI.download(activity.isPublic, activity.id, access)
+            .then(response => {
+                let blob = new Blob([response.data], { type: activity.fileType });
+                let link = document.createElement('a')
+                link.href = window.URL.createObjectURL(blob)
+                link.download = activity.filename
+                link.click()
+            }).catch(error => {
+            console.log(error)
+        })
+            .finally(() => setLoader(false))
+       /* fileAPI.download(activity.isPublic, activity.id)
             .then(response => {
                 let blob = new Blob([response.data], { type: activity.fileType });
                 let link = document.createElement('a')
@@ -31,7 +43,7 @@ const FileDownload = ({ activity } ) => {
             }).catch(error => {
                 console.log(error)
             })
-            .finally(() => setLoader(false))
+            .finally(() => setLoader(false))*/
     }
     return (
         <Segment className="heightLess w-70 margAuto" placeholder loading={loader}>

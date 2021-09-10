@@ -1,4 +1,4 @@
-import React, {useState, useEffect } from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import Marquee from "react-fast-marquee";
 import '../../../scss/components/footer.scss';
 import { withTranslation } from 'react-i18next';
@@ -8,10 +8,12 @@ import Picture from "../_pages/__CommonComponents/Picture";
 import Ciep_logo from "../../../_resources/logos/CIEP.jpg";
 import Eibs_logo from "../../../_resources/logos/EIBS.png";
 import {Loader, Segment} from "semantic-ui-react";
+import AuthContext from "../../../__appContexts/AuthContext";
 
 const Footer = ({ t }) => {
 
-    const [partnerList, setPartnerList] = useState([])
+    const {partnerList, setPartnerList } = useContext(AuthContext)
+  //  const [partnerList, setPartnerList] = useState([])
     const [loader, setLoader] = useState(false)
     const [error, setError] = useState(false)
 
@@ -40,12 +42,12 @@ const Footer = ({ t }) => {
                 </Marquee>
             }
 
-            {!loader && error &&
+           {/* {!loader && error &&
                 <p>Loading Error</p>
-            }
+            }*/}
             </Segment>
 
-            {loader &&
+          {/*  {loader &&
             <Segment>
                 <Loader
                     active
@@ -55,7 +57,7 @@ const Footer = ({ t }) => {
                     inline="centered"
                 />
             </Segment>
-            }
+            }*/}
         </div>
     );
 };

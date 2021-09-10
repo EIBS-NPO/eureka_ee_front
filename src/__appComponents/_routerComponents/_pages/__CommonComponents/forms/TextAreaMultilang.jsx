@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react'
 import {Message, Icon, Container, Label, Form, Item, Flag} from 'semantic-ui-react'
 import {useTranslation, withTranslation} from 'react-i18next'
 
-//todo ou en-GB parmas ou en-GB context, mais il faut l=que le champs text modifie bine l'attribut de l'objet géré par le form
+//todo handle validation, need one or more description de valid form
 /**
  *
  * @param tabText
@@ -16,7 +16,7 @@ import {useTranslation, withTranslation} from 'react-i18next'
  */
 const TextAreaMultilang = ({ tabText, setter, name, min, max }) => {
     const {t,  i18n } = useTranslation()
-    const [lg, setLg ] = useState(i18n.language.split('-')[0])
+    const [lg, setLg ] = useState(i18n.language)
 
     const handleText = ( event ) => {
         const { value } = event.currentTarget;
@@ -31,9 +31,9 @@ const TextAreaMultilang = ({ tabText, setter, name, min, max }) => {
     }
 
     const LangOptions = [
-        {key: 'en', value: 'en', flag: 'gb', text: ''},
-        {key: 'fr', value: 'fr', flag: 'fr', text: ''},
-        {key: 'nl', value: 'nl', flag: 'nl', text: ''},
+        {key: 'en-GB', value: 'en-GB', flag: 'gb', text: ''},
+        {key: 'fr-FR', value: 'fr-FR', flag: 'fr', text: ''},
+        {key: 'nl-BE', value: 'nl-BE', flag: 'nl', text: ''}
     ]
 
     const handleLanguage = ( e, value  ) => {
@@ -87,7 +87,7 @@ const TextAreaMultilang = ({ tabText, setter, name, min, max }) => {
                     <MenuFlag />
                 </Container>
 
-                {!tabText['en'] &&
+                {!tabText['en-GB'] &&
                     <Message
                         info compact color="teal" size="mini"
                          icon='idea'

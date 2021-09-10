@@ -1,9 +1,39 @@
 import Axios from "axios";
 import JwtDecode from "jwt-decode";
-import { USR_API } from "../../config";
+import {LOCAL_URL, ORG_API, USR_API} from "../../config";
 
 const register = (user) =>  {
-    return Axios.post(USR_API + "/register", user);
+    let bodyFormData = new FormData();
+    bodyFormData.append('firstname', user.firstname)
+    bodyFormData.append('lastname', user.lastname)
+    bodyFormData.append('email', user.email)
+    bodyFormData.append('password', user.password)
+    if(user.picture !== undefined){
+        bodyFormData.append('pictureFile', user.picture)
+    }
+    return Axios({
+        method: 'post',
+        url: USR_API + "/register",
+        data: bodyFormData,
+        headers: {'Content-Type': 'multipart/form-data'}
+    })
+  //  return Axios.post(USR_API + "/register", user);
+}
+
+const askActivation = (email) => {
+    let data = {
+        urlActivation:LOCAL_URL+"/activation/",
+        email:email
+    }
+    if(email){
+        return Axios.post(USR_API+"/sendActivation", data)
+    }
+}
+
+const activation = (activationToken) => {
+    if(activationToken){
+        return Axios.post(USR_API+"/activation", {"token":activationToken})
+    }
 }
 
 const put = (user) => {
@@ -83,6 +113,8 @@ function checkFirstName() {
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
     register,
+    askActivation,
+    activation,
     checkRole,
     checkMail,
     put,

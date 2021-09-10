@@ -26,7 +26,7 @@ const MultiSelect = ({optionsList, textKeyList = [], setSelected, loader} ) => {
                 text:makeText(opt)
             })
         })
-        console.log(options)
+
         return options
     }
 

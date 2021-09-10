@@ -15,9 +15,11 @@ import TextAreaMultilang from "../__CommonComponents/forms/TextAreaMultilang";
  */
 const OrgForm = ( props ) => {
 
+    //todo handle new picture
     const  org  = props.org
 
     const [updateOrg, setUpdateOrg] = useState( org )
+
 
     const [desc, setDesc] = useState(org.description)
 
@@ -63,6 +65,7 @@ const OrgForm = ( props ) => {
             const abortController = new AbortController()
             const signal = abortController.signal
 
+        console.log(org)
             preSubmit()
             setLoader(true);
             orgAPI.put(org, {signal:signal})

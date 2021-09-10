@@ -68,24 +68,20 @@ const FileUpload = ( { history=undefined, activity, setter, hideModal=false, han
 
         setLoader(true)
 
-        let bodyFormData = new FormData();
-
-        bodyFormData.append('file', currentFile)
-        bodyFormData.append('id', activity.id)
-
-        if(activity.fileType){ //for update a file
-            fileAPI.putFile(bodyFormData)
+       // if(activity.fileType){ //for update a file
+            fileAPI.putFile(activity, currentFile)
                 .then(response => {
                     console.log(response)
                     setter(response.data[0])
                     setIsSave(true)
+                    history.replace('/activity/owned_' + response.data[0].id)
                 })
                 .catch(error => {
                     setError(error.response)
                 })
                 .finally(() => setLoader(false))
 
-        }else { //for create a new file
+       /* }else { //for create a new file
             fileAPI.postFile(bodyFormData)
                 .then(response => {
                     setter(response.data[0])
@@ -99,7 +95,7 @@ const FileUpload = ( { history=undefined, activity, setter, hideModal=false, han
                     setError(error.response)
                 })
                 .finally(() => setLoader(false))
-        }
+        }*/
 
     }
 
@@ -109,10 +105,10 @@ const FileUpload = ( { history=undefined, activity, setter, hideModal=false, han
         }
 
         setLoader(true)
-        fileAPI.remove(activity.id)
+        fileAPI.putFile(activity, null)
             .then(response => {
                 setter(response.data[0])
-                history.replace('/activity/creator_' + response.data[0].id)
+                history.replace('/activity/owned_' + response.data[0].id)
             })
             .catch(error => {
                 console.log(error.response)

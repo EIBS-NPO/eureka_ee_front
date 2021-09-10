@@ -8,8 +8,6 @@ import Modal from "../__CommonComponents/Modal";
 import Card from "../__CommonComponents/Card";
 import projectAPI from "../../../../__services/_API/projectAPI";
 
-//todo afficher un bouton si referent pour update
-//todo si update clicquer afficher le compo orgForm sinon le compo organization
 /**
  *
  * @param project
@@ -17,12 +15,14 @@ import projectAPI from "../../../../__services/_API/projectAPI";
  * @constructor
  */
 const ProjectTeam = ({ project } ) => {
-
+console.log(project)
     const isAuth = useContext(AuthContext).isAuthenticated;
     const { t } = useTranslation()
 
     const [isOwner, setIsOwner] = useState(false)
 
+    const [projectReferent, setProjectReferent] = useState()
+    const [orgReferent, setOrgReferent] = useState()
     const [team, setTeam] = useState([])
 
     const [email, setEmail] = useState("")
@@ -30,19 +30,32 @@ const ProjectTeam = ({ project } ) => {
         email:""
     })
 
-    useEffect(()=>{
+    useEffect(async()=>{
         setLoader(true)
         setIsOwner(userAPI.checkMail() === project.creator.email)
 
-        projectAPI.getTeam( project.id)
-            .then(response => {
-                if(response.data[0] !== "DATA_NOT_FOUND"){
-                    setTeam(response.data)
-                }
-            })
+        let response = await projectAPI.getTeam( project.id)
             .catch(error => console.log(error.response))
-            .finally(() => setLoader(false))
-    },[])
+            if(response && response.status === 200){
+                let teamData = response.data;
+                setProjectReferent(
+                    teamData.splice(
+                        teamData.findIndex(e => e.id  = project.creator.id)
+                        , 1
+                    )[0]
+                )
+                if(project.organization){
+                    setOrgReferent(
+                        teamData.splice(
+                            teamData.findIndex(e => e.id  = project.organization.referent.id)
+                            , 1
+                        )[0]
+                    )
+                }
+                setTeam(teamData)
+            }
+        setLoader(false)
+    },[project])
 
     const handleMail = (event) => {
         const { value } = event.currentTarget;
@@ -150,6 +163,20 @@ const ProjectTeam = ({ project } ) => {
 
             {!loader &&
             <>
+                {projectReferent &&
+                    <Container>
+                        <header> {t('project_referent')} </header>
+                        <Card obj={projectReferent} type="user" isLink={true} ctx="public"/>
+                    </Container>
+                }
+
+                {orgReferent &&
+                    <Container>
+                        <header> {t('org_referent')} </header>
+                        <Card obj={orgReferent} type="user" isLink={true} ctx="public"/>
+                    </Container>
+                }
+
                 {team && team.length > 0 &&
                 team.map( (teammate, key ) => (
                     <Container key={ key }>

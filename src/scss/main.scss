@@ -21,20 +21,25 @@
     !* Rédigez vos propriétés CSS ici *!
 }*/
 
+/*
+min-70% pour voir mettre en width
+ */
 #main {
     display:flex;
- //   position: fixed;
-    top: 20%;
+    position: fixed;
+    top: 160px;
    // flex-direction: column;
   //  max-width: 300px;
   //  height:100vh;
     bottom:0px;
   //  top:0px;
-    left:0px;
+    left: 200px;
     right:0px;
 //    overflow:auto;
+    min-height: 70vh;
     max-height:100vh;
     justify-content: center;
+
     /*@media screen and (max-width: 601px)
     {
         justify-content: center;
@@ -44,6 +49,30 @@
         justify-content: space-between;
     }
     justify-content: center;*/
+}
+
+#mainMenu{
+    position:fixed;
+ //   z-index:100;
+    width: -webkit-fill-available;
+    width: 100%;
+}
+
+#SubMainMenu {
+    display:flex;
+    //   position: fixed;
+  //  top: 20%;
+    // flex-direction: column;
+    //  max-width: 300px;
+    //  height:100vh;
+  //  bottom:0px;
+    //  top:0px;
+ //   left:0px;
+//    right:0px;
+    //    overflow:auto;
+    min-height: 70vh;
+    max-height:100vh;
+ //   justify-content: center;
 }
 
 #main_top {

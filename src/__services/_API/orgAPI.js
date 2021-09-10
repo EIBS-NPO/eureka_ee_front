@@ -1,30 +1,44 @@
 import Axios from "axios";
-import { ORG_API } from "../../config";
+import {ORG_API, PROJECT_API} from "../../config";
 
 function post(org) {
-    return Axios.post(ORG_API, org)
+    let bodyFormData = new FormData();
+    bodyFormData.append('name', org.name)
+    bodyFormData.append('type', org.type)
+    bodyFormData.append('email', org.email)
+    bodyFormData.append('phone', org.phone)
+    bodyFormData.append('description', JSON.stringify(org.description))
+    if(org.picture !== undefined){
+        bodyFormData.append('pictureFile', org.picture)
+    }
+    return Axios({
+        method: 'post',
+        url: ORG_API,
+        data: bodyFormData,
+        headers: {'Content-Type': 'multipart/form-data'}
+    })
 }
 
 function put(org) {
     let data = {
-        "orgId" : org.id,
-        "name" : org.name,
-        "type": org.type,
-        "email": org.email,
-        "phone" : org.phone,
-        'description': org.description
-    }
-    if(org.partner !== undefined){
-        data["isPartner"] = org.partner
-    }
-    return Axios.put(ORG_API, data)
+          "orgId" : org.id,
+          "name" : org.name,
+          "type": org.type,
+          "email": org.email,
+          "phone" : org.phone,
+          'description': org.description
+      }
+      if(org.partner !== undefined){
+          data["isPartner"] = org.partner
+      }
+      return Axios.put(ORG_API, data)
 }
 
 function getPublic(id = null, isPartner=null){
     let endPoint = ORG_API;
     if(id === null){
         if(isPartner !== null){
-            endPoint += "/public?isPartner=true"
+            endPoint += "/public?partner"
         }
         else{
             endPoint += "/public";
@@ -35,11 +49,17 @@ function getPublic(id = null, isPartner=null){
     return Axios.get(endPoint)
 }
 
-function getMy(id= null){
-    if(id === null){
-        return Axios.get(ORG_API)
+function getOrg(access =null, id =null){
+    let params = "?";
+    if(access !== null){ params += "access=" + access }
+    if(id !== null){
+        if( params !== "" ) { params += "&"}
+        params += "id=" + id
+    }
+    if(params === "?" ){
+        return Axios.get(ORG_API )
     }else {
-        return Axios.get(ORG_API + "?id=" + id)
+        return Axios.get(ORG_API + params)
     }
 }
 
@@ -52,6 +72,7 @@ const uploadPic = (bodyFormData) => {
     })
 }
 
+//todo useless?
 const downloadPic = (picture) => {
     return Axios.get(ORG_API + "/picture/?pic=" + picture)
 }
@@ -84,7 +105,7 @@ export default {
     put,
     remove,
     getPublic,
-    getMy,
+    getOrg,
     uploadPic,
     downloadPic,
     manageActivity,

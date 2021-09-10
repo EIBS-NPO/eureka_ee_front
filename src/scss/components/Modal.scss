@@ -8,18 +8,25 @@
   background: rgba(0, 0, 0, 0.6);
   padding-left: 100px;
 
-  .cropper{
-    position: relative;
-    width: 400px;
-    height: 400px;
-    background-color: rgba(0,0,0,0.5);
-    img{
-      margin: auto;
-      width: auto;
-      height: auto;
-      border-radius: 0;
+  .ModalCrop {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .cropper{
+      position: relative;
+      width: 400px;
+      height: 400px;
+      background-color: rgba(0,0,0,0.5);
+      img{
+        margin: auto;
+        width: auto;
+        height: auto;
+        border-radius: 0;
+      }
     }
   }
+
   .inputUploadImg{
     margin-bottom: 15px;
     width: 100%;

@@ -6,6 +6,7 @@ import {Label, Segment, Button, Form, Icon, Item, Loader} from "semantic-ui-reac
 import TextAreaMultilang from "../__CommonComponents/forms/TextAreaMultilang";
 import PictureForm from "../__CommonComponents/forms/picture/PictureForm";
 import fileAPI from "../../../../__services/_API/fileAPI";
+import * as url from "url";
 
 const CreateOrg = ({ history, t }) => {
 
@@ -20,9 +21,9 @@ const CreateOrg = ({ history, t }) => {
     });
 
     const [desc, setDesc] = useState({
-        en:"",
-        fr:"",
-        nl:""
+        'en-GB':"",
+        'fr-FR':"",
+        'nl-BE':""
     })
 
     const handleChange = (event) => {
@@ -40,17 +41,26 @@ const CreateOrg = ({ history, t }) => {
     const handleSubmit = async() => {
         setLoader(true)
         let newOrg
+        let urlMsg = ""
 
         let response = await OrgAPI.post(org)
             .catch(error => {
                 console.log(error.response.data)
                 setErrors(error.response.data);
             })
-        if(response && response.status === 200){
-            newOrg = response.data[0]
+        if(response && response.status >= 200 && response.status < 300){
+            switch(response.status){
+                case 206 :
+                    newOrg = response.data[1]
+                    urlMsg = "_"+response.data[0].split(" : ")[2];
+                    break;
+                default :
+                    newOrg = response.data[0]
+            }
         }
 
-        if(org.picture){
+
+        /*if(org.picture){
             let bodyFormData = new FormData();
             bodyFormData.append('image', org.picture)
             bodyFormData.append('id', newOrg.id)
@@ -59,9 +69,9 @@ const CreateOrg = ({ history, t }) => {
                     console.log(error.response)
                     setErrors({...error,"picture":error.response})
                 })
-        }
+        }*/
 
-        history.replace("/org/creator_" + newOrg.id)
+        history.replace("/org/owned_" + newOrg.id + urlMsg)
     };
 
     const [errors, setErrors] = useState({

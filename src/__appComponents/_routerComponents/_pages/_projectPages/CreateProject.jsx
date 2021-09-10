@@ -48,9 +48,9 @@ const CreateProject = ({ history, t }) => {
     }
 
     const [desc, setDesc] = useState({
-        en:"",
-        fr:"",
-        nl:""
+        'en-GB':"",
+        'fr-FR':"",
+        'nl-BE':""
     })
 
     const handleChange = (event) => {
@@ -84,7 +84,7 @@ const CreateProject = ({ history, t }) => {
             newProject = response.data[0]
         }
 
-        if(project.picture){
+        /*if(project.picture){
             let bodyFormData = new FormData();
             bodyFormData.append('image', project.picture)
             bodyFormData.append('id', newProject.id)
@@ -93,7 +93,7 @@ const CreateProject = ({ history, t }) => {
                     console.log(error.response)
                     setErrors({...error,"picture":error.response})
                 })
-        }
+        }*/
 
         history.replace("/project/creator_" + newProject.id)
     };

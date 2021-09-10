@@ -1,15 +1,15 @@
 import Axios from "axios";
 import JwtDecode from "jwt-decode";
-import {API_URL, USR_API} from "../../config";
+import { ADMIN_API } from "../../config";
 
 
 /** ADMIN USER **/
 function getUser(id =null) {
-    let addURL = "/admin/user";
+    let addURL = "/user";
     if(id != null){
         addURL = addURL + "?id=" + id;
     }
-    return Axios.get(API_URL + addURL )
+    return Axios.get(ADMIN_API + addURL )
 }
 
 const putUser = (user) => {
@@ -26,9 +26,20 @@ const activ = (userId, isActiv) => {
 
 /** ADMIN ORGS **/
 
+/** ADMIN Projects **/
+
+const getProject = (id) => {
+    let addURL = "/project";
+    if(id != null){
+        addURL = addURL + "?id=" + id;
+    }
+    return Axios.get(ADMIN_API + addURL )
+}
+
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
     getUser,
     putUser,
+    getProject,
     activ
 };

@@ -15,6 +15,8 @@ import projectAPI from "../../../../__services/_API/projectAPI";
 import activityAPI from "../../../../__services/_API/activityAPI";
 import MediaContext from "../../../../__appContexts/MediaContext";
 
+import SearchInput from "../__CommonComponents/forms/SearchList";
+
 export const OrgContext = createContext({
     org:{ },
     errors: { },
@@ -27,7 +29,6 @@ const OrgProfile = (props ) => {
     const isAuth = useContext(AuthContext).isAuthenticated;
 
     const urlParams = props.match.params.id.split('_')
-
     const checkCtx = () => {
         if (urlParams[0] !=="public" && isAuth === false) {
             //if ctx need auth && have no Auth, public context is forced
@@ -35,9 +36,10 @@ const OrgProfile = (props ) => {
         } else {return urlParams[0]}
     }
 
-    const [ctx, setCtx] = useState("public")
+    const [ctx, setCtx] = useState()
 
     const [ org, setOrg ] = useState({})
+    console.log(org)
     const  [ orgForm, setOrgForm ]  = useState(false)
 
     const handleForm = ( ) => {
@@ -49,6 +51,7 @@ const OrgProfile = (props ) => {
 
     const [activities, setActivities] = useState([])
     const [freeActivities, setFreeActivities] =useState([])
+
 //    const [errorActivities, setErrorActivities] = useState("")
 
 
@@ -61,45 +64,50 @@ const OrgProfile = (props ) => {
 
     const [loader, setLoader] = useState(true);
 
-    useEffect(() => {
+    const [message, setMessage] = useState(undefined)
+
+    const setData = (data) => {
+        setOrg(data)
+        setActivities(data.activities ? data.activities : [])
+        setProjects(data.projects ? data.projects : [])
+        //manage access
+        setIsReferent(authAPI.getId() === data.referent.id)
+        data.membership && data.membership.forEach( m => {
+            if(m.id ===  authAPI.getId()){ setIsAssigned(true)}
+        })
+    }
+
+    useEffect(async() => {
         setLoader(true)
-        if(checkCtx() === 'creator'){//for user's org or assign members
-            orgAPI.getMy(urlParams[1])
-                .then(response => {
-        //            console.log(response.data[0])
-                    setOrg(response.data[0])
-                    setActivities(response.data[0].activities ? response.data[0].activities : [])
-                    setProjects(response.data[0].projects ? response.data[0].projects : [])
-                    //manage access
-                    setIsReferent(authAPI.getId() === response.data[0].referent.id)
-                    response.data[0].membership.forEach( m => {
-                        if(m.id ===  authAPI.getId()){ setIsAssigned(true)}
-                    })
-                })
-                .catch(error => console.log(error.response))
-                .finally(() => setLoader(false))
-        }else {//for anonymous
-            orgAPI.getPublic(urlParams[1])
-                .then(response => {
-       //             console.log(response.data[0])
-                    setOrg(response.data[0])
-                    setActivities(response.data[0].activities ? response.data[0].activities : [])
-                    setProjects(response.data[0].projects ? response.data[0].projects : [])
-                    //manage access
-                    setIsReferent(authAPI.getId() === response.data[0].referent.id)
-                    response.data[0].membership.forEach( m => {
-                        if(m.id ===  authAPI.getId()){ setIsAssigned(true)}
-                    })
-                })
-                .catch(error => console.log(error.response))
-                .finally(() => setLoader(false))
+       // let ctx = checkCtx();
+        await setCtx(checkCtx())
+        console.log(urlParams[0])
+        console.log(ctx)
+        if(urlParams[2]){
+            setMessage(urlParams[2])
         }
+
+        if(ctx !== 'public'){//for user's org or assign members
+            let response = await orgAPI.getOrg(urlParams[0],urlParams[1])
+                .catch(error => console.log(error.response))
+            if(response && response.status === 200){
+                setData(response.data[0])
+            }
+
+        }else {//for anonymous
+            let response = await orgAPI.getPublic(urlParams[1])
+                .catch(error => console.log(error.response))
+            if(response && response.status === 200 ){
+                setData(response.data[0])
+            }
+        }
+        setLoader(false)
     }, []);
 
     useEffect(() => {
         if(isReferent || isAssigned){
             //load user's selectable activities
-            activityAPI.get("creator")
+            activityAPI.getActivity("owned")
                 .then(response => {
                     let table = []
                     response.data.forEach(activity => {
@@ -113,7 +121,7 @@ const OrgProfile = (props ) => {
                     console.log(error)
                 })
 
-            projectAPI.get("creator")
+            projectAPI.getProject("owned")
                 .then(response => {
                     let table = []
                     response.data.forEach(project => {
@@ -128,8 +136,6 @@ const OrgProfile = (props ) => {
                 })
         }
     },[isReferent, isAssigned])
-
-    console.log(org)
 
     const [activityLoader, setActivityLoader] = useState(false)
     const handleRmvActivity = (activity) => {
@@ -212,13 +218,14 @@ const OrgProfile = (props ) => {
     }
 
     const filteredList = (list) => {
-       if(list) {
+        console.log(list)
+
            return list.filter(e =>
                e.title.toLowerCase().includes(search.toLowerCase()) ||
                e.creator.firstname.toLowerCase().includes(search.toLowerCase()) ||
                e.creator.lastname.toLowerCase().includes(search.toLowerCase())
+
            )
-       }else { return []}
     }
 
     const PresentationPanel = () => {
@@ -245,11 +252,12 @@ const OrgProfile = (props ) => {
     }
 
     const ProjectPanel = () => {
+        const [filteredProjects, setFilteredProjects] = useState([])
         return (
             <>
                 <Menu>
                     {(isReferent || isAssigned) &&
-                    <Dropdown item text={props.t('add') + " " + props.t('project')} loading={projectLoader} scrolling>
+                    <Dropdown item text={props.t('associate_with') + " " + props.t('project')} loading={projectLoader} scrolling>
                         <Dropdown.Menu>
                             {freeProjects.length === 0 &&
                             <Dropdown.Item>
@@ -261,10 +269,10 @@ const OrgProfile = (props ) => {
                             }
 
                             {freeProjects.map(p =>
-                                <Dropdown.Item key={p.id} onClick={() => handleAddProject(p.id)} disabled={!!p.project} >
+                                <Dropdown.Item key={p.id} onClick={() => handleAddProject(p.id)} disabled={!!p.organization} >
                                     <Icon name="plus"/>
                                     {p.title + " "}
-                                    {p.project &&
+                                    {p.organization &&
                                     <Label size="mini" color="purple" basic >
                                         <Icon name="attention" /> { props.t('already_use')}
                                     </Label>
@@ -276,16 +284,25 @@ const OrgProfile = (props ) => {
                     </Dropdown>
                     }
                     <Menu.Item position="right">
-                        <Input
+                        <SearchInput
+                            elementList={projects}
+                            setResultList={setFilteredProjects}
+                            researchFields={{
+                                main: ["title"],
+                                description:[props.i18n.language],
+                                creator: ["firstname", "lastname"]
+                            }}
+                        />
+                        {/*<Input
                             name="search"
                             value={ search ? search : ""}
                             onChange={handleSearch}
                             placeholder={  props.t('search') + "..."}
-                        />
+                        />*/}
                     </Menu.Item>
                 </Menu>
 
-                {filteredList(org.projects).length > 0 && filteredList(org.projects).map(project =>
+                {filteredProjects.length > 0 && filteredProjects.map(project =>
                     <Segment key={project.id}>
                         <Card key={project.id} obj={project} type="project" isLink={true} />
                         { (isReferent || project.creator.id === authAPI.getId()) &&
@@ -299,7 +316,7 @@ const OrgProfile = (props ) => {
 
                 )}
 
-                {filteredList(org.projects).length === 0 &&
+                {filteredProjects.length === 0 &&
                     <Container textAlign='center'>
                         <Message size='mini' info>
                             {props.t("no_result")}
@@ -310,12 +327,14 @@ const OrgProfile = (props ) => {
         )
     }
 
-    const ActivitiesPanel = () => {
+    const ActivitiesPanel = ({activities}) => {
+        const [filteredActivities, setFilteredActivities] = useState([])
+
         return (
             <>
                 <Menu>
                     {(isReferent || isAssigned) &&
-                    <Dropdown item text={props.t('add') + " " + props.t('activity')} loading={activityLoader} scrolling >
+                    <Dropdown item text={props.t('share') + " " + props.t('activity')} loading={activityLoader} scrolling >
                         <Dropdown.Menu>
                             <Dropdown.Item>
                                 {freeActivities.length === 0 &&
@@ -345,17 +364,19 @@ const OrgProfile = (props ) => {
                         </Dropdown.Menu>
                     </Dropdown>
                     }
-                    <Menu.Item position="right">
-                        <Input
-                            name="search"
-                            value={ search ? search : ""}
-                            onChange={handleSearch}
-                            placeholder={  props.t('search') + "..."}
+                    <Menu.Item>
+                        <SearchInput
+                            elementList={activities}
+                            setResultList={setFilteredActivities}
+                            researchFields={{
+                                main: ["title"],
+                                creator: ["firstname", "lastname"]
+                              }}
                         />
                     </Menu.Item>
                 </Menu>
 
-                {filteredList(activities).length > 0 && filteredList(activities).map(act =>
+                {filteredActivities.length > 0 && filteredActivities.map(act =>
                     <Segment key={act.id}>
                         <Card key={act.id} obj={act} type="activity" isLink={true} />
                         { (isReferent || act.creator.id === authAPI.getId()) &&
@@ -367,7 +388,7 @@ const OrgProfile = (props ) => {
                     </Segment>
                 )}
 
-                {filteredList(activities).length === 0 &&
+                {filteredActivities.length === 0 &&
                     <Container textAlign='center'>
                         <Message size='mini' info>
                             {props.t("no_result")}
@@ -392,6 +413,9 @@ const OrgProfile = (props ) => {
                     </Segment>
                 }
 
+                {
+                    // todo Mambership n'affiche que la liste des membre. => faire un form (réutilisable?
+                }
                 {activeItem === 'membership' &&
                     <Segment attached='bottom'>
                         <Membership org={org} />
@@ -406,7 +430,7 @@ const OrgProfile = (props ) => {
 
                 {activeItem === 'activities' &&
                     <Segment attached='bottom' loading={activityLoader}>
-                        <ActivitiesPanel />
+                        <ActivitiesPanel activities={activities}/>
                     </Segment>
                 }
             </>
@@ -428,6 +452,13 @@ const OrgProfile = (props ) => {
                     {org && org !== "DATA_NOT_FOUND" ?
                         <>
                             <Segment basic>
+                                {message &&
+                                    <Message attached='bottom' warning>
+                                        <p>{message}</p>
+                                    </Message>
+                                }
+
+
                                 <Header as="h2" floated='left'>
                                     <Picture size="small" picture={org.picture} />
                                 </Header>

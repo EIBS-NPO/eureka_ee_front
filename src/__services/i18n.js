@@ -14,17 +14,17 @@ i18n
     .use(initReactI18next) // passes i18n down to react-i18next
     .init({
         resources: {
-            en: { // translation is the default namespace
+            "en-GB": { // translation is the default namespace
                 translation: en,
             },
-            fr: {
+            "fr-FR": {
                 translation: fr,
             },
-            nl: {
+            "nl-BE": {
                 translation: nl,
             }
         },
-        fallbackLng: 'en',
+        fallbackLng: 'en-GB',
 
         keySeparator: false, // we do not use keys in form messages.welcome
 

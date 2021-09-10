@@ -7,8 +7,6 @@ import memberAPI from "../../../../__services/_API/memberAPI";
 import Modal from "../__CommonComponents/Modal";
 import Card from "../__CommonComponents/Card";
 
-//todo afficher un bouton si referent pour update
-//todo si update clicquer afficher le compo orgForm sinon le compo organization
 const Membership = ( props ) => {
     const isAuth = useContext(AuthContext).isAuthenticated;
     const { t } = useTranslation()
@@ -139,6 +137,7 @@ const Membership = ( props ) => {
                 <>
                     {props.org &&
                         <Container>
+                            <header> {t('org_referent')} </header>
                             <Card obj={props.org.referent} type="user" isLink={true} ctx="public"/>
                         </Container>
                     }

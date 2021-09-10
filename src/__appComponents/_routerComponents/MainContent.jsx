@@ -1,7 +1,7 @@
 
-import React, { useContext } from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {Icon, Dropdown, Menu, Sidebar, Image, Item} from 'semantic-ui-react'
-import { NavLink } from "react-router-dom";
+import {NavLink, useHistory} from "react-router-dom";
 
 import AuthContext from "../../__appContexts/AuthContext";
 import MediaContext from "../../__appContexts/MediaContext";
@@ -15,13 +15,40 @@ import { strUcFirst } from "../../__services/utilities";
 
 import interreg_logo from "../../_resources/logos/Interreg.jpg";
 import '../../scss/components/mainMenu.scss';
+import orgAPI from "../../__services/_API/orgAPI";
 
 
 const MainContent = (props ) => {
     const t = props.t;
+    const history = useHistory();
+  //  console.log(props)
+ //   const history = props.history
     const contentChildren = props.children;
 
-    const { isAuthenticated, isAdmin, lastname, firstname } = useContext(AuthContext)
+    const { isAuthenticated, setIsAuthenticated,
+        isAdmin, setIsAdmin,
+        lastname, setLastname,
+        firstname, setFirstname,
+        partnerList, setPartnerList
+    } = useContext(AuthContext)
+
+    //PARTNER FOOTER
+  //  const [partnerList, setPartnerList] = useState([])
+  /*  useEffect(()=> {
+     //   setLoader(true)
+        orgAPI.getPublic(null, true)
+            .then(response => {
+                setPartnerList(response.data)
+            })
+            .catch(error => {
+                console.log(error)
+                //setError(true)
+            })
+      //      .finally(() => setLoader(false))
+    }, [])*/
+
+    //END PARTNER FOOTER
+
 
     const Media = useContext(MediaContext).Media
 
@@ -29,8 +56,13 @@ const MainContent = (props ) => {
     const handleItemClick = (e, { name }) => setActiveItem({ activeItem: name })*/
 
     //delete token form localStorage
-    const handleLogout = () => {
+    const handleLogout = (props) => {
+        setIsAuthenticated(false)
+        setIsAdmin(false)
+        setFirstname("")
+        setLastname("")
         authAPI.logout();
+        history.replace("/")
     };
 
     const buildItem = ( item ) => {
@@ -96,7 +128,12 @@ const MainContent = (props ) => {
         return (
             <>
                 <div id="logo">
-                    <Image src={interreg_logo} />
+                    <Image
+                        src={interreg_logo}
+                        as='a'
+                        href='https://www.eureka-interreg.org/'
+                        target='_blank'
+                    />
                 </div>
                 <Sidebar.Pushable>
                     <Sidebar
@@ -158,7 +195,12 @@ const MainContent = (props ) => {
                 >
                     <div id={"main_top"}>
                         <div id="logo">
-                            <Image src={interreg_logo} />
+                            <Image
+                                src={interreg_logo}
+                                as='a'
+                                href='https://www.eureka-interreg.org/'
+                                target='_blank'
+                            />
                         </div>
                         <Menu id={"main_menu"}>
                             <Menu.Item onClick={onToggle}>
@@ -182,7 +224,12 @@ const MainContent = (props ) => {
         return (
             <div id={"main_top"}>
                 <div id="logo">
-                    <img src={interreg_logo} alt="Eurekal logo"/>
+                    <Image
+                        src={interreg_logo}
+                        as='a'
+                        href='https://www.eureka-interreg.org/'
+                        target='_blank'
+                    />
                 </div>
                 <Menu id={"main_menu"} className={"wrapped"}>
                     {leftItems.map((item ) => (buildItem(item)))}
@@ -197,7 +244,7 @@ const MainContent = (props ) => {
     };
 
     const NavBarChildren = (props) => (
-        <div id={"main"} >
+        <div id={"SubMainMenu"} >
             {props.children}
         </div>
     );
@@ -220,7 +267,7 @@ const MainContent = (props ) => {
             const { visible } = this.state;
 
             return (
-                <div>
+                <div id="mainMenu">
                     <Media at="xs">
                         <NavBarMobile
                             leftItems={leftItems}
@@ -231,7 +278,7 @@ const MainContent = (props ) => {
                         >
                             <NavBarChildren>{children}</NavBarChildren>
                         </NavBarMobile>
-                        <Footer/>
+                        {/*<Footer/>*/}
                     </Media>
 
                     {/*<Media at="mobile">
@@ -262,7 +309,7 @@ const MainContent = (props ) => {
                             {children}
 
                         </NavBarChildren>
-                        <Footer/>
+                       {/* <Footer/>*/}
                     </Media>
                 </div>
             );
@@ -313,24 +360,24 @@ const MainContent = (props ) => {
         },
         {as:"m", id:"left_menu", header:'activity',
             options: [
-                {as:"a", to:'/all_activities/creator', content:'my_activities', key:"myActivities", authstate:"true"},
-                {as:"a", to:'/all_activities/follower', content:'my_favorites', key:"favoriteActivities", authstate:"true"},
+                {as:"a", to:'/all_activities/owned', content:'my_activities', key:"myActivities", authstate:"true"},
+                {as:"a", to:'/all_activities/followed', content:'my_favorites', key:"favoriteActivities", authstate:"true"},
                 {as:"a", to:'/all_activities/public', content:'public_activities', key:"publicActivities", authstate:"always"}
             ],
             key:"menuActivities", authstate:"always"
         },
         { as:"m", id:"", header:'projects',
             options: [
-                {as:"a", to:'/all_projects/creator', content:'my_projects', key:"myProjects", authstate:"true"},
-                {as:"a", to:'/all_projects/follower', content:'my_favorites', key:"favoriteProjects", authstate:"true"},
+                {as:"a", to:'/all_projects/owned', content:'my_projects', key:"myProjects", authstate:"true"},
+                {as:"a", to:'/all_projects/followed', content:'my_favorites', key:"favoriteProjects", authstate:"true"},
                 {as:"a", to:'/all_projects/public', content:'all_projects', key:"allProjects", authstate:"always"}
             ] ,
             key:'menuProjects', authstate:"always"
         },
         { as:"m", id:"", header:'organization',
             options: [
-                {as:"a", to:'/all_organizations/my', content:'my_orgs', key:"myOrgs", authstate:"true"},
-                /*{as:"a", to:'/all_projects/follower', content:t('my_favorites'), key:"favoriteProjects", authstate:"true"},*/
+                {as:"a", to:'/all_organizations/owned', content:'my_orgs', key:"myOrgs", authstate:"true"},
+                /*{as:"a", to:'/all_projects/followed', content:t('my_favorites'), key:"favoriteProjects", authstate:"true"},*/
                 {as:"a", to:'/all_organizations/public', content:'all_org', key:"allOrgs", authstate:"always"}
             ] ,
             key:'menuOrgs', authstate:"always"

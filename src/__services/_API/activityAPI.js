@@ -1,12 +1,44 @@
 
 import Axios from "axios";
-import {ACT_API, FOLW_ACT } from "../../config";
+import {ACT_API, FOLW_ACT, ORG_API, PROJECT_API} from "../../config";
 
+/*
+id: undefined,
+        picture:undefined,
+        file:undefined,
+        title: "",
+        summary: {},
+        isPublic: false,
+ */
+
+//todo handle discrim if file existe !
 const post = (activity) => {
-    return Axios.post(ACT_API, activity)
+    let bodyFormData = new FormData();
+    bodyFormData.append('title', activity.title)
+    bodyFormData.append('isPublic', activity.isPublic)
+    bodyFormData.append('summary', JSON.stringify(activity.summary))
+    if(activity.picture !== undefined){
+        bodyFormData.append('pictureFile', activity.picture)
+    }
+    if(activity.file !== undefined){
+        bodyFormData.append('file', activity.file)
+    }
+    return Axios({
+        method: 'post',
+        url: ACT_API,
+        data: bodyFormData,
+        headers: {'Content-Type': 'multipart/form-data'}
+    })
+//    return Axios.post(ACT_API, activity)
 }
 
 const put = (activity) => {
+    let data = {
+        "id": activity.id,
+        "title": activity.title,
+        "summary": JSON.stringify(activity.summary),
+        "isPublic": activity.endDate
+    }
     return Axios.put(ACT_API, activity)
 }
 
@@ -16,6 +48,20 @@ const get = (context, id = null, orgId = null, projectId = null) => {
         params += "&id="+ id
     }
     return Axios.get(ACT_API + params)
+}
+
+function getActivity(access =null, id =null){
+    let params = "?";
+    if(access !== null){ params += "access=" + access }
+    if(id !== null){
+        if( params !== "" ) { params += "&"}
+        params += "id=" + id
+    }
+    if(params === "?" ){
+        return Axios.get(ACT_API )
+    }else {
+        return Axios.get(ACT_API + params)
+    }
 }
 
 const getPublic = (id = null) => {
@@ -36,6 +82,7 @@ const uploadPic = (bodyFormData) => {
     })
 }
 
+//todo ?
 const downloadPic = (picture) => {
     return Axios.get(ACT_API + "/picture/?pic=" + picture)
 }
@@ -69,6 +116,7 @@ export default {
     post,
     put,
     get,
+    getActivity,
     getPublic,
     downloadPic,
     remove,

@@ -18,6 +18,7 @@ import Picture from "../__CommonComponents/Picture";
 import Modal from "../__CommonComponents/Modal";
 import ProjectForm from "./ProjectForm";
 import MultiSelect from "../__CommonComponents/forms/MultiSelect";
+import adminAPI from "../../../../__services/_API/adminAPI";
 
 const AdminProjects = ( ) => {
 
@@ -25,22 +26,22 @@ const AdminProjects = ( ) => {
 
     const [loader, setLoader] = useState( false)
     const [selectedProject, setSelectedProject] = useState(undefined)
-    console.log(selectedProject)
+
     const [projects, setProjects] = useState([])
     const [error, setError] =useState("")
 
-    console.log(projects)
+
 
     useEffect( ( ) => {
         setLoader(true)
-        projectAPI.get()
+        adminAPI.getProject()
             .then(response => {
                 console.log(response.data)
                 setProjects(response.data)
             })
             .catch(error => {
                 console.log(error);
-                setError(error.response.data[0])
+                setError(error.response.data)
             })
             .finally( () => setLoader(false))
     }, [])

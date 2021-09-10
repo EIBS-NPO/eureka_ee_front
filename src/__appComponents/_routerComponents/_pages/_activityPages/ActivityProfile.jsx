@@ -25,13 +25,12 @@ const ActivityProfile = ( props ) => {
     const [ctx, setCtx] = useState("")
 
     const checkCtx = () => {
-        if (urlParams[0] !=="public" && !authAPI.isAuthenticated()) {
-            //if ctx need auth && have no Auth, public context is forced
-            authAPI.logout()
-        }else {
-
-            return urlParams[0]
-        }
+        if(urlParams[0] === 'public' || urlParams[0] === 'owned' || urlParams[0] === 'followed') {
+            if (urlParams[0] !== "public" && !authAPI.isAuthenticated()) {
+                //if ctx need auth && have no Auth, public context is forced
+                authAPI.logout()
+            } else return urlParams[0]
+        }else return '';
     }
 
     const isAuth = useContext(AuthContext).isAuthenticated;
@@ -42,10 +41,12 @@ const ActivityProfile = ( props ) => {
 
     const [activityProject, setActivityProject] = useState(undefined)
     const [userProjects, setUserProjects] = useState([])
+    const [userAssignProject, setUserAssignProject] = useState([])
     const [errorProject, setErrorProject] = useState("")
 
     const [activityOrg, setActivityOrg] = useState(undefined)
     const [userOrgs, setUserOrgs] = useState([])
+    const [userAssignOrgs, setUserAssignOrgs] = useState([])
     const [errorOrg, setErrorOrg] = useState("")
 
     const isOwner = () => {
@@ -59,7 +60,7 @@ const ActivityProfile = ( props ) => {
 
     const handleForm = ( ) => {
         activityForm === true ? setActivityForm(false) : setActivityForm(true)
-        console.log("handle activity form : " + activityForm)
+      //  console.log("handle activity form : " + activityForm)
     }
 
     const [loader, setLoader] = useState(false);
@@ -68,23 +69,87 @@ const ActivityProfile = ( props ) => {
 
     const handleItemClick = (e, { name }) => setActiveItem(name)
 
-    useEffect(() => {
-        setLoader(true)
-        setCtx(checkCtx())
+    const setData = (activityData) => {
+        setActivity(activityData)
+        if(activityData.project) { setActivityProject(activityData.project)}
+        if(activityData.organization) { setActivityOrg(activityData.organization)}
+    }
 
-        if ( !(urlParams[0] === "public") && !(authAPI.isAuthenticated()) ) {
+    useEffect(async() => {
+        setLoader(true)
+      //  setCtx(await checkCtx())
+        let ctx = checkCtx()
+        setCtx(ctx)
+
+        if(ctx !== ''){
+            if( ctx !== 'public'){ //for owned or assigned activity
+                let response = await activityAPI.getActivity(ctx, urlParams[1])
+                    .catch(error => {
+                        console.log(error.response)
+                        setError(error.response)
+                    })
+                if(response && response.status === 200){ setData(response.data[0])}
+            }else{
+                let response = await activityAPI.getPublic(urlParams[1])
+                    .catch(error => {
+                        console.log(error)
+                        setError(error.response.data[0])
+                    })
+                if(response && response.status === 200){ setData(response.data[0])}
+            }
+            if(ctx === 'owned'){ //if owned, get more data.
+            //get owned project for current usuer
+                let response = await projectAPI.getProject('owned')
+                    .catch(error => {
+                        console.log(error)
+                        setError(error.response.data[0])
+                    })
+                if(response && response.status === 200) { setUserProjects(response.data)}
+            //get assigned project for current user
+                response = await projectAPI.getProject('assigned')
+                    .catch(error => {
+                        console.log(error)
+                        setError(error.response.data[0])
+                    })
+                if(response && response.status === 200){ setUserAssignProject(response.data)}
+
+            //get if activity is followed by current user
+                //todo try to find best solution
+                response = await activityAPI.isFollowing( urlParams[1] )
+                    .catch(error => console.log(error.response.data))
+                if(response && response.status === 200){ setIsFollow(response.data[0])}
+
+                response = await orgAPI.getOrg('owned')
+                    .catch(error => {
+                        console.log(error)
+                        setError(error.response.data[0])
+                    })
+                if(response.status === 200){ setUserOrgs(response.data)}
+
+                response = await orgAPI.getOrg('assigned')
+                    .catch(error => {
+                        console.log(error)
+                        setError(error.response.data[0])
+                    })
+                if(response && response.status === 200 ) { setUserAssignOrgs(response.data)}
+            }
+        }else{
             props.history.replace('/login')
         }
+        setLoader(false)
+        /*if ( !(urlParams[0] === "public") && !(authAPI.isAuthenticated()) ) {
 
-        if(urlParams[0] !== 'public'){
+        }*/
+
+       /* if(urlParams[0] !== 'public'){
             activityAPI.get(urlParams[0], urlParams[1])
                 .then(response => {
                   //  console.log(response.data[0])
                     if(response.data[0] !== "DATA_NOT_FOUND"){
-                        /*if(response.data[0].organization){
+                        /!*if(response.data[0].organization){
                             //todo ??
                             response.data[0].activityId = response.data[0].organization.id
-                        }*/
+                        }*!/
                     }
                     setActivity(response.data[0])
                     if(response.data[0].project){
@@ -127,15 +192,15 @@ const ActivityProfile = ( props ) => {
                         })
                         .catch(error => console.log(error.response.data))
 
-                orgAPI.getMembered()
-                    .then(response => {
-               //         console.log(response.data)
-                        setUserOrgs(response.data)
-                    })
-                    .catch(error => {
-                        console.log(error)
-                        setErrorOrg(error.response.data)
-                    })
+                    orgAPI.getMembered()
+                        .then(response => {
+                   //         console.log(response.data)
+                            setUserOrgs(response.data)
+                        })
+                        .catch(error => {
+                            console.log(error)
+                            setErrorOrg(error.response.data)
+                        })
             }
         }else {
             activityAPI.getPublic(urlParams[1])
@@ -153,7 +218,7 @@ const ActivityProfile = ( props ) => {
                     setError(error.response.data[0])
                 })
                 .finally(() => setLoader(false))
-        }
+        }*/
       //  setLoader(false)
     }, []);
 
@@ -235,7 +300,7 @@ const ActivityProfile = ( props ) => {
                     <Segment.Group horizontal className="borderless">
                         <Segment>
                             <Card obj={activity} type="activity" profile={true} withPicture={false} ctx={ctx}/>
-                            <FileDownload activity={activity} setter={setActivity}/>
+                            <FileDownload activity={activity} setter={setActivity} access={checkCtx()}/>
                         </Segment>
 
                     </Segment.Group>
@@ -272,21 +337,37 @@ const ActivityProfile = ( props ) => {
                 {isOwner() &&
                 <Menu>
                     {!activity.project &&
-                    <Dropdown item text={props.t('add') + " " + props.t('project')} loading={loader2}>
+                    <Dropdown item text={props.t('share_in') + " " + props.t('project')} loading={loader2}>
                         <Dropdown.Menu>
-                            {userProjects.length === 0 &&
+                            {(userProjects.length === 0 && userAssignProject.length === 0 ) &&
                             <Dropdown.Item>
                                 <Message size='mini' info>
                                     {props.t("no_project")}
                                 </Message>
                             </Dropdown.Item>
                             }
-                            {userProjects.map(p =>
-                                <Dropdown.Item key={p.id} onClick={() => handleAddProject(p.id)}>
-                                    <Icon name="plus"/> {p.title}
-                                </Dropdown.Item>
-                            )}
-
+                            {userProjects.length > 0 &&
+                                <>
+                                    <Dropdown.Header content={ props.t('my_projects')} />
+                                    <Dropdown.Divider />
+                                    {userProjects.map(p =>
+                                        <Dropdown.Item key={p.id} onClick={() => handleAddProject(p.id)}>
+                                            <Icon name="plus"/> {p.title}
+                                        </Dropdown.Item>
+                                    )}
+                                </>
+                            }
+                            {userAssignProject.length > 0 &&
+                                <>
+                                    <Dropdown.Header content={props.t('my_partners')}/>
+                                    <Dropdown.Divider/>
+                                    {userAssignProject.map(p =>
+                                        <Dropdown.Item key={p.id} onClick={() => handleAddProject(p.id)}>
+                                            <Icon name="plus"/> {p.title}
+                                        </Dropdown.Item>
+                                    )}
+                                </>
+                            }
                         </Dropdown.Menu>
                     </Dropdown>
                     }
@@ -323,20 +404,40 @@ const ActivityProfile = ( props ) => {
                 {isOwner() &&
                     <Menu>
                         {!activity.organization &&
-                        <Dropdown item text={props.t('add') + " " + props.t('organization')} loading={loader2}>
+                        <Dropdown item text={props.t('share_in') + " " + props.t('organization')} loading={loader2} scrolling>
                             <Dropdown.Menu>
-                                {userOrgs.length === 0 &&
-                                <Dropdown.Item>
-                                    <Message size='mini' info>
-                                        {props.t("no_org")}
-                                    </Message>
-                                </Dropdown.Item>
-                                }
-                                {userOrgs.map(o =>
-                                    <Dropdown.Item key={o.id} onClick={() => handleAddOrg(o.id)}>
-                                        <Icon name="plus"/> {o.name}
+                                {(userOrgs.length === 0 && userAssignOrgs.length === 0) &&
+                                    <Dropdown.Item>
+                                        <Message size='mini' info>
+                                            {props.t("no_org")}
+                                        </Message>
                                     </Dropdown.Item>
-                                )}
+                                }
+
+                                {userOrgs.length > 0 &&
+                                    <>
+                                        <Dropdown.Header content={ props.t('my_orgs')} />
+                                        <Dropdown.Divider />
+                                        {userOrgs.map(o =>
+                                            <Dropdown.Item key={o.id} onClick={() => handleAddOrg(o.id)}>
+                                                <Icon name="plus"/> {o.name}
+                                            </Dropdown.Item>
+                                        )}
+                                    </>
+
+                                }
+                                {userAssignOrgs.length > 0 &&
+                                    <>
+                                        <Dropdown.Header content={ props.t('my_partners')} />
+                                        <Dropdown.Divider />
+                                        {userAssignOrgs.map(o =>
+                                            <Dropdown.Item key={o.id} onClick={() => handleAddOrg(o.id)}>
+                                                <Icon name="plus"/> {o.name}
+                                            </Dropdown.Item>
+                                        )}
+                                    </>
+
+                                }
 
                             </Dropdown.Menu>
                         </Dropdown>
@@ -376,7 +477,7 @@ const ActivityProfile = ( props ) => {
                 </Segment>
                 }
 
-                {activeItem === "upload" && (ctx==="creator" || ctx==="asssigned") &&
+                {activeItem === "upload" && (ctx==="owned" || ctx==="asssigned") &&
                 <Segment attached='bottom'>
                     <UploadPanel />
                 </Segment>
@@ -401,7 +502,7 @@ const ActivityProfile = ( props ) => {
         <div className="card">
             {!loader &&
             <>
-                {activity && activity !== "DATA_NOT_FOUND" ?
+                {activity ?
                     <>
                         <Segment basic>
                             <Header as="h2" floated='left'>
@@ -432,7 +533,7 @@ const ActivityProfile = ( props ) => {
                                         </Menu.Item>
 
                                         {/* show fileHandler tab for creator or assigned member*/}
-                                        {(ctx=== 'creator' || ctx=== 'assigned') &&
+                                        {(ctx=== 'owned' || ctx=== 'assigned') &&
                                             <Menu.Item
                                                 name='upload'
                                                 active={activeItem === 'upload'}
@@ -500,7 +601,7 @@ const ActivityProfile = ( props ) => {
                                             <Dropdown.Item name='project' active={activeItem === 'project'} onClick={handleItemClick}>
                                                     { props.t("project") }
                                             </Dropdown.Item>
-                                            {(ctx === 'creator' || ctx === 'assigned') &&
+                                            {(ctx === 'owned' || ctx === 'assigned') &&
                                                 <Dropdown.Item name='upload' active={activeItem === 'upload'}
                                                                onClick={handleItemClick}>
                                                         {props.t("upload")}

@@ -23,8 +23,13 @@ const ImageUpload = ({ setter, type, entity}) => {
     //inputImage c'est l'image que l'on va chercher passé en base64
     const [inputImg, setInputImg] = useState('')
 
+    const [oldPicture, setOldpicture] = useState(undefined)
     const onInputChange = (e) => {
         // convert image file to base64 string
+        if(entity.picture){
+            setOldpicture(entity.picture)
+        }
+
         const file = e.target.files[0]
 
         let reader = new FileReader()
@@ -36,31 +41,21 @@ const ImageUpload = ({ setter, type, entity}) => {
         if (file) {
             reader.readAsDataURL(file)
         }
+        e.target.value = null
         showModal()
     }
 
+    //todo quand tout les pages de creation et update miseAjour retirer l'envoie direct de l'image au back.
+    // on pass maintenant toujours par updateEntity.
     const handleSubmitImage = (e) => {
        // console.log(blob)
         e.preventDefault()
         if(entity.id !== undefined){ //if entiy already exist in database, update immediatly
             // fileHandler blob to firebase 'images' folder with filename 'image'
-            let bodyFormData = new FormData();
-            bodyFormData.append('image', blob)
 
-            bodyFormData.append('id', entity.id)
-            /*if(type !== "user"){
-                bodyFormData.append('id', entity.id)
-            }*/
-
-            fileAPI.uploadPic(type, bodyFormData)
+            fileAPI.uploadPic(type, entity, blob)
                 .then(response => {
-                    //    notification.successNotif('nouvelle photo de profil bien enregistrée')
-                //    setUser({ ...entity, "picture": response.data[0].picture})
                     setter({ ...entity, "picture": response.data[0].picture })
-                 //   setter(response.data[0].picture)
-                  //  setPicture(response.data[0].picture)
-                    //     console.log(response)
-                    // parentCallBack()
                     hideModal()
                 })
                 .catch(error => {
@@ -76,10 +71,37 @@ const ImageUpload = ({ setter, type, entity}) => {
         hideModal()
     }
 
+    const handleCancel = (e) => {
+        e.preventDefault()
+        if(oldPicture){ //if we have a oldPicture
+            setter({ ...entity, "picture": oldPicture })
+        }else{ //else juste remove.
+            setter({ ...entity, "picture": undefined })
+        }
+        hideModal()
+    }
+
+    const handleDelete = () => {
+        if(entity.id !== undefined){
+            fileAPI.uploadPic(type, entity, null)
+                .then(response => {
+                    setter({ ...entity, "picture": response.data[0].picture })
+                    hideModal()
+                })
+                .catch(error => {
+                    //handle error
+                    console.log(error)
+                    console.log(error.response);
+                });
+        }
+        setter({ ...entity, "picture": null })
+    }
+
     const [show, setShow] = useState(false)
     const showModal = () => {
         setShow(true)
     }
+
     const hideModal = () => {
         setShow(false)
     //    document.getElementById('formPicture').reset()
@@ -92,40 +114,53 @@ const ImageUpload = ({ setter, type, entity}) => {
                 <label htmlFor="inputUploadImg_Atxs" className="ui basic button mini">
                     { t('change')}
                     <input
-                        lang="en"
-                        type='file'
-                        accept='image/png, image/jpeg'
-                        onChange={onInputChange}
-                        id="inputUploadImg_Atxs"
-                        hidden
+                        type='file' hidden
+                        lang="en" id="inputUploadImg_Atxs"
+                        accept='image/png, image/jpeg' onChange={onInputChange}
                     />
                 </label>
+                {entity.picture &&
+                <Button
+                    basic icon='remove circle'
+                    color="red" size='mini'
+                    content= { t('delete') } onClick={handleDelete}
+                />
+                }
             </Media>
             <Media at="mobile">
                 <label htmlFor="inputUploadImg_Atmobile" className="ui basic button mini">
                     { t('change')}
                 <input
-                    lang="en"
-                    type='file'
-                    accept='image/png, image/jpeg'
-                    onChange={onInputChange}
-                    id="inputUploadImg_Atmobile"
-                    hidden
+                    type='file'  hidden
+                    lang="en" id="inputUploadImg_Atmobile"
+                    accept='image/png, image/jpeg' onChange={onInputChange}
                 />
                 </label>
+                {entity.picture &&
+                <Button
+                    basic icon='remove circle'
+                    color="red" size='mini'
+                    content= { t('delete') } onClick={handleDelete}
+                />
+                }
             </Media>
             <Media greaterThan="mobile">
                 <label htmlFor="inputUploadImg_GTmobile" className="ui basic button mini">
                     { t('change')}
                 <input
-                    lang="en"
-                    type='file'
-                    accept='image/png, image/jpeg'
-                    onChange={onInputChange}
-                    id="inputUploadImg_GTmobile"
-                    hidden
+                    type='file'  hidden
+                    lang="en" id="inputUploadImg_GTmobile"
+                    accept='image/png, image/jpeg' onChange={onInputChange}
                 />
                 </label>
+                {entity.picture &&
+                    <Button
+                        basic icon='remove circle'
+                        color="red" size='mini'
+                        content= { t('delete') } onClick={handleDelete}
+                    />
+                }
+
             </Media>
 
             {
@@ -137,8 +172,8 @@ const ImageUpload = ({ setter, type, entity}) => {
                                 inputImg={inputImg}
                                 form={entity.id === null ? null : "blob"}
                             />
-                            <button type='submit' className="btn btn-secondary">{ t("confirm")}</button>
-                            <button type='submit' className="btn btn-secondary" onClick={hideModal}>{ t("cancel")}</button>
+                            <button type='submit' className="btn btn-secondary" onClick={handleSubmitImage}>{ t("confirm")}</button>
+                            <button type='submit' className="btn btn-secondary" onClick={handleCancel}>{ t("cancel")}</button>
                         </div>
                     </Modal>
                 )

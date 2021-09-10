@@ -7,7 +7,6 @@ const logout = () => {
     window.localStorage.removeItem("authToken");
     if (Axios.defaults.headers["Authorization"]){
         delete Axios.defaults.headers["Authorization"];
-        window.location.href='/'
     }
 }
 
@@ -75,6 +74,7 @@ const resetEmail = (email, userId) => {
 const isAuthenticated = () => {
     const token = window.localStorage.getItem("authToken");
 
+    //todo ajouter la notion de confirm?
     if (token) {
         const jwtData = jwt_decode(token);
         return jwtData.exp * 1000 > new Date().getTime();
@@ -88,6 +88,14 @@ const isAdmin = () => {
         return true
     }
     return false
+}
+
+const isConfirm = () => {
+    const token = window.localStorage.getItem("authToken");
+    if(token){
+        return jwt_decode(token).isConfirm
+    }
+    return true
 }
 
 const getRole = () => {
@@ -133,6 +141,7 @@ export default {
     authenticate,
     resetEmail,
     isAuthenticated,
+    isConfirm,
     getRole,
     getUserMail,
     isAdmin,

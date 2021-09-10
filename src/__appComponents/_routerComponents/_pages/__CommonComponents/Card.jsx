@@ -13,7 +13,7 @@ const Card = ({ obj, type, profile=false, ctx=undefined, withPicture=true }) => 
 
     const isAuth = useContext(AuthContext).isAuthenticated;
     const {t,  i18n } = useTranslation()
-    const lg = i18n.language.split('-')[0]
+    const lg = i18n.language
 
     const [owner, setOwner] = useState(false);
     const [isOwner, setIsOwner] = useState(false);
@@ -33,9 +33,9 @@ const Card = ({ obj, type, profile=false, ctx=undefined, withPicture=true }) => 
     }
 
     const getLink = () => {
-        let ctx = ""
-        if(isAssign){ ctx = "assign"}
-        if(isOwner ){ ctx = "creator"} else { ctx = "public"}
+        if(isOwner ){ ctx = "owned"}
+        else if(isAssign){ ctx = "assigned"}
+        else { ctx = "public"}
        return  ("/" + type + "/" + ctx + "_" + obj.id);
     }
 
@@ -46,7 +46,7 @@ const Card = ({ obj, type, profile=false, ctx=undefined, withPicture=true }) => 
         }else if(type === "org"){
             setIsOwner(obj && obj.referent && obj.referent.id === authAPI.getId())
             obj && obj.membership && obj.membership.forEach( m => {
-                if(m.id ===  authAPI.getId()){ setIsOwner(true)}
+                if(m.id ===  authAPI.getId()){ setIsAssign(true)}
             })
             setOwner(obj && obj.referent)
         }else if (type === "project"){

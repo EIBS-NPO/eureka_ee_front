@@ -16,9 +16,6 @@ const UserProfile = ({ history, t }) => {
     const [ user, setUser ] = useState({})
   //  const user =
 
-    const [picture, setPicture] = useState()
-   // const { setPicture } = useContext(UserContext).setPicture
-
     {/*todo modal pour change password et email?*/}
 
     const [loader, setLoader] = useState(false)
@@ -26,7 +23,7 @@ const UserProfile = ({ history, t }) => {
     useEffect(() => {
         setLoader(true)
      //   setPicLoader(true)
-        userAPI.get()
+        userAPI.get(authAPI.getId())
             .then(response => {
                 setUser(response.data[0])
               //  setPicture(response.data[0].picture)

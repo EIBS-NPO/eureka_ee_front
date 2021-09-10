@@ -9,10 +9,13 @@ const ActivitiesList = ( props ) => {
     const urlParams = props.match.params.ctx
 
     const checkCtx = () => {
-        if (urlParams !=="public" && !authAPI.isAuthenticated()) {
-            //if ctx need auth && have no Auth, public context is forced
-            authAPI.logout()
-        }else {return urlParams}
+        if(urlParams === 'public' || urlParams === 'owned' || urlParams === 'followed'){
+            if (urlParams !=="public" && !authAPI.isAuthenticated()) {
+                //if ctx need auth && have no Auth, public context is forced
+                authAPI.logout()
+            }else {return urlParams}
+        }
+        else return '';
     }
 
     const [activities, setActivities] = useState([])
@@ -20,47 +23,36 @@ const ActivitiesList = ( props ) => {
     const [loader, setLoader] = useState();
 
     const [ctx, setCtx] = useState("public")
-    useEffect(() => {
+    useEffect(async() => {
         setLoader(true)
-        setCtx( checkCtx() )
+        setCtx(checkCtx())
         let ctx = checkCtx()
 
-        if(ctx === 'follower'){
-            activityAPI.getFavorites(ctx)
-                .then(response => {
-        //            console.log(response)
+        if (ctx !== '') { //if valid ctx
+            if(ctx === 'public'){//publicActivities
+            let response = await activityAPI.getPublic()
+                .catch(error => console.log(error.response))
+                if (response && response.status === 200) {
                     setActivities(response.data)
-                })
-                .catch(error => console.log(error.response))
-                .finally(() => setLoader(false))
-        }
-        else if (ctx !== 'public') {
-         //   console.log("get_non_public creator ou my ?")
-            activityAPI.get(ctx)
-                .then(response => {
-      //              console.log(response)
-                    setActivities(response.data.filter(a => a.creator.id === authAPI.getId()))
-                })
-                .catch(error => console.log(error.response))
-                .finally(() => setLoader(false))
-        } else {
-            activityAPI.getPublic()
-                .then(response => {
-      //              console.log(response)
+                }
+            } else { //owned or followed activities
+                let response = await activityAPI.getActivity(ctx)
+                    .catch(error => console.log(error.response))
+                if (response && response.status === 200) {
                     setActivities(response.data)
-                })
-                .catch(error => console.log(error.response))
-                .finally(() => setLoader(false))
+                }
+            }
         }
+        setLoader(false)
     }, [urlParams]);
 
     const Title = () => {
         let title = ""
         switch(ctx){
-            case "creator":
+            case "owned":
                 title = <h1>{ props.t('my_activities') }</h1>
                 break;
-            case "follower":
+            case "followed":
                 title = <h1>{ props.t('my_favorites') }</h1>
                 break;
             default:
@@ -91,7 +83,7 @@ const ActivitiesList = ( props ) => {
             <Title />
             {!loader &&
                 <>
-                    {ctx === "creator" &&
+                    {ctx === "owned" &&
                     <>
                         <Segment vertical>
                             <Menu attached='top' tabular>
@@ -165,7 +157,7 @@ const ActivitiesList = ( props ) => {
                     </>
                     }
 
-                {ctx !== "creator" &&
+                {ctx !== "owned" &&
                 <>
                     <Menu>
                         <Menu.Item position="right">
@@ -176,9 +168,14 @@ const ActivitiesList = ( props ) => {
                     </Menu>
                     {activities && filteredList(activities).length > 0 ?
                     filteredList(activities).map(activity => (
-                    <Segment key={activity.id} raised>
-                        <Card history={props.history} key={activity.id} obj={activity} type="activity" isLink={true}/>
-                    </Segment>
+                        <Segment key={activity.id} raised>
+                            <Card
+                                history={props.history}
+                                key={activity.id}
+                                obj={activity}
+                                type="activity"
+                                isLink={true}/>
+                        </Segment>
                     ))
                     :
                         <Container textAlign='center'>
