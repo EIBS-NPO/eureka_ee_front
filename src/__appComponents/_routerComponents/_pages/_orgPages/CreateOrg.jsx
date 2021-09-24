@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import { withTranslation } from 'react-i18next';
 import OrgAPI from "../../../../__services/_API/orgAPI";
 import {Label, Segment, Button, Form, Icon, Item, Loader} from "semantic-ui-react";
@@ -7,6 +7,9 @@ import TextAreaMultilang from "../__CommonComponents/forms/TextAreaMultilang";
 import PictureForm from "../__CommonComponents/forms/picture/PictureForm";
 import fileAPI from "../../../../__services/_API/fileAPI";
 import * as url from "url";
+import AddressForm from "../__CommonComponents/forms/AddressForm2";
+import authAPI from "../../../../__services/_API/authAPI";
+import utilities from "../../../../__services/utilities";
 
 const CreateOrg = ({ history, t }) => {
 
@@ -18,7 +21,10 @@ const CreateOrg = ({ history, t }) => {
         description: {},
         email: "",
         phone: "",
+        address: undefined
     });
+
+    const [address, setAddress] = useState({})
 
     const [desc, setDesc] = useState({
         'en-GB':"",
@@ -26,15 +32,17 @@ const CreateOrg = ({ history, t }) => {
         'nl-BE':""
     })
 
+    //todo redundant const, place it into a service ?
     const handleChange = (event) => {
         const { name, value } = event.currentTarget;
         setOrg({ ...org, [name]: value });
     };
 
-    const preSubmit = (event) => {
+    const preSubmit = async (event) => {
         event.preventDefault()
         org.description = desc;
-     //   setOrg({...org, description: desc})
+        if (address.address) { org.address = address}
+        //   setOrg({...org, description: desc})
         handleSubmit()
     }
 
@@ -43,33 +51,25 @@ const CreateOrg = ({ history, t }) => {
         let newOrg
         let urlMsg = ""
 
-        let response = await OrgAPI.post(org)
-            .catch(error => {
-                console.log(error.response.data)
-                setErrors(error.response.data);
-            })
-        if(response && response.status >= 200 && response.status < 300){
-            switch(response.status){
-                case 206 :
-                    newOrg = response.data[1]
-                    urlMsg = "_"+response.data[0].split(" : ")[2];
-                    break;
-                default :
-                    newOrg = response.data[0]
+        if(await (authAPI.isAuthenticated())) {
+            let response = await OrgAPI.post(org)
+                .catch(error => {
+                    console.log(error.response.data)
+                    setErrors(error.response.data);
+                })
+            if (response && response.status >= 200 && response.status < 300) {
+                switch (response.status) {
+                    case 206 :
+                        newOrg = response.data[1]
+                        urlMsg = "_" + response.data[0].split(" : ")[2];
+                        break;
+                    default :
+                        newOrg = response.data[0]
+                }
+            }else {
+                history.replace('/login')
             }
         }
-
-
-        /*if(org.picture){
-            let bodyFormData = new FormData();
-            bodyFormData.append('image', org.picture)
-            bodyFormData.append('id', newOrg.id)
-            await fileAPI.uploadPic("org", bodyFormData)
-                .catch(error => {
-                    console.log(error.response)
-                    setErrors({...error,"picture":error.response})
-                })
-        }*/
 
         history.replace("/org/owned_" + newOrg.id + urlMsg)
     };
@@ -91,6 +91,9 @@ const CreateOrg = ({ history, t }) => {
                     </Segment>
                     <Form onSubmit={preSubmit}>
                         <Segment>
+                            {/*<Label attached='top'>
+                                <h4>{utilities.strUcFirst(t("contact"))}</h4>
+                            </Label>*/}
                             <Item>
                                 <Form.Input
                                     label={t('name')}
@@ -118,8 +121,8 @@ const CreateOrg = ({ history, t }) => {
                         </Segment>
 
                         <Segment>
-                            <Label attached="top">
-                                { t('contact') }
+                            <Label attached='top'>
+                                <h4>{utilities.strUcFirst(t("contact"))}</h4>
                             </Label>
                             <Form.Input
                                 icon='mail'
@@ -145,6 +148,10 @@ const CreateOrg = ({ history, t }) => {
                                 placeholder={t('phone') + "..."}
                                 error={errors.phone ? errors.phone : null}
                             />
+                            <Segment>
+                                <AddressForm address={address} setAddress={setAddress} isRequired={true}/>
+                            </Segment>
+
                         </Segment>
 
                         <Segment>

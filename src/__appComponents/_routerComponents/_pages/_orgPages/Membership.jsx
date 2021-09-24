@@ -46,7 +46,7 @@ const Membership = ( props ) => {
             setLoader(true)
             memberAPI.addMember(props.org.id, email)
                 .then(response => {
-             //       console.log(response.data)
+
                     if (response.data[0] !== "DATA_NOT_FOUND") {
                         setMembers(response.data)
                     }

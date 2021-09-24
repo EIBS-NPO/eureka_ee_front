@@ -5,7 +5,6 @@ import UserAPI from "../../../__services/_API/userAPI";
 import {Button, Form, Message, Segment} from "semantic-ui-react";
 import {useTranslation, withTranslation} from "react-i18next";
 
-/*//todo add optionalFields*/
 const RegisterPage = ({ history }) => {
   //  const isAuthenticated = useContext(AuthContext).isAuthenticated;
     const { isAuthenticated, setNeedConfirm } = useContext(AuthContext)
@@ -47,12 +46,9 @@ const RegisterPage = ({ history }) => {
             setErrors({ ...errors, "passwordConfirm": "confirmation incorrecte" });
             return;
         }
-        //todo vérification des autres param avant requete
 
-        //todo si ok, renvoyer sur la pas d'activation du compte.
         UserAPI.register(user)
             .then(response => {
-                //todo demander au back l'envoie d'un mail de confirmation passer le mail user
                 UserAPI.askActivation(response.data[0].email)
                     .then(() => {
                         setNeedConfirm("needConfirm")

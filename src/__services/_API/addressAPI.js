@@ -1,9 +1,8 @@
 import Axios from "axios";
 import { ADRS_API } from "../../config";
 
-//todo descrim user org
 function post(type, id, address) {
-    console.log("save")
+
     let data = {
         "address": address.address,
         "country": address.country,
@@ -16,8 +15,8 @@ function post(type, id, address) {
 }
 
 function put(address) {
-    console.log("put")
-    console.log(address)
+
+
     let data = {
         "id":address.id,
         "address": address.address,

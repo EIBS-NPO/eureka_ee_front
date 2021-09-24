@@ -4,6 +4,7 @@ import {Button, Form, Icon, Item, Label, Segment} from "semantic-ui-react";
 import {withTranslation} from "react-i18next";
 import PictureForm from "../__CommonComponents/forms/picture/PictureForm";
 import TextAreaMultilang from "../__CommonComponents/forms/TextAreaMultilang";
+import AddressForm from "../__CommonComponents/forms/AddressForm";
 
 /**
  *
@@ -15,7 +16,7 @@ import TextAreaMultilang from "../__CommonComponents/forms/TextAreaMultilang";
  */
 const OrgForm = ( props ) => {
 
-    //todo handle new picture
+
     const  org  = props.org
 
     const [updateOrg, setUpdateOrg] = useState( org )
@@ -60,20 +61,20 @@ const OrgForm = ( props ) => {
     }
 
 
-    //todo clean up ? marche? marche pas?
-    const submit = () => {
-            const abortController = new AbortController()
-            const signal = abortController.signal
 
-        console.log(org)
+    const submit = () => {
+           /* const abortController = new AbortController()
+            const signal = abortController.signal
+*/
+
             preSubmit()
             setLoader(true);
-            orgAPI.put(org, {signal:signal})
+            orgAPI.put(org/*, {signal:signal}*/)
                 .then(response => {
-      //              console.log(response.data[0])
+
                     if(props.setForm !== undefined){ props.setForm(false) }
                     if(props.handleEditOrg !== undefined){ props.handleEditOrg(response.data[0]) }
-                    //todo confirmation
+                    //todo msg-confirmation
                 })
                 .catch(error => {
                     console.log(error)
@@ -86,9 +87,9 @@ const OrgForm = ( props ) => {
                     }
                 })
             //specify how to cleanup after this effect
-            return function cleanup(){
+           /* return function cleanup(){
                 abortController.abort()
-            }
+            }*/
     }
 
     const handleDelete = () => {

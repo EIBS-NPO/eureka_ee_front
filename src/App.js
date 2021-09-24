@@ -15,11 +15,8 @@ import './scss/main.scss';
 
 
  function App({history}) {
-     authAPI.setup()
 
-     //todo use AuthContext
-     const [isAuthenticated, setIsAuthenticated] = useState( authAPI.isAuthenticated() )
-
+     const [isAuthenticated, setIsAuthenticated] = useState( window.localStorage.getItem("authToken") != null )
      const [firstname, setFirstname] = useState( authAPI.getFirstname())
      const [lastname, setLastname] = useState( authAPI.getLastname())
      const [isAdmin, setIsAdmin] = useState(authAPI.isAdmin())
@@ -41,7 +38,7 @@ import './scss/main.scss';
 
      const [allowedMimes, setAllowedMimes] = useState([])
      useEffect(async()=>{
-         /*setLoader(true)*/
+         //todo check server availability?
          let response = await fileAPI.getAllowedMime()
              .catch(error =>{
                  console.log(error.response)
@@ -49,7 +46,6 @@ import './scss/main.scss';
          if(response && response.status === 200){
              setAllowedMimes(response.data)
          }
-         /*setLoader(false)*/
      },[])
 
   return (

@@ -1,6 +1,8 @@
 
 export function strUcFirst(a){
-    return (a+'').charAt(0).toUpperCase()+a.substr(1);
+    if(typeof(a) === "string"){
+        return (a+'').charAt(0).toUpperCase()+a.substr(1);
+    }else return undefined
 }
 
 /**

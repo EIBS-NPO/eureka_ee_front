@@ -9,38 +9,37 @@ import {withTranslation} from "react-i18next";
 import AddressForm from "../__CommonComponents/forms/AddressForm";
 import authAPI from "../../../../__services/_API/authAPI";
 import UserContext from "./_userContexts/UserContext";
+import AuthContext from "../../../../__appContexts/AuthContext";
 
 const UserProfile = ({ history, t }) => {
-    if ( !(authAPI.isAuthenticated()) ) {history.replace('/login')}
 
     const [ user, setUser ] = useState({})
-  //  const user =
-
-    {/*todo modal pour change password et email?*/}
 
     const [loader, setLoader] = useState(false)
 
-    useEffect(() => {
+    useEffect(async() => {
         setLoader(true)
-     //   setPicLoader(true)
-        userAPI.get(authAPI.getId())
-            .then(response => {
-                setUser(response.data[0])
-              //  setPicture(response.data[0].picture)
-            })
-            .catch(error => {
-                console.log(error.response)
-            }).finally(()=>setLoader(false))
+        if(await authAPI.isAuthenticated()) {
+            userAPI.get("owned")
+                .then(response => {
+                    setUser(response.data[0])
+                })
+                .catch(error => {
+                    console.log(error.response)
+                }).finally(() => setLoader(false))
+        }else {
+            history.replace('/login')
+        }
     }, []);
 
     return (
         <div className="card">
         {!loader &&
         <>
-            <h1> {t('account')} </h1>
-            <Segment>
-                <PictureForm entityType="user" entity={user} setter={setUser} />
-            </Segment>
+            {/*<Segment>*/}
+                <PictureForm entityType="user" entity={user} setter={setUser} isCircular={true}/>
+                <p>{user.firstname + " " + user.lastname}</p>
+           {/* </Segment>*/}
             <Segment>
                 <EmailChangeForm entity={user} setter={setUser}/>
             </Segment>

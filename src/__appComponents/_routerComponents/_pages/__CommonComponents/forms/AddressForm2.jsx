@@ -6,12 +6,12 @@ import addressAPI from "../../../../../__services/_API/addressAPI";
 import userAPI from "../../../../../__services/_API/userAPI";
 import utilities from "../../../../../__services/utilities";
 
-const AddressForm = ({ type, obj, setter }) => {
+const AddressForm = ({ address, setAddress, isRequired = false }) => {
 
     const { t } = useTranslation()
 
-    const [address, setAddress] = useState(undefined)
-    const [update,setUpdate] = useState(false)
+  //  const [address, setAddress] = useState(undefined)
+//    const [update,setUpdate] = useState(false)
 
     const [errors, setErrors] = useState({
         id:undefined,
@@ -22,30 +22,26 @@ const AddressForm = ({ type, obj, setter }) => {
         zipCode:""
     });
 
-    const [loader, setLoader] = useState(false);
+ //   const [loader, setLoader] = useState(false);
 
-    const isOwner = () => {
+  /*  const isOwner = () => {
         let userMail = userAPI.checkMail()
 
-      //  if(type === "user"){
-            return obj && obj.email === userMail
-     //   }
-     //   else{
-      //      return obj.referent.email === userMail
-      //  }
-    }
-    useEffect(() => {
-        if(obj !== undefined) {
-            setAddress(obj.address)
-        }
-    },[obj])
+        //  if(type === "user"){
+        return obj.email === userMail
+        //   }
+        //   else{
+        //      return obj.referent.email === userMail
+        //  }
+    }*/
 
     const handleChange = (event) => {
         const { name, value } = event.currentTarget;
         setAddress({ ...address, [name]: value });
+    //    setter({...obj, "address": address})
     };
 
-    const handleSubmit = async (event) => {
+    /*const handleSubmit = async (event) => {
         event.preventDefault();
         setLoader(true);
         if(obj.referent){
@@ -57,6 +53,7 @@ const AddressForm = ({ type, obj, setter }) => {
                 .then(response => {
                     setter({...obj, address: response.data[0]})
                     setUpdate(false)
+                    //        console.log(response)
                 })
                 .catch(error => {
                     setErrors(error.response.data)
@@ -71,7 +68,7 @@ const AddressForm = ({ type, obj, setter }) => {
                 .then(response => {
                     setter({...obj, address: response.data[0]})
                     setUpdate(false)
-
+                    //      console.log(response)
                 })
                 .catch(error => {
                     setErrors(error.response.data)
@@ -80,27 +77,23 @@ const AddressForm = ({ type, obj, setter }) => {
                     setLoader(false)
                 })
         }
-    };
+    };*/
 
-    const switchUpdate = (e) => {
+   /* const switchUpdate = (e) => {
         e.preventDefault()
         setUpdate(true)
     }
     const stopUpdate = (e) => {
         e.preventDefault()
         setUpdate(false)
-    }
+    }*/
 
     return (
         <Item.Group>
-            <Item>
-                <Item.Content>
-                    <Label attached='top'>
+                    <Label attached='top' basic>
                         <h4>{utilities.strUcFirst(t("address"))}</h4>
                     </Label>
-                    {update &&
-                    <Form onSubmit={handleSubmit} loading={loader}>
-                        <Item.Group divided>
+
                             <Item>
                                 <Form.Input
                                     label={ t('address') }
@@ -110,7 +103,7 @@ const AddressForm = ({ type, obj, setter }) => {
                                     placeholder={t('address') + "..."}
                                     type="textarea"
                                     error={ errors.address ? errors.address : null}
-                                    required
+                                    required = {isRequired}
                                 />
                             </Item>
                             <Item>
@@ -133,7 +126,7 @@ const AddressForm = ({ type, obj, setter }) => {
                                     placeholder={t('city') + "..."}
                                     type="text"
                                     error={ errors.city ? errors.city : null }
-                                    required
+                                    required = {isRequired}
                                 />
                             </Item>
                             <Item>
@@ -145,7 +138,7 @@ const AddressForm = ({ type, obj, setter }) => {
                                     placeholder={t('zipCode') + "..."}
                                     type="text"
                                     error={ errors.zipCode ? errors.zipCode : null}
-                                    required
+                                    required = {isRequired}
                                 />
                             </Item>
                             <Item>
@@ -157,22 +150,12 @@ const AddressForm = ({ type, obj, setter }) => {
                                     placeholder={t('country') + "..."}
                                     type="text"
                                     error={ errors.country ? errors.country : null}
-                                    required
+                                    required = {isRequired}
                                 />
                             </Item>
-                            <Item>
-                                <Button.Group>
-                                    <Button size="small" onClick={stopUpdate}> { t("cancel") } </Button>
-                                    <Button.Or />
-                                    <Button size="small" positive > { t("save") } </Button>
-                                </Button.Group>
-                            </Item>
-                        </Item.Group>
-                    </Form>
-                    }
-                    {!update &&
-                        <Item.Group divided >
-                            <Container textAlign="center">
+                   {/* {!update &&
+                    <Item.Group divided >
+                        <Container textAlign="center">
                             <Item>
                                 <Item.Content verticalAlign='middle'>
                                     <Item.Description>
@@ -194,19 +177,19 @@ const AddressForm = ({ type, obj, setter }) => {
                                 </Item.Content>
                             </Item>
                             {isOwner() &&
-                                <Item>
-                                    <Item.Content>
-                                        <Button size="small" onClick={switchUpdate}>
-                                            <Icon name='edit'/> Modifier
-                                        </Button>
-                                    </Item.Content>
-                                </Item>
+                            <Item>
+                                <Item.Content>
+                                    <Button size="small" onClick={switchUpdate}>
+                                        <Icon name='edit'/> Modifier
+                                    </Button>
+                                </Item.Content>
+                            </Item>
                             }
-                            </Container>
-                        </Item.Group>
-                    }
-                </Item.Content>
-            </Item>
+                        </Container>
+                    </Item.Group>
+                    }*/}
+           {/*     </Item.Content>
+            </Item>*/}
         </Item.Group>
     )
 }

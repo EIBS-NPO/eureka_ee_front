@@ -7,23 +7,30 @@ import authAPI from "../../../../__services/_API/authAPI";
 import AuthContext from "../../../../__appContexts/AuthContext";
 
 const OrgList = ( props ) => {
-    const isAuth = useContext(AuthContext).isAuthenticated;
+    const { isAuthenticated, setIsAuthenticated,
+        isAdmin, setIsAdmin,
+        lastname, setLastname,
+        firstname, setFirstname,
+        partnerList, setPartnerList,
+    } = useContext(AuthContext)
 
     const urlParams = props.match.params.ctx
 
     //forbiden if route for my org wwith no auth
-    const checkCtx = () => {
-        if (urlParams !=="public" && !authAPI.isAuthenticated()) {
+    const checkCtx = async () => {
+      //  if (urlParams !=="public" && !authAPI.isAuthenticated()) {
             //if ctx need auth && have no Auth, public context is forced
-            authAPI.logout()
-        }else {return urlParams}
+          //  authAPI.logout()
+     //   }else {
+        return urlParams
+  //  //}
     }
 
     const [ctx, setCtx] = useState("")
 
     const getLinkContext = (org) => {
         let linkCtx = 'public'
-        if(isAuth){
+        if(isAuthenticated){
             if(org.referent.id === authAPI.getId()) { linkCtx = 'owned'}
             else if(org.membership && org.membership.find(m => m.id === authAPI.getId()) !== undefined){ linkCtx = 'assigned'}
         }
@@ -38,30 +45,40 @@ const OrgList = ( props ) => {
 
     useEffect(async() => {
         setLoader(true)
-        setCtx( await checkCtx() )
-        if(urlParams === 'public'){
-            let response = await orgAPI.getPublic()
-                .catch(error => console.log(error.response))
-            if(response && response.status === 200){
-                console.log(response.data)
-                setOrgs(response.data)
-            }
-        }else {
-            let response = await orgAPI.getOrg('owned')
-                .catch(error => console.log(error.response))
-            if(response && response.status === 200){
-                console.log(response.data)
-                setMyOrgs(response.data)
-            }
+        checkCtx()
+            .then(async (ctx) => {
+                setCtx(ctx)
+                if(ctx === 'public'){
+                    let response = await orgAPI.getPublic()
+                        .catch(error => console.log(error.response))
+                    if(response && response.status === 200){
 
-            if(urlParams === 'owned'){
-                let response = await orgAPI.getOrg('assigned')
-                    .catch(error => console.log(error.response))
-                if(response && response.status === 200){
-                    setPartnerOrgs(response.data)
+                        setOrgs(response.data)
+                    }
+                }else {
+
+                    if(await (authAPI.isAuthenticated())){
+                        let response = await orgAPI.getOrg('owned')
+                            .catch(error => console.log(error.response))
+                        if(response && response.status === 200){
+
+                            setMyOrgs(response.data)
+                        }
+
+                        if(urlParams === 'owned'){
+                            let response = await orgAPI.getOrg('assigned')
+                                .catch(error => console.log(error.response))
+                            if(response && response.status === 200){
+                                setPartnerOrgs(response.data)
+                            }
+                        }
+                    }else {
+                        props.history.replace("/login")
+                    }
+
                 }
-            }
-        }
+            })
+
         setLoader(false)
     }, [urlParams]);
 

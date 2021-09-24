@@ -81,7 +81,7 @@ const ProjectForm = ( props ) => {
         }
     }*/
 
-    //todo modal confirmation
+    //todo confirmation-step
     const handleDelete = (event) => {
         event.preventDefault()
         setLoader(true)
@@ -112,14 +112,11 @@ const ProjectForm = ( props ) => {
         //update User
         projectAPI.put(upProject)
             .then(response => {
-                console.log(response.data[0])
-                /**
-                 * //todo comme dans orgForm setForm dans props et handle et tout
-                 * */
+
                 if(props.handleEditProject !== undefined){ props.handleEditProject(response.data[0])}
                 else{ props.setProject(response.data[0])}
                 props.setForm(false)
-                //todo confirmation
+                //todo msg-confirmation
             })
             .catch(error => {
                 console.log(error)

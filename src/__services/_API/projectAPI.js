@@ -29,14 +29,14 @@ const put = (project) => {
     return Axios.put(PROJECT_API, data)
 }
 
-//todo change for getWithContext ?
+
 const get = (context, id = null) => {
     let params = "?ctx="+ context
     if(id !== null){ params += "&projectId="+ id }
     return Axios.get(PROJECT_API + params)
 }
 
-//todo change for get
+
 //access may be Private, or Owner, or ...?
 const getProject = (access = null , id = null) => {
     let params = "?";

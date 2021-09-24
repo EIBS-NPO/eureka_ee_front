@@ -1,0 +1,48 @@
+$base-color: #ebecf1;
+$base-color-darker: #ebecf1c9;
+$second-color: #A36298;
+$third-color: #98C222;
+$fourth-color: #1CB8CF;
+$fifth-color: #FDC608;
+
+.btn-secondary {
+  background-color:$second-color !important;
+  color:$base-color !important;
+}
+
+.btn-secondary-inverted {
+  background-color:$base-color !important;
+  color:$second-color !important;
+}
+
+.btn-sec {
+  background-color:$third-color !important;
+  color:white !important;
+}
+
+.btn-sec-inverted {
+  background-color:white !important;
+  color:$third-color !important;
+  border:1px solid $third-color !important;
+}
+
+
+.bg-transparent {
+  background-color:transparent !important;
+}
+
+.black-white {
+  background-color:white !important;
+  border:1px solid grey !important;
+  color:$base-color-darker;
+}
+
+/*
+.autoContrast {
+  color:black;
+  mix-blend-mode: difference;
+}*/
+/*
+.bg-white {
+  background-color:$base-color !important;
+}*/

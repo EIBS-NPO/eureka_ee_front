@@ -45,11 +45,16 @@ const put = (user) => {
         })
 }
 
-const get = (crit = null) => {
-    let param =""
-    if(crit === "all"){ param = "?all=1"
-    }else if ( crit !== null ) { param = "?id=" +crit}
-    return Axios.get(USR_API + param )
+const get = (access = null) => {
+    let params ="?access="
+    /*if(access !== null){ params += "?access=" + access }
+    if(id !== null){
+        if( params !== "" ) { params += "&"}
+        params += "id=" + id
+    }*/
+    /*if(access === "owned"){params = "?access=owned"}
+    else if(access === "id"){ params = "?access=id"}*/
+    return Axios.get(USR_API + "?access=" + access )
 }
 
 const resetPass = (passTab) => {
@@ -63,7 +68,7 @@ const resetEmail = (email, id = null) => {
     if(id !== null) {
         data[id] = id
     }
-    console.log(email)
+
     return Axios.post(USR_API +"/email", data)
 }
 

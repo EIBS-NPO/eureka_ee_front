@@ -19,7 +19,7 @@
   "action": "action",
   "enable": "activer",
   "disable": "désactiver",
-  "partner": "partner",
+  "partners": "les partenaires",
 
 
   "my_activities" : "mes activités",
@@ -53,6 +53,7 @@
 
   "yes": "oui",
   "no": "non",
+  "or": "ou",
   "choose": "choisir",
   "confirm": "valider",
   "save": "enregistrer",
@@ -155,6 +156,7 @@
   "files": "fichiers",
   "file": "fichier",
 
+  "Gateway_Time-out": "Le serveur ne répond pas",
   "Invalid credentials.": "Mauvais login ou mot de passe",
   "Your account has not been activated": "Votre compte doit être activé",
   "check_your_mails": "vérifier vos emails",

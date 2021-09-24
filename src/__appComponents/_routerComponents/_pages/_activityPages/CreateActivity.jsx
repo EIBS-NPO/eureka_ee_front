@@ -9,9 +9,10 @@ import PictureForm from "../__CommonComponents/forms/picture/PictureForm";
 import fileAPI from "../../../../__services/_API/fileAPI";
 
 const CreateActivity = ({ history, t }) => {
-    if (!authAPI.isAuthenticated()) {
+    /*if (!authAPI.isAuthenticated()) {
         authAPI.logout()
-    }
+        history.replace("/")
+    }*/
 
     const [activity, setActivity] = useState({
         id: undefined,

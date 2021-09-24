@@ -9,11 +9,13 @@ const ProjectsList = ( props ) => {
     const urlParams = props.match.params.ctx
 
     //forbiden if route for my org and no auth
-    const checkCtx = () => {
-        if (urlParams !=="public" && !authAPI.isAuthenticated()) {
+    const checkCtx = async () => {
+      //  if (urlParams !=="public" && !authAPI.isAuthenticated()) {
             //if ctx need auth && have no Auth, public context is forced
-            authAPI.logout()
-        }else {return urlParams}
+       //     authAPI.logout()
+      //  }else {
+            return urlParams
+    //    }
     }
 
     const [projects, setProjects] = useState([])
@@ -29,30 +31,40 @@ const ProjectsList = ( props ) => {
             oui pour retrouver les relation assign et follow
          */
         setLoader(true)
-        setCtx( checkCtx() )
-        let ctx = checkCtx()
-        if(ctx === 'public'){
-           let response = await projectAPI.getPublic()
-               .catch(error => console.log(error.response))
-            if(response.status === 200){
-                setProjects(response.data)
-            }
-        }else {
-            let response = await projectAPI.getProject(ctx)
-                .catch(error => console.log(error.response))
-            if(response && response.status === 200){
-                setProjects(response.data)
-            }
+     /*   setCtx( checkCtx() )
+        let ctx = checkCtx()*/
+        checkCtx()
+            .then(async (ctx) => {
+                if(ctx === 'public'){
+                    let response = await projectAPI.getPublic()
+                        .catch(error => console.log(error.response))
+                    if(response.status === 200){
+                        setProjects(response.data)
+                    }
+                }else {
+                    if(await (authAPI.isAuthenticated())){
+                        let response = await projectAPI.getProject(ctx)
+                            .catch(error => console.log(error.response))
+                        if(response && response.status === 200){
+                            setProjects(response.data)
+                        }
 
-            if(ctx === 'owned'){ // assigned project for myProject page
-                let response = await projectAPI.getProject("assigned")
-                    .catch(error => console.log(error.response))
-                if(response && response.status === 200){
-                    console.log(response.data)
-                    setAssignProjects(response.data)
+                        if(ctx === 'owned'){ // assigned project for myProject page
+                            let response = await projectAPI.getProject("assigned")
+                                .catch(error => console.log(error.response))
+                            if(response && response.status === 200){
+                                console.log(response.data)
+                                setAssignProjects(response.data)
+                            }
+                        }
+                    }else {
+                        authAPI.logout()
+                        props.history.replace("/")
+                    }
+
                 }
-            }
-        }
+            })
+
         setLoader(false)
         /*if(ctx === 'follower'){
             projectAPI.getFollowed()
@@ -63,7 +75,7 @@ const ProjectsList = ( props ) => {
                 .catch(error => console.log(error.response))
                 .finally(() => setLoader(false))
         }
-        else if (ctx !== 'public') { //todo gerer le rpojet my (creator + assign)
+        else if (ctx !== 'public') {
             projectAPI.get(ctx)
                 .then(response => {
                  //   console.log(response.data)

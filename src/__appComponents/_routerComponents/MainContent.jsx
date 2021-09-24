@@ -16,39 +16,21 @@ import { strUcFirst } from "../../__services/utilities";
 import interreg_logo from "../../_resources/logos/Interreg.jpg";
 import '../../scss/components/mainMenu.scss';
 import orgAPI from "../../__services/_API/orgAPI";
+import HeaderMenu from "./_menuComponents/HeaderMenu";
+import SideMenu from "./_menuComponents/SideMenu";
 
 
 const MainContent = (props ) => {
     const t = props.t;
     const history = useHistory();
-  //  console.log(props)
- //   const history = props.history
+
     const contentChildren = props.children;
 
     const { isAuthenticated, setIsAuthenticated,
         isAdmin, setIsAdmin,
         lastname, setLastname,
-        firstname, setFirstname,
-        partnerList, setPartnerList
+        firstname, setFirstname
     } = useContext(AuthContext)
-
-    //PARTNER FOOTER
-  //  const [partnerList, setPartnerList] = useState([])
-  /*  useEffect(()=> {
-     //   setLoader(true)
-        orgAPI.getPublic(null, true)
-            .then(response => {
-                setPartnerList(response.data)
-            })
-            .catch(error => {
-                console.log(error)
-                //setError(true)
-            })
-      //      .finally(() => setLoader(false))
-    }, [])*/
-
-    //END PARTNER FOOTER
-
 
     const Media = useContext(MediaContext).Media
 
@@ -385,7 +367,10 @@ const MainContent = (props ) => {
     ]
 
     return(
+        <>
             <NavBar children={contentChildren} rightItems={rightItems} />
+        </>
+
     );
 }
 

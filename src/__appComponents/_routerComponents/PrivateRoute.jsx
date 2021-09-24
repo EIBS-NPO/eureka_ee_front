@@ -1,23 +1,16 @@
 
 import React, { useContext } from "react";
-import { Redirect, Route } from "react-router-dom";
+import {Redirect, Route, useHistory} from "react-router-dom";
 import AuthContext from "../../__appContexts/AuthContext";
 import authAPI from "../../__services/_API/authAPI";
+import userAPI from "../../__services/_API/userAPI";
 
-//todo check debug
 const PrivateRoute = ({ path, component }) => {
-   // const { isAuthenticated } = useContext(AuthContext);
-    if( authAPI.isAuthenticated()) {
-        return (
+    return (
+        window.localStorage.getItem("authToken") !== null ?
             <Route path={path} component={component} />
-        )
-    }else {
-        return (
-            <Redirect to="/" />
-        )
-    }
-        /*<Redirect to="/" />*/
-
+        : <Redirect to="/login" />
+    )
 };
 
 export default PrivateRoute;

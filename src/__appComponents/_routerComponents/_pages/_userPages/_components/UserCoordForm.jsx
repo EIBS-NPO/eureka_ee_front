@@ -152,7 +152,7 @@ const UserCoordForm = ({user, setterUser}) => {
                                         <Icon name="user"/>
                                     </Item.Header>
                                     <Item.Content verticalAlign='middle'>
-                                        {user.firstname}
+                                        {user && user.firstname}
                                     </Item.Content>
                                 </Item>
 
@@ -161,7 +161,7 @@ const UserCoordForm = ({user, setterUser}) => {
                                         <Icon name="user"/>
                                     </Item.Header>
                                     <Item.Content verticalAlign='middle'>
-                                        {user.lastname}
+                                        {user && user.lastname}
                                     </Item.Content>
                                 </Item>
 
@@ -170,7 +170,7 @@ const UserCoordForm = ({user, setterUser}) => {
                                         <Icon name="phone"/>
                                     </Item.Header>
                                     <Item.Content verticalAlign='middle'>
-                                        {user.phone ?
+                                        {user && user.phone ?
                                             user.phone
                                             : "non renseigné"
                                         }
@@ -182,7 +182,7 @@ const UserCoordForm = ({user, setterUser}) => {
                                         <Icon name="mobile alternate"/>
                                     </Item.Header>
                                     <Item.Content verticalAlign='middle'>
-                                        {user.mobile ?
+                                        {user && user.mobile ?
                                             user.mobile
                                             : "non renseigné"
                                         }

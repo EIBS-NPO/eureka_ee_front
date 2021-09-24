@@ -8,9 +8,6 @@ import FileInfos from "./FileInfos";
 import MediaContext from "../../../../../../__appContexts/MediaContext";
 import AuthContext from "../../../../../../__appContexts/AuthContext";
 
-//todo test allowedMimes in MediaContext
-//todo hideModal useLess?
-//todo traduction
 /**
  *
  * @param history for redirect if necessary
@@ -50,7 +47,6 @@ const FileUpload = ( { history=undefined, activity, setter, hideModal=false, han
 
         let reader = new FileReader()
 
-        //todo useless?
         reader.addEventListener('load', () => {
             setActivityFile(reader.result)
         }, false)

@@ -16,8 +16,6 @@ import projectAPI from "../../../../__services/_API/projectAPI";
 import orgAPI from "../../../../__services/_API/orgAPI";
 import MediaContext from "../../../../__appContexts/MediaContext";
 
-//todo make context for activityData
-//todo make compo for more modulable page and easymake media breakpoint
 const ActivityProfile = ( props ) => {
     const Media = useContext(MediaContext).Media
 
@@ -60,7 +58,7 @@ const ActivityProfile = ( props ) => {
 
     const handleForm = ( ) => {
         activityForm === true ? setActivityForm(false) : setActivityForm(true)
-      //  console.log("handle activity form : " + activityForm)
+
     }
 
     const [loader, setLoader] = useState(false);
@@ -114,7 +112,7 @@ const ActivityProfile = ( props ) => {
                 if(response && response.status === 200){ setUserAssignProject(response.data)}
 
             //get if activity is followed by current user
-                //todo try to find best solution
+
                 response = await activityAPI.isFollowing( urlParams[1] )
                     .catch(error => console.log(error.response.data))
                 if(response && response.status === 200){ setIsFollow(response.data[0])}
@@ -147,8 +145,8 @@ const ActivityProfile = ( props ) => {
                   //  console.log(response.data[0])
                     if(response.data[0] !== "DATA_NOT_FOUND"){
                         /!*if(response.data[0].organization){
-                            //todo ??
-                            response.data[0].activityId = response.data[0].organization.id
+
+                            response.data[0].activityId = response.data[0].organization.id//todo ?wtf?
                         }*!/
                     }
                     setActivity(response.data[0])

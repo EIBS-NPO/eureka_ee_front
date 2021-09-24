@@ -41,7 +41,7 @@ const ActivityForm = ( { history, activity, setActivity, setForm, hideModal = un
     };
 
     const cancelForm = (e) => {
-        console.log("cancle activityForm")
+
         if(hideModal !== undefined){
             hideModal()
         }else {
@@ -58,7 +58,7 @@ const ActivityForm = ( { history, activity, setActivity, setForm, hideModal = un
         }
     }
 
-    //todo ajouter le orgsSelector
+
     useEffect(() => {
         if(activity){
             setUpdateActivity(activity)
@@ -70,7 +70,7 @@ const ActivityForm = ( { history, activity, setActivity, setForm, hideModal = un
     },[])
 
     const handleSubmit = () => {
-        console.log("update activity")
+
         authAPI.isAuthenticated();
 
         setLoader(true);
@@ -79,11 +79,9 @@ const ActivityForm = ( { history, activity, setActivity, setForm, hideModal = un
         //update Project
         activityAPI.put(updateActivity)
             .then(response => {
-            //    console.log(response.data[0])
+
                 setActivity(response.data[0])
                 setForm(false)
-                //  setErrors({});
-                //todo confirmation
             })
             .catch(error => {
                 setErrors(error.response.data.error)
@@ -93,7 +91,7 @@ const ActivityForm = ( { history, activity, setActivity, setForm, hideModal = un
             })
     };
 
-    //todo modal confirmation
+    //todo confirmation-step
     const handleDelete = () => {
         setLoader(true)
         activityAPI.remove(activity.id)

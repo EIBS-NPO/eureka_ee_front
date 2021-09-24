@@ -1,7 +1,8 @@
 import Axios from "axios";
-import {ORG_API, PROJECT_API} from "../../config";
+import {ORG_API} from "../../config";
 
 function post(org) {
+
     let bodyFormData = new FormData();
     bodyFormData.append('name', org.name)
     bodyFormData.append('type', org.type)
@@ -10,6 +11,13 @@ function post(org) {
     bodyFormData.append('description', JSON.stringify(org.description))
     if(org.picture !== undefined){
         bodyFormData.append('pictureFile', org.picture)
+    }
+    if(org.address !== undefined){
+        bodyFormData.append("address", org.address.address)
+        bodyFormData.append("complement", org.address.complement)
+        bodyFormData.append("zipCode", org.address.zipCode)
+        bodyFormData.append("city", org.address.city)
+        bodyFormData.append("country", org.address.country)
     }
     return Axios({
         method: 'post',

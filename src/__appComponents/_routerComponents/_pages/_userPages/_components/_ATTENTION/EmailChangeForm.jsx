@@ -64,7 +64,7 @@ const EmailChangeForm = ({ entity, setter}) => {
                                     <Icon name="mail"/>
                                 </Item.Header>
                                 <Item.Content verticalAlign='middle'>
-                                    {entity.email}
+                                    {entity && entity.email}
                                     <Button size="small" floated='right' onClick={showModal}>
                                         { t('change_email') }
                                         <Icon name='right chevron' />

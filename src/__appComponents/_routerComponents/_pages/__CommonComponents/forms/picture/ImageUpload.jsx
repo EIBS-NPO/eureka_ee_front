@@ -7,6 +7,7 @@ import '../../../../../../scss/components/Modal.scss';
 import MediaContext from "../../../../../../__appContexts/MediaContext";
 import {useTranslation} from "react-i18next";
 import UserContext from "../../../_userPages/_userContexts/UserContext";
+import authAPI from "../../../../../../__services/_API/authAPI";
 
 //todo traduction
 const ImageUpload = ({ setter, type, entity}) => {
@@ -15,9 +16,7 @@ const ImageUpload = ({ setter, type, entity}) => {
   //  const setUser = useContext(UserContext).setUser
 
     const { t } = useTranslation()
-    //todo harmoniser les différents média? => placer picture dans un context local au pictForm
 
-    //todo canceled, => keep the old picture for restore
     const [blob, setBlob] = useState(null)
 
     //inputImage c'est l'image que l'on va chercher passé en base64
@@ -45,27 +44,28 @@ const ImageUpload = ({ setter, type, entity}) => {
         showModal()
     }
 
-    //todo quand tout les pages de creation et update miseAjour retirer l'envoie direct de l'image au back.
-    // on pass maintenant toujours par updateEntity.
-    const handleSubmitImage = (e) => {
-       // console.log(blob)
+    const handleSubmitImage = async (e) => {
+        // console.log(blob)
         e.preventDefault()
-        if(entity.id !== undefined){ //if entiy already exist in database, update immediatly
+        if (entity.id !== undefined) { //if entiy already exist in database, update immediatly
             // fileHandler blob to firebase 'images' folder with filename 'image'
 
-            fileAPI.uploadPic(type, entity, blob)
-                .then(response => {
-                    setter({ ...entity, "picture": response.data[0].picture })
-                    hideModal()
-                })
-                .catch(error => {
-                    //handle error
-                    console.log(error)
-                    console.log(error.response);
-                });
-        }
-        else { //if no entityId is null, case of a new Entity just pass picture. it will be created with the entity
-            setter({ ...entity, "picture": blob })
+            if (await authAPI.isAuthenticated()) {
+                fileAPI.uploadPic(type, entity, blob)
+                    .then(response => {
+                        setter({...entity, "picture": response.data[0].picture})
+                        hideModal()
+                    })
+                    .catch(error => {
+                        //handle error
+                        console.log(error)
+                        console.log(error.response);
+                    });
+            } else {
+                history.replace("/login")
+            }
+        } else { //if no entityId is null, case of a new Entity just pass picture. it will be created with the entity
+            setter({...entity, "picture": blob})
         }
 
         hideModal()
@@ -107,7 +107,6 @@ const ImageUpload = ({ setter, type, entity}) => {
     //    document.getElementById('formPicture').reset()
     }
 
-    //todo make dynamique Id depend on media
     return (
         <form onSubmit={handleSubmitImage} id="formPicture">
             <Media at="xs">
@@ -119,7 +118,7 @@ const ImageUpload = ({ setter, type, entity}) => {
                         accept='image/png, image/jpeg' onChange={onInputChange}
                     />
                 </label>
-                {entity.picture &&
+                {entity && entity.picture &&
                 <Button
                     basic icon='remove circle'
                     color="red" size='mini'
@@ -136,7 +135,7 @@ const ImageUpload = ({ setter, type, entity}) => {
                     accept='image/png, image/jpeg' onChange={onInputChange}
                 />
                 </label>
-                {entity.picture &&
+                {entity && entity.picture &&
                 <Button
                     basic icon='remove circle'
                     color="red" size='mini'
@@ -153,7 +152,7 @@ const ImageUpload = ({ setter, type, entity}) => {
                     accept='image/png, image/jpeg' onChange={onInputChange}
                 />
                 </label>
-                {entity.picture &&
+                {entity && entity.picture &&
                     <Button
                         basic icon='remove circle'
                         color="red" size='mini'

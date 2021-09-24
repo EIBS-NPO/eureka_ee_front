@@ -9,7 +9,7 @@ const FollowersList = ( { obj, listFor }) => {
     const { t } = useTranslation()
 
     const [followers, setFollowers] = useState([])
-    console.log(followers)
+
 
     const [errors, setErrors] = useState("")
 
@@ -21,7 +21,7 @@ const FollowersList = ( { obj, listFor }) => {
             if(listFor === "activity"){
                 activityAPI.getFollowers(obj.id)
                     .then(response => {
-                        console.log(response)
+
                         setFollowers(response.data)
                     })
                     .catch(error => {
@@ -30,7 +30,7 @@ const FollowersList = ( { obj, listFor }) => {
                     })
                     .finally(() => setLoader(false))
             }
-            //todo
+
            /* if(listFor === "project"){
                 activityAPI.getFollowers(obj.id)
                     .then(response => {

@@ -6,6 +6,7 @@ import {withTranslation} from "react-i18next";
 import ProjectAPI from "../../../../__services/_API/projectAPI";
 import fileAPI from "../../../../__services/_API/fileAPI";
 import utilities from "../../../../__services/utilities";
+import authAPI from "../../../../__services/_API/authAPI";
 
 
 const CreateProject = ({ history, t }) => {
@@ -75,13 +76,17 @@ const CreateProject = ({ history, t }) => {
         setLoader(true)
         let newProject
 
-        let response = await ProjectAPI.post(project)
-            .catch(error => {
-                console.log(error.response.data)
-                setErrors(error.response.data);
-            })
-        if(response && response.status === 200){
-            newProject = response.data[0]
+        if(await (authAPI.isAuthenticated())) {
+            let response = await ProjectAPI.post(project)
+                .catch(error => {
+                    console.log(error.response.data)
+                    setErrors(error.response.data);
+                })
+            if (response && response.status === 200) {
+                newProject = response.data[0]
+            }
+        }else {
+            history.replace('/login')
         }
 
         /*if(project.picture){

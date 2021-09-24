@@ -36,7 +36,7 @@ const AdminProjects = ( ) => {
         setLoader(true)
         adminAPI.getProject()
             .then(response => {
-                console.log(response.data)
+
                 setProjects(response.data)
             })
             .catch(error => {
@@ -263,7 +263,6 @@ const AdminProjects = ( ) => {
                                     }
                                 </Grid.Column>
 
-                                    //todo modal de présentation de l'org et edit link
 
                                 <Grid.Column>
                                     { p.organization && p.organization.name &&
@@ -324,7 +323,6 @@ const AdminProjects = ( ) => {
                     <>
                         <div className="messageBox">
                             {actionSelected === "editProject" &&
-/* //todo problème sur le cancelform setform ??*/
                             <ProjectForm
                                 project={selectedProject}
                                 setProject={setSelectedProject}

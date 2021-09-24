@@ -8,41 +8,55 @@ import authAPI from "../../../../__services/_API/authAPI";
 const ActivitiesList = ( props ) => {
     const urlParams = props.match.params.ctx
 
-    const checkCtx = () => {
+    const [ctx, setCtx] = useState("public")
+    const checkCtx = async () => {
         if(urlParams === 'public' || urlParams === 'owned' || urlParams === 'followed'){
-            if (urlParams !=="public" && !authAPI.isAuthenticated()) {
+            /*if (urlParams !=="public" ) {
                 //if ctx need auth && have no Auth, public context is forced
-                authAPI.logout()
-            }else {return urlParams}
+            //    authAPI.logout(props.history)
+            }else {*/
+                return urlParams
         }
-        else return '';
+        else return "";
     }
 
     const [activities, setActivities] = useState([])
 
     const [loader, setLoader] = useState();
 
-    const [ctx, setCtx] = useState("public")
+
     useEffect(async() => {
         setLoader(true)
-        setCtx(checkCtx())
-        let ctx = checkCtx()
+      checkCtx()
+          .then(async (ctx) => {
 
-        if (ctx !== '') { //if valid ctx
-            if(ctx === 'public'){//publicActivities
-            let response = await activityAPI.getPublic()
-                .catch(error => console.log(error.response))
-                if (response && response.status === 200) {
-                    setActivities(response.data)
-                }
-            } else { //owned or followed activities
-                let response = await activityAPI.getActivity(ctx)
-                    .catch(error => console.log(error.response))
-                if (response && response.status === 200) {
-                    setActivities(response.data)
-                }
-            }
-        }
+              if (ctx !== '') { //if valid ctx
+                  if (ctx === 'public') {//publicActivities
+                      let response = await activityAPI.getPublic()
+                          .catch(error => console.log(error.response))
+                      if (response && response.status === 200) {
+                          setActivities(response.data)
+                      }
+                  } else { //owned or followed activities
+                      if (await (authAPI.isAuthenticated())) {
+                          let response = await activityAPI.getActivity(ctx)
+                              .catch(error => console.log(error.response))
+                          if (response && response.status === 200) {
+                              setActivities(response.data)
+                          }
+                      } else {
+                          authAPI.logout()
+                          props.history.replace("/")
+                      }
+
+                  }
+              }
+
+          })
+
+
+     //   let ctx = checkCtx()
+
         setLoader(false)
     }, [urlParams]);
 

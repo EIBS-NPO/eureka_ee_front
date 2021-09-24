@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react'
 import {Message, Icon, Container, Label, Form, Item, Flag} from 'semantic-ui-react'
 import {useTranslation, withTranslation} from 'react-i18next'
 
-//todo handle validation, need one or more description de valid form
 /**
  *
  * @param tabText

@@ -1,10 +1,10 @@
-
 import Axios from "axios";
 import jwt_decode from "jwt-decode";
-import {LOGIN_API, USR_API} from "../../config";
+import {API_URL, LOGIN_API, USR_API} from "../../config";
 
 const logout = () => {
     window.localStorage.removeItem("authToken");
+    window.localStorage.removeItem("refreshToken");
     if (Axios.defaults.headers["Authorization"]){
         delete Axios.defaults.headers["Authorization"];
     }
@@ -13,14 +13,15 @@ const logout = () => {
 const authenticate = (credentials) => {
     return Axios
         .post(LOGIN_API, credentials)
-        .then((response) => response.data.token)
-        .then(token => {
-            //je stocke mon token dans le localStorage
+        .then((response) => {
+            let token = response.data.token
+            let refreshToken = response.data.refresh_token
             window.localStorage.setItem("authToken", token);
-            //on prévient Axios qu'on a maintenantn un header par défaut sur toutes les futures requetes HTTP
+            window.localStorage.setItem("refreshToken", refreshToken);
             setAxiosToken(token)
             return true;
-        });
+
+        })
 }
 
 const setAxiosToken = (token) => {
@@ -31,33 +32,69 @@ const setAxiosToken = (token) => {
  * control auth in loading
  * @returns boolean
  */
-const setup = () => {
+const setup = async () => {
+
     const token = window.localStorage.getItem("authToken");
     if (token) {
         try {
-            const jwtData = jwt_decode(token);
-            // valid token format
-            if (jwtData.exp * 1000 > new Date().getTime()) {
+            if (isValidToken(token)) {
                 setAxiosToken(token);
                 return true;
+            } else {
+                  return false;
             }
-            else {
-                logout();
-                return false;
-            }
-        } catch(error) {
+        } catch (error) {
             console.log(error)
-            // invalid token format
+            return false;
         }
     } else {
-        logout();
         return false;
     }
 }
 
-const refresh = (tok) =>{
-    window.localStorage.setItem("authToken", tok)
-    return setup()
+/**
+ * return true if the token isn't expired else return false
+ * @returns boolean
+ */
+const isAuthenticated = async () => {
+    const token = window.localStorage.getItem("authToken");
+    if (token) {
+        if (isValidToken(token)) {
+            return true
+        } else {
+            return await refreshToken();
+        }
+    }
+    return false;
+}
+
+const isValidToken = (token) => {
+    return (jwt_decode(token).exp * 1000 > new Date().getTime())
+}
+
+const refreshToken = async () =>{
+    let res = false;
+    await Axios.post(API_URL+"/token/refresh", {refresh_token :window.localStorage.getItem("refreshToken")})
+        .then(async response => {
+            let isRefresh = await refreshAuthState(response.data.token, response.data.refresh_token)
+            res = isRefresh;
+        })
+        .catch((error) => {
+            console.log(error)
+            res = false
+        })
+    return res;
+}
+
+const refreshAuthState = async (token, refreshToken) => {
+    try{
+        window.localStorage.setItem("authToken", token);
+        window.localStorage.setItem("refreshToken", refreshToken);
+        await setAxiosToken(token)
+    }catch{
+        return false
+    }
+    return true;
 }
 
 const resetEmail = (email, userId) => {
@@ -67,27 +104,10 @@ const resetEmail = (email, userId) => {
     })
 }
 
-/**
- * return true if the token isn't expired else return false
- * @returns boolean
- */
-const isAuthenticated = () => {
-    const token = window.localStorage.getItem("authToken");
-
-    //todo ajouter la notion de confirm?
-    if (token) {
-        const jwtData = jwt_decode(token);
-        return jwtData.exp * 1000 > new Date().getTime();
-    }
-    return false;
-}
-
 const isAdmin = () => {
     const token = window.localStorage.getItem("authToken");
-    if(token && jwt_decode(token).roles[0] === "ROLE_ADMIN"){
-        return true
-    }
-    return false
+    return !!(token && jwt_decode(token).roles[0] === "ROLE_ADMIN");
+
 }
 
 const isConfirm = () => {
@@ -139,6 +159,7 @@ export default {
     setup,
     logout,
     authenticate,
+    refreshAuthState,
     resetEmail,
     isAuthenticated,
     isConfirm,
@@ -147,6 +168,5 @@ export default {
     isAdmin,
     getId,
     getFirstname,
-    getLastname,
-    refresh
+    getLastname
 };

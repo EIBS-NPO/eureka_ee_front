@@ -70,14 +70,14 @@ const ProjectProfile = (props) => {
 
     const setDataProject = (project) => {
         setProject(project)
-        setActivities(project.activities) //todo
+        setActivities(project.activities)
         if(project.organization){
             setProjectOrg(project.organization)
             setIsOrgReferent( userAPI.checkMail() === project.organization.referent.email)
         }
         setIsOwner(userAPI.checkMail() === project.creator.email)
     }
-console.log(project)
+
 
     const getFreeActivitiesOptions = () => {
         let table = []
@@ -91,8 +91,6 @@ console.log(project)
                 )
             }
         })
-        //        table = table.filter(a => a.creator.id === authAPI.getId())
- //       console.log(table)
         return table
     }
 

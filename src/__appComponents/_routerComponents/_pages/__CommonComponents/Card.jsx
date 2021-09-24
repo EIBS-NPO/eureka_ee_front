@@ -52,8 +52,6 @@ const Card = ({ obj, type, profile=false, ctx=undefined, withPicture=true }) => 
         }else if (type === "project"){
             setIsOwner(obj && obj.creator && obj.creator.id === authAPI.getId())
 
-            //todo check follow with follower list in project...
-            //todo add param for no check, if useless requete
             if(isAuth && obj.id){
                 projectAPI.isFollowing(obj.id, "assign")
                     .then(response => { setIsAssign(response.data[0])})

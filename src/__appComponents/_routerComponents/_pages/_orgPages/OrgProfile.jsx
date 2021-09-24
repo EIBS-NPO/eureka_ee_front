@@ -16,14 +16,13 @@ import activityAPI from "../../../../__services/_API/activityAPI";
 import MediaContext from "../../../../__appContexts/MediaContext";
 
 import SearchInput from "../__CommonComponents/forms/SearchList";
+import ProfilOrg2 from "./ProfilOrg2";
 
 export const OrgContext = createContext({
     org:{ },
     errors: { },
 })
 
-//todo afficher un bouton si referent pour update
-//todo si update clicquer afficher le compo orgForm sinon le compo organization
 const OrgProfile = (props ) => {
     const Media = useContext(MediaContext).Media
     const isAuth = useContext(AuthContext).isAuthenticated;
@@ -39,7 +38,7 @@ const OrgProfile = (props ) => {
     const [ctx, setCtx] = useState()
 
     const [ org, setOrg ] = useState({})
-    console.log(org)
+
     const  [ orgForm, setOrgForm ]  = useState(false)
 
     const handleForm = ( ) => {
@@ -87,13 +86,12 @@ const OrgProfile = (props ) => {
             setMessage(urlParams[2])
         }
 
-        if(ctx !== 'public'){//for user's org or assign members
+        if(ctx !== 'public' && await (authAPI.isAuthenticated())){//for user's org or assign members
             let response = await orgAPI.getOrg(urlParams[0],urlParams[1])
                 .catch(error => console.log(error.response))
             if(response && response.status === 200){
                 setData(response.data[0])
             }
-
         }else {//for anonymous
             let response = await orgAPI.getPublic(urlParams[1])
                 .catch(error => console.log(error.response))
@@ -413,9 +411,6 @@ const OrgProfile = (props ) => {
                     </Segment>
                 }
 
-                {
-                    // todo Mambership n'affiche que la liste des membre. => faire un form (réutilisable?
-                }
                 {activeItem === 'membership' &&
                     <Segment attached='bottom'>
                         <Membership org={org} />
@@ -438,6 +433,9 @@ const OrgProfile = (props ) => {
     }
 
     return (
+        !loader && org && <ProfilOrg2 org={org}/>
+    )
+   /* return (
 
         <div className="card">
             <OrgContext.Provider
@@ -566,7 +564,7 @@ const OrgProfile = (props ) => {
 
             </OrgContext.Provider>
         </div>
-    );
+    );*/
 };
 
 export default withTranslation()(OrgProfile);

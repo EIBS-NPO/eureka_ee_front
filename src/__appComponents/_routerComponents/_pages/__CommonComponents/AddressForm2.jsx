@@ -13,11 +13,10 @@ const AddressForm2 = ({handleSubmit, obj, errors, loader, handleCancel}) => {
         const { name, value } = event.currentTarget;
         setAddress({ ...address, [name]: value });
     };
-//console.log(address)
+
     const preSubmit = () => {
     obj.address = address
-    //    setObj({...obj, "address" : address})
-  //      console.log(obj)
+
         handleSubmit()
     }
 

@@ -11,7 +11,6 @@ id: undefined,
         isPublic: false,
  */
 
-//todo handle discrim if file existe !
 const post = (activity) => {
     let bodyFormData = new FormData();
     bodyFormData.append('title', activity.title)
@@ -82,7 +81,6 @@ const uploadPic = (bodyFormData) => {
     })
 }
 
-//todo ?
 const downloadPic = (picture) => {
     return Axios.get(ACT_API + "/picture/?pic=" + picture)
 }

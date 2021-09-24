@@ -1,4 +1,4 @@
-@import "./utilities/variables.scss";
+@import "utilities/colors";
 
 /*@media screen and (max-width: 430px)
 {
@@ -24,21 +24,28 @@
 /*
 min-70% pour voir mettre en width
  */
+/*body{
+    width: 100%;
+}*/
+
 #main {
     display:flex;
-    position: fixed;
-    top: 160px;
+  /*  position: fixed;*/
+  /*  top: 160px;*/
    // flex-direction: column;
   //  max-width: 300px;
   //  height:100vh;
     bottom:0px;
   //  top:0px;
-    left: 200px;
-    right:0px;
+  /*  left: 200px;
+    right:0px;*/
 //    overflow:auto;
     min-height: 70vh;
-    max-height:100vh;
+    /*max-height:100vh;*/ //todo pagination
     justify-content: center;
+    padding:unset;
+   /* max-width:100%;*/
+   /* padding-bottom: 60px;*/
 
     /*@media screen and (max-width: 601px)
     {
@@ -51,11 +58,98 @@ min-70% pour voir mettre en width
     justify-content: center;*/
 }
 
+#dimmer {
+    z-index:50;
+}
+
+#sidePusher {
+    z-index:50;
+    width:100vh;
+}
+
+#dropXs {
+    width:50%;
+    text-align: center;
+}
+
+#noSidePusher {
+    z-index:1;
+    width:0;
+}
+
 #mainMenu{
     position:fixed;
  //   z-index:100;
     width: -webkit-fill-available;
     width: 100%;
+}
+
+.menubar{
+    width:100% !important;
+    margin:auto !important;
+}
+
+.absPos {
+    position:absolute;
+}
+
+.parent-sidebar {
+    position: sticky;
+    top: 50px;
+}
+
+.overflowed-invisible {
+    overflow: auto;
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+.overflowed-invisible::-webkit-scrollbar {
+    display: none;
+}
+
+.no-v-padded {
+    padding-top: unset !important;
+    padding-bottom: unset !important;
+}
+
+.no-h-padded {
+    padding-left: unset !important;
+    padding-right: unset !important;
+}
+
+#sidebar {
+    /*.parent-div{
+        position: sticky;
+        top: 25%;
+    }*/
+    height: 65vh;
+    padding-left: unset;
+    padding-right: unset;
+}
+
+#sidebarXs {
+    height:50vh;
+    padding: unset;
+
+    button{
+        border-bottom: 1px solid $second-color;
+        border-right: 1px solid $second-color;
+        border-radius:30px;
+    }
+
+    .btn-menu-open {
+        border-color: $fourth-color;
+    //    border-radius:30px 30px 50% 50%;
+    }
+
+    a{
+       // background-color:$fourth-color;
+    }
+}
+
+#content{
+    display: flex;
 }
 
 #SubMainMenu {
@@ -137,20 +231,93 @@ width:auto;
     background-color: white;
    /* border:2px #A36298 solid;
     border-radius: 10px;*/
-    margin: 15px;
-    @media screen and (min-width: 601px)
+//    margin: 15px;
+   /* @media screen and (min-width: 601px)
     {
         margin-left: auto;
-    }
+    }*/
   /*  box-shadow: 10px 10px 10px rgba(black,0.5);*/
-    padding-top: 50px;
+ //   padding-top: 50px;
     overflow: auto;
-    width:100%;
+    width:100% !important;
+    text-align: center;
    // overflow-y:auto;
+}
+
+.profil-header {
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+}
+
+.profil-header-content {
+    width:100%;
+}
+
+.profil-header-title{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    padding:unset !important;
+    width: 100%;
+
+    p {
+        /* margin: 0 0 1em; */
+        line-height: 0.5em;
+        font-size: 0.7em !important;
+        font-weight: normal;
+    }
+}
+
+.profil-header-menu {
+ //   background-color: rgba($third-color,0.5) !important;
+    justify-content: space-around;
+}
+
+.content-description {
+    display: flex;
+    flex-direction: column;
+    width:70vh !important;
+}
+
+.backdrop {
+    position:absolute !important;
+    display: flex !important;
+    justify-content: flex-end;
+    top:0;
+    right:0;
+   // left:0;
+  //  bottom:0;
+    width:400px;
+    min-width: 400px;
+    max-width: 400px;
+    height:400px;
+    overflow: hidden;
+    z-index:1;
+    margin:unset
+}
+
+.near-backdrop{
+    z-index:2;
+}
+
+.bg-circle {
+    top: -95px;
+    left: -30px;
+    width: 300px;
+    height: 300px;
+    border-radius: 175px !important;
+    background: linear-gradient(to right, $fourth-color, $second-color) !important;
+    z-index:1;
 }
 
 .unmarged {
     margin:0!important;
+}
+
+.unpadded {
+    padding:unset !important;
 }
 
 .breakWord{

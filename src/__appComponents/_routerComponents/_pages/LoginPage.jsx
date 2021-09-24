@@ -1,5 +1,5 @@
 
-import React, { useContext, useState } from "react";
+import React, {useContext, useEffect, useState} from "react";
 import AuthContext from "../../../__appContexts/AuthContext";
 import AuthAPI from "../../../__services/_API/authAPI";
 import {Button, Form, Input, Message} from "semantic-ui-react";
@@ -17,9 +17,18 @@ const LoginPage = (props ) => {
         needConfirm, setNeedConfirm
     } = useContext(AuthContext);
 
-    if (isAuthenticated === true) {
-        props.history.replace('/');
-    }
+    useEffect(()=>{
+
+        if (isAuthenticated === true) {
+            authAPI.logout()
+            setIsAuthenticated(false)
+            setIsAdmin(false)
+            setFirstname("")
+            setLastname("")
+            //  props.history.replace('/');
+        }
+    },[])
+
 
     const { t } = useTranslation()
     const [credentials, setCredential] = useState({
@@ -37,7 +46,6 @@ const LoginPage = (props ) => {
         setCredential({ ...credentials, [name]: value });
     };
 
-    //todo traduction!
     const handleSubmit = async (event) => {
         event.preventDefault();
 
@@ -45,32 +53,72 @@ const LoginPage = (props ) => {
         const signal = abortController.signal
 
         setLoader(true)
-        let response = await AuthAPI.authenticate(credentials, {signal:signal})
-            .catch(error => {
-                setError(t(error.response.data.message));
-                if(error.response.data.message === "Your account has not been activated"){
-                //    console.log("needConfirm")
-                    //recup le mail user pour eventuel demander de mail.
-                    setNeedConfirm(true)
-                }
+        AuthAPI.authenticate(credentials, {signal:signal})
+            .then((response) => {
+                setError("")
+                setIsAuthenticated(true)
+                setIsAdmin(authAPI.isAdmin())
+                setFirstname(authAPI.getFirstname())
+                setLastname(authAPI.getLastname())
+                props.history.replace("/")
             })
-        if(response){
-            setError("")
-            setIsAuthenticated(true)
-            setIsAdmin(authAPI.isAdmin())
-            setFirstname(authAPI.getFirstname())
-            setLastname(authAPI.getLastname())
-            props.history.replace("/")
-        }
+            .catch(error => {
+                console.log(error)
+            })
+            /*.then(()=> {
+                userAPI.get("owned")
+                    .then((response) => {
+                        console.log(response)
+                        let user = response.data
+                        setError("")
+                        setIsAuthenticated(true)
+                        setIsAdmin(user.roles === "ROLE_ADMIN")
+                        setFirstname(user.firstname)
+                        setLastname(user.lastname)
+                        props.history.replace("/")
+                    })
+                    .catch(error => {
+                        console.log(error)
+                    })
+            })*/
+            .catch(error => {
+                if(error.response === undefined){
+                    setError(t("Gateway_Time-out"))
+                }else{
+                    console.log(error.response)
+                    setError(t(error.response.data.message));
+
+                    //todo traduction
+                    if(error.response.data.message === "Your account has not been activated"){
+                        setNeedConfirm(true)
+                    }
+                }
+
+            })
+       /* if(response){
+            console.log(response)
+            let userData = userAPI.get("owned")
+                .then(userData => {
+                    console.log(userData)
+                    let user = userData.data
+                    setError("")
+                    setIsAuthenticated(true)
+                    setIsAdmin(user.roles === "ROLE_ADMIN")
+                    setFirstname(user.firstname)
+                    setLastname(user.lastname)
+                    props.history.replace("/")
+                })
+                .catch(error => {
+                    console.log(error)
+                })*/
+     //   }
         setLoader(false)
         return function cleanup(){
             abortController.abort()
         }
     };
 
-    // todo empecher l'envoie multiple
     const handleSendMail = (e) => {
-        console.log(credentials)
         if(credentials.email){
             userAPI.askActivation(credentials.email)
                 .catch(error => {
@@ -88,10 +136,10 @@ const LoginPage = (props ) => {
         setForgetForm(true)
     }
     const handleForgetPass = () => {
-        //todo api resetPassword
-        //todo le back générer une clef
+        //todo api resetPassword //soon
     }
 
+    //todo loader ne fonctionne pas...
     return (
         <div className="card">
             {!forgetForm &&
@@ -104,7 +152,7 @@ const LoginPage = (props ) => {
                     label={t('email')}
                     placeholder='Email'
                     onChange={handleChange}
-                    error={error ? error : null}
+               //     error={error ? error : null}
                     required
                 />
                 <Form.Input
@@ -115,7 +163,7 @@ const LoginPage = (props ) => {
                     label={t('password')}
                     type='password'
                     onChange={handleChange}
-                    error={error ? error : null}
+               //     error={error ? error : null}
                     required
                 />
 
@@ -140,6 +188,15 @@ const LoginPage = (props ) => {
                 />
                 <Button className="ui primary basic button" content={t('change_password')} />
             </Form>
+            }
+
+            {error &&
+            <Message warning compact>
+                <Message.Header content={t('Error')} />
+                <Message.Content>
+                    <p>{error}</p>
+                </Message.Content>
+            </Message>
             }
 
             { needConfirm &&

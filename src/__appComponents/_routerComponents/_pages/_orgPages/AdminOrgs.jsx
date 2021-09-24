@@ -214,9 +214,7 @@ const AdminOrgs = ( history ) => {
                                 </Dropdown>
                             </Menu.Menu>
                         </Menu>
-                        {
-                         //todo rendre segment groupe responsive pour alignement verticlae sur petit ecran
-                        }
+
                         <Segment.Group horizontal className="unmarged" >
                             <Segment className="w-25" >
                                 <Picture size="tiny" picture={o.picture} />
