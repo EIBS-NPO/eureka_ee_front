@@ -9,6 +9,7 @@ import {useTranslation} from "react-i18next";
 import UserContext from "../../../_userPages/_userContexts/UserContext";
 import authAPI from "../../../../../../__services/_API/authAPI";
 import activityAPI from "../../../../../../__services/_API/activityAPI";
+import projectAPI from "../../../../../../__services/_API/projectAPI";
 
 //todo traduction
 const ImageUpload = ({ setter, type, entity}) => {
@@ -87,7 +88,6 @@ const ImageUpload = ({ setter, type, entity}) => {
         if(entity.id !== undefined){
             if(type === "activity"){
                 activityAPI.put(entity, {"pictureFile": null} )
-                    //    fileAPI.uploadPic(type, entity, null)
                     .then(response => {
                         setter({ ...entity, "picture": response.data[0].picture })
                         hideModal()
@@ -98,8 +98,20 @@ const ImageUpload = ({ setter, type, entity}) => {
                         console.log(error.response);
                     });
             }
+            else if(type === "project"){
+                    projectAPI.put(entity, {"pictureFile": null} )
+                        .then(response => {
+                            setter({ ...entity, "picture": response.data[0].picture })
+                            hideModal()
+                        })
+                        .catch(error => {
+                            //handle error
+                            console.log(error)
+                            console.log(error.response);
+                        });
+                }
+            }
            //todo handle org, project, and user
-        }
         setter({ ...entity, "picture": null })
     }
 

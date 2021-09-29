@@ -1,15 +1,28 @@
 import Axios from "axios";
 import {FOLW_PROJECT, ORG_API, PROJECT_API} from "../../config";
 
-const post = (project) => {
+
+const getBodyFormData = (project) => {
     let bodyFormData = new FormData();
     bodyFormData.append('title', project.title)
     bodyFormData.append('startDate', project.startDate)
     bodyFormData.append('endDate', project.endDate)
     bodyFormData.append('description', JSON.stringify(project.description))
-    if(project.picture !== undefined){
-        bodyFormData.append('pictureFile', project.picture)
+    if(project.id !== undefined){
+        bodyFormData.append('id', project.id)
     }
+    if(project.pictureFile !== undefined){
+        bodyFormData.append('pictureFile', project.pictureFile)
+    }
+    if(project.organization !== undefined){
+        let org = project.organization === null ? null : project.organization.id
+        bodyFormData.append('organization', org)
+    }
+    return bodyFormData;
+}
+
+const post = (project) => {
+    let bodyFormData = getBodyFormData(project)
     return Axios({
         method: 'post',
         url: PROJECT_API,
@@ -18,15 +31,33 @@ const post = (project) => {
     })
 }
 
-const put = (project) => {
-    let data = {
+const put = (project, putRelationWith ={}) => {
+    if(putRelationWith["org"] !== undefined){
+        project.organization = putRelationWith["org"]
+    }
+    if(putRelationWith["pictureFile"] !== undefined){
+        project.pictureFile = putRelationWith["pictureFile"]
+    }
+    let bodyFormData = getBodyFormData(project)
+
+    //add after for multiRelationnal (ListOf)
+    if(putRelationWith["activity"] !== undefined){
+        bodyFormData.append('activity', putRelationWith["activity"].id)
+    }
+    return Axios({
+        method: 'post',
+        url: PROJECT_API+"/update",
+        data: bodyFormData,
+        headers: {'Content-Type': 'multipart/form-data'}
+    })
+   /* let data = {
         "id": project.id,
         "title": project.title,
         "description": project.description,
         "startDate": project.startDate,
         "endDate": project.endDate
     }
-    return Axios.put(PROJECT_API, data)
+    return Axios.put(PROJECT_API, data)*/
 }
 
 

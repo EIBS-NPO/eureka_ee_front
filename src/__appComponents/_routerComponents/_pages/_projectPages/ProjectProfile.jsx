@@ -215,7 +215,8 @@ const ProjectProfile = (props) => {
             authAPI.logout()
         }
         setLoader2(true)
-        projectAPI.manageActivity(activity, project.id)
+   //     projectAPI.manageActivity(activity, project.id)
+            projectAPI.put(project, {"activity": activity})
             .then(response => {
      //           console.log(response.data)
                 let index = project.activities.indexOf(activity)
@@ -235,9 +236,10 @@ const ProjectProfile = (props) => {
         }
         setLoader2(true)
         let act = freeActivities.find(a => activityId === a.id)
-        projectAPI.manageActivity(act, project.id)
+    //    projectAPI.manageActivity(act, project.id)
+            projectAPI.put(project, {'activity': act})
             .then(response => {
-                if(response.data[0] === "success"){
+                if(response.status === 200){
                     activities.unshift(freeActivities.find(a => a.id === activityId))
                     setActivities(activities)
                     setFreeActivities(freeActivities.filter(a => a.id !== activityId))
@@ -266,11 +268,11 @@ const ProjectProfile = (props) => {
             authAPI.logout()
         }
         setLoader2(true)
-        projectAPI.manageOrg(project.organization, project.id)
+        //projectAPI.manageOrg(project.organization, project.id)
+        projectAPI.put(project, {"org":null})
             .then(response => {
-    //            console.log(response.data)
-                project.organization = undefined
-                setProject(project)
+                //            console.log(response.data)
+                setProject(response.data[0])
                 setProjectOrg(undefined)
             })
             .catch(error => {
@@ -285,11 +287,12 @@ const ProjectProfile = (props) => {
         }
         setLoader2(true)
         let org = userOrgs.find(o => orgId === o.id)
-        projectAPI.manageOrg(org, project.id)
+   //     projectAPI.manageOrg(org, project.id)
+            projectAPI.put(project, {"org":org})
             .then(response => {
      //           console.log(response.data)
-                project.organization = org
-                setProject(project)
+               // project.organization = org
+                setProject(response.data[0])
                 setProjectOrg(org)
 
             })
@@ -411,7 +414,7 @@ const ProjectProfile = (props) => {
                         </Dropdown.Menu>
                     </Dropdown>
                     }
-                    {project.organization && (isOwner || isOrgReferent) &&
+                    {project && project.organization && (isOwner || isOrgReferent) &&
                         <>
                             <Menu.Item onClick={handleRmvOrg} position="right" disabled={loader2}>
                                 {isOrgReferent &&
