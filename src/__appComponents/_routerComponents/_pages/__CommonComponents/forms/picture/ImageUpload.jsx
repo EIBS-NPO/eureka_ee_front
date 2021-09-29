@@ -8,6 +8,7 @@ import MediaContext from "../../../../../../__appContexts/MediaContext";
 import {useTranslation} from "react-i18next";
 import UserContext from "../../../_userPages/_userContexts/UserContext";
 import authAPI from "../../../../../../__services/_API/authAPI";
+import activityAPI from "../../../../../../__services/_API/activityAPI";
 
 //todo traduction
 const ImageUpload = ({ setter, type, entity}) => {
@@ -47,10 +48,10 @@ const ImageUpload = ({ setter, type, entity}) => {
     const handleSubmitImage = async (e) => {
         // console.log(blob)
         e.preventDefault()
-        if (entity.id !== undefined) { //if entiy already exist in database, update immediatly
+     //   if (entity.id !== undefined) { //if entiy already exist in database, update immediatly
             // fileHandler blob to firebase 'images' folder with filename 'image'
 
-            if (await authAPI.isAuthenticated()) {
+        /*    if (await authAPI.isAuthenticated()) {
                 fileAPI.uploadPic(type, entity, blob)
                     .then(response => {
                         setter({...entity, "picture": response.data[0].picture})
@@ -63,10 +64,11 @@ const ImageUpload = ({ setter, type, entity}) => {
                     });
             } else {
                 history.replace("/login")
-            }
-        } else { //if no entityId is null, case of a new Entity just pass picture. it will be created with the entity
-            setter({...entity, "picture": blob})
-        }
+            }*/
+    //    } else { //if no entityId is null, case of a new Entity just pass picture. it will be created with the entity
+       //     setter({...entity, "picture": blob})
+            setter({...entity, "pictureFile": blob})
+    //   }
 
         hideModal()
     }
@@ -83,16 +85,20 @@ const ImageUpload = ({ setter, type, entity}) => {
 
     const handleDelete = () => {
         if(entity.id !== undefined){
-            fileAPI.uploadPic(type, entity, null)
-                .then(response => {
-                    setter({ ...entity, "picture": response.data[0].picture })
-                    hideModal()
-                })
-                .catch(error => {
-                    //handle error
-                    console.log(error)
-                    console.log(error.response);
-                });
+            if(type === "activity"){
+                activityAPI.put(entity, {"pictureFile": null} )
+                    //    fileAPI.uploadPic(type, entity, null)
+                    .then(response => {
+                        setter({ ...entity, "picture": response.data[0].picture })
+                        hideModal()
+                    })
+                    .catch(error => {
+                        //handle error
+                        console.log(error)
+                        console.log(error.response);
+                    });
+            }
+           //todo handle org, project, and user
         }
         setter({ ...entity, "picture": null })
     }

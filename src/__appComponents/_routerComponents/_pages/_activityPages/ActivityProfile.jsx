@@ -226,7 +226,7 @@ const ActivityProfile = ( props ) => {
             authAPI.logout()
         }
         setLoader2(true)
-        projectAPI.manageActivity(activity, activity.project.id)
+        activityAPI.put(activity, {"project": null})
             .then(() => {
                 activity.project = undefined
                 setActivity(activity)
@@ -244,9 +244,8 @@ const ActivityProfile = ( props ) => {
         }
         setLoader2(true)
         let proj = userProjects.find(p => projectId === p.id)
-        projectAPI.manageActivity(activity, proj.id)
+        activityAPI.put(activity, {"project": proj})
             .then(() => {
-                activity.project = proj
                 setActivity(activity)
                 setActivityProject(proj)
 
@@ -260,9 +259,8 @@ const ActivityProfile = ( props ) => {
             authAPI.logout()
         }
         setLoader2(true)
-        orgAPI.manageActivity(activity, activity.organization.id)
+        activityAPI.put(activity, {"org": null})
             .then(response => {
-                activity.organization = undefined
                 setActivity(activity)
                 setActivityOrg(undefined)
             })
@@ -278,12 +276,10 @@ const ActivityProfile = ( props ) => {
         }
         setLoader2(true)
         let org = userOrgs.find(o => orgId === o.id)
-        orgAPI.manageActivity(activity, org.id)
-            .then(() => {
-                activity.organization = org
-                setActivity(activity)
+        activityAPI.put(activity, {"org": org})
+            .then((response) => {
+                setActivity(response.data[0])
                 setActivityOrg(org)
-
             })
             .catch(error => console.log(error))
             .finally( ()=> {setLoader2(false)})

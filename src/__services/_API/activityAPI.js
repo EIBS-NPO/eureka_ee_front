@@ -11,17 +11,33 @@ id: undefined,
         isPublic: false,
  */
 
-const post = (activity) => {
+const getBodyFormData = (activity) => {
     let bodyFormData = new FormData();
     bodyFormData.append('title', activity.title)
     bodyFormData.append('isPublic', activity.isPublic)
     bodyFormData.append('summary', JSON.stringify(activity.summary))
-    if(activity.picture !== undefined){
-        bodyFormData.append('pictureFile', activity.picture)
+    if(activity.id !== undefined){
+        bodyFormData.append('id', activity.id)
+    }
+    if(activity.pictureFile !== undefined){
+        bodyFormData.append('pictureFile', activity.pictureFile)
     }
     if(activity.file !== undefined){
         bodyFormData.append('file', activity.file)
     }
+    if(activity.organization !== undefined){
+        let org = activity.organization === null ? null : activity.organization.id
+        bodyFormData.append('organization', org)
+    }
+    if(activity.project !== undefined){
+        let project = activity.project === null ? null : activity.project.id
+        bodyFormData.append('project', project)
+    }
+    return bodyFormData;
+}
+
+const post = (activity) => {
+    let bodyFormData = getBodyFormData(activity)
     return Axios({
         method: 'post',
         url: ACT_API,
@@ -31,14 +47,33 @@ const post = (activity) => {
 //    return Axios.post(ACT_API, activity)
 }
 
-const put = (activity) => {
-    let data = {
+const put = (activity, putRelationWith={}) => {
+    if(putRelationWith["org"] !== undefined){
+        activity.organization = putRelationWith["org"]
+    }
+    if(putRelationWith["project"] !== undefined){
+        activity.project = putRelationWith["project"]
+    }
+    if(putRelationWith["pictureFile"] !== undefined){
+        activity.pictureFile = putRelationWith["pictureFile"]
+    }
+    if(putRelationWith["file"] !== undefined){
+        activity.file = putRelationWith["file"]
+    }
+    let bodyFormData = getBodyFormData(activity)
+    return Axios({
+        method: 'post',
+        url: ACT_API+"/update",
+        data: bodyFormData,
+        headers: {'Content-Type': 'multipart/form-data'}
+    })
+    /*let data = {
         "id": activity.id,
         "title": activity.title,
         "summary": JSON.stringify(activity.summary),
         "isPublic": activity.endDate
     }
-    return Axios.put(ACT_API, activity)
+    return Axios.put(ACT_API, activity)*/
 }
 
 const get = (context, id = null, orgId = null, projectId = null) => {

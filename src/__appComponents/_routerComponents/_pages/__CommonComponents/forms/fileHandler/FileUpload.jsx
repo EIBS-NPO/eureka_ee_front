@@ -7,6 +7,7 @@ import authAPI from "../../../../../../__services/_API/authAPI";
 import FileInfos from "./FileInfos";
 import MediaContext from "../../../../../../__appContexts/MediaContext";
 import AuthContext from "../../../../../../__appContexts/AuthContext";
+import activityAPI from "../../../../../../__services/_API/activityAPI";
 
 /**
  *
@@ -30,8 +31,6 @@ const FileUpload = ( { history=undefined, activity, setter, hideModal=false, han
     const currentFile = activity.file ? activity.file :  activity
 
     const [error, setError] = useState(errors?errors:undefined)
-
-  //  const [isValid, setIsValid] = useState(true)
 
     const allowedMimes = useContext(MediaContext).allowedMimes
 
@@ -63,35 +62,19 @@ const FileUpload = ( { history=undefined, activity, setter, hideModal=false, han
         event.preventDefault()
 
         setLoader(true)
-
+console.log(activity)
        // if(activity.fileType){ //for update a file
-            fileAPI.putFile(activity, currentFile)
-                .then(response => {
-                    console.log(response)
-                    setter(response.data[0])
-                    setIsSave(true)
-                    history.replace('/activity/owned_' + response.data[0].id)
-                })
-                .catch(error => {
-                    setError(error.response)
-                })
-                .finally(() => setLoader(false))
-
-       /* }else { //for create a new file
-            fileAPI.postFile(bodyFormData)
-                .then(response => {
-                    setter(response.data[0])
-                    setIsSave(true)
-                    if(!hideModal){
-                        history.replace('/activity/creator_' + response.data[0].id)
-                    }
-                })
-                .catch(error => {
-                    console.log(error.response)
-                    setError(error.response)
-                })
-                .finally(() => setLoader(false))
-        }*/
+        activityAPI.put(activity, {"file": currentFile})
+            .then(response => {
+            //    console.log(response)
+                setter(response.data[0])
+                setIsSave(true)
+                history.replace('/activity/owned_' + response.data[0].id)
+            })
+            .catch(error => {
+                setError(error.response)
+            })
+            .finally(() => setLoader(false))
 
     }
 
@@ -101,7 +84,7 @@ const FileUpload = ( { history=undefined, activity, setter, hideModal=false, han
         }
 
         setLoader(true)
-        fileAPI.putFile(activity, null)
+        activityAPI.put(activity, {"file": null})
             .then(response => {
                 setter(response.data[0])
                 history.replace('/activity/owned_' + response.data[0].id)

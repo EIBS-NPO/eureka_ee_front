@@ -44,7 +44,7 @@ import './scss/main.scss';
                  console.log(error.response)
              })
          if(response && response.status === 200){
-             setAllowedMimes(response.data)
+             setAllowedMimes(response.data[0].split(','))
          }
      },[])
 

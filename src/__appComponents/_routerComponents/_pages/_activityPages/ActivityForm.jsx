@@ -15,8 +15,8 @@ const ActivityForm = ( { history, activity, setActivity, setForm, hideModal = un
         title:"",
         summary:[],
         isPublic:undefined,
-        orgId:null,
-        projectId:null
+        organization:null,
+        project:null
     })
 
     const [desc, setDesc] = useState({
@@ -76,6 +76,7 @@ const ActivityForm = ( { history, activity, setActivity, setForm, hideModal = un
         setLoader(true);
         updateActivity.summary = desc;
 
+        //todo state picture from updatedActivity
         //update Project
         activityAPI.put(updateActivity)
             .then(response => {
@@ -109,7 +110,7 @@ const ActivityForm = ( { history, activity, setActivity, setForm, hideModal = un
         {activity &&
             <Item>
                 <Segment>
-                    <PictureForm entityType="activity" entity={ activity } setter={setActivity}/>
+                    <PictureForm entityType="activity" entity={ updateActivity } setter={setUpdateActivity}/>
 
                 </Segment>
 {/*

@@ -10,6 +10,14 @@ const PictureForm = ({ entityType, entity, setter, isCircular = false}) => {
         return  URL.createObjectURL(blob);
     }
 
+    const getPicture = () => {
+        if( entity.pictureFile !== undefined) {
+            return entity.pictureFile
+        } else if (entity.picture !== undefined){
+            return entity.picture
+        }else { return undefined}
+    }
+
     return (
         <Item>
             <Item.Group divided>
@@ -19,11 +27,11 @@ const PictureForm = ({ entityType, entity, setter, isCircular = false}) => {
                             <h4>Picture</h4>
                         </Label>*/}
                         <Item.Description text-align="center">
-                            {entity && entity.picture?
-                                entity.picture instanceof Blob  ?
-                                        <Image src={srcImgToBlob(entity.picture)} size='small' centered circular={isCircular}/>
+                            {entity && getPicture()?
+                                getPicture() instanceof Blob  ?
+                                        <Image src={srcImgToBlob(getPicture())} size='small' centered circular={isCircular}/>
                                         :
-                                        <Image src={`data:image/jpeg;base64,${entity.picture}`} size='small' centered circular={isCircular}/>
+                                        <Image src={`data:image/jpeg;base64,${getPicture()}`} size='small' centered circular={isCircular}/>
                                 :
                                 <Image src='https://react.semantic-ui.com/images/wireframe/image.png' size='small'
                                        centered circular={isCircular}/>

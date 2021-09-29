@@ -52,7 +52,7 @@ const Card = ({ obj, type, profile=false, ctx=undefined, withPicture=true }) => 
         }else if (type === "project"){
             setIsOwner(obj && obj.creator && obj.creator.id === authAPI.getId())
 
-            if(isAuth && obj.id){
+            if(isAuth && obj && obj.id){
                 projectAPI.isFollowing(obj.id, "assign")
                     .then(response => { setIsAssign(response.data[0])})
                     .catch(error => {console.log(error)})
