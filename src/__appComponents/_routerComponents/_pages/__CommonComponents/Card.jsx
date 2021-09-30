@@ -17,6 +17,7 @@ const Card = ({ obj, type, profile=false, ctx=undefined, withPicture=true }) => 
 
     const [owner, setOwner] = useState(false);
     const [isOwner, setIsOwner] = useState(false);
+    const [isFollowed, setIsFollowed] = useState(false)
     const [isAssign, setIsAssign] = useState(undefined)
     const [isPublic, setIsPublic] = useState(undefined)
 
@@ -35,6 +36,7 @@ const Card = ({ obj, type, profile=false, ctx=undefined, withPicture=true }) => 
     const getLink = () => {
         if(isOwner ){ ctx = "owned"}
         else if(isAssign){ ctx = "assigned"}
+        else if(obj.isFollowed !== undefined && obj.isFollowed === true){ ctx ="followed"}
         else { ctx = "public"}
        return  ("/" + type + "/" + ctx + "_" + obj.id);
     }
@@ -51,12 +53,6 @@ const Card = ({ obj, type, profile=false, ctx=undefined, withPicture=true }) => 
             setOwner(obj && obj.referent)
         }else if (type === "project"){
             setIsOwner(obj && obj.creator && obj.creator.id === authAPI.getId())
-
-            if(isAuth && obj && obj.id){
-                projectAPI.isFollowing(obj.id, "assign")
-                    .then(response => { setIsAssign(response.data[0])})
-                    .catch(error => {console.log(error)})
-            }
 
             setOwner(obj && obj.creator)
         }else if (type === "activity"){

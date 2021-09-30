@@ -1,16 +1,18 @@
 import Axios from "axios";
 import {ORG_API} from "../../config";
 
-function post(org) {
-
+const getBodyFormData = (org) => {
     let bodyFormData = new FormData();
     bodyFormData.append('name', org.name)
     bodyFormData.append('type', org.type)
     bodyFormData.append('email', org.email)
     bodyFormData.append('phone', org.phone)
     bodyFormData.append('description', JSON.stringify(org.description))
-    if(org.picture !== undefined){
-        bodyFormData.append('pictureFile', org.picture)
+    if(org.id !== undefined){
+        bodyFormData.append('id', org.id)
+    }
+    if(org.pictureFile !== undefined){
+        bodyFormData.append('pictureFile', org.pictureFile)
     }
     if(org.address !== undefined){
         bodyFormData.append("address", org.address.address)
@@ -19,6 +21,11 @@ function post(org) {
         bodyFormData.append("city", org.address.city)
         bodyFormData.append("country", org.address.country)
     }
+    return bodyFormData
+}
+
+const post = (org) => {
+    let bodyFormData = getBodyFormData(org)
     return Axios({
         method: 'post',
         url: ORG_API,
@@ -27,8 +34,27 @@ function post(org) {
     })
 }
 
-function put(org) {
-    let data = {
+const put = (org, putRelationWith = {}) => {
+    if(putRelationWith["pictureFile"] !== undefined){
+        org.pictureFile = putRelationWith["pictureFile"]
+    }
+    let bodyFormData = getBodyFormData(org)
+
+    //add after for multiRelationnal (ListOf)
+    if(putRelationWith["project"] !== undefined){
+        bodyFormData.append('project', putRelationWith["project"].id)
+    }
+    if(putRelationWith["activity"] !== undefined){
+        bodyFormData.append('activity', putRelationWith["activity"].id)
+    }
+
+    return Axios({
+        method: 'post',
+        url: ORG_API+'/update',
+        data: bodyFormData,
+        headers: {'Content-Type': 'multipart/form-data'}
+    })
+    /*let data = {
           "orgId" : org.id,
           "name" : org.name,
           "type": org.type,
@@ -39,7 +65,7 @@ function put(org) {
       if(org.partner !== undefined){
           data["isPartner"] = org.partner
       }
-      return Axios.put(ORG_API, data)
+      return Axios.put(ORG_API, data)*/
 }
 
 function getPublic(id = null, isPartner=null){

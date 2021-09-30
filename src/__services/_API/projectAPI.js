@@ -44,6 +44,12 @@ const put = (project, putRelationWith ={}) => {
     if(putRelationWith["activity"] !== undefined){
         bodyFormData.append('activity', putRelationWith["activity"].id)
     }
+    if(putRelationWith["follow"] !== undefined){
+        bodyFormData.append('follow', "true")
+    }
+    if(putRelationWith["assign"] !== undefined){
+        bodyFormData.append('assign', "true")
+    }
     return Axios({
         method: 'post',
         url: PROJECT_API+"/update",
@@ -83,8 +89,12 @@ const getProject = (access = null , id = null) => {
     }
 }
 
-const getPublic = () => {
-    return Axios.get(PROJECT_API + "/public" )
+const getPublic = (id=null) => {
+    let params = "";
+    if(id !== null){
+        params += "?id=" + id
+    }
+    return Axios.get(PROJECT_API + "/public" + params )
 }
 
 /*const getAssigned = () => {

@@ -141,12 +141,14 @@ const OrgProfile = (props ) => {
         if (!authAPI.isAuthenticated()) {
             authAPI.logout()
         }
-        orgAPI.manageActivity(activity, org.id)
-            .then(() => {
-                let index = org.activities.indexOf(activity)
-                activities.splice(index, 1)
+      //  orgAPI.manageActivity(activity, org.id)
+        orgAPI.put(org, {"activity":activity})
+            .then((response) => {
+              //  let index = org.activities.indexOf(activity)
+              //  activities.splice(index, 1)
+                setData(response.data[0])
                 freeActivities.unshift(activity)
-                org.activities = activities
+              //  org.activities = activities
             })
             .catch(error => {
                 console.log(error)
@@ -160,11 +162,14 @@ const OrgProfile = (props ) => {
         }
         setActivityLoader(true)
         let act = freeActivities.find(a => activityId === a.id)
-        orgAPI.manageActivity(act, org.id)
+      //  orgAPI.manageActivity(act, org.id)
+        orgAPI.put(org, {"activity":act})
             .then(response => {
-                if(response.data[0] === "success"){
-                    activities.unshift(freeActivities.find(a => a.id === activityId))
-                    setActivities(activities)
+                if(response.status === 200){
+                    //todo handle partial response too
+              //      activities.unshift(freeActivities.find(a => a.id === activityId))
+               //     setActivities(activities)
+                    setData(response.data[0])
                     setFreeActivities(freeActivities.filter(a => a.id !== activityId))
                 }
             })
@@ -178,12 +183,14 @@ const OrgProfile = (props ) => {
         if (!authAPI.isAuthenticated()) {
             authAPI.logout()
         }
-        orgAPI.manageProject(project, org.id)
-            .then(() => {
-                let index = org.activities.indexOf(project)
-                projects.splice(index, 1)
+     //   orgAPI.manageProject(project, org.id)
+        orgAPI.put(org, {"project":project})
+            .then((response) => {
+           //     let index = org.activities.indexOf(project)
+           //     projects.splice(index, 1)
+                setData(response.data[0])
                 freeProjects.unshift(project)
-                org.projects = projects
+           //     org.projects = projects
             })
             .catch(error => {
                 console.log(error)
@@ -197,11 +204,13 @@ const OrgProfile = (props ) => {
         }
         setProjectLoader(true)
         let proj = freeProjects.find(a => projectId === a.id)
-        orgAPI.manageProject(proj, org.id)
+     //   orgAPI.manageProject(proj, org.id)
+            orgAPI.put(org, {"project":proj})
             .then(response => {
-                if(response.data[0] === "success"){
-                    projects.unshift(freeProjects.find(a => a.id === projectId))
-                    setProjects(projects)
+                if(response.status === 200){
+                 //   projects.unshift(freeProjects.find(a => a.id === projectId))
+                  //  setProjects(projects)
+                    setData(response.data[0])
                     setFreeProjects(freeProjects.filter(a => a.id !== projectId))
                 }
             })
@@ -432,10 +441,10 @@ const OrgProfile = (props ) => {
         )
     }
 
-    return (
+  /*  return (
         !loader && org && <ProfilOrg2 org={org}/>
-    )
-   /* return (
+    )*/
+    return (
 
         <div className="card">
             <OrgContext.Provider
@@ -564,7 +573,7 @@ const OrgProfile = (props ) => {
 
             </OrgContext.Provider>
         </div>
-    );*/
+    );
 };
 
 export default withTranslation()(OrgProfile);

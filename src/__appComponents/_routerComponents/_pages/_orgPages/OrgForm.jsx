@@ -71,7 +71,7 @@ const OrgForm = ( props ) => {
             setLoader(true);
             orgAPI.put(org/*, {signal:signal}*/)
                 .then(response => {
-
+                    props.setter(response.data[0])
                     if(props.setForm !== undefined){ props.setForm(false) }
                     if(props.handleEditOrg !== undefined){ props.handleEditOrg(response.data[0]) }
                     //todo msg-confirmation

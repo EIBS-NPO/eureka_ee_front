@@ -61,6 +61,11 @@ const put = (activity, putRelationWith={}) => {
         activity.file = putRelationWith["file"]
     }
     let bodyFormData = getBodyFormData(activity)
+
+    //add after for multiRelationnal (ListOf)
+    if(putRelationWith["follow"] !== undefined){
+        bodyFormData.append('follow', "true")
+    }
     return Axios({
         method: 'post',
         url: ACT_API+"/update",

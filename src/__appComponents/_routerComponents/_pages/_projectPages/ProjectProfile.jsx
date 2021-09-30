@@ -139,20 +139,20 @@ const ProjectProfile = (props) => {
 
 
         if(isAuth && urlParams[1] !== undefined){
-            projectAPI.isFollowing(urlParams[1] , "follow" )
+            /*projectAPI.isFollowing(urlParams[1] , "follow" )
                 .then(response => {
    //                 console.log(response.data[0])
                     setIsFollow(response.data[0])
                 })
                 .catch(error => console.log(error.response.data))
+*/
 
-
-            projectAPI.isFollowing(urlParams[1], "assign")
-                .then(response => {
+       //     projectAPI.isFollowing(urlParams[1], "assign")
+          //      .then(response => {
                     //check if the current project is Assign
       //              console.log(response.data[0])
-                    setIsAssigned(response.data[0])
-                    if(isOwner || response.data[0]){
+           //         setIsAssigned(response.data[0])
+          //          if(isOwner || response.data[0]){
                         //load user's selectable activities if current user is owner or assign
                         activityAPI.getActivity("owned")
                             //get all created activities by current user with project.activities
@@ -173,9 +173,9 @@ const ProjectProfile = (props) => {
                             .catch(error => {
                                 console.log(error)
                             })
-                    }
-                })
-                .catch(error => console.log(error))
+               //     }
+          //      })
+         //       .catch(error => console.log(error))
 
             if(urlParams[0] === "owned"){
                 let orgOwned = await orgAPI.getOrg("owned")
@@ -487,8 +487,8 @@ const ProjectProfile = (props) => {
                                 <Picture size="small" picture={project.picture} />
                             </Header>
                             <Header as="h2" floated='right'>
-                                {isAuth &&
-                                    <FollowingActivityForm obj={project} setter={setProject} type="project" isFollow={isFollow} setIsFollow={setIsFollow} />
+                                {isAuth && ctx !== "public" &&
+                                    <FollowingActivityForm obj={project} setter={setProject} type="project" />
                                 }
                                 { project.title }
                             </Header>

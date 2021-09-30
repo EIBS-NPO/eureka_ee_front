@@ -113,8 +113,8 @@ const ProjectForm = ( props ) => {
         projectAPI.put(upProject)
             .then(response => {
 
-                if(props.handleEditProject !== undefined){ props.handleEditProject(response.data[0])}
-                else{ props.setProject(response.data[0])}
+           //     if(props.handleEditProject !== undefined){ props.handleEditProject(response.data[0])}
+                props.setProject(response.data[0])
                 props.setForm(false)
                 //todo msg-confirmation
             })
