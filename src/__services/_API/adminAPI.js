@@ -14,11 +14,11 @@ function getUser(id =null) {
 
 const putUser = (user) => {
 
-    return Axios.put(API_URL + "/admin/user", user)
+    return Axios.put(ADMIN_API + "/user", user)
 }
 
 const activ = (userId, isActiv) => {
-    return Axios.put(API_URL + "/admin/user/active", {
+    return Axios.put(ADMIN_API + "/user/active", {
         id:userId,
         isDisable:isActiv
     })

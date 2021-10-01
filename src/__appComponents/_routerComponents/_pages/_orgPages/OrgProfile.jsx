@@ -432,10 +432,10 @@ const OrgProfile = (props ) => {
         )
     }
 
-    return (
+    /*return (
         !loader && org && <ProfilOrg2 org={org}/>
-    )
-   /* return (
+    )*/
+    return (
 
         <div className="card">
             <OrgContext.Provider
@@ -564,7 +564,7 @@ const OrgProfile = (props ) => {
 
             </OrgContext.Provider>
         </div>
-    );*/
+    );
 };
 
 export default withTranslation()(OrgProfile);

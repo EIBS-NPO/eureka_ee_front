@@ -19,8 +19,8 @@ const CreateProject = lazy(() => import('./_routerComponents/_pages/_projectPage
 const CreateActivity = lazy(() => import('./_routerComponents/_pages/_activityPages/CreateActivity'));
 
 const ProfilUser = lazy(() => import('./_routerComponents/_pages/_userPages/UserProfile'));
-// const ProfilOrg = lazy(() => import('./_routerComponents/_pages/_orgPages/OrgProfile'));
-const ProfilOrg = lazy(() => import('./_routerComponents/_pages/_orgPages/ProfilOrg2'));
+const ProfilOrg = lazy(() => import('./_routerComponents/_pages/_orgPages/OrgProfile'));
+// const ProfilOrg = lazy(() => import('./_routerComponents/_pages/_orgPages/ProfilOrg2'));
 const ProfilProject = lazy(() => import('./_routerComponents/_pages/_projectPages/ProjectProfile'));
 const ProfilActivity = lazy(() => import('./_routerComponents/_pages/_activityPages/ActivityProfile'));
 

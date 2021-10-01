@@ -62,7 +62,7 @@ const ImageUpload = ({ setter, type, entity}) => {
                         console.log(error.response);
                     });
             } else {
-                history.replace("/login")
+            //   history.replace("/login")
             }
         } else { //if no entityId is null, case of a new Entity just pass picture. it will be created with the entity
             setter({...entity, "picture": blob})

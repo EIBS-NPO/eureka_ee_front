@@ -5,6 +5,11 @@ import UserAPI from "../../../__services/_API/userAPI";
 import {Button, Form, Message, Segment} from "semantic-ui-react";
 import {useTranslation, withTranslation} from "react-i18next";
 
+import ComfirmUser from './../../../__services/_MAIL/MailsTemplate/ComfirmUser'
+import axios from "axios";
+import { renderEmail } from 'react-html-email'
+import mailer from "../../../__services/_MAIL/mailer";
+
 const RegisterPage = ({ history }) => {
   //  const isAuthenticated = useContext(AuthContext).isAuthenticated;
     const { isAuthenticated, setNeedConfirm } = useContext(AuthContext)
@@ -49,14 +54,19 @@ const RegisterPage = ({ history }) => {
 
         UserAPI.register(user)
             .then(response => {
-                UserAPI.askActivation(response.data[0].email)
-                    .then(() => {
+              /*  mailer.postMail(response.data[0])
+                    .then(res => console.log(res))
+                    .catch(error => console.log(error))*/
+
+
+              /*  UserAPI.askActivation(response.data[0].email)
+                    .then((response) => {
                         setNeedConfirm("needConfirm")
                         history.replace('/login')
                     })
                     .catch(error => {
                         console.log(error)
-                    })
+                    })*/
                 //history.replace("/login")
             //    history.replace("/activation");
             })
@@ -66,6 +76,51 @@ const RegisterPage = ({ history }) => {
             })
         setLoader(false)
     };
+
+    /*
+    var mail = {
+        from: name,
+        to: 'RECEIVING_EMAIL_ADDRESS_GOES_HERE',
+        subject: 'Contact form request',
+
+        html: message
+    }
+
+    transporter.sendMail(mail, (err, data) => {
+        if (err) {
+            res.json({
+                msg: 'fail'
+            })
+        } else {
+            res.json({
+                msg: 'success'
+            })
+        }
+    })
+     */
+    //todo email from front nodemailer
+  /*  const sendConfirmMail = () => {
+        const messageHtml =  renderEmail(
+            <ComfirmUser name={this.state.name}> {this.state.feedback}</ComfirmUser>
+        );
+
+        axios({
+            method: "POST",
+            url:"http://localhost:3000/send",
+            data: {
+                name: this.state.name,
+                email: this.state.email,
+                messageHtml: messageHtml
+            }
+        }).then((response)=>{
+            if (response.data.msg === 'success'){
+                console.log("Email sent, awesome!");
+             //   this.resetForm()
+            }else if(response.data.msg === 'fail'){
+                console.log("Oops, something went wrong. Try again")
+            }
+        })
+    }*/
 
     return (
         <div className="card">
@@ -132,7 +187,7 @@ const RegisterPage = ({ history }) => {
                <Button className="ui primary basic button" content= { t('Sign_up') } />
             </Form>
         </div>
-    );
+    )
 };
 
 export default withTranslation()(RegisterPage);

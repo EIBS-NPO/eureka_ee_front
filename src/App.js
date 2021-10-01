@@ -12,7 +12,28 @@ import fileAPI from "./__services/_API/fileAPI";
 import 'semantic-ui-css/semantic.min.css'
 import './scss/main.scss';
 
+/*
+state = {
+    data: null
+  };
 
+  componentDidMount() {
+      // Call our fetch function below once the component mounts
+    this.callBackendAPI()
+      .then(res => this.setState({ data: res.express }))
+      .catch(err => console.log(err));
+  }
+    // Fetches our GET route from the Express server. (Note the route we are fetching matches the GET route from server.js
+  callBackendAPI = async () => {
+    const response = await fetch('/express_backend');
+    const body = await response.json();
+
+    if (response.status !== 200) {
+      throw Error(body.message)
+    }
+    return body;
+  };
+ */
 
  function App({history}) {
 
@@ -22,6 +43,19 @@ import './scss/main.scss';
      const [isAdmin, setIsAdmin] = useState(authAPI.isAdmin())
      const [partnerList, setPartnerList] = useState([])
      const [needConfirm, setNeedConfirm] = useState(undefined)
+
+    //exressBackend
+   //  const [data, setData] = useState(null)
+     const callBackendAPI = async () => {
+         const response = await fetch('/express_backend');
+         const body = await response.json();
+
+         if (response.status !== 200) {
+             throw Error(body.message)
+         }
+         console.log("nknono")
+        // return body;
+     };
 
      const AppMedia = createMedia({
          breakpoints: {
@@ -39,6 +73,15 @@ import './scss/main.scss';
      const [allowedMimes, setAllowedMimes] = useState([])
      useEffect(async()=>{
          //todo check server availability?
+
+         //expressBackend
+             // Call our fetch function below once the component mounts
+             callBackendAPI()
+                 .then(res => console.log(res.express))
+                 .catch(err => console.log(err));
+         // Fetches our GET route from the Express server. (Note the route we are fetching matches the GET route from server.js
+
+
          let response = await fileAPI.getAllowedMime()
              .catch(error =>{
                  console.log(error.response)
@@ -48,6 +91,8 @@ import './scss/main.scss';
          }
      },[])
 
+
+     //todo where pass backend data
   return (
       <>
         <style>{mediaStyles}</style>
@@ -59,7 +104,8 @@ import './scss/main.scss';
               isAdmin, setIsAdmin,
               partnerList, setPartnerList,
               needConfirm, setNeedConfirm
-          }}>
+            }}
+          >
             <AppRouter history={history}/>
           </AuthContext.Provider>
         </MediaContext.Provider>
