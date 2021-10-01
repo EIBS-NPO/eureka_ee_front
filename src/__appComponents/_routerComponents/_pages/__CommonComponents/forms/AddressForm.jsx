@@ -5,6 +5,7 @@ import {useTranslation, withTranslation} from "react-i18next";
 import addressAPI from "../../../../../__services/_API/addressAPI";
 import userAPI from "../../../../../__services/_API/userAPI";
 import utilities from "../../../../../__services/utilities";
+import orgAPI from "../../../../../__services/_API/orgAPI";
 
 const AddressForm = ({ type, obj, setter }) => {
 
@@ -27,13 +28,14 @@ const AddressForm = ({ type, obj, setter }) => {
     const isOwner = () => {
         let userMail = userAPI.checkMail()
 
-      //  if(type === "user"){
+        if(type === "user"){
             return obj && obj.email === userMail
-     //   }
-     //   else{
-      //      return obj.referent.email === userMail
-      //  }
+        }
+        else{
+            return obj.referent.email === userMail
+        }
     }
+
     useEffect(() => {
         if(obj !== undefined) {
             setAddress(obj.address)
@@ -48,7 +50,35 @@ const AddressForm = ({ type, obj, setter }) => {
     const handleSubmit = async (event) => {
         event.preventDefault();
         setLoader(true);
-        if(obj.referent){
+
+        obj.address = address;
+        if(type === "org"){
+            orgAPI.put(obj)
+                .then(response => {
+                    setter(response.data[0])
+                })
+                .catch(error => {
+                    setErrors(error.response.data)
+                    console.log(error.response)
+                })
+                .finally(()=> {
+                    setLoader(false)
+                })
+        }
+        else if(type === "user"){
+            userAPI.put(obj)
+                .then(response => {
+                    setter(response.data[0])
+                })
+                .catch(error => {
+                    setErrors(error.response.data)
+                    console.log(error.response)
+                })
+                .finally(()=> {
+                    setLoader(false)
+                })
+        }
+        /*if(obj.referent){
             address.orgId = obj.id
         }
         //update User
@@ -79,7 +109,7 @@ const AddressForm = ({ type, obj, setter }) => {
                 .finally(()=> {
                     setLoader(false)
                 })
-        }
+        }*/
     };
 
     const switchUpdate = (e) => {

@@ -17,6 +17,8 @@ import MediaContext from "../../../../__appContexts/MediaContext";
 
 import SearchInput from "../__CommonComponents/forms/SearchList";
 import ProfilOrg2 from "./ProfilOrg2";
+import Modal from "../__CommonComponents/Modal";
+import ImageCropper from "../__CommonComponents/forms/picture/ImageCropper";
 
 export const OrgContext = createContext({
     org:{ },
@@ -135,25 +137,87 @@ const OrgProfile = (props ) => {
         }
     },[isReferent, isAssigned])
 
+    //*** confrim Modal *** //
+    const [confirmResult, setConfirmResult] = useState(undefined)
+    const [showModal, setShowModal] = useState(false)
+    const [msgModal, setMsgModal] = useState("")
+    const [modalAction, setModalAction] = useState("")
+    const [modalTarget, setModalTarget] = useState({})
+
+    /*const awaitConfirmResult = async () => {
+        if(confirmResult !== undefined){
+            return confirmResult
+        }
+        else {
+            //attendre x seconde avant exec
+            return setTimeout(awaitConfirmResult, 1000);
+        }
+    }*/
+
+    const showConfirmModal = async (msg, action, target) => {
+        setMsgModal(msg)
+        setModalAction(action)
+        setModalTarget(target)
+        setShowModal(true)
+      /*  let res = await awaitConfirmResult()
+        setConfirmResult()
+        return res*/
+    }
+
+    const modalResult = (result) => {
+        setShowModal(false)
+        if(result === false){
+            setMsgModal("")
+            setModalAction("")
+        }else {
+            if(modalAction === "remove_activity"){
+                handleRmvActivity(modalTarget)
+            }
+        }
+    }
+
+    const ConfirmModal = () => {
+        return (
+            showModal &&
+            <Modal show={showModal} handleClose={() => setShowModal(false)} title={ props.t("are_you_sure?")}>
+                <div>
+                    <p> {msgModal} </p>
+                    <button type='submit' className="btn btn-secondary" onClick={() =>modalResult(true)}>{props.t("confirm")}</button>
+                    <button type='submit' className="btn btn-secondary" onClick={() => modalResult(false)}>{ props.t("cancel")}</button>
+                </div>
+            </Modal>
+        )
+    }
+
     const [activityLoader, setActivityLoader] = useState(false)
     const handleRmvActivity = (activity) => {
+       /* showConfirmModal("Are you sure?")
+            .then(confirmRes => {
+                setShowModal(false)
+                if (confirmRes) {
+                    console.log("askRetour")
+                    console.log(confirmRes)
+                }
+            })
+*/
         setActivityLoader(true)
-        if (!authAPI.isAuthenticated()) {
-            authAPI.logout()
-        }
-      //  orgAPI.manageActivity(activity, org.id)
-        orgAPI.put(org, {"activity":activity})
+
+        //  orgAPI.manageActivity(activity, org.id)
+        orgAPI.put(org, {"activity": activity})
             .then((response) => {
-              //  let index = org.activities.indexOf(activity)
-              //  activities.splice(index, 1)
-                setData(response.data[0])
+                let index = org.activities.indexOf(activity)
+                activities.splice(index, 1)
+                //   setData(response.data[0]) // bad because force reload
                 freeActivities.unshift(activity)
-              //  org.activities = activities
+                org.activities = activities
             })
             .catch(error => {
                 console.log(error)
             })
-            .finally(() => setActivityLoader(false))
+            .finally(() => {
+                setActivityLoader(false)
+            })
+
     }
 
     const handleAddActivity = (activityId) => {
@@ -167,9 +231,9 @@ const OrgProfile = (props ) => {
             .then(response => {
                 if(response.status === 200){
                     //todo handle partial response too
-              //      activities.unshift(freeActivities.find(a => a.id === activityId))
-               //     setActivities(activities)
-                    setData(response.data[0])
+                    activities.unshift(freeActivities.find(a => a.id === activityId))
+                    setActivities(activities)
+                //    setData(response.data[0])
                     setFreeActivities(freeActivities.filter(a => a.id !== activityId))
                 }
             })
@@ -186,11 +250,11 @@ const OrgProfile = (props ) => {
      //   orgAPI.manageProject(project, org.id)
         orgAPI.put(org, {"project":project})
             .then((response) => {
-           //     let index = org.activities.indexOf(project)
-           //     projects.splice(index, 1)
-                setData(response.data[0])
+                let index = org.activities.indexOf(project)
+                projects.splice(index, 1)
+              //  setData(response.data[0])
                 freeProjects.unshift(project)
-           //     org.projects = projects
+                org.projects = projects
             })
             .catch(error => {
                 console.log(error)
@@ -208,9 +272,9 @@ const OrgProfile = (props ) => {
             orgAPI.put(org, {"project":proj})
             .then(response => {
                 if(response.status === 200){
-                 //   projects.unshift(freeProjects.find(a => a.id === projectId))
-                  //  setProjects(projects)
-                    setData(response.data[0])
+                    projects.unshift(freeProjects.find(a => a.id === projectId))
+                    setProjects(projects)
+               //     setData(response.data[0])
                     setFreeProjects(freeProjects.filter(a => a.id !== projectId))
                 }
             })
@@ -387,7 +451,8 @@ const OrgProfile = (props ) => {
                     <Segment key={act.id}>
                         <Card key={act.id} obj={act} type="activity" isLink={true} />
                         { (isReferent || act.creator.id === authAPI.getId()) &&
-                        <Button onClick={()=>handleRmvActivity(act)} basic>
+                       // <Button onClick={()=>handleRmvActivity(act)} basic>
+                        <Button onClick={()=>showConfirmModal("are you sure", "remove_activity", act)} basic>
                             <Icon name="remove circle" color="red"/>
                             { props.t('remove_to_org')}
                         </Button>
@@ -548,6 +613,9 @@ const OrgProfile = (props ) => {
 
                                     <PanelsContent />
                                 </Media>
+
+
+                                <ConfirmModal />{/*todo style for no decal or place for no reload*/}
                             </Segment>
                         </>
                         :
