@@ -1,12 +1,11 @@
-import {Button, Container, Divider, Dropdown, Header, Icon, Image, Menu, Segment} from "semantic-ui-react";
+import {Button, Dropdown, Header, Icon, Image, Menu, Segment} from "semantic-ui-react";
 import {useTranslation, withTranslation} from "react-i18next";
 import {NavLink, useHistory} from "react-router-dom";
 import AuthContext from "../../../__appContexts/AuthContext";
-import {useContext, useEffect, useState} from "react";
+import {useContext, useState} from "react";
 import authAPI from "../../../__services/_API/authAPI";
 import LanguageSelector from "../_mainComponents/LanguageSelector";
 import interreg_logo from "../../../_resources/logos/Interreg.jpg";
-import eee_logo from "../../../_resources/logos/eureka_logo.png";
 import eee_banner from "../../../_resources/logos/EEE-banner1280-378-max.png"
 import MediaContext from "../../../__appContexts/MediaContext";
 import {strUcFirst} from "../../../__services/utilities";
@@ -20,10 +19,9 @@ const HeaderMenu = (props) => {
     const history = useHistory();
 
     const { isAuthenticated, setIsAuthenticated,
-        isAdmin, setIsAdmin,
+        setIsAdmin,
         lastname, setLastname,
-        firstname, setFirstname,
-        partnerList, setPartnerList,
+        firstname, setFirstname
     } = useContext(AuthContext)
 
     const handleLogout = (props) => {

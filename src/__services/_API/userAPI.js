@@ -26,7 +26,7 @@ const askActivation = (email) => {
         email:email
     }
     if(email){
-        return Axios.post(USR_API+"/sendActivation", data)
+        return Axios.post(LOCAL_URL+"/send", data)
     }
 }
 

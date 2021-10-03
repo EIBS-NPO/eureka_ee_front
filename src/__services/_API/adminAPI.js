@@ -1,6 +1,6 @@
 import Axios from "axios";
 import JwtDecode from "jwt-decode";
-import { ADMIN_API } from "../../config";
+import { API_URL ,ADMIN_API } from "../../config";
 
 
 /** ADMIN USER **/

@@ -15,7 +15,7 @@ const Membership = ( props ) => {
         return userAPI.checkMail() === props.org.referent.email
     }
 
-    const [ref, setRef] = useState({})
+  //  const [ref, setRef] = useState({})
     const [members, setMembers] = useState([])
     const [email, setEmail] = useState("")
     const [errors, setErrors] = useState({

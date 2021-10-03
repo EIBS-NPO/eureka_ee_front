@@ -1,5 +1,5 @@
 
-import React, {useContext, useEffect, useState} from 'react';
+import React, { useEffect, useState} from 'react';
 import userAPI from '../../../../__services/_API/userAPI';
 import {Loader, Segment} from "semantic-ui-react";
 import PictureForm from "../__CommonComponents/forms/picture/PictureForm";
@@ -8,8 +8,6 @@ import UserCoordForm from "./_components/UserCoordForm";
 import {withTranslation} from "react-i18next";
 import AddressForm from "../__CommonComponents/forms/AddressForm";
 import authAPI from "../../../../__services/_API/authAPI";
-import UserContext from "./_userContexts/UserContext";
-import AuthContext from "../../../../__appContexts/AuthContext";
 
 const UserProfile = ({ history, t }) => {
 
@@ -17,18 +15,20 @@ const UserProfile = ({ history, t }) => {
 
     const [loader, setLoader] = useState(false)
 
-    useEffect(async() => {
+    useEffect(() => {
         setLoader(true)
-        if(await authAPI.isAuthenticated()) {
-            userAPI.get("owned")
-                .then(response => {
-                    setUser(response.data[0])
-                })
-                .catch(error => {
-                    console.log(error.response)
-                }).finally(() => setLoader(false))
-        }else {
-            history.replace('/login')
+        async function fetchData(){
+            if(authAPI.isAuthenticated()) {
+                userAPI.get("owned")
+                    .then(response => {
+                        setUser(response.data[0])
+                    })
+                    .catch(error => {
+                        console.log(error.response)
+                    }).finally(() => setLoader(false))
+            }else {
+                history.replace('/login')
+            }
         }
     }, []);
 

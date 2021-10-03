@@ -2,13 +2,14 @@
 import React, { useContext, useState } from "react";
 import AuthContext from "../../../__appContexts/AuthContext";
 import UserAPI from "../../../__services/_API/userAPI";
-import {Button, Form, Message, Segment} from "semantic-ui-react";
+import {Button, Form } from "semantic-ui-react";
 import {useTranslation, withTranslation} from "react-i18next";
-
+import Axios from "axios";
+/*
 import ComfirmUser from './../../../__services/_MAIL/MailsTemplate/ComfirmUser'
-import axios from "axios";
+
 import { renderEmail } from 'react-html-email'
-import mailer from "../../../__services/_MAIL/mailer";
+import mailer from "../../../__services/_MAIL/mailer";*/
 
 const RegisterPage = ({ history }) => {
   //  const isAuthenticated = useContext(AuthContext).isAuthenticated;
@@ -43,6 +44,22 @@ const RegisterPage = ({ history }) => {
         setUser({ ...user, [name]: value });
     };
 
+    const callMailTest = async (mailTo, token) => {
+        let bodyFormData = new FormData();
+        bodyFormData.append('mailTo', mailTo)
+        bodyFormData.append('token', token)
+
+        //todo pourquoi le body n'est pas défini dans server.js...
+        /*return Axios.post('/send', {
+            mailTo:mailTo,
+            token: token
+        })*/
+        return await fetch('/send', {
+            method:'POST',
+            body: bodyFormData
+        })
+    }
+
     const [loader, setLoader] = useState(false)
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -54,6 +71,17 @@ const RegisterPage = ({ history }) => {
 
         UserAPI.register(user)
             .then(response => {
+                Axios.post("/send", {
+                    mailTo : response.data[0].email,
+                    token  : response.data[0].activation_token
+                })
+            //    callMailTest(response.data[0].email, response.data[0].activation_token)
+                    .then(res => console.log(res))
+                    .catch(err => console.log(err))
+
+                /* callMailTest(response.data[0].email, response.data[0].activation_token)
+                     .then(res => console.log(res))
+                     .catch(err => console.log(err))*/
               /*  mailer.postMail(response.data[0])
                     .then(res => console.log(res))
                     .catch(error => console.log(error))*/

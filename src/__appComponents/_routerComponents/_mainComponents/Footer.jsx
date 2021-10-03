@@ -5,12 +5,9 @@ import { withTranslation } from 'react-i18next';
 
 import orgAPI from "../../../__services/_API/orgAPI";
 import Picture from "../_pages/__CommonComponents/Picture";
-import Ciep_logo from "../../../_resources/logos/CIEP.jpg";
-import Eibs_logo from "../../../_resources/logos/EIBS.png";
-import {Container, Header, Image, Loader, Segment} from "semantic-ui-react";
+import {Container, Header, Segment} from "semantic-ui-react";
 import AuthContext from "../../../__appContexts/AuthContext";
 import utilities from "../../../__services/utilities";
-import eee_banner from "../../../_resources/logos/EEE-banner1280-378-max.png";
 
 const Footer = ({ t }) => {
 

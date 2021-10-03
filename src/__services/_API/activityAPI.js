@@ -1,15 +1,6 @@
 
 import Axios from "axios";
-import {ACT_API, FOLW_ACT, ORG_API, PROJECT_API} from "../../config";
-
-/*
-id: undefined,
-        picture:undefined,
-        file:undefined,
-        title: "",
-        summary: {},
-        isPublic: false,
- */
+import {ACT_API, FOLW_ACT } from "../../config";
 
 const post = (activity) => {
     let bodyFormData = new FormData();
@@ -72,19 +63,6 @@ const getPublic = (id = null) => {
 
 }
 
-const uploadPic = (bodyFormData) => {
-    return Axios({
-        method: 'post',
-        url: ACT_API + "/picture",
-        data: bodyFormData,
-        headers: {'Content-Type': 'multipart/form-data'}
-    })
-}
-
-const downloadPic = (picture) => {
-    return Axios.get(ACT_API + "/picture/?pic=" + picture)
-}
-
 const remove = (id) => {
     return Axios.delete(ACT_API + "?id=" + id)
 }
@@ -116,7 +94,6 @@ export default {
     get,
     getActivity,
     getPublic,
-    downloadPic,
     remove,
     addFollow,
     rmvFollow,

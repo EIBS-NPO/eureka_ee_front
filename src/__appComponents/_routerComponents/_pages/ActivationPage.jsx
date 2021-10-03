@@ -8,6 +8,7 @@ import AuthContext from "../../../__appContexts/AuthContext";
 
 const ActivationPage = (props) => {
     const urlToken = props.match.params.token
+    console.log(urlToken)
     if(authAPI.isAuthenticated() || urlToken === ""){
         console.log("retour home")
         props.history.replace('/');
@@ -20,6 +21,7 @@ const ActivationPage = (props) => {
     useEffect(async ()=>{
 
             let response = await userAPI.activation(urlToken)
+                .then(response => console.log(response))
                 .catch(error => {
                 //    setSuccess(false)
                     console.log(error)

@@ -1,19 +1,15 @@
 
 import React, {useState, useEffect, useContext} from 'react'
 import {
-    Input,
     Menu,
     Label,
-    Radio,
     Dropdown,
     Item,
     Message,
     Container,
-    Grid,
     Loader,
     Segment,
-    Form,
-    Header, Button
+    Header
 } from "semantic-ui-react";
 import {useTranslation, withTranslation} from "react-i18next";
 import Picture from "../__CommonComponents/Picture";
