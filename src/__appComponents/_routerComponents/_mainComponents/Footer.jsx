@@ -11,11 +11,12 @@ import utilities from "../../../__services/utilities";
 
 const Footer = ({ t }) => {
 
-    const {partnerList, setPartnerList } = useContext(AuthContext)
+    //le context provoque un rechargement de la page
+//    const {partnerList, setPartnerList } = useContext(AuthContext)
 
+    const [partnerList, setPartnerList] = useState([])
     const [loader, setLoader] = useState(false)
     const [error, setError] = useState(false)
-
 
     useEffect(()=> {
         setLoader(true)
@@ -26,11 +27,10 @@ const Footer = ({ t }) => {
             .catch(error => setError(true))
             .finally(() => setLoader(false))
     }, [])
-
     return (
         <Container className="footer">
             {/*<Segment basic textAlign='center'>*/}
-                <Segment basic vertical>
+                <Segment basic vertical loading={loader}>
                     <Header size='medium' textAlign='center'>{utilities.strUcFirst(t("partners"))}</Header>
                     {/* <h4>{t("partners")}</h4>*/}
                     {!loader && !error &&

@@ -5,5 +5,17 @@
   "Logout": "Logout",
   "new_org": "New Organisation",
 
-  "remember_english": "Remember to translate into English. As default language, it will be displayed in case of missing translation."
+  "remember_english": "Remember to translate into English. As default language, it will be displayed in case of missing translation.",
+
+  "confirm_your_registration": "Confirm your registration",
+  "confirm_registration_message": "To confirm your registration, click on the following link. If you are not the person who initiated this process, you can ignore this email.",
+  "email_footer" : "This email has been sent automatically following your steps on our platform. Please do not reply.",
+
+  "activation_of_your_account" : "activation of your account",
+  "success_activation": "Your account has been successfully activated. Welcome!",
+
+  "send_me_confirm_mail":"Resend me confirmation email",
+  "mail_send_to_you":"An email has been sent to you.",
+  "check_your_mails": "please check your emails",
+  "error_encounter":"An error has occurred, please contact the administrator."
 }

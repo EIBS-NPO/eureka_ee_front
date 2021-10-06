@@ -17,19 +17,19 @@ const UserProfile = ({ history, t }) => {
 
     useEffect(() => {
         setLoader(true)
-        async function fetchData(){
-            if(authAPI.isAuthenticated()) {
-                userAPI.get("owned")
-                    .then(response => {
-                        setUser(response.data[0])
-                    })
-                    .catch(error => {
-                        console.log(error.response)
-                    }).finally(() => setLoader(false))
-            }else {
-                history.replace('/login')
-            }
+
+        if(authAPI.isAuthenticated()) {
+            userAPI.get("email", authAPI.getUserMail())
+                .then(response => {
+                    setUser(response.data[0])
+                })
+                .catch(error => {
+                    console.log(error.response)
+                }).finally(() => setLoader(false))
+        }else {
+            history.replace('/login')
         }
+
     }, []);
 
     return (
@@ -37,7 +37,7 @@ const UserProfile = ({ history, t }) => {
         {!loader &&
         <>
             {/*<Segment>*/}
-                <PictureForm entityType="user" entity={user} setter={setUser} isCircular={true}/>
+                <PictureForm entityType="user" entity={user} setter={setUser} />
                 <p>{user.firstname + " " + user.lastname}</p>
            {/* </Segment>*/}
             <Segment>
@@ -68,7 +68,7 @@ const UserProfile = ({ history, t }) => {
                 <Loader
                     active
                     content={
-                        <p>{t('loading') +" : " + t('creation') }</p>
+                        <p>{t('loading') +" : " + t('account') }</p>
                     }
                     inline="centered"
                 />

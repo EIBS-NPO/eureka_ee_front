@@ -5,11 +5,8 @@ import UserAPI from "../../../__services/_API/userAPI";
 import {Button, Form } from "semantic-ui-react";
 import {useTranslation, withTranslation} from "react-i18next";
 import Axios from "axios";
-/*
-import ComfirmUser from './../../../__services/_MAIL/MailsTemplate/ComfirmUser'
 
-import { renderEmail } from 'react-html-email'
-import mailer from "../../../__services/_MAIL/mailer";*/
+import image from "../../../_resources/logos/EEE-banner1280-378-max.png";
 
 const RegisterPage = ({ history }) => {
   //  const isAuthenticated = useContext(AuthContext).isAuthenticated;
@@ -44,22 +41,6 @@ const RegisterPage = ({ history }) => {
         setUser({ ...user, [name]: value });
     };
 
-    const callMailTest = async (mailTo, token) => {
-        let bodyFormData = new FormData();
-        bodyFormData.append('mailTo', mailTo)
-        bodyFormData.append('token', token)
-
-        //todo pourquoi le body n'est pas défini dans server.js...
-        /*return Axios.post('/send', {
-            mailTo:mailTo,
-            token: token
-        })*/
-        return await fetch('/send', {
-            method:'POST',
-            body: bodyFormData
-        })
-    }
-
     const [loader, setLoader] = useState(false)
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -71,32 +52,28 @@ const RegisterPage = ({ history }) => {
 
         UserAPI.register(user)
             .then(response => {
-                Axios.post("/send", {
-                    mailTo : response.data[0].email,
-                    token  : response.data[0].activation_token
-                })
-            //    callMailTest(response.data[0].email, response.data[0].activation_token)
-                    .then(res => console.log(res))
-                    .catch(err => console.log(err))
-
-                /* callMailTest(response.data[0].email, response.data[0].activation_token)
-                     .then(res => console.log(res))
-                     .catch(err => console.log(err))*/
-              /*  mailer.postMail(response.data[0])
-                    .then(res => console.log(res))
-                    .catch(error => console.log(error))*/
-
-
-              /*  UserAPI.askActivation(response.data[0].email)
-                    .then((response) => {
-                        setNeedConfirm("needConfirm")
+                Axios.post("/send",{emailData : {
+                        email : response.data[0].email,
+                        subject: t("confirm_your_registration"),
+                        text: t("confirm_registration_message"),
+                        template : "email_confirmUser",
+                        context : {
+                            title : t("confirm_your_registration"),
+                            text : t("confirm_registration_message"),
+                            name : response.data[0].lastname + " " + response.data[0].firstname,
+                            link : {
+                                href:  process.env.REACT_APP_URL_LOCAL + '/activation/' + response.data[0].activation_token,
+                                text: t("confirm_your_registration")
+                            },
+                            footer : t("email_footer"),
+                        }
+                    }})
+                    .then(res => {
+                        console.log(res)
+                        setNeedConfirm(true)
                         history.replace('/login')
                     })
-                    .catch(error => {
-                        console.log(error)
-                    })*/
-                //history.replace("/login")
-            //    history.replace("/activation");
+                    .catch(err => console.log(err))
             })
             .catch(error => {
                 console.log(error.response)
@@ -104,51 +81,6 @@ const RegisterPage = ({ history }) => {
             })
         setLoader(false)
     };
-
-    /*
-    var mail = {
-        from: name,
-        to: 'RECEIVING_EMAIL_ADDRESS_GOES_HERE',
-        subject: 'Contact form request',
-
-        html: message
-    }
-
-    transporter.sendMail(mail, (err, data) => {
-        if (err) {
-            res.json({
-                msg: 'fail'
-            })
-        } else {
-            res.json({
-                msg: 'success'
-            })
-        }
-    })
-     */
-    //todo email from front nodemailer
-  /*  const sendConfirmMail = () => {
-        const messageHtml =  renderEmail(
-            <ComfirmUser name={this.state.name}> {this.state.feedback}</ComfirmUser>
-        );
-
-        axios({
-            method: "POST",
-            url:"http://localhost:3000/send",
-            data: {
-                name: this.state.name,
-                email: this.state.email,
-                messageHtml: messageHtml
-            }
-        }).then((response)=>{
-            if (response.data.msg === 'success'){
-                console.log("Email sent, awesome!");
-             //   this.resetForm()
-            }else if(response.data.msg === 'fail'){
-                console.log("Oops, something went wrong. Try again")
-            }
-        })
-    }*/
 
     return (
         <div className="card">

@@ -159,8 +159,9 @@
   "Gateway_Time-out": "Le serveur ne répond pas",
   "Invalid credentials.": "Mauvais login ou mot de passe",
   "Your account has not been activated": "Votre compte doit être activé",
-  "check_your_mails": "vérifier vos emails",
+  "check_your_mails": "veuillez vérifier vos emails",
   "send_me_confirm_mail": "Me renvoyer l'email de confirmation",
+  "mail_send_to_you": "Une email vous a été envoyé.",
   "activation_of_your_account": "Activation de votre compte",
   "OrgCreate_title": "Enregistrer votre organisation",
   "choose_language_translation": "Choisissez le langage pour votre traduction",
@@ -173,5 +174,13 @@
   "missing_desc": "La description doit exister dans au moins une langue",
 
   "Unsupported Media Type": "format de fichier non supporté",
-  "Supported_Media_Type": "Les formats supportés sont : "
+  "Supported_Media_Type": "Les formats supportés sont : ",
+
+  "success_activation": "Votre compte a été activé avec succés. Bienvenue!",
+
+  "confirm_your_registration": "Confirmer votre inscription",
+  "confirm_registration_message": "Pour confirmer votre inscription, cliquer sur le lien suivant. Si vous n'êtes pas la personne à l'origine de cette démarche, vous pouvez ignorer cet email.",
+  "email_footer" : "Cet email à été envoyé automatiquement suite à vos démarche sur notre plateforme. merci ne ne pas y répondre.",
+
+  "error_encounter" : "Une erreur est survenue, veuillez contacter l'administeur."
 }
