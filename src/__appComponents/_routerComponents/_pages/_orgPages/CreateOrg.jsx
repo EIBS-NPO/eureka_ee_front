@@ -1,12 +1,12 @@
-import React, {useEffect, useState} from "react";
+import React, { useState} from "react";
 import { withTranslation } from 'react-i18next';
 import OrgAPI from "../../../../__services/_API/orgAPI";
 import {Label, Segment, Button, Form, Icon, Item, Loader} from "semantic-ui-react";
 
 import TextAreaMultilang from "../__CommonComponents/forms/TextAreaMultilang";
 import PictureForm from "../__CommonComponents/forms/picture/PictureForm";
-import fileAPI from "../../../../__services/_API/fileAPI";
-import * as url from "url";
+//import fileAPI from "../../../../__services/_API/fileAPI";
+//import * as url from "url";
 import AddressForm from "../__CommonComponents/forms/AddressForm2";
 import authAPI from "../../../../__services/_API/authAPI";
 import utilities from "../../../../__services/utilities";

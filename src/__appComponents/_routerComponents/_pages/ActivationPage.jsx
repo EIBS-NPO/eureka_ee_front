@@ -7,8 +7,10 @@ import userAPI from "../../../__services/_API/userAPI";
 import AuthContext from "../../../__appContexts/AuthContext";
 
 const ActivationPage = (props) => {
+    const isAuthenticated = useContext(AuthContext).isAuthenticated;
     const urlToken = props.match.params.token
-    if(authAPI.isAuthenticated() || urlToken === ""){
+
+    if(isAuthenticated || urlToken === undefined){
         console.log("retour home")
         props.history.replace('/');
     }
@@ -17,30 +19,42 @@ const ActivationPage = (props) => {
     const [loader,setLoader] = useState(true)
     const [error, setError] = useState(undefined)
 
+    console.log(error)
     useEffect(async ()=>{
-
-            let response = await userAPI.activation(urlToken)
-                .catch(error => {
-                //    setSuccess(false)
-                    console.log(error)
+            setLoader(true)
+            await userAPI.activation(urlToken)
+                .then(response => {
+                    console.log(response)
+                    setNeedConfirm(false)
                     setLoader(false)
-                    setError(error.data)
+                    setTimeout(() => {
+                        props.history.replace('/login')
+                    }, 3000);
                 })
-            if(response && response.status === 200){
-             //   setSuccess(true)
-                setNeedConfirm(false)
-                props.history.replace('/login')
-            }
+                .catch(err => {
+                //    setSuccess(false)
+                    console.log(err)
+                    setError(err)
+                    setLoader(false)
+                })
     },[])
 
     return (
         <div className="card">
-            {!loader &&
+            {!loader && error !== undefined &&
                 <Message warning>
-                    <p>une erreur est survenue, veuillez contacter l'administeur.</p>
+                    <p>{props.t("error_encounter")}</p>
                 </Message>
             }
-            <Loader active>{props.t('activation_of_your_account')}</Loader>
+            {!loader && error === undefined &&
+                <Message success>
+                    <p>{props.t("success_activation")}</p>
+                </Message>
+            }
+
+            {loader &&
+                <Loader active>{props.t('activation_of_your_account')}</Loader>
+            }
         </div>
 
     )

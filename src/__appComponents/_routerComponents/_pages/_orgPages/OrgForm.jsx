@@ -4,7 +4,7 @@ import {Button, Form, Icon, Item, Label, Segment} from "semantic-ui-react";
 import {withTranslation} from "react-i18next";
 import PictureForm from "../__CommonComponents/forms/picture/PictureForm";
 import TextAreaMultilang from "../__CommonComponents/forms/TextAreaMultilang";
-import AddressForm from "../__CommonComponents/forms/AddressForm";
+//import AddressForm from "../__CommonComponents/forms/AddressForm";
 
 /**
  *

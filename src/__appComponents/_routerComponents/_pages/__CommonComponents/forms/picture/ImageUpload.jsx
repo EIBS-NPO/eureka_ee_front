@@ -47,30 +47,8 @@ const ImageUpload = ({ setter, type, entity}) => {
     }
 
     const handleSubmitImage = async (e) => {
-        // console.log(blob)
         e.preventDefault()
-     //   if (entity.id !== undefined) { //if entiy already exist in database, update immediatly
-            // fileHandler blob to firebase 'images' folder with filename 'image'
-
-        /*    if (await authAPI.isAuthenticated()) {
-                fileAPI.uploadPic(type, entity, blob)
-                    .then(response => {
-                        setter({...entity, "picture": response.data[0].picture})
-                        hideModal()
-                    })
-                    .catch(error => {
-                        //handle error
-                        console.log(error)
-                        console.log(error.response);
-                    });
-            } else {
-                history.replace("/login")
-            }*/
-    //    } else { //if no entityId is null, case of a new Entity just pass picture. it will be created with the entity
-       //     setter({...entity, "picture": blob})
-            setter({...entity, "pictureFile": blob})
-    //   }
-
+        setter({...entity, "pictureFile": blob})
         hideModal()
     }
 

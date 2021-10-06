@@ -7,6 +7,7 @@ import authAPI from "../../../__services/_API/authAPI";
 import {useTranslation, withTranslation} from "react-i18next";
 import userAPI from "../../../__services/_API/userAPI";
 import {NavLink} from "react-router-dom";
+import Axios from "axios";
 
 const LoginPage = (props ) => {
 
@@ -16,6 +17,8 @@ const LoginPage = (props ) => {
         setFirstname, setLastname,
         needConfirm, setNeedConfirm
     } = useContext(AuthContext);
+
+    const [mailIsSent, setMailIsSent] = useState(false)
 
     useEffect(()=>{
 
@@ -63,72 +66,62 @@ const LoginPage = (props ) => {
                 props.history.replace("/")
             })
             .catch(error => {
-                console.log(error)
-            })
-            /*.then(()=> {
-                userAPI.get("owned")
-                    .then((response) => {
-                        console.log(response)
-                        let user = response.data
-                        setError("")
-                        setIsAuthenticated(true)
-                        setIsAdmin(user.roles === "ROLE_ADMIN")
-                        setFirstname(user.firstname)
-                        setLastname(user.lastname)
-                        props.history.replace("/")
-                    })
-                    .catch(error => {
-                        console.log(error)
-                    })
-            })*/
-            .catch(error => {
                 if(error.response === undefined){
                     setError(t("Gateway_Time-out"))
                 }else{
-                    console.log(error.response)
-                    setError(t(error.response.data.message));
-
-                    //todo traduction
+                    console.log(error)
                     if(error.response.data.message === "Your account has not been activated"){
                         setNeedConfirm(true)
+                    }else{
+                        setError(t(error.response.data.message));
                     }
                 }
 
             })
-       /* if(response){
-            console.log(response)
-            let userData = userAPI.get("owned")
-                .then(userData => {
-                    console.log(userData)
-                    let user = userData.data
-                    setError("")
-                    setIsAuthenticated(true)
-                    setIsAdmin(user.roles === "ROLE_ADMIN")
-                    setFirstname(user.firstname)
-                    setLastname(user.lastname)
-                    props.history.replace("/")
-                })
-                .catch(error => {
-                    console.log(error)
-                })*/
-     //   }
         setLoader(false)
         return function cleanup(){
             abortController.abort()
         }
     };
 
+    //need recup userData
     const handleSendMail = (e) => {
+        e.preventDefault()
+        setLoaderSend(true)
         if(credentials.email){
-            userAPI.askActivation(credentials.email)
-                .catch(error => {
-                    console.log(error)
+            userAPI.get("email", credentials.email)
+                .then(response => {
+                    Axios.post("/send",{emailData : {
+                            email : response.data[0].email,
+                            subject: t("confirm_your_registration"),
+                            text: t("confirm_registration_message"),
+                            template : "email_confirmUser",
+                            context : {
+                                title : t("confirm_your_registration"),
+                                text : t("confirm_registration_message"),
+                                name : response.data[0].lastname + " " + response.data[0].firstname,
+                                link : {
+                                    href:  process.env.REACT_APP_URL_LOCAL + '/activation/' + response.data[0].activation_token,
+                                    text: t("confirm_your_registration")
+                                },
+                                footer : t("email_footer"),
+                            }
+                        }})
+                        .then(res => {
+                            setMailIsSent(true)
+                            console.log(res)
+                        })
+                        .catch(err => console.log(err))
                 })
+                .catch(err => {
+                    console.log(err)
+                })
+            setMailIsSent(false)
         }
-
     }
 
     const [loader, setLoader] = useState(false)
+    const [loaderSend, setLoaderSend] = useState(false)
 
     const [forgetForm, setForgetForm] = useState(false)
     const showForgetPass = (e) => {
@@ -204,16 +197,22 @@ const LoginPage = (props ) => {
                     <Message.Header content={t('Your account has not been activated')} />
                     <Message.Item>
                         <p>{t('check_your_mails')}</p>
-                        <Form onSubmit={handleSendMail} loading={loader}>
-                            <Input
-                                basic
-                                type="submit"
-                                icon='mail'
-                                color="blue"
-                                size='large'
-                                content= { t('send_me_confirm_mail') }
-                            />
-                        </Form>
+                        {!mailIsSent &&
+                            <Form onSubmit={handleSendMail} loading={loaderSend}>
+                                <Input
+                                    basic
+                                    type="submit"
+                                    icon='mail'
+                                    color="blue"
+                                    size='small'
+                                    value= { t('send_me_confirm_mail') }
+                                />
+                            </Form>
+                        }
+                        {mailIsSent &&
+                            <p>{t('mail_send_to_you')}</p>
+                        }
+
                     </Message.Item>
                 </Message>
                 }

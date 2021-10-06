@@ -2,8 +2,11 @@
 import React, { useContext, useState } from "react";
 import AuthContext from "../../../__appContexts/AuthContext";
 import UserAPI from "../../../__services/_API/userAPI";
-import {Button, Form, Message, Segment} from "semantic-ui-react";
+import {Button, Form } from "semantic-ui-react";
 import {useTranslation, withTranslation} from "react-i18next";
+import Axios from "axios";
+
+import image from "../../../_resources/logos/EEE-banner1280-378-max.png";
 
 const RegisterPage = ({ history }) => {
   //  const isAuthenticated = useContext(AuthContext).isAuthenticated;
@@ -49,16 +52,28 @@ const RegisterPage = ({ history }) => {
 
         UserAPI.register(user)
             .then(response => {
-                UserAPI.askActivation(response.data[0].email)
-                    .then(() => {
-                        setNeedConfirm("needConfirm")
+                Axios.post("/send",{emailData : {
+                        email : response.data[0].email,
+                        subject: t("confirm_your_registration"),
+                        text: t("confirm_registration_message"),
+                        template : "email_confirmUser",
+                        context : {
+                            title : t("confirm_your_registration"),
+                            text : t("confirm_registration_message"),
+                            name : response.data[0].lastname + " " + response.data[0].firstname,
+                            link : {
+                                href:  process.env.REACT_APP_URL_LOCAL + '/activation/' + response.data[0].activation_token,
+                                text: t("confirm_your_registration")
+                            },
+                            footer : t("email_footer"),
+                        }
+                    }})
+                    .then(res => {
+                        console.log(res)
+                        setNeedConfirm(true)
                         history.replace('/login')
                     })
-                    .catch(error => {
-                        console.log(error)
-                    })
-                //history.replace("/login")
-            //    history.replace("/activation");
+                    .catch(err => console.log(err))
             })
             .catch(error => {
                 console.log(error.response)
@@ -132,7 +147,7 @@ const RegisterPage = ({ history }) => {
                <Button className="ui primary basic button" content= { t('Sign_up') } />
             </Form>
         </div>
-    );
+    )
 };
 
 export default withTranslation()(RegisterPage);

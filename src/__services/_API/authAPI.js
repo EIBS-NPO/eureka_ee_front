@@ -35,6 +35,7 @@ const setAxiosToken = (token) => {
 const setup = async () => {
 
     const token = window.localStorage.getItem("authToken");
+
     if (token) {
         try {
             if (isValidToken(token)) {

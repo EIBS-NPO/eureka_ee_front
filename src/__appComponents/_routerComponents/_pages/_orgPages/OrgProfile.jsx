@@ -506,9 +506,6 @@ const OrgProfile = (props ) => {
         )
     }
 
-  /*  return (
-        !loader && org && <ProfilOrg2 org={org}/>
-    )*/
     return (
 
         <div className="card">

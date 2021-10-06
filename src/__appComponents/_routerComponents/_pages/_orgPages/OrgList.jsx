@@ -7,12 +7,7 @@ import authAPI from "../../../../__services/_API/authAPI";
 import AuthContext from "../../../../__appContexts/AuthContext";
 
 const OrgList = ( props ) => {
-    const { isAuthenticated, setIsAuthenticated,
-        isAdmin, setIsAdmin,
-        lastname, setLastname,
-        firstname, setFirstname,
-        partnerList, setPartnerList,
-    } = useContext(AuthContext)
+    const { isAuthenticated } = useContext(AuthContext)
 
     const urlParams = props.match.params.ctx
 
