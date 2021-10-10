@@ -26,7 +26,6 @@ app.get('/*', (req,res) => {
 // send mail route
 app.post('/send', (req, res) => {
     console.log(req.body)
-  //  const { email, name, emailText, template } = req.body;
     sendEmail(req.body.emailData, function(err, info) {
         if (err) {
             console.log('Error occurred. ' + err.message);

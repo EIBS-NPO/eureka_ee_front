@@ -138,30 +138,16 @@ const OrgProfile = (props ) => {
     },[isReferent, isAssigned])
 
     //*** confrim Modal *** //
-    const [confirmResult, setConfirmResult] = useState(undefined)
     const [showModal, setShowModal] = useState(false)
     const [msgModal, setMsgModal] = useState("")
     const [modalAction, setModalAction] = useState("")
     const [modalTarget, setModalTarget] = useState({})
-
-    /*const awaitConfirmResult = async () => {
-        if(confirmResult !== undefined){
-            return confirmResult
-        }
-        else {
-            //attendre x seconde avant exec
-            return setTimeout(awaitConfirmResult, 1000);
-        }
-    }*/
 
     const showConfirmModal = async (msg, action, target) => {
         setMsgModal(msg)
         setModalAction(action)
         setModalTarget(target)
         setShowModal(true)
-      /*  let res = await awaitConfirmResult()
-        setConfirmResult()
-        return res*/
     }
 
     const modalResult = (result) => {
@@ -191,15 +177,6 @@ const OrgProfile = (props ) => {
 
     const [activityLoader, setActivityLoader] = useState(false)
     const handleRmvActivity = (activity) => {
-       /* showConfirmModal("Are you sure?")
-            .then(confirmRes => {
-                setShowModal(false)
-                if (confirmRes) {
-                    console.log("askRetour")
-                    console.log(confirmRes)
-                }
-            })
-*/
         setActivityLoader(true)
 
         //  orgAPI.manageActivity(activity, org.id)
@@ -217,7 +194,6 @@ const OrgProfile = (props ) => {
             .finally(() => {
                 setActivityLoader(false)
             })
-
     }
 
     const handleAddActivity = (activityId) => {

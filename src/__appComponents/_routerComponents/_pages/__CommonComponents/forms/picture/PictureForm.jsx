@@ -1,9 +1,8 @@
 
-import React, { useState, useEffect } from 'react';
-import {Image, Item, Label} from "semantic-ui-react";
+import React from 'react';
+import {Image, Item } from "semantic-ui-react";
 import ImageUpload from "./ImageUpload";
 
-//si l'entité est nouvelle, on peut faire en sorte de stocker l'image cropée dans l'entité et faire gérer la convertion par un service vers le blob
 const PictureForm = ({ entityType, entity, setter, isCircular = false}) => {
 
     const srcImgToBlob = (blob) => {
@@ -23,9 +22,6 @@ const PictureForm = ({ entityType, entity, setter, isCircular = false}) => {
             <Item.Group divided>
                 <Item>
                     <Item.Content>
-                        {/*<Label attached='top'>
-                            <h4>Picture</h4>
-                        </Label>*/}
                         <Item.Description text-align="center">
                             {entity && getPicture()?
                                 getPicture() instanceof Blob  ?
@@ -43,8 +39,6 @@ const PictureForm = ({ entityType, entity, setter, isCircular = false}) => {
                             />
                         </Item.Description>
                     </Item.Content>
-                {/*</Item>
-                <Item>*/}
 
                 </Item>
             </Item.Group>

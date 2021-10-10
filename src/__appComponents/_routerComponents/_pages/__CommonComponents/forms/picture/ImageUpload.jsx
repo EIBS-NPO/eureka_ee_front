@@ -1,13 +1,10 @@
 import React, {useContext, useState} from 'react'
-import {Button, Input, Label} from "semantic-ui-react";
+import {Button } from "semantic-ui-react";
 import ImageCropper from './ImageCropper'
 import Modal from "../../Modal";
-import fileAPI from '../../../../../../__services/_API/fileAPI';
 import '../../../../../../scss/components/Modal.scss';
 import MediaContext from "../../../../../../__appContexts/MediaContext";
 import {useTranslation} from "react-i18next";
-import UserContext from "../../../_userPages/_userContexts/UserContext";
-import authAPI from "../../../../../../__services/_API/authAPI";
 import activityAPI from "../../../../../../__services/_API/activityAPI";
 import projectAPI from "../../../../../../__services/_API/projectAPI";
 
@@ -15,18 +12,16 @@ import projectAPI from "../../../../../../__services/_API/projectAPI";
 const ImageUpload = ({ setter, type, entity}) => {
 
     const Media = useContext(MediaContext).Media
-  //  const setUser = useContext(UserContext).setUser
 
     const { t } = useTranslation()
 
     const [blob, setBlob] = useState(null)
 
-    //inputImage c'est l'image que l'on va chercher passé en base64
+    //image from form in base64
     const [inputImg, setInputImg] = useState('')
 
     const [oldPicture, setOldpicture] = useState(undefined)
     const onInputChange = (e) => {
-        // convert image file to base64 string
         if(entity.picture){
             setOldpicture(entity.picture)
         }
@@ -100,7 +95,6 @@ const ImageUpload = ({ setter, type, entity}) => {
 
     const hideModal = () => {
         setShow(false)
-    //    document.getElementById('formPicture').reset()
     }
 
     return (

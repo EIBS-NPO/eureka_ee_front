@@ -160,7 +160,6 @@
   "Invalid credentials.": "Mauvais login ou mot de passe",
   "Your account has not been activated": "Votre compte doit être activé",
   "check_your_mails": "veuillez vérifier vos emails",
-  "send_me_confirm_mail": "Me renvoyer l'email de confirmation",
   "mail_send_to_you": "Une email vous a été envoyé.",
   "activation_of_your_account": "Activation de votre compte",
   "OrgCreate_title": "Enregistrer votre organisation",
@@ -179,8 +178,18 @@
   "success_activation": "Votre compte a été activé avec succés. Bienvenue!",
 
   "confirm_your_registration": "Confirmer votre inscription",
-  "confirm_registration_message": "Pour confirmer votre inscription, cliquer sur le lien suivant. Si vous n'êtes pas la personne à l'origine de cette démarche, vous pouvez ignorer cet email.",
+  "confirm_registration_message": "Pour confirmer votre inscription, cliquer sur le lien suivant.",
+  "forgot_password": "Mot de passe oublié",
+  "forgot_password_message": "Pour créer votre nouveau mot de passe, veuillez cliquer sur le lien ci-dessous et entrer ce code de résiliation dans le formulaire en plus de votre nouveau mot de passe.",
+  "dont_receive_mail?": "vous n'avez pas recu le mail?",
+  "send_me_mail":"M'envoyer le mail",
+  "change_password": "changer mon mot de passe",
+  "password_not_match": "Les mots de passes sont différents",
+  "password_bad_pattern": "Longueur entre 6 et 20 avec 1 majuscule, 1 minuscule et 1 chiffre.",
+  "reset_code": "Code de réinitialisation",
+  "email_may_be_ignored": "Si vous n'êtes pas la personne à l'origine de cette démarche, vous pouvez ignorer cet email.",
   "email_footer" : "Cet email à été envoyé automatiquement suite à vos démarche sur notre plateforme. merci ne ne pas y répondre.",
 
+  "error_namePattern" : "Doit comporter entre 2 et 50 caractères",
   "error_encounter" : "Une erreur est survenue, veuillez contacter l'administeur."
 }

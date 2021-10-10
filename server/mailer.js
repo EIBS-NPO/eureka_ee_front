@@ -1,5 +1,4 @@
 
-require('dotenv').config()
 const nodemailer = require('nodemailer'),
     hbs = require('nodemailer-express-handlebars')
     transporter = nodemailer.createTransport({
@@ -14,7 +13,7 @@ const nodemailer = require('nodemailer'),
 const sendEmail = (emailData, cb) => {
 
     const mailOptions = {
-        from: process.env.REACT_APP_MAIL,
+        from: 'EUREKA_EMPOWERMENT_ENVIRONMENT@mail.fake', // replace by process.env.REACT_APP_MAIL,
         to : emailData.email,
         subject : emailData.subject,
         text : emailData.text,

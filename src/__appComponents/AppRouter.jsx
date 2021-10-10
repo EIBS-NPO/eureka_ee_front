@@ -1,6 +1,6 @@
-import React, {lazy, Suspense, useEffect, useState} from "react";
-import {Container, Loader, Segment} from "semantic-ui-react";
-import {BrowserRouter as Router, Redirect, Route, Switch} from "react-router-dom";
+import React, {lazy, Suspense } from "react";
+import {Loader, Segment} from "semantic-ui-react";
+import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
 
 import '../scss/components/mainMenu.scss';
 
@@ -11,6 +11,7 @@ import SideMenu from "./_routerComponents/_menuComponents/SideMenu";
 
 const Home = lazy(() => import('./_routerComponents/_pages/HomePage'));
 const Login = lazy(() => import('./_routerComponents/_pages/LoginPage'));
+const ForgotPassword = lazy(() => import('./_routerComponents/_pages/ForgotPassword'));
 const Register = lazy(() => import('./_routerComponents/_pages/RegisterPage'));
 const Activation = lazy(()=> import('./_routerComponents/_pages/ActivationPage'))
 
@@ -21,7 +22,6 @@ const CreateActivity = lazy(() => import('./_routerComponents/_pages/_activityPa
 const ProfilUser = lazy(() => import('./_routerComponents/_pages/_userPages/UserProfile'));
 
  const ProfilOrg = lazy(() => import('./_routerComponents/_pages/_orgPages/OrgProfile'));
-//const ProfilOrg = lazy(() => import('./_routerComponents/_pages/_orgPages/ProfilOrg2'));
 
 const ProfilProject = lazy(() => import('./_routerComponents/_pages/_projectPages/ProjectProfile'));
 const ProfilActivity = lazy(() => import('./_routerComponents/_pages/_activityPages/ActivityProfile'));
@@ -33,10 +33,6 @@ const ActivitiesList = lazy(() => import('./_routerComponents/_pages/_activityPa
 const AdminUsers = lazy(()=> import('./_routerComponents/_pages/_userPages/AdminUsers'))
 const AdminOrgs = lazy(()=> import('./_routerComponents/_pages/_orgPages/AdminOrgs'))
 const AdminProjects = lazy(()=> import('./_routerComponents/_pages/_projectPages/AdminProjects'))
-
-const Page404 = lazy(()=>import('./_routerComponents/_pages/Page404'))
-
-
 
 const AppRouter = () => {
 
@@ -52,6 +48,7 @@ const AppRouter = () => {
                             <Route path="/register" component={Register}/>
                             <Route path="/activation/:token" component={Activation}/>
                             <Route path="/login" component={Login}/>
+                            <Route path="/forgot_password/:token" component={ForgotPassword}/>
 
                             <Route path="/all_organizations/:ctx" component={OrgList}/>
                             <Route path="/all_projects/:ctx" component={ProjectsList}/>
@@ -60,15 +57,11 @@ const AppRouter = () => {
                             <Route path="/org/:id" component={ProfilOrg}/>
                             <Route path="/project/:id" component={ProfilProject}/>
                             <Route path="/activity/:id" component={ProfilActivity}/>
-                            {/*<PrivateRoute path="/account" component={ProfilUser}/>*/}
                             <Route path="/account" component={ProfilUser}/>
 
                             <PrivateRoute path="/create_org" component={CreateOrg}/>
-                            {/* <Route path="/create_org" component={CreateOrg}/>*/}
                             <PrivateRoute path="/create_project" component={CreateProject}/>
-                            {/*<Route path="/create_project" component={CreateProject}/>*/}
                             <PrivateRoute path="/create_activity" component={CreateActivity}/>
-                            {/* <Route path="/create_activity" component={CreateActivity}/>*/}
 
                             <PrivateRoute path="/admin/users" component={AdminUsers} />
                             <PrivateRoute path="/admin/orgs" component={AdminOrgs} />

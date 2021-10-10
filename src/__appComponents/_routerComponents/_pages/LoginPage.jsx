@@ -6,8 +6,7 @@ import {Button, Form, Input, Message} from "semantic-ui-react";
 import authAPI from "../../../__services/_API/authAPI";
 import {useTranslation, withTranslation} from "react-i18next";
 import userAPI from "../../../__services/_API/userAPI";
-import {NavLink} from "react-router-dom";
-import Axios from "axios";
+import mailerAPI from "../../../__services/_API/mailerAPI";
 
 const LoginPage = (props ) => {
 
@@ -76,7 +75,6 @@ const LoginPage = (props ) => {
                         setError(t(error.response.data.message));
                     }
                 }
-
             })
         setLoader(false)
         return function cleanup(){
@@ -84,29 +82,13 @@ const LoginPage = (props ) => {
         }
     };
 
-    //need recup userData
-    const handleSendMail = (e) => {
+    const handleSendConfirmMail = (e) => {
         e.preventDefault()
         setLoaderSend(true)
         if(credentials.email){
             userAPI.get("email", credentials.email)
                 .then(response => {
-                    Axios.post("/send",{emailData : {
-                            email : response.data[0].email,
-                            subject: t("confirm_your_registration"),
-                            text: t("confirm_registration_message"),
-                            template : "email_confirmUser",
-                            context : {
-                                title : t("confirm_your_registration"),
-                                text : t("confirm_registration_message"),
-                                name : response.data[0].lastname + " " + response.data[0].firstname,
-                                link : {
-                                    href:  process.env.REACT_APP_URL_LOCAL + '/activation/' + response.data[0].activation_token,
-                                    text: t("confirm_your_registration")
-                                },
-                                footer : t("email_footer"),
-                            }
-                        }})
+                    mailerAPI.sendConfirmMail(t, response.data[0])
                         .then(res => {
                             setMailIsSent(true)
                             console.log(res)
@@ -128,50 +110,73 @@ const LoginPage = (props ) => {
         e.preventDefault();
         setForgetForm(true)
     }
-    const handleForgetPass = () => {
-        //todo api resetPassword //soon
+
+    const [isForgotMailSent, setIsForgotMailSent] = useState(false)
+    const cancelForgetForm = (e) => {
+        e.preventDefault()
+        setForgetForm(false)
+    }
+    const handleSendForgotPassMail = () => {
+        if(credentials.email !== ""){
+            userAPI.askForgotPasswordToken(credentials.email)
+                .then(user => {
+                    mailerAPI.sendForgotPassordMail(t, user.data[0])
+                        .then(res => {
+                            setIsForgotMailSent(true)
+                            console.log(res)
+                        })
+                        .catch(err => console.log(err))
+                })
+                .catch(err => {
+                    console.log(err)
+                })
+        }
+
     }
 
     //todo loader ne fonctionne pas...
     return (
         <div className="card">
             {!forgetForm &&
-            <Form onSubmit={handleSubmit} loading={loader}>
-                <Form.Input
-                    icon='user'
-                    iconPosition='left'
-                    name="email"
-                    value={credentials.email}
-                    label={t('email')}
-                    placeholder='Email'
-                    onChange={handleChange}
-               //     error={error ? error : null}
-                    required
-                />
-                <Form.Input
-                    icon='lock'
-                    iconPosition='left'
-                    name="password"
-                    value={credentials.password}
-                    label={t('password')}
-                    type='password'
-                    onChange={handleChange}
-               //     error={error ? error : null}
-                    required
-                />
+            <>
+                <Form onSubmit={handleSubmit} loading={loader}>
+                    <Form.Input
+                        icon='user'
+                        iconPosition='left'
+                        name="email"
+                        value={credentials.email}
+                        label={t('email')}
+                        placeholder='Email'
+                        onChange={handleChange}
+                   //     error={error ? error : null}
+                        required
+                    />
+                    <Form.Input
+                        icon='lock'
+                        iconPosition='left'
+                        name="password"
+                        value={credentials.password}
+                        label={t('password')}
+                        type='password'
+                        onChange={handleChange}
+                   //     error={error ? error : null}
+                        required
+                    />
 
-                <Button className="ui primary basic button" content={t('Login')} />
-                <Button className="ui secondary basic button" content={t('forget_password')}
-                        onClick={(e)=>showForgetPass(e)} size="mini" />
-            </Form>
+                    <Button className="ui primary basic button" content={t('Login')} />
+                </Form>
+                <a href="#" onClick={(e)=>showForgetPass(e)} >{t('forgot_password')}</a>
+            </>
             }
 
+
             {forgetForm &&
-            <Form onSubmit={handleForgetPass} loading={loader}>
+            <Form onSubmit={handleSendForgotPassMail} loading={loader}>
                 <Form.Input
                     icon='user'
                     iconPosition='left'
                     name="email"
+                    type="email"
                     value={credentials.email}
                     label={t('email')}
                     placeholder='Email'
@@ -179,7 +184,8 @@ const LoginPage = (props ) => {
                     error={error ? error : null}
                     required
                 />
-                <Button className="ui primary basic button" content={t('change_password')} />
+                <Button className="ui primary basic button" content={t('send_me_mail')} />
+                <Button className="ui secondary basic button" onClick={(e)=>cancelForgetForm(e)} content={t('cancel')} />
             </Form>
             }
 
@@ -197,15 +203,16 @@ const LoginPage = (props ) => {
                     <Message.Header content={t('Your account has not been activated')} />
                     <Message.Item>
                         <p>{t('check_your_mails')}</p>
+                        <p>{t('dont_receive_mail?')}</p>
                         {!mailIsSent &&
-                            <Form onSubmit={handleSendMail} loading={loaderSend}>
+                            <Form onSubmit={handleSendConfirmMail} loading={loaderSend}>
                                 <Input
                                     basic
                                     type="submit"
                                     icon='mail'
                                     color="blue"
                                     size='small'
-                                    value= { t('send_me_confirm_mail') }
+                                    value= { t('send_me_mail') }
                                 />
                             </Form>
                         }

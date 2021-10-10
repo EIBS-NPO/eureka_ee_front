@@ -3,7 +3,7 @@ import JwtDecode from "jwt-decode";
 import {LOCAL_URL, ORG_API, USR_API} from "../../config";
 import {useTranslation} from "react-i18next";
 
-const register = (user) =>  {
+const getbodyFormData = (user) => {
     let bodyFormData = new FormData();
     bodyFormData.append('firstname', user.firstname)
     bodyFormData.append('lastname', user.lastname)
@@ -12,43 +12,37 @@ const register = (user) =>  {
     if(user.picture !== undefined){
         bodyFormData.append('pictureFile', user.picture)
     }
+
+    return bodyFormData;
+}
+
+const register = (user) =>  {
+    let bodyFormData = getbodyFormData(user);
     return Axios({
         method: 'post',
         url: USR_API + "/register",
         data: bodyFormData,
         headers: {'Content-Type': 'multipart/form-data'}
     })
-  //  return Axios.post(USR_API + "/register", user);
 }
 
-/*const askActivation = (user) => {
-    return Axios.post("/send", {
-        emailData: {
-            email: user.email,
-            subject: useTranslation("confirm_your_registration"),
-            text: useTranslation("confirm_registration_message"),
-            template: "email_confirmUser",
-            context: {
-                title: useTranslation("confirm_your_registration"),
-                text: useTranslation("confirm_registration_message"),
-                name: user.firstname + " " + user.lastname,
-                link: {
-                    href: process.env.REACT_APP_URL_LOCAL + '/activation/' + user.activation_token,
-                    text: useTranslation("confirm_your_registration")
-                },
-                footer: useTranslation("email_footer"),
-            }
+const put = (user, putRelationWith={}) => {
 
-            /!*let data = {
-                urlActivation:LOCAL_URL+"/activation/",
-                email:email
-            }
-            if(email){
-                return Axios.post(LOCAL_URL+"/send", data)
-            }*!/
-        }
+    let bodyFormData = getbodyFormData(user);
+
+    return Axios({
+        method: 'post',
+        url: USR_API + "/update",
+        data: bodyFormData,
+        headers: {'Content-Type': 'multipart/form-data'}
     })
-}*/
+    /*return Axios
+        .put(USR_API, user)
+        .then((response) => {
+            window.localStorage.setItem("authToken", response.data.token);
+            return response
+        })*/
+}
 
 const activation = (activationToken) => {
     if(activationToken){
@@ -56,13 +50,8 @@ const activation = (activationToken) => {
     }
 }
 
-const put = (user) => {
-    return Axios
-        .put(USR_API, user)
-        .then((response) => {
-            window.localStorage.setItem("authToken", response.data.token);
-            return response
-        })
+const askForgotPasswordToken = (email) => {
+    return Axios.put(USR_API + "/forgotPassword", {email:email} )
 }
 
 const get = (access = null, email = null, id = null) => {
@@ -82,7 +71,7 @@ const get = (access = null, email = null, id = null) => {
 }
 
 const resetPass = (passTab) => {
-    return Axios.post(USR_API +"/password", passTab)
+    return Axios.post(USR_API +"/resetPassword", passTab)
 }
 
 const resetEmail = (email, id = null) => {
@@ -144,6 +133,7 @@ const activ = (userId, isActiv) => {
             register,
    //         askActivation,
             activation,
+            askForgotPasswordToken,
             checkRole,
             checkMail,
             put,

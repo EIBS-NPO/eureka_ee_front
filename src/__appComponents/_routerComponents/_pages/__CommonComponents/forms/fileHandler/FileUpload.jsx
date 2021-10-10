@@ -1,12 +1,10 @@
 
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext, useState} from 'react';
 import { Message, Item, Button, Form, Icon, Loader } from "semantic-ui-react";
-import fileAPI from "../../../../../../__services/_API/fileAPI";
 import {useTranslation, withTranslation} from "react-i18next";
 import authAPI from "../../../../../../__services/_API/authAPI";
 import FileInfos from "./FileInfos";
 import MediaContext from "../../../../../../__appContexts/MediaContext";
-import AuthContext from "../../../../../../__appContexts/AuthContext";
 import activityAPI from "../../../../../../__services/_API/activityAPI";
 
 /**
@@ -66,7 +64,6 @@ console.log(activity)
        // if(activity.fileType){ //for update a file
         activityAPI.put(activity, {"file": currentFile})
             .then(response => {
-            //    console.log(response)
                 setter(response.data[0])
                 setIsSave(true)
                 history.replace('/activity/owned_' + response.data[0].id)

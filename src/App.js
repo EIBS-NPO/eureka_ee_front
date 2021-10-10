@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { createMedia } from "@artsy/fresnel";
 
 import AuthContext from "./__appContexts/AuthContext";
@@ -10,6 +10,7 @@ import authAPI from "./__services/_API/authAPI";
 
 import 'semantic-ui-css/semantic.min.css'
 import './scss/main.scss';
+import fileAPI from "./__services/_API/fileAPI";
 
  function App({history}) {
 
@@ -34,7 +35,7 @@ import './scss/main.scss';
      const { Media, MediaContextProvider } = AppMedia;
 
      // todo provoque un rechargement de la page, a placer dans le compo nécessaire, avec loader
-    /* const [allowedMimes, setAllowedMimes] = useState([])
+     const [allowedMimes, setAllowedMimes] = useState([])
      useEffect(async()=>{
 
          let response = await fileAPI.getAllowedMime()
@@ -44,11 +45,11 @@ import './scss/main.scss';
          if(response && response.status === 200){
              setAllowedMimes(response.data[0].split(','))
          }
-     },[])*/
+     },[])
   return (
       <>
         <style>{mediaStyles}</style>
-        <MediaContext.Provider value={{Media, mediaStyles, MediaContextProvider }}>
+        <MediaContext.Provider value={{Media, mediaStyles, MediaContextProvider,allowedMimes }}>
           <AuthContext.Provider value={{
               isAuthenticated, setIsAuthenticated,
               firstname, setFirstname,

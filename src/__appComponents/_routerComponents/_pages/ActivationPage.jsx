@@ -8,7 +8,9 @@ import AuthContext from "../../../__appContexts/AuthContext";
 
 const ActivationPage = (props) => {
     const isAuthenticated = useContext(AuthContext).isAuthenticated;
-    const urlToken = props.match.params.token
+    const urlParams = props.match.params.token.split(':')
+    const userId = urlParams[0]
+    const urlToken = urlParams[1]
 
     if(isAuthenticated || urlToken === undefined){
         console.log("retour home")
@@ -21,22 +23,33 @@ const ActivationPage = (props) => {
 
     console.log(error)
     useEffect(async ()=>{
-            setLoader(true)
-            await userAPI.activation(urlToken)
-                .then(response => {
-                    console.log(response)
-                    setNeedConfirm(false)
-                    setLoader(false)
-                    setTimeout(() => {
-                        props.history.replace('/login')
-                    }, 3000);
-                })
-                .catch(err => {
+        setLoader(true)
+        await userAPI.get("id", null, userId)
+            .then(async user => {
+                if (user.data[0].gpAttributes["user.token.activation"].propertyValue[0] === urlToken) {
+                    await userAPI.activation(urlToken)
+                        .then(response => {
+                            console.log(response)
+                            setNeedConfirm(false)
+                            setLoader(false)
+                            setTimeout(() => {
+                                props.history.replace('/login')
+                            }, 3000);
+                        })
+                        .catch(err => {
+                            //    setSuccess(false)
+                            console.log(err)
+                            setError(err)
+                            setLoader(false)
+                        })
+                }
+            })
+            .catch(err => {
                 //    setSuccess(false)
-                    console.log(err)
-                    setError(err)
-                    setLoader(false)
-                })
+                console.log(err)
+                setError(err)
+                setLoader(false)
+            })
     },[])
 
     return (

@@ -5,11 +5,15 @@ import {FOLW_PROJECT, ORG_API, PROJECT_API} from "../../config";
 const getBodyFormData = (project) => {
     let bodyFormData = new FormData();
     bodyFormData.append('title', project.title)
-    bodyFormData.append('startDate', project.startDate)
-    bodyFormData.append('endDate', project.endDate)
     bodyFormData.append('description', JSON.stringify(project.description))
     if(project.id !== undefined){
         bodyFormData.append('id', project.id)
+    }
+    if(project.startDate !== undefined){
+        bodyFormData.append('startDate', project.startDate)
+    }
+    if(project.endDate !== undefined){
+        bodyFormData.append('endDate', project.endDate)
     }
     if(project.pictureFile !== undefined){
         bodyFormData.append('pictureFile', project.pictureFile)
@@ -38,6 +42,7 @@ const put = (project, putRelationWith ={}) => {
     if(putRelationWith["pictureFile"] !== undefined){
         project.pictureFile = putRelationWith["pictureFile"]
     }
+
     let bodyFormData = getBodyFormData(project)
 
     //add after for multiRelationnal (ListOf)

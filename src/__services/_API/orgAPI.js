@@ -2,12 +2,15 @@ import Axios from "axios";
 import {ORG_API} from "../../config";
 
 const getBodyFormData = (org) => {
+    console.log(org)
     let bodyFormData = new FormData();
     bodyFormData.append('name', org.name)
     bodyFormData.append('type', org.type)
     bodyFormData.append('email', org.email)
-    bodyFormData.append('phone', org.phone)
     bodyFormData.append('description', JSON.stringify(org.description))
+    if(org.phone !== undefined){
+        bodyFormData.append('phone', org.phone)
+    }
     if(org.id !== undefined){
         bodyFormData.append('id', org.id)
     }
@@ -16,10 +19,12 @@ const getBodyFormData = (org) => {
     }
     if(org.address !== undefined){
         bodyFormData.append("address", org.address.address)
-        bodyFormData.append("complement", org.address.complement)
         bodyFormData.append("zipCode", org.address.zipCode)
         bodyFormData.append("city", org.address.city)
         bodyFormData.append("country", org.address.country)
+        if(org.address.complement !== undefined){
+            bodyFormData.append("complement", org.address.complement)
+        }
     }
     return bodyFormData
 }

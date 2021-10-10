@@ -15,10 +15,9 @@ const UserProfile = ({ history, t }) => {
 
     const [loader, setLoader] = useState(false)
 
-    useEffect(() => {
+    useEffect(async () => {
         setLoader(true)
-
-        if(authAPI.isAuthenticated()) {
+        if (await authAPI.isAuthenticated()) {
             userAPI.get("email", authAPI.getUserMail())
                 .then(response => {
                     setUser(response.data[0])
@@ -26,7 +25,7 @@ const UserProfile = ({ history, t }) => {
                 .catch(error => {
                     console.log(error.response)
                 }).finally(() => setLoader(false))
-        }else {
+        } else {
             history.replace('/login')
         }
 
