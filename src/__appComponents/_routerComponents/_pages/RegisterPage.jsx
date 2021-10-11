@@ -97,10 +97,7 @@ const RegisterPage = ({ history }) => {
                     setLoader(false)
                     setErrors(error.response.data)
                 })
-        }/*else{
-            console.log(errors)
-            setErrors(formErrors)
-        }*/
+        }
     };
 
     return (

@@ -35,15 +35,14 @@ const post = (activity) => {
         data: bodyFormData,
         headers: {'Content-Type': 'multipart/form-data'}
     })
-//    return Axios.post(ACT_API, activity)
 }
 
 const put = (activity, putRelationWith={}) => {
     if(putRelationWith["org"] !== undefined){
         activity.organization = putRelationWith["org"]
     }
-    if(putRelationWith["project"] !== undefined){
-        activity.project = putRelationWith["project"]
+    if(putRelationWith.project !== undefined){
+        activity.project = putRelationWith.project
     }
     if(putRelationWith["pictureFile"] !== undefined){
         activity.pictureFile = putRelationWith["pictureFile"]
@@ -63,13 +62,6 @@ const put = (activity, putRelationWith={}) => {
         data: bodyFormData,
         headers: {'Content-Type': 'multipart/form-data'}
     })
-    /*let data = {
-        "id": activity.id,
-        "title": activity.title,
-        "summary": JSON.stringify(activity.summary),
-        "isPublic": activity.endDate
-    }
-    return Axios.put(ACT_API, activity)*/
 }
 
 const get = (context, id = null, orgId = null, projectId = null) => {

@@ -62,6 +62,7 @@ const ActivityProfile = ( props ) => {
     }
 
     const [loader, setLoader] = useState(false);
+    const [loader2, setLoader2] = useState(false);
 
     const [activeItem, setActiveItem] = useState('presentation')
 
@@ -110,12 +111,11 @@ const ActivityProfile = ( props ) => {
                         setError(error.response.data[0])
                     })
                 if(response && response.status === 200){ setUserAssignProject(response.data)}
-
             //get if activity is followed by current user
-
-                response = await activityAPI.isFollowing( urlParams[1] )
+//isFollowing
+                /*response = await activityAPI.isFollowing( urlParams[1] )
                     .catch(error => console.log(error.response.data))
-                if(response && response.status === 200){ setIsFollow(response.data[0])}
+                if(response && response.status === 200){ setIsFollow(response.data[0])}*/
 
                 response = await orgAPI.getOrg('owned')
                     .catch(error => {
@@ -135,155 +135,7 @@ const ActivityProfile = ( props ) => {
             props.history.replace('/login')
         }
         setLoader(false)
-        /*if ( !(urlParams[0] === "public") && !(authAPI.isAuthenticated()) ) {
-
-        }*/
-
-       /* if(urlParams[0] !== 'public'){
-            activityAPI.get(urlParams[0], urlParams[1])
-                .then(response => {
-                  //  console.log(response.data[0])
-                    if(response.data[0] !== "DATA_NOT_FOUND"){
-                        /!*if(response.data[0].organization){
-
-                            response.data[0].activityId = response.data[0].organization.id//todo ?wtf?
-                        }*!/
-                    }
-                    setActivity(response.data[0])
-                    if(response.data[0].project){
-                        setActivityProject(response.data[0].project)
-                    }
-                    if(response.data[0].organization){
-                        setActivityOrg(response.data[0].organization)
-                    }
-                })
-                .catch(error => {
-                    console.log(error.response)
-                    setError(error.response)
-                })
-                .finally(() => setLoader(false))
-
-            if(urlParams[0] === "creator"){
-                projectAPI.get(urlParams[0])
-                    .then(response => {
-                        let tab = response.data
-                        projectAPI.getAssigned()
-                            .then(response => {
-                     //           console.log(response.data)
-                                setUserProjects(tab.concat(response.data))
-                            })
-                            .catch(error => {
-                                console.log(error)
-                                setErrorProject(error.response.data[0])
-                            })
-                            .finally(() => setLoader(false))
-                    })
-                    .catch(error => {
-                        console.log(error)
-                        setErrorProject(error.response.data[0])
-                    })
-
-                    activityAPI.isFollowing( urlParams[1] )
-                        .then(response => {
-                  //          console.log(response.data[0])
-                            setIsFollow(response.data[0])
-                        })
-                        .catch(error => console.log(error.response.data))
-
-                    orgAPI.getMembered()
-                        .then(response => {
-                   //         console.log(response.data)
-                            setUserOrgs(response.data)
-                        })
-                        .catch(error => {
-                            console.log(error)
-                            setErrorOrg(error.response.data)
-                        })
-            }
-        }else {
-            activityAPI.getPublic(urlParams[1])
-                .then(response => {
-                    setActivity(response.data[0])
-                    if(response.data[0].project){
-                        setActivityProject(response.data[0].project)
-                    }
-                    if(response.data[0].organization){
-                        setActivityOrg(response.data[0].organization)
-                    }
-                })
-                .catch(error => {
-                    console.log(error)
-                    setError(error.response.data[0])
-                })
-                .finally(() => setLoader(false))
-        }*/
-      //  setLoader(false)
     }, []);
-
-    const [loader2, setLoader2] = useState(false)
-    const handleRmvProject = () => {
-        if (!authAPI.isAuthenticated()) {
-            authAPI.logout()
-        }
-        setLoader2(true)
-        activityAPI.put(activity, {"project": null})
-            .then(() => {
-                activity.project = undefined
-                setActivity(activity)
-                setActivityProject(undefined)
-            })
-            .catch(error => {
-                console.log(error)
-            })
-            .finally(() => setLoader2(false))
-    }
-
-    const handleAddProject = (projectId) => {
-        if (!authAPI.isAuthenticated()) {
-            authAPI.logout()
-        }
-        setLoader2(true)
-        let proj = userProjects.find(p => projectId === p.id)
-        activityAPI.put(activity, {"project": proj})
-            .then(() => {
-                setActivity(activity)
-                setActivityProject(proj)
-
-            })
-            .catch(error => console.log(error))
-             .finally(()=> setLoader2(false))
-    }
-
-    const handleRmvOrg= () => {
-        if (!authAPI.isAuthenticated()) {
-            authAPI.logout()
-        }
-        setLoader2(true)
-        activityAPI.put(activity, {"org": null})
-            .then(response => {
-                setActivity(activity)
-                setActivityOrg(undefined)
-            })
-            .catch(error => {
-                console.log(error)
-            })
-            .finally(() => setLoader2(false))
-    }
-
-    const handleAddOrg = (orgId) => {
-        if (!authAPI.isAuthenticated()) {
-            authAPI.logout()
-        }
-        setLoader2(true)
-        let org = userOrgs.find(o => orgId === o.id)
-        activityAPI.put(activity, {"org": org})
-            .then((response) => {
-                setActivity(response.data[0])
-                setActivityOrg(org)
-            })
-            .catch(error => console.log(error))
-            .finally( ()=> {setLoader2(false)})
-    }
 
     const PresentationPanel = () =>{
         return(
@@ -326,8 +178,48 @@ const ActivityProfile = ( props ) => {
     }
 
     const ProjectPanel = () => {
+
+        const handleRmvProject = () => {
+            if (!authAPI.isAuthenticated()) {
+                authAPI.logout()
+            }
+            setLoader2(true)
+            activityAPI.put(activity, {"project": null})
+                .then(() => {
+                    activity.project = undefined
+                    setActivity(activity)
+                    setActivityProject(undefined)
+                })
+                .catch(error => {
+                    console.log(error)
+                })
+                .finally(() => setLoader2(false))
+        }
+
+        const handleAddProject = (projectId, from) => {
+            if (!authAPI.isAuthenticated()) {
+                authAPI.logout()
+            }
+            setLoader2(true)
+            let proj = undefined
+            if(from === "owned"){
+                proj = userProjects.find(p => projectId === p.id)
+            }else if (from === "assign"){
+                proj = userAssignProject.find(p => projectId === p.id)
+            }
+
+            activityAPI.put(activity, {"project": proj})
+                .then(() => {
+                    setActivity(activity)
+                    setActivityProject(proj)
+
+                })
+                .catch(error => console.log(error))
+                .finally(()=> setLoader2(false))
+        }
+
         return (
-            <>
+            <Segment attached='bottom'  loading={loader2}>
                 {isOwner() &&
                 <Menu>
                     {!activity.project &&
@@ -345,7 +237,7 @@ const ActivityProfile = ( props ) => {
                                     <Dropdown.Header content={ props.t('my_projects')} />
                                     <Dropdown.Divider />
                                     {userProjects.map(p =>
-                                        <Dropdown.Item key={p.id} onClick={() => handleAddProject(p.id)}>
+                                        <Dropdown.Item key={p.id} onClick={() => handleAddProject(p.id, "owned")}>
                                             <Icon name="plus"/> {p.title}
                                         </Dropdown.Item>
                                     )}
@@ -356,7 +248,7 @@ const ActivityProfile = ( props ) => {
                                     <Dropdown.Header content={props.t('my_partners')}/>
                                     <Dropdown.Divider/>
                                     {userAssignProject.map(p =>
-                                        <Dropdown.Item key={p.id} onClick={() => handleAddProject(p.id)}>
+                                        <Dropdown.Item key={p.id} onClick={() => handleAddProject(p.id, "assign")}>
                                             <Icon name="plus"/> {p.title}
                                         </Dropdown.Item>
                                     )}
@@ -388,13 +280,51 @@ const ActivityProfile = ( props ) => {
                     :
                     <Card obj={activity.project} type="project" profile={false} ctx={ctx}/>
                 }
-            </>
+            </Segment>
         )
     }
 
     const OrgPanel = () => {
+
+        const handleRmvOrg= () => {
+            if (!authAPI.isAuthenticated()) {
+                authAPI.logout()
+            }
+            setLoader2(true)
+            activityAPI.put(activity, {"org": null})
+                .then(response => {
+                    setActivity(activity)
+                    setActivityOrg(undefined)
+                })
+                .catch(error => {
+                    console.log(error)
+                })
+                .finally(() => setLoader2(false))
+        }
+
+        const handleAddOrg = (orgId, from) => {
+            if (!authAPI.isAuthenticated()) {
+                authAPI.logout()
+            }
+            setLoader2(true)
+            let org = undefined
+            if(from === "owned"){
+                org = userOrgs.find(o => orgId === o.id)
+            }else if (from ==="assign"){
+                org = userAssignOrgs.find(o => orgId === o.id)
+            }
+
+            activityAPI.put(activity, {"org": org})
+                .then((response) => {
+                    setActivity(response.data[0])
+                    setActivityOrg(org)
+                })
+                .catch(error => console.log(error))
+                .finally( ()=> {setLoader2(false)})
+        }
+
         return (
-            <Segment padded='very' className="minH-50 borderless">
+            <Segment padded='very' className="minH-50 borderless"  attached='bottom' loading={loader2}>
                 {isOwner() &&
                     <Menu>
                         {!activity.organization &&
@@ -413,7 +343,7 @@ const ActivityProfile = ( props ) => {
                                         <Dropdown.Header content={ props.t('my_orgs')} />
                                         <Dropdown.Divider />
                                         {userOrgs.map(o =>
-                                            <Dropdown.Item key={o.id} onClick={() => handleAddOrg(o.id)}>
+                                            <Dropdown.Item key={o.id} onClick={() => handleAddOrg(o.id, "owned")}>
                                                 <Icon name="plus"/> {o.name}
                                             </Dropdown.Item>
                                         )}
@@ -425,7 +355,7 @@ const ActivityProfile = ( props ) => {
                                         <Dropdown.Header content={ props.t('my_partners')} />
                                         <Dropdown.Divider />
                                         {userAssignOrgs.map(o =>
-                                            <Dropdown.Item key={o.id} onClick={() => handleAddOrg(o.id)}>
+                                            <Dropdown.Item key={o.id} onClick={() => handleAddOrg(o.id, "assign")}>
                                                 <Icon name="plus"/> {o.name}
                                             </Dropdown.Item>
                                         )}
@@ -478,15 +408,11 @@ const ActivityProfile = ( props ) => {
                 }
 
                 {activeItem === "project" && (
-                    <Segment attached='bottom'  loading={loader2}>
                         <ProjectPanel />
-                    </Segment>
                 )}
 
                 {activeItem === "organization" &&
-                    <Segment attached='bottom' loading={loader2}>
                         <OrgPanel />
-                    </Segment>
                 }
             </>
         )
