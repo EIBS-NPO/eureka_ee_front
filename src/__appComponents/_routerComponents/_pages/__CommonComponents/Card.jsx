@@ -1,23 +1,19 @@
 
-import React, {useState, useEffect, useContext} from 'react';
+import React, { useState, useEffect } from 'react';
 import '../../../../scss/components/cardOrg.scss';
 import {useTranslation, withTranslation} from 'react-i18next';
 import {Icon, Header, Segment, Container, Item, Label } from "semantic-ui-react";
 import Picture from "./Picture";
-import AuthContext from "../../../../__appContexts/AuthContext";
 import {NavLink} from "react-router-dom";
-import projectAPI from "../../../../__services/_API/projectAPI";
 import authAPI from "../../../../__services/_API/authAPI";
 
 const Card = ({ obj, type, profile=false, ctx=undefined, withPicture=true }) => {
 
-    const isAuth = useContext(AuthContext).isAuthenticated;
     const {t,  i18n } = useTranslation()
     const lg = i18n.language
 
     const [owner, setOwner] = useState(false);
     const [isOwner, setIsOwner] = useState(false);
-    const [isFollowed, setIsFollowed] = useState(false)
     const [isAssign, setIsAssign] = useState(undefined)
     const [isPublic, setIsPublic] = useState(undefined)
 

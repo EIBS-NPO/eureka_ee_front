@@ -34,15 +34,12 @@ const ProjectProfile = (props) => {
     const [activities, setActivities] = useState([])
     const [userActivities, setUserActivities] = useState( [])
 
-    const [isFollow, setIsFollow] = useState(false)
-
     const [freeActivities, setFreeActivities] =useState([])
 
     const [isOwner, setIsOwner] =useState(false)
     const [isAssigned, setIsAssigned] = useState(undefined)
 
     const [project, setProject] = useState()
-    const [errorProject, setErrorProject] = useState("")
 
     const [projectOrg, setProjectOrg] = useState(undefined)
     const [userOrgs, setUserOrgs] = useState([])
@@ -75,22 +72,6 @@ const ProjectProfile = (props) => {
             setIsOrgReferent( userAPI.checkMail() === project.organization.referent.email)
         }
         setIsOwner(userAPI.checkMail() === project.creator.email)
-    }
-
-
-    const getFreeActivitiesOptions = () => {
-        let table = []
-        //filtre the activity already in the current project
-        userActivities.forEach(activity => {
-            if(activities.find(a => a.id === activity.id) === undefined){
-                table.push(
-                    <Dropdown.Item key={activity.id} onClick={() => handleAdd(activity.id)}>
-                        <Icon name="plus"/> {activity.title}
-                    </Dropdown.Item>
-                )
-            }
-        })
-        return table
     }
 
     const [loader, setLoader] = useState(true);
@@ -159,101 +140,7 @@ const ProjectProfile = (props) => {
 
     const [loader2, setLoader2] = useState(false)
 
-    const handleRmv = (activity) => {
-        if (!authAPI.isAuthenticated()) {
-            authAPI.logout()
-        }
-        setLoader2(true)
-   //     projectAPI.manageActivity(activity, project.id)
-            projectAPI.put(project, {"activity": activity})
-            .then(response => {
-                /*//todo use dataTruth*/
-                let index = project.activities.indexOf(activity)
-                project.activities.splice(index, 1)
-                freeActivities.push(activity)
-        //        setFreeActivities(freeActivities)
-            })
-            .catch(error => {
-                console.log(error)
-            })
-            .finally(() => setLoader2(false))
-    }
-
-    const handleAdd = (activityId) => {
-        if (!authAPI.isAuthenticated()) {
-            authAPI.logout()
-        }
-        setLoader2(true)
-        let act = freeActivities.find(a => activityId === a.id)
-    //    projectAPI.manageActivity(act, project.id)
-            projectAPI.put(project, {'activity': act})
-            .then(response => {
-                if(response.status === 200){
-                    activities.unshift(freeActivities.find(a => a.id === activityId))
-                    setActivities(activities)
-                    setFreeActivities(freeActivities.filter(a => a.id !== activityId))
-                }
-            })
-            .catch(error => console.log(error))
-            .finally(()=> setLoader2(false))
-    }
-
-    const {t,  i18n } = useTranslation()
-    const lg = i18n.language.split('-')[0]
-    const LanguageSwitcher = (text) => {
-        if(text){
-            if(text[lg]) {
-                return text[lg]
-            }else if(text['en']) {
-                return text['en']
-            }
-        }else {
-            return t('no_translation')
-        }
-    }
-
-   /* const handleRmvOrg= () => {
-        if (!authAPI.isAuthenticated()) {
-            authAPI.logout()
-        }
-        setLoader2(true)
-        //projectAPI.manageOrg(project.organization, project.id)
-        projectAPI.put(project, {"org":null})
-            .then(response => {
-                //            console.log(response.data)
-                setProject(response.data[0])
-                setProjectOrg(undefined)
-            })
-            .catch(error => {
-                console.log(error)
-            })
-            .finally(() => setLoader2(false))
-    }*/
-
-    const handleOrg = (org) => {
-        if (!authAPI.isAuthenticated()) {
-            authAPI.logout()
-        }
-        setLoader2(true)
-
-       /* let org = undefined
-        if(from === "owned"){
-            org = userOrgs.find(o => orgId === o.id)
-        }else if (from === "assign"){
-            org = userAssignOrgs.find(o => orgId === o.id)
-        }else if(from === "remove"){
-            org = projectOrg
-        }*/
-
-        projectAPI.put(project, {"org":org})
-        .then(response => {
-            setProject(response.data[0])
-            setProjectOrg(org)
-
-        })
-        .catch(error => console.log(error))
-        .finally( () => setLoader2(false))
-    }
+    const { t } = useTranslation()
 
     const PresentationPanel = () => {
         return(
@@ -274,6 +161,42 @@ const ProjectProfile = (props) => {
     }
 
     const ActivitiesPanel = () => {
+        const getFreeActivitiesOptions = () => {
+            let table = []
+            //filtre the activity already in the current project
+            userActivities.forEach(activity => {
+                if(activities.find(a => a.id === activity.id) === undefined){
+                    table.push(
+                        <Dropdown.Item key={activity.id} onClick={() => handleActivity(activity)}>
+                            <Icon name="plus"/> {activity.title}
+                        </Dropdown.Item>
+                    )
+                }
+            })
+            return table
+        }
+
+        const handleActivity = (activity) => {
+            if (!authAPI.isAuthenticated()) {
+                authAPI.logout()
+            }
+            setLoader2(true)
+            //     projectAPI.manageActivity(activity, project.id)
+            projectAPI.put(project, {"activity": activity})
+                .then(response => {
+                    /*//todo use dataTruth*/
+                    let index = project.activities.indexOf(activity)
+                    project.activities.splice(index, 1)
+                    freeActivities.push(activity)
+                    //        setFreeActivities(freeActivities)
+                })
+                .catch(error => {
+                    console.log(error)
+                })
+                .finally(() => setLoader2(false))
+        }
+
+
         return (
             <>
                 <Menu>
@@ -287,11 +210,6 @@ const ProjectProfile = (props) => {
                                 </Message>
                             </Dropdown.Item>
                             }
-                            {/*{freeActivities.map(a =>
-                                            <Dropdown.Item key={a.id} onClick={() => handleAdd(a.id)}>
-                                            <Icon name="plus"/> {a.title}
-                                            </Dropdown.Item>
-                                            )}*/}
                             {getFreeActivitiesOptions()}
                         </Dropdown.Menu>
                     </Dropdown>
@@ -315,7 +233,7 @@ const ProjectProfile = (props) => {
                                 ctx={ctx}
                             />
                             { (isOwner || act.creator.id === authAPI.getId()) &&
-                                <button onClick={()=>handleRmv(act)}>{ t('remove_to_project')}</button>
+                                <button onClick={()=>handleActivity(act)}>{ t('remove_to_project')}</button>
                             }
                         </Segment>
                     ))
@@ -330,6 +248,23 @@ const ProjectProfile = (props) => {
     }
 
     const OrgPanel = () => {
+
+        const handleOrg = (org) => {
+            if (!authAPI.isAuthenticated()) {
+                authAPI.logout()
+            }
+            setLoader2(true)
+
+            projectAPI.put(project, {"org":org})
+                .then(response => {
+                    setProject(response.data[0])
+                    setProjectOrg(org)
+
+                })
+                .catch(error => console.log(error))
+                .finally( () => setLoader2(false))
+        }
+
         return (
             <>
                 {(isOwner || isOrgReferent) &&
