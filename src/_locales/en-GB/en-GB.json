@@ -14,6 +14,7 @@
   "email_may_be_ignored": "If you are not the person who initiated this process, you can ignore this email.",
   "email_footer" : "This email has been sent automatically following your steps on our platform. Please do not reply.",
 
+  "create_your_account": "create your account",
   "activation_of_your_account" : "activation of your account",
   "success_activation": "Your account has been successfully activated. Welcome!",
 
@@ -27,5 +28,7 @@
   "check_your_mails": "please check your emails",
 
   "error_namePattern" : "Must be between 2 and 50 characters",
-  "error_encounter":"An error has occurred, please contact the administrator."
+  "error_encounter":"An error has occurred, please contact the administrator.",
+
+  "User's email already exist": "that email is already taken"
 }

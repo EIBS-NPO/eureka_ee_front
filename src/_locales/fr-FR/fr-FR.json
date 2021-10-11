@@ -161,6 +161,8 @@
   "Your account has not been activated": "Votre compte doit être activé",
   "check_your_mails": "veuillez vérifier vos emails",
   "mail_send_to_you": "Une email vous a été envoyé.",
+
+  "create_your_account": "Création de votre compte",
   "activation_of_your_account": "Activation de votre compte",
   "OrgCreate_title": "Enregistrer votre organisation",
   "choose_language_translation": "Choisissez le langage pour votre traduction",
@@ -191,5 +193,7 @@
   "email_footer" : "Cet email à été envoyé automatiquement suite à vos démarche sur notre plateforme. merci ne ne pas y répondre.",
 
   "error_namePattern" : "Doit comporter entre 2 et 50 caractères",
-  "error_encounter" : "Une erreur est survenue, veuillez contacter l'administeur."
+  "error_encounter" : "Une erreur est survenue, veuillez contacter l'administeur.",
+
+  "User's email already exist": "cet email est déjà utilisé"
 }
