@@ -2,7 +2,7 @@
 import React, {useContext, useEffect, useState} from "react";
 import AuthContext from "../../../__appContexts/AuthContext";
 import AuthAPI from "../../../__services/_API/authAPI";
-import {Button, Form, Input, Message} from "semantic-ui-react";
+import {Button, Form, Input, Loader, Message} from "semantic-ui-react";
 import authAPI from "../../../__services/_API/authAPI";
 import {useTranslation, withTranslation} from "react-i18next";
 import userAPI from "../../../__services/_API/userAPI";
@@ -31,6 +31,8 @@ const LoginPage = (props ) => {
         }
     },[])
 
+    const [loader, setLoader] = useState(false)
+    const [loaderMessage, setLoaderMessage] = useState("")
 
     const { t } = useTranslation()
     const [credentials, setCredential] = useState({
@@ -48,14 +50,11 @@ const LoginPage = (props ) => {
         setCredential({ ...credentials, [name]: value });
     };
 
-    const handleSubmit = async (event) => {
-        event.preventDefault();
+    const handleSubmit = () => {
 
-        const abortController = new AbortController()
-        const signal = abortController.signal
-
+        setLoaderMessage(t("Connexion"))
         setLoader(true)
-        AuthAPI.authenticate(credentials, {signal:signal})
+        AuthAPI.authenticate(credentials)
             .then((response) => {
                 setError("")
                 setIsAuthenticated(true)
@@ -65,6 +64,7 @@ const LoginPage = (props ) => {
                 props.history.replace("/")
             })
             .catch(error => {
+                setLoader(false)
                 if(error.response === undefined){
                     setError(t("Gateway_Time-out"))
                 }else{
@@ -76,10 +76,6 @@ const LoginPage = (props ) => {
                     }
                 }
             })
-        setLoader(false)
-        return function cleanup(){
-            abortController.abort()
-        }
     };
 
     const handleSendConfirmMail = (e) => {
@@ -102,7 +98,6 @@ const LoginPage = (props ) => {
         }
     }
 
-    const [loader, setLoader] = useState(false)
     const [loaderSend, setLoaderSend] = useState(false)
 
     const [forgetForm, setForgetForm] = useState(false)
@@ -137,9 +132,13 @@ const LoginPage = (props ) => {
     //todo loader ne fonctionne pas...
     return (
         <div className="card">
-            {!forgetForm &&
+            {loader &&
+            <Loader active>{loaderMessage}</Loader>
+            }
+
+            {!loader && !forgetForm &&
             <>
-                <Form onSubmit={handleSubmit} loading={loader}>
+                <Form onSubmit={handleSubmit} >
                     <Form.Input
                         icon='user'
                         iconPosition='left'
@@ -170,7 +169,7 @@ const LoginPage = (props ) => {
             }
 
 
-            {forgetForm &&
+            {!loader && forgetForm &&
             <Form onSubmit={handleSendForgotPassMail} loading={loader}>
                 <Form.Input
                     icon='user'
@@ -189,7 +188,7 @@ const LoginPage = (props ) => {
             </Form>
             }
 
-            {error &&
+            {!loader && error &&
             <Message warning compact>
                 <Message.Header content={t('Error')} />
                 <Message.Content>
@@ -198,7 +197,7 @@ const LoginPage = (props ) => {
             </Message>
             }
 
-            { needConfirm &&
+            {!loader &&  needConfirm &&
                 <Message warning>
                     <Message.Header content={t('Your account has not been activated')} />
                     <Message.Item>
