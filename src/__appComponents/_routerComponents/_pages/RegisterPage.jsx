@@ -75,12 +75,15 @@ const RegisterPage = ({ history }) => {
     }
 
     const [loader, setLoader] = useState(false)
+    const [loaderMessage, setLoaderMessage] = useState("")
     const handleSubmit = () => {
         let isFormValid = checkFormValidity(user)
         if (isFormValid) {
+            setLoaderMessage(t('create_your_account'))
             setLoader(true)
             UserAPI.register(user)
                 .then(response => {
+                    setLoaderMessage(t('sending_confirm_email'))
                     mailerAPI.sendConfirmMail(t, response.data[0])
                         .then(res => {
                             console.log(res)
@@ -94,7 +97,6 @@ const RegisterPage = ({ history }) => {
                     setLoader(false)
                     setErrors(error.response.data)
                 })
-                .finally(() => setLoader(false))
         }/*else{
             console.log(errors)
             setErrors(formErrors)
@@ -104,7 +106,7 @@ const RegisterPage = ({ history }) => {
     return (
         <Segment basic className="card">
             {loader &&
-                 <Loader active>{t('create_your_account')}</Loader>
+                 <Loader active>{loaderMessage}</Loader>
             }
             {!loader &&
                 <Form onSubmit={handleSubmit} loading={loader}>
