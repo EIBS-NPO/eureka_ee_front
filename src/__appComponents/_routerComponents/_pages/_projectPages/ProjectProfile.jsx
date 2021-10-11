@@ -1,6 +1,6 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {
-    Container, Header, Menu, Loader, Segment, Button, Dropdown, Message, Input, Icon, Image, Label
+    Container, Header, Menu, Loader, Segment, Button, Dropdown, Message, Icon, Image, Label
 } from "semantic-ui-react";
 import { useTranslation, withTranslation} from "react-i18next";
 import AuthContext from "../../../../__appContexts/AuthContext";
@@ -48,7 +48,6 @@ const ProjectProfile = (props) => {
     const [userOrgs, setUserOrgs] = useState([])
     const [userAssignOrgs, setUserAssignOrgs] = useState([])
 
- //   console.log(userOrgs)
     const [errorOrg, setErrorOrg] = useState("")
 
     const [activeItem, setActiveItem] = useState('presentation')
@@ -110,72 +109,31 @@ const ProjectProfile = (props) => {
             let response = await projectAPI.getProject(ctx,urlParams[1])
                 .catch(error => console.log(error.response))
             if (response && response.status === 200) {
-                //setProject(response.data[0])
-               // setActivities(response.data[0].activities)
                 setDataProject(response.data[0])
             }
         }
         setLoader(false)
-        /*if(ctx() === "public"){
-            projectAPI.getPublic(urlParams[1])
-                .then(response => {
-                    setDataProject(response.data[0])
-                })
-                .catch(error => {
-                    setErrorProject(error.response.data)
-                })
-                .finally(() => setLoader(false))
-        }else {
-            projectAPI.get(ctx(), urlParams[1])
-                .then(response => {
-  //                  console.log(response.data[0])
-                    setDataProject(response.data[0])
-                })
-                .catch(error => {
-                    setErrorProject(error.response.data)
-                })
-                .finally(() => setLoader(false))
-        }*/
 
 
         if(isAuth && urlParams[1] !== undefined){
-            /*projectAPI.isFollowing(urlParams[1] , "follow" )
-                .then(response => {
-   //                 console.log(response.data[0])
-                    setIsFollow(response.data[0])
-                })
-                .catch(error => console.log(error.response.data))
-*/
 
-       //     projectAPI.isFollowing(urlParams[1], "assign")
-          //      .then(response => {
-                    //check if the current project is Assign
-      //              console.log(response.data[0])
-           //         setIsAssigned(response.data[0])
-          //          if(isOwner || response.data[0]){
-                        //load user's selectable activities if current user is owner or assign
-                        activityAPI.getActivity("owned")
-                            //get all created activities by current user with project.activities
-                            .then(response => {
-      //                          console.log(response.data)
-                                setUserActivities(response.data)
-                                let table = []
-                                //filtre the activity already in the current project
-                                response.data.forEach(activity => {
-                                    if(activities.find(a => a.id === activity.id) === undefined){
-                                        table.push(activity)
-                                    }
-                                })
-                        //        table = table.filter(a => a.creator.id === authAPI.getId())
-          //                      console.log(table)
-                                setFreeActivities(table)
-                            })
-                            .catch(error => {
-                                console.log(error)
-                            })
-               //     }
-          //      })
-         //       .catch(error => console.log(error))
+        activityAPI.getActivity("owned")
+            //get all created activities by current user with project.activities
+            .then(response => {
+                setUserActivities(response.data)
+                let table = []
+                //filtre the activity already in the current project
+                response.data.forEach(activity => {
+                    if(activities.find(a => a.id === activity.id) === undefined){
+                        table.push(activity)
+                    }
+                })
+        //        table = table.filter(a => a.creator.id === authAPI.getId())
+                setFreeActivities(table)
+            })
+            .catch(error => {
+                console.log(error)
+            })
 
             if(urlParams[0] === "owned"){
                 let orgOwned = await orgAPI.getOrg("owned")
@@ -195,15 +153,6 @@ const ProjectProfile = (props) => {
                 if(orgAssign && orgAssign.status === 200){
                     setUserAssignOrgs(orgAssign.data)
                 }
-                /*orgAPI.getMembered()
-                    .then(response => {
-                        console.log(response.data)
-                        setUserOrgs(response.data)
-                    })
-                    .catch(error => {
-                        console.log(error)
-                        setErrorOrg(error.response.data)
-                    })*/
             }
         }
     }, []);
@@ -218,7 +167,7 @@ const ProjectProfile = (props) => {
    //     projectAPI.manageActivity(activity, project.id)
             projectAPI.put(project, {"activity": activity})
             .then(response => {
-     //           console.log(response.data)
+                /*//todo use dataTruth*/
                 let index = project.activities.indexOf(activity)
                 project.activities.splice(index, 1)
                 freeActivities.push(activity)
@@ -263,7 +212,7 @@ const ProjectProfile = (props) => {
         }
     }
 
-    const handleRmvOrg= () => {
+   /* const handleRmvOrg= () => {
         if (!authAPI.isAuthenticated()) {
             authAPI.logout()
         }
@@ -279,25 +228,31 @@ const ProjectProfile = (props) => {
                 console.log(error)
             })
             .finally(() => setLoader2(false))
-    }
+    }*/
 
-    const handleAddOrg = (orgId) => {
+    const handleOrg = (org) => {
         if (!authAPI.isAuthenticated()) {
             authAPI.logout()
         }
         setLoader2(true)
-        let org = userOrgs.find(o => orgId === o.id)
-   //     projectAPI.manageOrg(org, project.id)
-            projectAPI.put(project, {"org":org})
-            .then(response => {
-     //           console.log(response.data)
-               // project.organization = org
-                setProject(response.data[0])
-                setProjectOrg(org)
 
-            })
-            .catch(error => console.log(error))
-            .finally( () => setLoader2(false))
+       /* let org = undefined
+        if(from === "owned"){
+            org = userOrgs.find(o => orgId === o.id)
+        }else if (from === "assign"){
+            org = userAssignOrgs.find(o => orgId === o.id)
+        }else if(from === "remove"){
+            org = projectOrg
+        }*/
+
+        projectAPI.put(project, {"org":org})
+        .then(response => {
+            setProject(response.data[0])
+            setProjectOrg(org)
+
+        })
+        .catch(error => console.log(error))
+        .finally( () => setLoader2(false))
     }
 
     const PresentationPanel = () => {
@@ -393,9 +348,9 @@ const ProjectProfile = (props) => {
                                 <>
                                 <Dropdown.Header content={ props.t('my_orgs')} />
                                 <Dropdown.Divider />
-                                {userOrgs.map(o =>
-                                    <Dropdown.Item key={o.id} onClick={() => handleAddOrg(o.id)}>
-                                        <Icon name="plus"/> {o.name}
+                                {userOrgs.map(org =>
+                                    <Dropdown.Item key={org.id} onClick={() => handleOrg(org)}>
+                                        <Icon name="plus"/> {org.name}
                                     </Dropdown.Item>
                                 )}
                                 </>
@@ -404,9 +359,9 @@ const ProjectProfile = (props) => {
                                 <>
                                     <Dropdown.Header content={ props.t('my_partners')} />
                                     <Dropdown.Divider />
-                                    {userAssignOrgs.map(o =>
-                                        <Dropdown.Item key={o.id} onClick={() => handleAddOrg(o.id)}>
-                                            <Icon name="plus"/> {o.name}
+                                    {userAssignOrgs.map(org =>
+                                        <Dropdown.Item key={org.id} onClick={() => handleOrg(org)}>
+                                            <Icon name="plus"/> {org.name}
                                         </Dropdown.Item>
                                     )}
                                 </>
@@ -416,7 +371,7 @@ const ProjectProfile = (props) => {
                     }
                     {project && project.organization && (isOwner || isOrgReferent) &&
                         <>
-                            <Menu.Item onClick={handleRmvOrg} position="right" disabled={loader2}>
+                            <Menu.Item onClick={() => handleOrg(projectOrg)} position="right" disabled={loader2}>
                                 {isOrgReferent &&
                                     <Label basic color="violet">{props.t('this_is_your') + " " + props.t('organization')}</Label>
                                 }
