@@ -90,7 +90,6 @@ const ProjectsList = ( props ) => {
         )
     }
 
-    console.log(ctx)
     return (
         <div className="card">
             <Title />

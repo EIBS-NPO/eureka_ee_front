@@ -109,7 +109,6 @@ const SearchInput = ({elementList, researchFields, setResultList}) => {
 
     useEffect( () => {
         let tab=[]
-
         elementList.map(object => {
             if(checkByAttribute(object, researchFields)){ //recursive check by Attribute
                 tab.push(object)

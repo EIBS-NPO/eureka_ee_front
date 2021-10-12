@@ -47,10 +47,12 @@ const OrgProfile = (props ) => {
     const [activeItem, setActiveItem] = useState('presentation')
     const handleItemClick = (e, { name }) => setActiveItem(name)
 
-    const [activities, setActivities] = useState([])
+    const [orgActivities, setOrgActivities] = useState([])
+    const [ownedActivities, setOwnedActivities] = useState([])
     const [freeActivities, setFreeActivities] =useState([])
 
-    const [projects, setProjects] = useState([])
+    const [orgProjects, setOrgProjects] = useState([])
+    const [ownedProjects, setOwnedProjects] = useState([])
     const [freeProjects, setFreeProjects] = useState([])
 
     const [isReferent, setIsReferent] = useState(false)
@@ -61,14 +63,16 @@ const OrgProfile = (props ) => {
     const [message, setMessage] = useState(undefined)
 
     const setData = (data) => {
-        setOrg(data)
-        setActivities(data.activities ? data.activities : [])
-        setProjects(data.projects ? data.projects : [])
-        //manage access
-        setIsReferent(authAPI.getId() === data.referent.id)
-        data.membership && data.membership.forEach( m => {
-            if(m.id ===  authAPI.getId()){ setIsAssigned(true)}
-        })
+        if(data !== undefined){
+            setOrg(data)
+            setOrgActivities(data.activities ? data.activities : [])
+            setOrgProjects(data.projects ? data.projects : [])
+            //manage access
+            setIsReferent(authAPI.getId() === data.referent.id)
+            data.membership && data.membership.forEach( m => {
+                if(m.id ===  authAPI.getId()){ setIsAssigned(true)}
+            })
+        }
     }
 
     useEffect(async() => {
@@ -96,12 +100,14 @@ const OrgProfile = (props ) => {
 
     useEffect(() => {
         if(isReferent || isAssigned){
+            setActivityLoader(true)
             //load user's selectable activities
             activityAPI.getActivity("owned")
                 .then(response => {
+                    setOwnedActivities(response.data)
                     let table = []
                     response.data.forEach(activity => {
-                        if(activities.find(a => a.id === activity.id) === undefined){
+                        if(orgActivities.find(a => a.id === activity.id) === undefined){
                             table.push(activity)
                         }
                     })
@@ -110,12 +116,16 @@ const OrgProfile = (props ) => {
                 .catch(error => {
                     console.log(error)
                 })
+                .finally(()=>{
+                    setActivityLoader(false)
+                })
 
             projectAPI.getProject("owned")
                 .then(response => {
+                    setOwnedProjects(response.data)
                     let table = []
                     response.data.forEach(project => {
-                        if(projects.find(p => p.id === project.id) === undefined){
+                        if(orgProjects.find(p => p.id === project.id) === undefined){
                             table.push(project)
                         }
                     })
@@ -146,11 +156,11 @@ const OrgProfile = (props ) => {
             setMsgModal("")
             setModalAction("")
         }else {
-            if(modalAction === "remove_activity"){
-                handleRmvActivity(modalTarget)
+            if(modalAction === "handle_activity"){
+                handleActivity(modalTarget)
             }
-            else if (modalAction === "add_activity"){
-                handleAddActivity(modalTarget.id)
+            else if (modalAction === "handle_project"){
+                handleProject(modalTarget)
             }
         }
     }
@@ -169,17 +179,19 @@ const OrgProfile = (props ) => {
     }
 
     const [activityLoader, setActivityLoader] = useState(false)
-    const handleRmvActivity = (activity) => {
+    const handleActivity = (activity) => {
         setActivityLoader(true)
 
-        //  orgAPI.manageActivity(activity, org.id)
         orgAPI.put(org, {"activity": activity})
-            .then((response) => {
-                let index = org.activities.indexOf(activity)
-                activities.splice(index, 1)
-                //   setData(response.data[0]) // bad because force reload
-                freeActivities.unshift(activity)
-                org.activities = activities
+            .then(async (response) => {
+                await setOrgActivities(response.data[0].activities)
+                let table = []
+                ownedActivities.forEach(activity => {
+                    if(response.data[0].activities.find(a => a.id === activity.id) === undefined){
+                        table.push(activity)
+                    }
+                })
+                setFreeActivities(table)
             })
             .catch(error => {
                 console.log(error)
@@ -189,65 +201,29 @@ const OrgProfile = (props ) => {
             })
     }
 
-    const handleAddActivity = (activityId) => {
-        if (!authAPI.isAuthenticated()) {
-            authAPI.logout()
-        }
-        setActivityLoader(true)
-        let act = freeActivities.find(a => activityId === a.id)
-      //  orgAPI.manageActivity(act, org.id)
-        orgAPI.put(org, {"activity":act})
-            .then(response => {
-                if(response.status === 200){
-                    //todo handle partial response too
-                    activities.unshift(freeActivities.find(a => a.id === activityId))
-                    setActivities(activities)
-                //    setData(response.data[0])
-                    setFreeActivities(freeActivities.filter(a => a.id !== activityId))
-                }
-            })
-            .catch(error => console.log(error))
-            .finally(()=> setActivityLoader(false))
-    }
-
     const [projectLoader, setProjectLoader] = useState(false)
-    const handleRmvProject = (project) => {
+    const handleProject = (project) => {
         setProjectLoader(true)
         if (!authAPI.isAuthenticated()) {
             authAPI.logout()
         }
-     //   orgAPI.manageProject(project, org.id)
+        //   orgAPI.manageProject(project, org.id)
         orgAPI.put(org, {"project":project})
-            .then((response) => {
-                let index = org.activities.indexOf(project)
-                projects.splice(index, 1)
-              //  setData(response.data[0])
-                freeProjects.unshift(project)
-                org.projects = projects
+            .then(async (response) => {
+                if(response.data[0].projects === undefined){
+                    setOrgProjects([]);
+                }else{ await setOrgProjects(response.data[0].projects) }
+                let table = []
+                ownedProjects.forEach(project => {
+                    if (response.data[0].projects.find(p => p.id === project.id) === undefined) {
+                        table.push(project)
+                    }
+                })
+                setFreeProjects(table)
             })
             .catch(error => {
                 console.log(error)
             })
-            .finally(() => setProjectLoader(false))
-    }
-
-    const handleAddProject = (projectId) => {
-        if (!authAPI.isAuthenticated()) {
-            authAPI.logout()
-        }
-        setProjectLoader(true)
-        let proj = freeProjects.find(a => projectId === a.id)
-     //   orgAPI.manageProject(proj, org.id)
-            orgAPI.put(org, {"project":proj})
-            .then(response => {
-                if(response.status === 200){
-                    projects.unshift(freeProjects.find(a => a.id === projectId))
-                    setProjects(projects)
-               //     setData(response.data[0])
-                    setFreeProjects(freeProjects.filter(a => a.id !== projectId))
-                }
-            })
-            .catch(error => console.log(error))
             .finally(() => setProjectLoader(false))
     }
 
@@ -309,7 +285,10 @@ const OrgProfile = (props ) => {
                             }
 
                             {freeProjects.map(p =>
-                                <Dropdown.Item key={p.id} onClick={() => handleAddProject(p.id)} disabled={!!p.organization} >
+                                <Dropdown.Item key={p.id}
+                                               onClick={()=>showConfirmModal(props.t("add_project_message"), "handle_project", p)}
+                                               disabled={!!p.organization}
+                                >
                                     <Icon name="plus"/>
                                     {p.title + " "}
                                     {p.organization &&
@@ -325,7 +304,7 @@ const OrgProfile = (props ) => {
                     }
                     <Menu.Item position="right">
                         <SearchInput
-                            elementList={projects}
+                            elementList={orgProjects}
                             setResultList={setFilteredProjects}
                             researchFields={{
                                 main: ["title"],
@@ -346,7 +325,10 @@ const OrgProfile = (props ) => {
                     <Segment key={project.id}>
                         <Card key={project.id} obj={project} type="project" isLink={true} />
                         { (isReferent || project.creator.id === authAPI.getId()) &&
-                        <Button onClick={()=>handleRmvProject(project)} basic>
+                        <Button
+                            onClick={()=>showConfirmModal(props.t("remove_project_message"), "handle_project", project)}
+                                basic
+                        >
                             <Icon name="remove circle" color="red"/>
                             { props.t('remove_from_org')}
                         </Button>
@@ -386,7 +368,7 @@ const OrgProfile = (props ) => {
                             </Dropdown.Item>
                             {freeActivities.map(a =>
                                 <Dropdown.Item key={a.id}
-                                               onClick={()=>showConfirmModal(props.t("add_activity_message"), "add_activity", a)}
+                                               onClick={()=>showConfirmModal(props.t("add_activity_message"), "handle_activity", a)}
                                                disabled={!!a.organization}
                                 >
                                     <Icon name="plus"/>
@@ -424,7 +406,7 @@ const OrgProfile = (props ) => {
                         <Card key={act.id} obj={act} type="activity" isLink={true} />
                         { (isReferent || act.creator.id === authAPI.getId()) &&
                        // <Button onClick={()=>handleRmvActivity(act)} basic>
-                        <Button onClick={()=>showConfirmModal(props.t("remove_activity_message"), "remove_activity", act)} basic>
+                        <Button onClick={()=>showConfirmModal(props.t("remove_activity_message"), "handle_activity", act)} basic>
                             <Icon name="remove circle" color="red"/>
                             { props.t('remove_from_org')}
                         </Button>
@@ -471,7 +453,7 @@ const OrgProfile = (props ) => {
 
                 {activeItem === 'activities' &&
                     <Segment attached='bottom' loading={activityLoader}>
-                        <ActivitiesPanel activities={activities}/>
+                        <ActivitiesPanel activities={orgActivities}/>
                     </Segment>
                 }
             </>

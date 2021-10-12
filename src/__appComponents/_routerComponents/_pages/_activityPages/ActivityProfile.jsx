@@ -15,6 +15,7 @@ import Picture from "../__CommonComponents/Picture";
 import projectAPI from "../../../../__services/_API/projectAPI";
 import orgAPI from "../../../../__services/_API/orgAPI";
 import MediaContext from "../../../../__appContexts/MediaContext";
+import Modal from "../__CommonComponents/Modal";
 
 const ActivityProfile = ( props ) => {
     const Media = useContext(MediaContext).Media
@@ -139,6 +140,47 @@ const ActivityProfile = ( props ) => {
         setLoader(false)
     }, []);
 
+    //*** confrim Modal *** //
+    const [showModal, setShowModal] = useState(false)
+    const [msgModal, setMsgModal] = useState("")
+    const [modalAction, setModalAction] = useState("")
+    const [modalTarget, setModalTarget] = useState({})
+
+    const showConfirmModal = async (msg, action, target) => {
+        setMsgModal(msg)
+        setModalAction(action)
+        setModalTarget(target)
+        setShowModal(true)
+    }
+
+    const modalResult = (result) => {
+        setShowModal(false)
+        if(result === false){
+            setMsgModal("")
+            setModalAction("")
+        }else {
+            if(modalAction === "handle_project"){
+                handleProject(modalTarget)
+            }
+            else if (modalAction === "handle_org"){
+                handleOrg(modalTarget)
+            }
+        }
+    }
+
+    const ConfirmModal = () => {
+        return (
+            showModal &&
+            <Modal show={showModal} handleClose={() => setShowModal(false)} title={ props.t("are_you_sure?")}>
+                <div >
+                    <p> {msgModal} </p>
+                    <button type='submit' className="btn btn-secondary" onClick={() =>modalResult(true)}>{props.t("confirm")}</button>
+                    <button type='submit' className="btn btn-secondary" onClick={() => modalResult(false)}>{ props.t("cancel")}</button>
+                </div>
+            </Modal>
+        )
+    }
+
     const PresentationPanel = () =>{
         return(
             (isOwner() && activityForm) ?
@@ -179,52 +221,30 @@ const ActivityProfile = ( props ) => {
         )
     }
 
+    const handleProject = (project) => {
+        if (!authAPI.isAuthenticated()) {
+            authAPI.logout()
+        }
+        setLoader2(true)
+        activityAPI.put(activity, {"project": project})
+            .then((response) => {
+                //  activity.project = undefined
+                setActivity(activity)
+                setActivityProject(response.data[0].project)
+            })
+            .catch(error => {
+                console.log(error)
+            })
+            .finally(() => setLoader2(false))
+    }
+
     const ProjectPanel = () => {
-
-        const handleRmvProject = () => {
-            if (!authAPI.isAuthenticated()) {
-                authAPI.logout()
-            }
-            setLoader2(true)
-            activityAPI.put(activity, {"project": null})
-                .then(() => {
-                    activity.project = undefined
-                    setActivity(activity)
-                    setActivityProject(undefined)
-                })
-                .catch(error => {
-                    console.log(error)
-                })
-                .finally(() => setLoader2(false))
-        }
-
-        const handleAddProject = (projectId, from) => {
-            if (!authAPI.isAuthenticated()) {
-                authAPI.logout()
-            }
-            setLoader2(true)
-            let proj = undefined
-            if(from === "owned"){
-                proj = userProjects.find(p => projectId === p.id)
-            }else if (from === "assign"){
-                proj = userAssignProject.find(p => projectId === p.id)
-            }
-
-            activityAPI.put(activity, {"project": proj})
-                .then(() => {
-                    setActivity(activity)
-                    setActivityProject(proj)
-
-                })
-                .catch(error => console.log(error))
-                .finally(()=> setLoader2(false))
-        }
 
         return (
             <Segment attached='bottom'  loading={loader2}>
                 {isOwner() &&
                 <Menu>
-                    {!activity.project &&
+                    {activityProject === undefined &&
                     <Dropdown item text={props.t('share_in') + " " + props.t('project')} loading={loader2}>
                         <Dropdown.Menu>
                             {(userProjects.length === 0 && userAssignProject.length === 0 ) &&
@@ -239,7 +259,9 @@ const ActivityProfile = ( props ) => {
                                     <Dropdown.Header content={ props.t('my_projects')} />
                                     <Dropdown.Divider />
                                     {userProjects.map(p =>
-                                        <Dropdown.Item key={p.id} onClick={() => handleAddProject(p.id, "owned")}>
+                                        <Dropdown.Item key={p.id}
+                                                       onClick={()=>showConfirmModal(props.t("add_project_message"), "handle_project", p)}
+                                        >
                                             <Icon name="plus"/> {p.title}
                                         </Dropdown.Item>
                                     )}
@@ -250,7 +272,9 @@ const ActivityProfile = ( props ) => {
                                     <Dropdown.Header content={props.t('my_partners')}/>
                                     <Dropdown.Divider/>
                                     {userAssignProject.map(p =>
-                                        <Dropdown.Item key={p.id} onClick={() => handleAddProject(p.id, "assign")}>
+                                        <Dropdown.Item key={p.id}
+                                                       onClick={()=>showConfirmModal(props.t("add_project_message"), "handle_project", p)}
+                                        >
                                             <Icon name="plus"/> {p.title}
                                         </Dropdown.Item>
                                     )}
@@ -260,8 +284,11 @@ const ActivityProfile = ( props ) => {
                     </Dropdown>
                     }
 
-                    {activity.project &&
-                    <Menu.Item onClick={handleRmvProject} position="right" disabled={loader2}>
+                    {activityProject &&
+                    <Menu.Item
+                        onClick={()=>showConfirmModal(props.t("remove_project_message"), "handle_project", activityProject)}
+                               position="right" disabled={loader2}
+                    >
                         <Icon name="remove circle" color="red"/>
                         {props.t('remove_to_project')}
                         {loader2 &&
@@ -286,44 +313,23 @@ const ActivityProfile = ( props ) => {
         )
     }
 
+    const handleOrg= (org) => {
+        if (!authAPI.isAuthenticated()) {
+            authAPI.logout()
+        }
+        setLoader2(true)
+        activityAPI.put(activity, {"org": org})
+            .then(response => {
+                setActivity(activity)
+                setActivityOrg(response.data[0].organization)
+            })
+            .catch(error => {
+                console.log(error)
+            })
+            .finally(() => setLoader2(false))
+    }
+
     const OrgPanel = () => {
-
-        const handleRmvOrg= () => {
-            if (!authAPI.isAuthenticated()) {
-                authAPI.logout()
-            }
-            setLoader2(true)
-            activityAPI.put(activity, {"org": null})
-                .then(response => {
-                    setActivity(activity)
-                    setActivityOrg(undefined)
-                })
-                .catch(error => {
-                    console.log(error)
-                })
-                .finally(() => setLoader2(false))
-        }
-
-        const handleAddOrg = (orgId, from) => {
-            if (!authAPI.isAuthenticated()) {
-                authAPI.logout()
-            }
-            setLoader2(true)
-            let org = undefined
-            if(from === "owned"){
-                org = userOrgs.find(o => orgId === o.id)
-            }else if (from ==="assign"){
-                org = userAssignOrgs.find(o => orgId === o.id)
-            }
-
-            activityAPI.put(activity, {"org": org})
-                .then((response) => {
-                    setActivity(response.data[0])
-                    setActivityOrg(org)
-                })
-                .catch(error => console.log(error))
-                .finally( ()=> {setLoader2(false)})
-        }
 
         return (
             <Segment padded='very' className="minH-50 borderless"  attached='bottom' loading={loader2}>
@@ -345,7 +351,9 @@ const ActivityProfile = ( props ) => {
                                         <Dropdown.Header content={ props.t('my_orgs')} />
                                         <Dropdown.Divider />
                                         {userOrgs.map(o =>
-                                            <Dropdown.Item key={o.id} onClick={() => handleAddOrg(o.id, "owned")}>
+                                            <Dropdown.Item key={o.id}
+                                                           onClick={()=>showConfirmModal(props.t("add_org_message"), "handle_org", o)}
+                                            >
                                                 <Icon name="plus"/> {o.name}
                                             </Dropdown.Item>
                                         )}
@@ -357,7 +365,9 @@ const ActivityProfile = ( props ) => {
                                         <Dropdown.Header content={ props.t('my_partners')} />
                                         <Dropdown.Divider />
                                         {userAssignOrgs.map(o =>
-                                            <Dropdown.Item key={o.id} onClick={() => handleAddOrg(o.id, "assign")}>
+                                            <Dropdown.Item key={o.id}
+                                                           onClick={()=>showConfirmModal(props.t("add_org_message"), "handle_org", o)}
+                                            >
                                                 <Icon name="plus"/> {o.name}
                                             </Dropdown.Item>
                                         )}
@@ -369,7 +379,10 @@ const ActivityProfile = ( props ) => {
                         </Dropdown>
                         }
                         {activity.organization &&
-                        <Menu.Item onClick={handleRmvOrg} position="right" disabled={loader2}>
+                        <Menu.Item
+                            onClick={()=>showConfirmModal(props.t("remove_org_message"), "handle_org", activityOrg)}
+                            position="right" disabled={loader2}
+                        >
                             <Icon name="remove circle" color="red"/>
                             {props.t('remove_to_org')}
                             {loader2 &&
@@ -539,6 +552,8 @@ const ActivityProfile = ( props ) => {
                             <PanelsContent />
 
                         </Media>
+
+                        <ConfirmModal />
 
                         </Segment>
                     </>

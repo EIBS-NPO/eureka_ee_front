@@ -38,8 +38,8 @@ const post = (activity) => {
 }
 
 const put = (activity, putRelationWith={}) => {
-    if(putRelationWith["org"] !== undefined){
-        activity.organization = putRelationWith["org"]
+    if(putRelationWith.org !== undefined){
+        activity.organization = putRelationWith.org
     }
     if(putRelationWith.project !== undefined){
         activity.project = putRelationWith.project
