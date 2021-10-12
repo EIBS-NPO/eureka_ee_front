@@ -16,7 +16,10 @@ import orgAPI from "../../../../__services/_API/orgAPI";
 import projectAPI from '../../../../__services/_API/projectAPI';
 import MediaContext from "../../../../__appContexts/MediaContext";
 
+import Modal from "../__CommonComponents/Modal";
+
 const ProjectProfile = (props) => {
+    const { t } = useTranslation()
     const Media = useContext(MediaContext).Media
     const isAuth = useContext(AuthContext).isAuthenticated
     const urlParams = props.match.params.id.split('_')
@@ -34,7 +37,7 @@ const ProjectProfile = (props) => {
     const [activities, setActivities] = useState([])
     const [userActivities, setUserActivities] = useState( [])
 
-    const [freeActivities, setFreeActivities] =useState([])
+//    const [freeActivities, setFreeActivities] =useState([])
 
     const [isOwner, setIsOwner] =useState(false)
     const [isAssigned, setIsAssigned] = useState(undefined)
@@ -75,6 +78,8 @@ const ProjectProfile = (props) => {
     }
 
     const [loader, setLoader] = useState(true);
+    const [loader2, setLoader2] = useState(false)
+
     useEffect(async() => {
         setLoader(true)
 
@@ -84,63 +89,123 @@ const ProjectProfile = (props) => {
             let response = await projectAPI.getPublic(urlParams[1])
                 .catch(error => console.log(error.response))
             if(response.status === 200){
-                setProject(response.data[0])
+                await setProject(response.data[0])
             }
         }else {
             let response = await projectAPI.getProject(ctx,urlParams[1])
                 .catch(error => console.log(error.response))
             if (response && response.status === 200) {
-                setDataProject(response.data[0])
+                await setDataProject(response.data[0])
             }
         }
         setLoader(false)
 
 
         if(isAuth && urlParams[1] !== undefined){
-
-        activityAPI.getActivity("owned")
-            //get all created activities by current user with project.activities
-            .then(response => {
-                setUserActivities(response.data)
-                let table = []
-                //filtre the activity already in the current project
-                response.data.forEach(activity => {
-                    if(activities.find(a => a.id === activity.id) === undefined){
-                        table.push(activity)
-                    }
+            setLoader2(true)
+            activityAPI.getActivity("owned")
+                //get all created activities by current user with project.activities
+                .then(response => {
+                    setUserActivities(response.data)
                 })
-        //        table = table.filter(a => a.creator.id === authAPI.getId())
-                setFreeActivities(table)
+                .catch(error => {
+                    console.log(error)
+                })
+
+                if(urlParams[0] === "owned"){
+                    let orgOwned = await orgAPI.getOrg("owned")
+                        .catch(error => {
+                            console.log(error)
+                            setErrorOrg(error.response.data)
+                        })
+                    if(orgOwned && orgOwned.status === 200){
+                        setUserOrgs(orgOwned.data)
+                    }
+
+                    let orgAssign = await orgAPI.getOrg("assigned")
+                        .catch(error => {
+                            console.log(error)
+                            setErrorOrg(error.response.data)
+                        })
+                    if(orgAssign && orgAssign.status === 200){
+                        setUserAssignOrgs(orgAssign.data)
+                    }
+                }
+            setLoader2(false)
+        }
+    }, []);
+
+    //*** confirm Modal *** //
+    const [showModal, setShowModal] = useState(false)
+    const [msgModal, setMsgModal] = useState("")
+    const [modalAction, setModalAction] = useState("")
+    const [modalTarget, setModalTarget] = useState({})
+
+    const showConfirmModal = async (msg, action, target) => {
+        setMsgModal(msg)
+        setModalAction(action)
+        setModalTarget(target)
+        setShowModal(true)
+    }
+
+    const modalResult = (result) => {
+        setShowModal(false)
+        if(result === false){
+            setMsgModal("")
+            setModalAction("")
+        }else {
+            if(modalAction === "handle_activity"){
+                handleActivity(modalTarget)
+            }
+            else if (modalAction === "handle_org"){
+                handleOrg(modalTarget)
+            }
+        }
+    }
+
+    const ConfirmModal = () => {
+        return (
+            showModal &&
+            <Modal show={showModal} handleClose={() => setShowModal(false)} title={ props.t("are_you_sure?")}>
+                <div >
+                    <p> {msgModal} </p>
+                    <button type='submit' className="btn btn-secondary" onClick={() =>modalResult(true)}>{props.t("confirm")}</button>
+                    <button type='submit' className="btn btn-secondary" onClick={() => modalResult(false)}>{ props.t("cancel")}</button>
+                </div>
+            </Modal>
+        )
+    }
+
+    const handleActivity = ( activity ) => {
+        if (!authAPI.isAuthenticated()) {
+            authAPI.logout()
+        }
+        setLoader2(true)
+        projectAPI.put(project, {"activity": activity})
+            .then((response) => {
+                setActivities(response.data[0].activities) //update project.activities list
             })
             .catch(error => {
                 console.log(error)
             })
+            .finally(() => setLoader2(false))
+    }
 
-            if(urlParams[0] === "owned"){
-                let orgOwned = await orgAPI.getOrg("owned")
-                    .catch(error => {
-                        console.log(error)
-                        setErrorOrg(error.response.data)
-                    })
-                if(orgOwned && orgOwned.status === 200){
-                    setUserOrgs(orgOwned.data)
-                }
-
-                let orgAssign = await orgAPI.getOrg("assigned")
-                    .catch(error => {
-                        console.log(error)
-                        setErrorOrg(error.response.data)
-                    })
-                if(orgAssign && orgAssign.status === 200){
-                    setUserAssignOrgs(orgAssign.data)
-                }
-            }
+    const handleOrg = (org) => {
+        if (!authAPI.isAuthenticated()) {
+            authAPI.logout()
         }
-    }, []);
+        setLoader2(true)
 
-    const [loader2, setLoader2] = useState(false)
+        projectAPI.put(project, {"org":org})
+            .then(response => {
+                setProject(response.data[0])
+                setProjectOrg(org)
 
-    const { t } = useTranslation()
+            })
+            .catch(error => console.log(error))
+            .finally( () => setLoader2(false))
+    }
 
     const PresentationPanel = () => {
         return(
@@ -165,37 +230,29 @@ const ProjectProfile = (props) => {
             let table = []
             //filtre the activity already in the current project
             userActivities.forEach(activity => {
-                if(activities.find(a => a.id === activity.id) === undefined){
-                    table.push(
-                        <Dropdown.Item key={activity.id} onClick={() => handleActivity(activity)}>
-                            <Icon name="plus"/> {activity.title}
-                        </Dropdown.Item>
-                    )
-                }
+
+                    if(activities.find(a => a.id === activity.id) === undefined){
+                        table.push(
+                            <Dropdown.Item
+                                key={activity.id}
+                                onClick={()=>showConfirmModal(props.t("add_activity_message"), "handle_activity", activity)}
+                            >
+                                <Icon name="plus"/> {activity.title}
+                            </Dropdown.Item>
+                        )
+                    }
             })
+            if(table.length === 0 ){
+                table.push(
+                    <Dropdown.Item key={0}>
+                        <Message size='mini' info>
+                            {props.t("no_free_activities")}
+                        </Message>
+                    </Dropdown.Item>
+                )
+            }
             return table
         }
-
-        const handleActivity = (activity) => {
-            if (!authAPI.isAuthenticated()) {
-                authAPI.logout()
-            }
-            setLoader2(true)
-            //     projectAPI.manageActivity(activity, project.id)
-            projectAPI.put(project, {"activity": activity})
-                .then(response => {
-                    /*//todo use dataTruth*/
-                    let index = project.activities.indexOf(activity)
-                    project.activities.splice(index, 1)
-                    freeActivities.push(activity)
-                    //        setFreeActivities(freeActivities)
-                })
-                .catch(error => {
-                    console.log(error)
-                })
-                .finally(() => setLoader2(false))
-        }
-
 
         return (
             <>
@@ -203,17 +260,11 @@ const ProjectProfile = (props) => {
                     {(isOwner || isAssigned) &&
                     <Dropdown item text={props.t('share') + " " + props.t('activity')} loading={loader2}>
                         <Dropdown.Menu>
-                            {getFreeActivitiesOptions().length === 0 &&
-                            <Dropdown.Item>
-                                <Message size='mini' info>
-                                    {props.t("no_free_activities")}
-                                </Message>
-                            </Dropdown.Item>
-                            }
                             {getFreeActivitiesOptions()}
                         </Dropdown.Menu>
                     </Dropdown>
                     }
+                    {/* todo search filter*/}
                     {/*<Menu.Item position="right">
                         <Input name="search" value={ search ? search : ""}
                             onChange={handleSearch}
@@ -221,8 +272,6 @@ const ProjectProfile = (props) => {
                         />
                     </Menu.Item>*/}
                 </Menu>
-                {/*{filteredList(activities).length > 0 ?
-                    filteredList(activities).map(act => (*/}
                 {activities.length > 0 ?
                     activities.map(act => (
                         <Segment key={act.id}>
@@ -233,7 +282,11 @@ const ProjectProfile = (props) => {
                                 ctx={ctx}
                             />
                             { (isOwner || act.creator.id === authAPI.getId()) &&
-                                <button onClick={()=>handleActivity(act)}>{ t('remove_to_project')}</button>
+                                <button
+                                    onClick={() => showConfirmModal(props.t("remove_activity_message"), "handle_activity", act)}>
+                                    <Icon name="remove circle" color="red"/>
+                                    { props.t('remove_from_project')}
+                                </button>
                             }
                         </Segment>
                     ))
@@ -248,22 +301,6 @@ const ProjectProfile = (props) => {
     }
 
     const OrgPanel = () => {
-
-        const handleOrg = (org) => {
-            if (!authAPI.isAuthenticated()) {
-                authAPI.logout()
-            }
-            setLoader2(true)
-
-            projectAPI.put(project, {"org":org})
-                .then(response => {
-                    setProject(response.data[0])
-                    setProjectOrg(org)
-
-                })
-                .catch(error => console.log(error))
-                .finally( () => setLoader2(false))
-        }
 
         return (
             <>
@@ -284,7 +321,10 @@ const ProjectProfile = (props) => {
                                 <Dropdown.Header content={ props.t('my_orgs')} />
                                 <Dropdown.Divider />
                                 {userOrgs.map(org =>
-                                    <Dropdown.Item key={org.id} onClick={() => handleOrg(org)}>
+                                    <Dropdown.Item
+                                        key={org.id}
+                                        onClick={()=>showConfirmModal(props.t("add_org_message"), "handle_org", org)}
+                                    >
                                         <Icon name="plus"/> {org.name}
                                     </Dropdown.Item>
                                 )}
@@ -295,7 +335,7 @@ const ProjectProfile = (props) => {
                                     <Dropdown.Header content={ props.t('my_partners')} />
                                     <Dropdown.Divider />
                                     {userAssignOrgs.map(org =>
-                                        <Dropdown.Item key={org.id} onClick={() => handleOrg(org)}>
+                                        <Dropdown.Item key={org.id} onClick={()=>showConfirmModal(props.t("add_org_message"), "handle_org", org)}>
                                             <Icon name="plus"/> {org.name}
                                         </Dropdown.Item>
                                     )}
@@ -306,10 +346,15 @@ const ProjectProfile = (props) => {
                     }
                     {project && project.organization && (isOwner || isOrgReferent) &&
                         <>
-                            <Menu.Item onClick={() => handleOrg(projectOrg)} position="right" disabled={loader2}>
-                                {isOrgReferent &&
+                            <Menu.Item
+                                onClick={()=>showConfirmModal(props.t("remove_org_message"), "handle_org", projectOrg)}
+                                position="right"
+                                disabled={loader2}
+                             //   onClick={() => handleOrg(projectOrg)} position="right" disabled={loader2}
+                            >
+                                {/*{isOrgReferent &&
                                     <Label basic color="violet">{props.t('this_is_your') + " " + props.t('organization')}</Label>
-                                }
+                                }*/}
                                 <Icon name="remove circle" color="red"/>
                                 {props.t('remove') + " " + props.t('organization')}
                                 {loader2 &&
@@ -351,7 +396,7 @@ const ProjectProfile = (props) => {
                 }
 
                 {activeItem === "activities" &&
-                    <Segment attached='bottom' loading={loader2}>
+                    <Segment attached='bottom'>
                         <ActivitiesPanel />
                     </Segment>
                 }
@@ -471,6 +516,9 @@ const ProjectProfile = (props) => {
                         </Menu>
                         <PanelsContent />
                     </Media>
+
+                    <ConfirmModal />
+
                 </Segment>
                 </>
                 :

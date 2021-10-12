@@ -15,7 +15,7 @@ import projectAPI from "../../../../__services/_API/projectAPI";
  * @constructor
  */
 const ProjectTeam = ({ project } ) => {
-console.log(project)
+//console.log(project)
     const isAuth = useContext(AuthContext).isAuthenticated;
     const { t } = useTranslation()
 

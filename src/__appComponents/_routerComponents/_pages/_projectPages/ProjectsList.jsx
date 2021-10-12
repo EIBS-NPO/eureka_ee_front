@@ -8,14 +8,8 @@ import {withTranslation} from "react-i18next";
 const ProjectsList = ( props ) => {
     const urlParams = props.match.params.ctx
 
-    //forbiden if route for my org and no auth
     const checkCtx = async () => {
-      //  if (urlParams !=="public" && !authAPI.isAuthenticated()) {
-            //if ctx need auth && have no Auth, public context is forced
-       //     authAPI.logout()
-      //  }else {
-            return urlParams
-    //    }
+        return urlParams
     }
 
     const [projects, setProjects] = useState([])
@@ -26,15 +20,10 @@ const ProjectsList = ( props ) => {
     const [ctx, setCtx] = useState("")
 
     useEffect(async () => {
-        /*
-            ctx maybe be private, owner(created), follower, assigned
-            oui pour retrouver les relation assign et follow
-         */
         setLoader(true)
-     /*   setCtx( checkCtx() )
-        let ctx = checkCtx()*/
         checkCtx()
             .then(async (ctx) => {
+                setCtx(ctx)
                 if(ctx === 'public'){
                     let response = await projectAPI.getPublic()
                         .catch(error => console.log(error.response))
@@ -66,44 +55,6 @@ const ProjectsList = ( props ) => {
             })
 
         setLoader(false)
-        /*if(ctx === 'follower'){
-            projectAPI.getFollowed()
-                .then(response => {
-                  //  console.log(response.data)
-                    setProjects(response.data)
-                })
-                .catch(error => console.log(error.response))
-                .finally(() => setLoader(false))
-        }
-        else if (ctx !== 'public') {
-            projectAPI.get(ctx)
-                .then(response => {
-                 //   console.log(response.data)
-                    let myProjects = response.data
-                    projectAPI.getAssigned()
-                        .then(response =>{
-                      //      console.log(response.data)
-                            response.data.forEach(assignedP => {
-                                myProjects = myProjects.filter(myP => assignedP.id !== myP.id)
-                            })
-                            setProjects(myProjects)
-                            setAssignProjects(response.data)
-                        })
-                        .catch(error => {
-                            console.log(error)
-                        })
-                })
-                .catch(error => console.log(error.response))
-                .finally(() => setLoader(false))
-        } else {
-            projectAPI.getPublic()
-                .then(response => {
-         //           console.log(response.data)
-                    setProjects(response.data)
-                })
-                .catch(error => console.log(error.response))
-                .finally(() => setLoader(false))
-        }*/
     }, [urlParams]);
 
     const Title = () => {
@@ -131,7 +82,7 @@ const ProjectsList = ( props ) => {
     }
 
     const filteredList = (list) => {
-        console.log(list)
+     //   console.log(list)
         return list.filter(p =>
             p.title.toLowerCase().includes(search.toLowerCase()) ||
             p.creator.firstname.toLowerCase().includes(search.toLowerCase()) ||
@@ -139,6 +90,7 @@ const ProjectsList = ( props ) => {
         )
     }
 
+    console.log(ctx)
     return (
         <div className="card">
             <Title />

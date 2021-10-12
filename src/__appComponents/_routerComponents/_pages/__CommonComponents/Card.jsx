@@ -1,17 +1,19 @@
 
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import '../../../../scss/components/cardOrg.scss';
 import {useTranslation, withTranslation} from 'react-i18next';
 import {Icon, Header, Segment, Container, Item, Label } from "semantic-ui-react";
 import Picture from "./Picture";
 import {NavLink} from "react-router-dom";
 import authAPI from "../../../../__services/_API/authAPI";
+import AuthContext from "../../../../__appContexts/AuthContext";
 
 const Card = ({ obj, type, profile=false, ctx=undefined, withPicture=true }) => {
 
     const {t,  i18n } = useTranslation()
     const lg = i18n.language
 
+    const isAuth = useContext(AuthContext).isAuthenticated;
     const [owner, setOwner] = useState(false);
     const [isOwner, setIsOwner] = useState(false);
     const [isAssign, setIsAssign] = useState(undefined)
@@ -31,8 +33,9 @@ const Card = ({ obj, type, profile=false, ctx=undefined, withPicture=true }) => 
 
     const getLink = () => {
         if(isOwner ){ ctx = "owned"}
-        else if(isAssign){ ctx = "assigned"}
+        else if(obj.isAssigned !== undefined && obj.isAssigned === true){ ctx = "assigned"}
         else if(obj.isFollowed !== undefined && obj.isFollowed === true){ ctx ="followed"}
+        else if (type === "activity" && obj.isPublic === false && isAuth){ ctx = "private"}
         else { ctx = "public"}
        return  ("/" + type + "/" + ctx + "_" + obj.id);
     }
@@ -43,9 +46,9 @@ const Card = ({ obj, type, profile=false, ctx=undefined, withPicture=true }) => 
             setOwner(obj)
         }else if(type === "org"){
             setIsOwner(obj && obj.referent && obj.referent.id === authAPI.getId())
-            obj && obj.membership && obj.membership.forEach( m => {
+            /*obj && obj.membership && obj.membership.forEach( m => {
                 if(m.id ===  authAPI.getId()){ setIsAssign(true)}
-            })
+            })*/
             setOwner(obj && obj.referent)
         }else if (type === "project"){
             setIsOwner(obj && obj.creator && obj.creator.id === authAPI.getId())

@@ -10,6 +10,7 @@ import authAPI from "./__services/_API/authAPI";
 
 import 'semantic-ui-css/semantic.min.css'
 import './scss/main.scss';
+import './scss/components/Modal.scss'
 import fileAPI from "./__services/_API/fileAPI";
 
  function App({history}) {

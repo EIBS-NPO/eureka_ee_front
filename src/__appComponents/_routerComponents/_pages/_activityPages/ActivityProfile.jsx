@@ -23,7 +23,7 @@ const ActivityProfile = ( props ) => {
     const [ctx, setCtx] = useState("")
 
     const checkCtx = () => {
-        if(urlParams[0] === 'public' || urlParams[0] === 'owned' || urlParams[0] === 'followed') {
+        if(urlParams[0] === 'public' || urlParams[0] === 'owned' || urlParams[0] === 'followed' || urlParams[0] === 'private') {
             if (urlParams[0] !== "public" && !authAPI.isAuthenticated()) {
                 //if ctx need auth && have no Auth, public context is forced
                 authAPI.logout()
@@ -69,9 +69,11 @@ const ActivityProfile = ( props ) => {
     const handleItemClick = (e, { name }) => setActiveItem(name)
 
     const setData = (activityData) => {
-        setActivity(activityData)
-        if(activityData.project) { setActivityProject(activityData.project)}
-        if(activityData.organization) { setActivityOrg(activityData.organization)}
+        if(activityData !== undefined){
+            setActivity(activityData)
+            if(activityData.project) { setActivityProject(activityData.project)}
+            if(activityData.organization) { setActivityOrg(activityData.organization)}
+        }
     }
 
     useEffect(async() => {
@@ -87,14 +89,14 @@ const ActivityProfile = ( props ) => {
                         console.log(error.response)
                         setError(error.response)
                     })
-                if(response && response.status === 200){ setData(response.data[0])}
+                if(response && response.status === 200){setData(response.data[0])}
             }else{
                 let response = await activityAPI.getPublic(urlParams[1])
                     .catch(error => {
                         console.log(error)
                         setError(error.response.data[0])
                     })
-                if(response && response.status === 200){ setData(response.data[0])}
+                if(response && response.status === 200){setData(response.data[0])}
             }
             if(ctx === 'owned'){ //if owned, get more data.
             //get owned project for current usuer

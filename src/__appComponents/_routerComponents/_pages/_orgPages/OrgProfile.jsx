@@ -1,8 +1,7 @@
 
 import React, {useEffect, useState, useContext, createContext} from 'react';
 import orgAPI from '../../../../__services/_API/orgAPI';
-import {Container, Label, Button, Header, Icon, Loader, Menu, Segment, Dropdown, Message, Input
-} from "semantic-ui-react";
+import {Container, Label, Button, Header, Icon, Loader, Menu, Segment, Dropdown, Message } from "semantic-ui-react";
 import {withTranslation} from "react-i18next";
 import AuthContext from "../../../../__appContexts/AuthContext";
 import OrgForm from "./OrgForm";
@@ -16,9 +15,7 @@ import activityAPI from "../../../../__services/_API/activityAPI";
 import MediaContext from "../../../../__appContexts/MediaContext";
 
 import SearchInput from "../__CommonComponents/forms/SearchList";
-import ProfilOrg2 from "./ProfilOrg2";
 import Modal from "../__CommonComponents/Modal";
-import ImageCropper from "../__CommonComponents/forms/picture/ImageCropper";
 
 export const OrgContext = createContext({
     org:{ },
@@ -53,12 +50,8 @@ const OrgProfile = (props ) => {
     const [activities, setActivities] = useState([])
     const [freeActivities, setFreeActivities] =useState([])
 
-//    const [errorActivities, setErrorActivities] = useState("")
-
-
     const [projects, setProjects] = useState([])
     const [freeProjects, setFreeProjects] = useState([])
-  //  const [errorProject, setErrorProject] = useState("")
 
     const [isReferent, setIsReferent] = useState(false)
     const [isAssigned, setIsAssigned] = useState(false)
@@ -80,10 +73,7 @@ const OrgProfile = (props ) => {
 
     useEffect(async() => {
         setLoader(true)
-       // let ctx = checkCtx();
         await setCtx(checkCtx())
-        console.log(urlParams[0])
-        console.log(ctx)
         if(urlParams[2]){
             setMessage(urlParams[2])
         }
@@ -159,6 +149,9 @@ const OrgProfile = (props ) => {
             if(modalAction === "remove_activity"){
                 handleRmvActivity(modalTarget)
             }
+            else if (modalAction === "add_activity"){
+                handleAddActivity(modalTarget.id)
+            }
         }
     }
 
@@ -166,7 +159,7 @@ const OrgProfile = (props ) => {
         return (
             showModal &&
             <Modal show={showModal} handleClose={() => setShowModal(false)} title={ props.t("are_you_sure?")}>
-                <div>
+                <div >
                     <p> {msgModal} </p>
                     <button type='submit' className="btn btn-secondary" onClick={() =>modalResult(true)}>{props.t("confirm")}</button>
                     <button type='submit' className="btn btn-secondary" onClick={() => modalResult(false)}>{ props.t("cancel")}</button>
@@ -355,7 +348,7 @@ const OrgProfile = (props ) => {
                         { (isReferent || project.creator.id === authAPI.getId()) &&
                         <Button onClick={()=>handleRmvProject(project)} basic>
                             <Icon name="remove circle" color="red"/>
-                            { props.t('remove_to_org')}
+                            { props.t('remove_from_org')}
                         </Button>
                         }
 
@@ -392,7 +385,10 @@ const OrgProfile = (props ) => {
 
                             </Dropdown.Item>
                             {freeActivities.map(a =>
-                                <Dropdown.Item key={a.id} onClick={() => handleAddActivity(a.id)} disabled={!!a.organization}>
+                                <Dropdown.Item key={a.id}
+                                               onClick={()=>showConfirmModal(props.t("add_activity_message"), "add_activity", a)}
+                                               disabled={!!a.organization}
+                                >
                                     <Icon name="plus"/>
                                     {a.title + " "}
                                     {a.isPublic ?
@@ -428,9 +424,9 @@ const OrgProfile = (props ) => {
                         <Card key={act.id} obj={act} type="activity" isLink={true} />
                         { (isReferent || act.creator.id === authAPI.getId()) &&
                        // <Button onClick={()=>handleRmvActivity(act)} basic>
-                        <Button onClick={()=>showConfirmModal("are you sure", "remove_activity", act)} basic>
+                        <Button onClick={()=>showConfirmModal(props.t("remove_activity_message"), "remove_activity", act)} basic>
                             <Icon name="remove circle" color="red"/>
-                            { props.t('remove_to_org')}
+                            { props.t('remove_from_org')}
                         </Button>
                         }
                     </Segment>

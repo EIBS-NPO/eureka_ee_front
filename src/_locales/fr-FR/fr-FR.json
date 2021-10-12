@@ -67,8 +67,8 @@
   "send": "envoyer",
   "remove": "retirer",
   "remove_confirm": "Retirer cet utilisateur de l'organisation ?",
-  "remove_to_project": "retirer du projet",
-  "remove_to_org": "retirer de l'organisation",
+  "remove_from_project": "retirer du projet",
+  "remove_from_org": "retirer de l'organisation",
   "confirmation": "confirmation",
   "errors": "Une erreur est survenue.",
   "add_members" : "ajouter des membres",
@@ -180,6 +180,7 @@
 
   "success_activation": "Votre compte a été activé avec succés. Bienvenue!",
 
+  "are_you_sure?": "Êtes vous sûr?",
   "confirm_your_registration": "Confirmer votre inscription",
   "confirm_registration_message": "Pour confirmer votre inscription, cliquer sur le lien suivant.",
   "forgot_password": "Mot de passe oublié",
@@ -196,5 +197,11 @@
   "error_namePattern" : "Doit comporter entre 2 et 50 caractères",
   "error_encounter" : "Une erreur est survenue, veuillez contacter l'administeur.",
 
-  "User's email already exist": "cet email est déjà utilisé"
+  "User's email already exist": "cet email est déjà utilisé",
+
+  "remove_activity_message": "Si votre activité est privée, les membres de ce groupe ne pourront plus y accéder.",
+  "add_activity_message": "Même si votre activité est privée, les membres de ce groupe pourront y accéder.",
+
+  "remove_org_message": "Les membres de votre organisation ne pourront plus accéder aux ressources privés de ce groupe.",
+  "add_org_message": ""
 }
