@@ -57,7 +57,7 @@ const AppRouter = () => {
                             <Route path="/org/:id" component={ProfilOrg}/>
                             <Route path="/project/:id" component={ProfilProject}/>
                             <Route path="/activity/:id" component={ProfilActivity}/>
-                            <Route path="/account" component={ProfilUser}/>
+                            <PrivateRoute path="/account" component={ProfilUser}/>
 
                             <PrivateRoute path="/create_org" component={CreateOrg}/>
                             <PrivateRoute path="/create_project" component={CreateProject}/>

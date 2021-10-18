@@ -54,12 +54,14 @@ const ImageUpload = ({ setter, type, entity}) => {
         }else{ //else juste remove.
             setter({ ...entity, "picture": undefined })
         }
+        setter({...entity, "pictureFile": undefined})
         hideModal()
     }
 
-    const handleDelete = () => {
-        if(entity.id !== undefined){
-            if(type === "activity"){
+    const handleDelete = (e) => {
+        e.preventDefault()
+      //  if(entity.id !== undefined){
+           /* if(type === "activity"){
                 activityAPI.put(entity, {"pictureFile": null} )
                     .then(response => {
                         setter({ ...entity, "picture": response.data[0].picture })
@@ -83,9 +85,10 @@ const ImageUpload = ({ setter, type, entity}) => {
                             console.log(error.response);
                         });
                 }
-            }
+            }*/
            //todo handle org, project, and user
         setter({ ...entity, "picture": null })
+        setter({ ...entity, "pictureFile": null})
     }
 
     const [show, setShow] = useState(false)
@@ -108,12 +111,12 @@ const ImageUpload = ({ setter, type, entity}) => {
                         accept='image/png, image/jpeg' onChange={onInputChange}
                     />
                 </label>
-                {entity && entity.picture &&
-                <Button
-                    basic icon='remove circle'
-                    color="red" size='mini'
-                    content= { t('delete') } onClick={handleDelete}
-                />
+                {entity.picture && entity.pictureFile !== null &&
+                    <Button
+                        basic icon='remove circle'
+                        color="red" size='mini'
+                        content= { t('delete') } onClick={handleDelete}
+                    />
                 }
             </Media>
             <Media at="mobile">
@@ -125,7 +128,7 @@ const ImageUpload = ({ setter, type, entity}) => {
                     accept='image/png, image/jpeg' onChange={onInputChange}
                 />
                 </label>
-                {entity && entity.picture &&
+                {entity.picture && entity.pictureFile !== null &&
                 <Button
                     basic icon='remove circle'
                     color="red" size='mini'
@@ -142,7 +145,7 @@ const ImageUpload = ({ setter, type, entity}) => {
                     accept='image/png, image/jpeg' onChange={onInputChange}
                 />
                 </label>
-                {entity && entity.picture &&
+                {entity.picture && entity.pictureFile !== null &&
                     <Button
                         basic icon='remove circle'
                         color="red" size='mini'

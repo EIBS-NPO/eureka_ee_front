@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import {Container, Button, Form, Icon, Item, Label} from "semantic-ui-react";
+import {Container, Button, Form, Icon, Item, Label, Segment} from "semantic-ui-react";
 import {useTranslation, withTranslation} from "react-i18next";
 import addressAPI from "../../../../../__services/_API/addressAPI";
 import userAPI from "../../../../../__services/_API/userAPI";
@@ -78,39 +78,11 @@ const AddressForm = ({ type, obj, setter }) => {
                     setLoader(false)
                 })
         }
-        /*if(obj.referent){
-            address.orgId = obj.id
-        }
-        //update User
-        if(obj.address){
-            addressAPI.put(address)
-                .then(response => {
-                    setter({...obj, address: response.data[0]})
-                    setUpdate(false)
-                })
-                .catch(error => {
-                    setErrors(error.response.data)
-                    console.log(error.response)
-                })
-                .finally(()=> {
-                    setLoader(false)
-                })
-        }
-        else {
-            addressAPI.post(type, obj.id, address)
-                .then(response => {
-                    setter({...obj, address: response.data[0]})
-                    setUpdate(false)
-
-                })
-                .catch(error => {
-                    setErrors(error.response.data)
-                })
-                .finally(()=> {
-                    setLoader(false)
-                })
-        }*/
     };
+
+    const handleDelete = () => {
+
+    }
 
     const switchUpdate = (e) => {
         e.preventDefault()
@@ -129,111 +101,170 @@ const AddressForm = ({ type, obj, setter }) => {
                         <h4>{utilities.strUcFirst(t("address"))}</h4>
                     </Label>
                     {update &&
-                    <Form onSubmit={handleSubmit} loading={loader}>
-                        <Item.Group divided>
-                            <Item>
-                                <Form.Input
-                                    label={ t('address') }
-                                    name="address"
-                                    value={address && address.address ? address.address : ""}
-                                    onChange={handleChange}
-                                    placeholder={t('address') + "..."}
-                                    type="textarea"
-                                    error={ errors.address ? errors.address : null}
-                                    required
+                        <Form onSubmit={handleSubmit} loading={loader}>
+                            <Segment className="unpadded" basic>
+                                <Form.Field >
+                                    <Label basic color="blue" size="tiny" attached="top">
+                                        { t("address") }
+                                    </Label>
+                                    <input
+                                        className="w-70 text-center"
+                                        name="address"
+                                        type="text"
+                                        minLength={2}
+                                        maxLength={255}
+                                        value={address && address.address ? address.address : ""}
+                                        onChange={handleChange}
+                                        //    errors={errors.firstname ? errors.firstname : null}
+                                        required
+                                    />
+                                    {errors && errors.address && <p className="error">{errors.address}</p>}
+                                </Form.Field>
+                            </Segment>
+
+                            <Segment className="unpadded" basic>
+                                <Form.Field >
+                                    <Label basic color="blue" size="tiny" attached="top">
+                                        { t("complement") }
+                                    </Label>
+                                    <input
+                                        className="w-70 text-center"
+                                        name="complement"
+                                        type="text"
+                                        maxLength={255}
+                                        value={address && address.complement ? address.complement : ""}
+                                        onChange={handleChange}
+                                        //    errors={errors.firstname ? errors.firstname : null}
+                                      //  required
+                                    />
+                                    {errors && errors.complement && <p className="error">{errors.complement}</p>}
+                                </Form.Field>
+                            </Segment>
+
+                            <Segment className="unpadded" basic>
+                                <Form.Field >
+                                    <Label basic color="blue" size="tiny" attached="top">
+                                        { t("city") }
+                                    </Label>
+                                    <input
+                                        className="w-70 text-center"
+                                        name="city"
+                                        type="text"
+                                        minLength={2}
+                                        maxLength={30}
+                                        value={address && address.city ? address.city : ""}
+                                        onChange={handleChange}
+                                        //    errors={errors.firstname ? errors.firstname : null}
+                                        required
+                                    />
+                                    {errors && errors.city && <p className="error">{errors.city}</p>}
+                                </Form.Field>
+                            </Segment>
+
+                            <Segment className="unpadded" basic>
+                                <Form.Field >
+                                    <Label basic color="blue" size="tiny" attached="top">
+                                        { t("zipCode") }
+                                    </Label>
+                                    <input
+                                        className="w-70 text-center"
+                                        name="zipCode"
+                                        type="text"
+                                        minLength={2}
+                                        maxLength={10}
+                                        value={address && address.zipCode ? address.zipCode : ""}
+                                        onChange={handleChange}
+                                        //    errors={errors.firstname ? errors.firstname : null}
+                                        required
+                                    />
+                                    {errors && errors.zipCode && <p className="error">{errors.zipCode}</p>}
+                                </Form.Field>
+                            </Segment>
+
+                            <Segment className="unpadded" basic>
+                                <Form.Field >
+                                    <Label basic color="blue" size="tiny" attached="top">
+                                        { t("country") }
+                                    </Label>
+                                    <input
+                                        className="w-70 text-center"
+                                        name="country"
+                                        type="text"
+                                        minLength={2}
+                                        maxLength={10}
+                                        value={address && address.country ? address.country : ""}
+                                        onChange={handleChange}
+                                        //    errors={errors.firstname ? errors.firstname : null}
+                                        required
+                                    />
+                                    {errors && errors.country && <p className="error">{errors.country}</p>}
+                                </Form.Field>
+                            </Segment>
+
+                            <Button.Group>
+                                <Button size="small" onClick={stopUpdate}> { t("cancel") } </Button>
+                                <Button.Or />
+                                <Button size="small" positive > { t("save") } </Button>
+                               {/* <Button.Or />
+                                <Button
+                                    basic icon='remove circle'
+                                    color="red" size='mini'
+                                    content= { t('delete') } onClick={handleDelete}
+                                />*/}
+                            </Button.Group>
+                            
+                            <Segment basic>
+                                <Button
+                                    basic icon='remove circle'
+                                    color="red" size='mini'
+                                    content= { t('delete') } onClick={handleDelete}
                                 />
-                            </Item>
-                            <Item>
-                                <Form.Input
-                                    label={ t('complement') }
-                                    name="complement"
-                                    value={address && address.complement ? address.complement : ""}
-                                    onChange={handleChange}
-                                    placeholder={t('complement') + "..."}
-                                    type="textarea"
-                                    error={ errors.complement ? errors.complement : null}
-                                />
-                            </Item>
-                            <Item>
-                                <Form.Input
-                                    label={ t('city') }
-                                    name="city"
-                                    value={address && address.city ? address.city : ""}
-                                    onChange={handleChange}
-                                    placeholder={t('city') + "..."}
-                                    type="text"
-                                    error={ errors.city ? errors.city : null }
-                                    required
-                                />
-                            </Item>
-                            <Item>
-                                <Form.Input
-                                    label={ t('zipCode') }
-                                    name="zipCode"
-                                    value={address && address.zipCode ? address.zipCode : ""}
-                                    onChange={handleChange}
-                                    placeholder={t('zipCode') + "..."}
-                                    type="text"
-                                    error={ errors.zipCode ? errors.zipCode : null}
-                                    required
-                                />
-                            </Item>
-                            <Item>
-                                <Form.Input
-                                    label={ t('country') }
-                                    name="country"
-                                    value={address && address.country ? address.country : ""}
-                                    onChange={handleChange}
-                                    placeholder={t('country') + "..."}
-                                    type="text"
-                                    error={ errors.country ? errors.country : null}
-                                    required
-                                />
-                            </Item>
-                            <Item>
-                                <Button.Group>
-                                    <Button size="small" onClick={stopUpdate}> { t("cancel") } </Button>
-                                    <Button.Or />
-                                    <Button size="small" positive > { t("save") } </Button>
-                                </Button.Group>
-                            </Item>
-                        </Item.Group>
-                    </Form>
+                            </Segment>
+                        </Form>
                     }
                     {!update &&
-                        <Item.Group divided >
-                            <Container textAlign="center">
-                            <Item>
-                                <Item.Content verticalAlign='middle'>
-                                    <Item.Description>
-                                        {address !== undefined ?
-                                            <>
-                                                <p>{ address.address }</p>
-                                                <p>{ address.complement }</p>
-                                                <p>{ address.city }</p>
-                                                <p>{ address.zipCode }</p>
-                                                <p>{ address.country }</p>
-                                            </>
-                                            :
-                                            <p>
-                                                { t('not_specified') }
-                                            </p>
-                                        }
+                        <Item.Description>
+                            <Item.Group divided >
+                                <Item>
+                                    <Item.Content verticalAlign='middle'>
+                                        <Item.Description>
+                                            {address !== undefined ?
+                                                <>
+                                                    <p><b>{address.address}</b></p>
+                                                    {address.complement &&<p><b>{address.complement}</b></p>}
+                                                    <p>
+                                                        <b>
+                                                            {address.zipCode + " " +
+                                                            address.city + " " +
+                                                            address.country}
+                                                        </b>
+                                                    </p>
+                                                </>
+                                                :
+                                                <p>
+                                                    { t('not_specified') }
+                                                </p>
+                                            }
 
-                                    </Item.Description>
-                                </Item.Content>
-                            </Item>
-                            {isOwner() &&
+                                        </Item.Description>
+                                    </Item.Content>
+                                </Item>
+                                {isOwner() &&
                                 <Item>
                                     <Item.Content>
-                                        <Button size="small" onClick={switchUpdate}>
-                                            <Icon name='edit'/> Modifier
+                                        <Button as='div' labelPosition='right' onClick={switchUpdate}>
+                                            <Button basic color='blue'>
+                                                {t('change')}
+                                            </Button>
+                                            <Label basic color='blue'>
+                                                <Icon name='edit' />
+                                            </Label>
                                         </Button>
                                     </Item.Content>
                                 </Item>
-                            }
-                            </Container>
-                        </Item.Group>
+                                }
+                            </Item.Group>
+                        </Item.Description>
                     }
                 </Item.Content>
             </Item>

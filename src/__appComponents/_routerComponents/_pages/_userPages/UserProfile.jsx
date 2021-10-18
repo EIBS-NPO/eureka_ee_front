@@ -1,13 +1,13 @@
 
 import React, { useEffect, useState} from 'react';
 import userAPI from '../../../../__services/_API/userAPI';
-import {Loader, Segment} from "semantic-ui-react";
-import PictureForm from "../__CommonComponents/forms/picture/PictureForm";
+import {Label, Loader, Segment} from "semantic-ui-react";
 import EmailChangeForm from "./_components/_ATTENTION/EmailChangeForm";
-import UserCoordForm from "./_components/UserCoordForm";
+import UserProfileForm from "./_components/UserProfileForm";
 import {withTranslation} from "react-i18next";
 import AddressForm from "../__CommonComponents/forms/AddressForm";
 import authAPI from "../../../../__services/_API/authAPI";
+import PassChangeForm from "./_components/PassChangeForm";
 
 const UserProfile = ({ history, t }) => {
 
@@ -17,7 +17,7 @@ const UserProfile = ({ history, t }) => {
 
     useEffect(async () => {
         setLoader(true)
-        if (await authAPI.isAuthenticated()) {
+        if (authAPI.isAuthenticated()) {
             userAPI.get("email", authAPI.getUserMail())
                 .then(response => {
                     setUser(response.data[0])
@@ -33,29 +33,21 @@ const UserProfile = ({ history, t }) => {
 
     return (
         <div className="card">
+
         {!loader &&
         <>
-            {/*<Segment>*/}
-                <PictureForm entityType="user" entity={user} setter={setUser} />
-                <p>{user.firstname + " " + user.lastname}</p>
-           {/* </Segment>*/}
             <Segment>
+                <Label attached='top'>
+                    <h4>{t('account')}</h4>
+                </Label>
                 <EmailChangeForm entity={user} setter={setUser}/>
+                <PassChangeForm entity={user} />
             </Segment>
 
-            {/*PassChange not functional*/}
-            {/*<Segment>
-                {loader ?
-                    <Item>
-                        <Loader active inline="centered" />
-                    </Item>
-                    :
-                    <PassChangeForm entity={user} />
-                }
-            </Segment>*/}
             <Segment>
-                <UserCoordForm user={user} setterUser={setUser}/>
+                <UserProfileForm user={user} setterUser={setUser}/>
             </Segment>
+
             <Segment>
                 <AddressForm type="user" obj={user} setter={setUser}/>
             </Segment>

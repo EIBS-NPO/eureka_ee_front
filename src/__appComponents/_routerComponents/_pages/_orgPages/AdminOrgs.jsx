@@ -32,7 +32,7 @@ const AdminOrgs = ( history ) => {
 
     useEffect( ( ) => {
         setLoader(true)
-        orgAPI.getMy()
+        orgAPI.getOrg("admin")
             .then(response => {
 
                 setOrgs(response.data)
@@ -43,7 +43,7 @@ const AdminOrgs = ( history ) => {
             .finally( () => setLoader(false))
     }, [])
 
-    const lg = i18n.language.split('-')[0]
+    const lg = i18n.language
 
     function getTranslate(o, typeText) {
         if(o[typeText]){

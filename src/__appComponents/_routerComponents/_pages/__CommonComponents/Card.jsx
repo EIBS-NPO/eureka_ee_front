@@ -23,8 +23,8 @@ const Card = ({ obj, type, profile=false, ctx=undefined, withPicture=true }) => 
         if(obj[typeText]){
            if(obj[typeText][lg]) {
                 return obj[typeText][lg]
-            }else if(obj[typeText]['en']) {
-               return obj[typeText]['en']
+            }else if(obj[typeText]['en-GB']) {
+               return obj[typeText]['en-GB']
            }
         }else {
             return t('no_' + typeText)

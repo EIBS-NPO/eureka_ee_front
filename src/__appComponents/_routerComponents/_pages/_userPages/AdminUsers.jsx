@@ -9,7 +9,7 @@ import {
     Container,
     Loader,
     Segment,
-    Header
+    Header, Button
 } from "semantic-ui-react";
 import {useTranslation, withTranslation} from "react-i18next";
 import Picture from "../__CommonComponents/Picture";
@@ -27,7 +27,7 @@ import AuthContext from "../../../../__appContexts/AuthContext";
 import MultiSelect from "../__CommonComponents/forms/MultiSelect";
 
 
-const AdminUsers = ( history ) => {
+const AdminUsers = ({ history } ) => {
   //  if ( !(authAPI.isAuthenticated()) ) {history.replace('/login')}
     const { t } = useTranslation()
     const {setFirstname, setLastname} = useContext(AuthContext);
@@ -40,7 +40,7 @@ const AdminUsers = ( history ) => {
         if(!authAPI.isAdmin()){
             history.replace('/')
         }
-        setLoader(true)
+        /*setLoader(true)
         userAPI.get("all")
             .then(response => {
                 setUsers(response.data)
@@ -48,7 +48,7 @@ const AdminUsers = ( history ) => {
             .catch(error => {
                 setError(error.response.data[0])
             })
-            .finally( () => setLoader(false))
+            .finally( () => setLoader(false))*/
     },[])
 
     /*const countryOptions = [
@@ -217,40 +217,52 @@ const [userDropSelected, setUserDropSelected] = useState([])
       /*  }*/
     };
 
- //   console.log(document.getElementById("userDropSelect"))
-    /*const DisplaySelected = () => {
-        let selected = document.getElementById("userDropSelect").valueOf()
-        console.log(selected)
-        /!*selected.map((u,key)=>{
-            <p>{u}</p>
-        })*!/
-    }*/
+    const SearchBar = () => {
+
+        const handleSearch = (param) => {
+            setLoader(true)
+            adminAPI.getUser(param)
+                .then(response => {
+                    setUsers(response.data)
+                })
+                .catch(error => {
+                    setError(error.response.data[0])
+                })
+                .finally( () => setLoader(false))
+        }
+
+        return (
+            <Menu>
+                <Menu.Item header>{t('search')}</Menu.Item>
+                <Menu.Item>
+                    <Button content={t('all')} onClick={()=>handleSearch("all")}/>
+                </Menu.Item>
+                <Menu.Item>
+                    <Button content={t('unConfirmed')} onClick={()=>handleSearch("unConfirmed")}/>
+                </Menu.Item>
+                <Menu.Item>
+                    <Button> unactived </Button>
+                </Menu.Item>
+            </Menu>
+        )
+    }
 
     return (
         <div className="card">
             <h1> {t("admin_users")}</h1>
-            <MultiSelect
-                optionsList={users}
-                textKeyList={["id", "email", "firstname", "lastname" ]}
-                setSelected={setUserDropSelected}
-                loader={loader}
-            />
-            {/*<Menu >
-                <Dropdown
-                    id="userDropSelect"
-                    clearable
-                    fluid
-                    multiple
-                    search
-                    selection
-                    closeOnChange
-                    options={optionsUsers()}
-                    onChange={onChangeUsersDrop}
-                    placeholder='Select user'
-                    loading={loader}
-                />
+            <Menu vertical fluid>
+                    <SearchBar/>
+                <Menu.Item disabled={users.length <= 0}>
+                    <MultiSelect
+                        optionsList={users}
+                        textKeyList={["id", "email", "firstname", "lastname" ]}
+                        setSelected={setUserDropSelected}
+                        loader={loader}
+                    />
+                    <Label as='a' basic color='blue' >{users.length}</Label>
+                </Menu.Item>
+            </Menu>
 
-            </Menu>*/}
 
             {!loader && userDropSelected.length > 0 &&
                 userDropSelected.map( u => (
@@ -265,7 +277,7 @@ const [userDropSelected, setUserDropSelected] = useState([])
                                 { u.roles === "ROLE_ADMIN" && <Header color='violet'> {t('administrator')} </Header>}
                             </Menu.Item>
                             <Menu.Menu position="right" >
-                                <Dropdown item text={t('action')} loading={loader2} >
+                                <Dropdown item icon='wrench' text={t('action')} loading={loader2} >
                                     <Dropdown.Menu>
                                             <Dropdown.Item onClick={() => handleAction("editUser", u)}>
                                                 {t('edit') + " " + t('user')}

@@ -20,6 +20,7 @@
   "enable": "activer",
   "disable": "désactiver",
   "partners": "les partenaires",
+  "lastname": "nom",
 
 
   "my_activities" : "mes activités",
@@ -203,5 +204,7 @@
   "add_activity_message": "Même si votre activité est privée, les membres de ce groupe pourront y accéder.",
 
   "remove_org_message": "Les membres de votre organisation ne pourront plus accéder aux ressources privés de ce groupe.",
-  "add_org_message": ""
+  "add_org_message": "",
+
+  "invalid_country_phoneNumber": "Numéro invalide pour ce pays, il ne sera pas sauvegardé"
 }

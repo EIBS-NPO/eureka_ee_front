@@ -46,13 +46,13 @@ const AdminProjects = ( ) => {
             .finally( () => setLoader(false))
     }, [])
 
-    const lg = i18n.language.split('-')[0]
+    const lg = i18n.language
     function getTranslate(p, typeText) {
         if(p[typeText]){
             if(p[typeText][lg]) {
                 return p[typeText][lg]
-            }else if(p[typeText]['en'] && p[typeText]['en'].length !== 0 ) {
-                return p[typeText]['en']
+            }else if(p[typeText]['en-GB'] && p[typeText]['en'].length !== 0 ) {
+                return p[typeText]['en-GB']
             }else {
                 return t('no_' + lg + "_" + typeText)
             }
@@ -128,6 +128,7 @@ const AdminProjects = ( ) => {
         setProjectDropSelected(data.value);
     };
 
+    //todo dropSelected permettre le filtre?
 
     return (
         <div className="card">
@@ -201,93 +202,6 @@ const AdminProjects = ( ) => {
                 </Segment>
             ))
             }
-
-            {/*<Menu>
-                <Dropdown item text='Action' loading={loader2}>
-                    <Dropdown.Menu>
-                        {selectedProject &&
-                        <>
-                            <Dropdown.Item onClick={() => handleAction("editProject")}>
-                                {t('edit') + " " + t('project')}
-                            </Dropdown.Item>
-                        </>
-                        }
-                        {!selectedProject &&
-                        <Dropdown.Item>
-                            <Message size='mini' info>
-                                {t("ask_select_project")}
-                            </Message>
-                        </Dropdown.Item>
-                        }
-                    </Dropdown.Menu>
-                </Dropdown>
-                <Menu.Item position="right">
-                    <Input
-                        name="search"
-                        value={ search ? search : ""}
-                        onChange={handleSearch}
-                        placeholder={ t('search') + "..."}
-                    />
-
-                </Menu.Item>
-            </Menu>*/}
-
-            {/*{!loader && projects.length > 0 &&
-            <Form>
-                <Form.Field>
-                    <Grid textAlign='center' columns={6} celled="internally" stackable>
-                        <Grid.Row>
-                            <Grid.Column> {t("title")} </Grid.Column>
-                            <Grid.Column> {t("creator")} </Grid.Column>
-                            <Grid.Column> {t("organization")} </Grid.Column>
-                            <Grid.Column> {t("date")}</Grid.Column>
-                            <Grid.Column> {t("description")} </Grid.Column>
-                            <Grid.Column> {t("picture")} </Grid.Column>
-                        </Grid.Row>
-
-                        {filteredList.map(p => (
-                            <Grid.Row key={p.id}>
-                                <Grid.Column>
-                                    <Form.Radio
-                                        name="selected"
-                                        control={Radio}
-                                        value={p.id}
-                                        checked={!!(selectedProject && selectedProject.id === p.id)}
-                                        onChange={handChange}
-                                    />
-                                    {p.title}
-                                </Grid.Column>
-                                <Grid.Column>
-                                    { p.creator && p.creator.firstname &&p.creator.lastname &&
-                                      <p> {p.creator.firstname + " " + p.creator.lastname} </p>
-                                    }
-                                </Grid.Column>
-
-
-                                <Grid.Column>
-                                    { p.organization && p.organization.name &&
-                                        <p> { p.organization.name }</p>
-                                    }
-                                    { !p.organization &&
-                                        <p> { "no_" + t("organization")}</p>
-                                    }
-                                </Grid.Column>
-                                <Grid.Column>
-                                    {p.startDate && <p>{"start : " + p.startDate}</p>}
-                                    {p.endDate && <p>{"end : " + p.endDate}</p>}
-                                </Grid.Column>
-                                <Grid.Column>
-                                    <p>{getTranslate(p, "description")}</p>
-                                </Grid.Column>
-                                <Grid.Column>
-                                    <Picture size="tiny" picture={p.picture} />
-                                </Grid.Column>
-                            </Grid.Row>
-                        ))}
-                    </Grid>
-                </Form.Field>
-            </Form>
-            }*/}
 
             {!loader && filteredList.length === 0 &&
             <Container textAlign="center">

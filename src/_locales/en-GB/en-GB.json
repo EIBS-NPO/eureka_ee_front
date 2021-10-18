@@ -4,6 +4,8 @@
   "Login": "Login",
   "Logout": "Logout",
   "new_org": "New Organisation",
+  "lastname": "lastname",
+  "firstname": "firstname",
 
   "my_activities" : "my activities",
   "my_favorites": "my favorites",
@@ -49,5 +51,7 @@
   "add_activity_message": "Even if your activity is private, members of this group will be able to access it.",
 
   "remove_org_message": "Members of your organization will no longer be able to access the private resources of this group.",
-  "add_org_message": ""
+  "add_org_message": "",
+
+  "invalid_country_phoneNumber": "Invalid number for this country, it will not be saved"
 }

@@ -107,6 +107,7 @@ const resetEmail = (email, userId) => {
 
 const isAdmin = () => {
     const token = window.localStorage.getItem("authToken");
+  //  console.log(jwt_decode(token).roles[0])
     return !!(token && jwt_decode(token).roles[0] === "ROLE_ADMIN");
 
 }

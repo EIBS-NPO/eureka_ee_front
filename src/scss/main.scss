@@ -320,6 +320,10 @@ width:auto;
     padding:unset !important;
 }
 
+.top-1rem {
+    margin-top: 1rem!important;
+}
+
 .breakWord{
     word-break: break-word;
 }
@@ -344,6 +348,17 @@ width:auto;
 .borderless {
     border:none!important;
     box-shadow: none!important;
+}
+
+.simpleBorder {
+    border:1px solid black;
+}
+
+.error {
+    color:red;
+    background-color: rgb(255,180,180);
+    border:1px solid red;
+    border-radius:4px;
 }
 
 .minH-50{
@@ -384,6 +399,10 @@ width:auto;
 
 .heightLess {
     min-height:0!important;
+}
+
+.text-center {
+    text-align:center!important;
 }
 
 .w-70{

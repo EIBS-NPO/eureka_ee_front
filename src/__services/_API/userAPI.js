@@ -1,18 +1,45 @@
 import Axios from "axios";
 import JwtDecode from "jwt-decode";
-import {LOCAL_URL, ORG_API, USR_API} from "../../config";
-import {useTranslation} from "react-i18next";
+import {USR_API} from "../../config";
 
 const getbodyFormData = (user) => {
     let bodyFormData = new FormData();
-    bodyFormData.append('firstname', user.firstname)
-    bodyFormData.append('lastname', user.lastname)
-    bodyFormData.append('email', user.email)
-    bodyFormData.append('password', user.password)
-    if(user.picture !== undefined){
-        bodyFormData.append('pictureFile', user.picture)
+    if(user.firstname !== undefined){
+        bodyFormData.append('firstname', user.firstname)
     }
-
+    if(user.lastname !== undefined){
+        bodyFormData.append('lastname', user.lastname)
+    }
+    if(user.email !== undefined){
+        bodyFormData.append('email', user.email)
+    }
+    if(user.phone !== undefined){
+        bodyFormData.append("phone", user.phone)
+    }
+    if(user.mobile !== undefined){
+        bodyFormData.append("mobile", user.mobile)
+    }
+    if(user.id !== undefined){
+        bodyFormData.append('id', user.id)
+    }
+    if(user.password !== undefined){
+        bodyFormData.append('password', user.password)
+    }
+    /*if(user.picture !== undefined){
+        bodyFormData.append('pictureFile', user.picture)
+    }*/
+    if(user.pictureFile !== undefined){
+        bodyFormData.append('pictureFile', user.pictureFile)
+    }
+    if(user.address !== undefined){
+        bodyFormData.append("address", user.address.address)
+        bodyFormData.append("zipCode", user.address.zipCode)
+        bodyFormData.append("city", user.address.city)
+        bodyFormData.append("country", user.address.country)
+        if(user.address.complement !== undefined){
+            bodyFormData.append("complement", user.address.complement)
+        }
+    }
     return bodyFormData;
 }
 

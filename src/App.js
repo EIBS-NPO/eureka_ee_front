@@ -9,6 +9,7 @@ import AppRouter from "./__appComponents/AppRouter";
 import authAPI from "./__services/_API/authAPI";
 
 import 'semantic-ui-css/semantic.min.css'
+import 'react-phone-number-input/style.css'
 import './scss/main.scss';
 import './scss/components/Modal.scss'
 import fileAPI from "./__services/_API/fileAPI";
@@ -50,7 +51,7 @@ import fileAPI from "./__services/_API/fileAPI";
   return (
       <>
         <style>{mediaStyles}</style>
-        <MediaContext.Provider value={{Media, mediaStyles, MediaContextProvider,allowedMimes }}>
+        <MediaContext.Provider value={{Media, mediaStyles, MediaContextProvider,allowedMimes}}>
           <AuthContext.Provider value={{
               isAuthenticated, setIsAuthenticated,
               firstname, setFirstname,

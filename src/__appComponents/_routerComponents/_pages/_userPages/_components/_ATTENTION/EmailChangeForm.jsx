@@ -54,21 +54,31 @@ const EmailChangeForm = ({ entity, setter}) => {
         <Item.Group>
             <Item>
                 <Item.Content>
-                    <Label attached='top'>
+                    {/*<Label attached='top'>
                         <h4>Email</h4>
-                    </Label>
+                    </Label>*/}
                     <Item.Description>
                         <Item.Group divided>
                             <Item>
-                                <Item.Header>
+                                {/*<Item.Header>
                                     <Icon name="mail"/>
-                                </Item.Header>
+                                </Item.Header>*/}
                                 <Item.Content verticalAlign='middle'>
-                                    {entity && entity.email}
-                                    <Button size="small" floated='right' onClick={showModal}>
-                                        { t('change_email') }
-                                        <Icon name='right chevron' />
+                                    {/*{entity && entity.email}*/}
+                                    <Button as='div' labelPosition='right' onClick={showModal}>
+                                        <Button basic color='blue'>
+                                            <Icon name='mail' />
+                                            {entity && entity.email}
+                                        </Button>
+                                        <Label basic color='blue'>
+                                            <Icon name='edit' />
+                                        </Label>
                                     </Button>
+                                    {/*<Button onClick={showModal} basic>
+                                        <Icon name="mail"/>
+                                        {entity && entity.email}
+                                        <Icon name='edit' />
+                                    </Button>*/}
                                 </Item.Content>
                             </Item>
                         </Item.Group>

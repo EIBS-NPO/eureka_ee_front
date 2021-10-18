@@ -38,33 +38,27 @@ const RegisterPage = ({ history }) => {
 
         //checkPassword
         if(!checkPassword(user.password)){
-            console.log("password_bad_pattern")
             errorsRslt["password"] = "password_bad_pattern"
             boolRslt = false;
         }else errorsRslt["password"] = undefined
 
         if(!(user.password === user.passwordConfirm) || user.passwordConfirm === "") {
-            console.log("password_not_match")
             errorsRslt["passwordConfirm"] = "password_not_match"
             boolRslt = false;
         }else errorsRslt["passwordConfirm"] = undefined
 
         //lastname
         if (!checkStringLenght(user.lastname, 2, 50)){
-            console.log("error_namePattern")
             errorsRslt["lastname"] = "error_namePattern"
             boolRslt = false;
         }else  errorsRslt["lastname"] = undefined
 
         //firstname
         if(!checkStringLenght(user.firstname, 2, 50)) {
-            console.log("error_namePattern")
             errorsRslt["firstname"] = "error_namePattern"
             boolRslt = false;
         }else errorsRslt["firstname"] = undefined
 
-        console.log(errorsRslt)
-        console.log(errorsRslt.length === 0 )
         if(boolRslt){
             setErrors({})
             return boolRslt
