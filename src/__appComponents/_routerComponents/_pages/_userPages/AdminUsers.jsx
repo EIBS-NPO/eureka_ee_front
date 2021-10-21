@@ -40,21 +40,7 @@ const AdminUsers = ({ history } ) => {
         if(!authAPI.isAdmin()){
             history.replace('/')
         }
-        /*setLoader(true)
-        userAPI.get("all")
-            .then(response => {
-                setUsers(response.data)
-            })
-            .catch(error => {
-                setError(error.response.data[0])
-            })
-            .finally( () => setLoader(false))*/
     },[])
-
-    /*const countryOptions = [
-        { key: 'af', value: 'af', flag: 'af', text: 'Afghanistan' },
-        { key: 'ax', value: 'ax', flag: 'ax', text: 'Aland Islands' }
-    ]*/
 
     const optionsUsers = () => {
         let options = []
@@ -119,12 +105,14 @@ const AdminUsers = ({ history } ) => {
         setLoader2(false)
     }
 
+    //todo actualise with response
     const handleEnabling = (user) => {
         setLoader2(true)
         if(user.roles !== "ROLE_ADMIN"){
-            adminAPI.activ(user.id, user.roles !== "ROLE_USER")
+         //   adminAPI.activ(user.id, user.roles !== "ROLE_USER")
+            userAPI.put(user,null, {"roles":!(user.roles === "ROLE_USER")})
                 .then(response => {
-
+console.log(response)
                     let userUp = users.find(u => u.id === user.id)
                     userUp.roles = response.data[0]
                     let index = users.indexOf(userUp)
@@ -206,29 +194,45 @@ const AdminUsers = ({ history } ) => {
             .finally(()=>setLoader2(false))
     }
 
-const [userDropSelected, setUserDropSelected] = useState([])
-    const onChangeUsersDrop = (event, data) => {
-        /*if(event.target.textContent === 'Select All') {
-            setUserDropSelected(data.options.map(d => d.value))
-        } else {*/
+    const [userDropSelected, setUserDropSelected] = useState([])
+    /*const onChangeUsersDrop = (data) => {
         let arr = []
         data.value.map(vId => arr.push(users.find( u => u.id === vId)))
         setUserDropSelected(arr);
-      /*  }*/
-    };
+    };*/
+console.log(userDropSelected)
 
+    /*const resetSelected = async () => {
+        await setUserDropSelected([])
+    }*/
     const SearchBar = () => {
 
-        const handleSearch = (param) => {
+        const handleSearch = async (param) => {
             setLoader(true)
-            adminAPI.getUser(param)
-                .then(response => {
-                    setUsers(response.data)
-                })
-                .catch(error => {
-                    setError(error.response.data[0])
-                })
-                .finally( () => setLoader(false))
+            setUsers([])
+            setUserDropSelected([])
+            setError("")
+            //await resetSelected()
+           // let emptySelect = []
+         //   userDropSelected.splice(0, userDropSelected.length);
+         //   userDropSelected.length = 0;
+            let isAuth = authAPI.isAuthenticated()
+            if (isAuth) {
+                userAPI.get(param, null, null, authAPI.isAdmin())
+                    .then(response => {
+                        console.log(response.data)
+                        setUsers(response.data)
+                    })
+                    .catch(error => {
+                        setError(error.response.data[0])
+                    })
+                    .finally(() => {
+                        setLoader(false)
+                    })
+            } else {
+                history.replace('/login')
+            }
+
         }
 
         return (
@@ -241,7 +245,7 @@ const [userDropSelected, setUserDropSelected] = useState([])
                     <Button content={t('unConfirmed')} onClick={()=>handleSearch("unConfirmed")}/>
                 </Menu.Item>
                 <Menu.Item>
-                    <Button> unactived </Button>
+                    <Button content={t('disabled')} onClick={()=>handleSearch("disabled")}/>
                 </Menu.Item>
             </Menu>
         )
@@ -252,6 +256,14 @@ const [userDropSelected, setUserDropSelected] = useState([])
             <h1> {t("admin_users")}</h1>
             <Menu vertical fluid>
                     <SearchBar/>
+                    {!loader &&
+                        <Container textAlign="center">
+                            <Message info>
+                                {users.length === 0 && <p>{t('no_results') +" "+ t('make_new_search')}</p>}
+                                {users.length > 0 && <p>{users.length +" results"}</p>}
+                            </Message>
+                        </Container>
+                    }
                 <Menu.Item disabled={users.length <= 0}>
                     <MultiSelect
                         optionsList={users}
@@ -259,7 +271,6 @@ const [userDropSelected, setUserDropSelected] = useState([])
                         setSelected={setUserDropSelected}
                         loader={loader}
                     />
-                    <Label as='a' basic color='blue' >{users.length}</Label>
                 </Menu.Item>
             </Menu>
 
@@ -267,6 +278,17 @@ const [userDropSelected, setUserDropSelected] = useState([])
             {!loader && userDropSelected.length > 0 &&
                 userDropSelected.map( u => (
                     <Segment basic key={u.id}>
+                        <Segment.Group horizontal className="unmarged" >
+                            <Segment>
+                                { u.roles === "" && <Header color='pink'> {t('disabled')} </Header>}
+                                { u.roles === "ROLE_USER" && <Header color='green'> {t('user')} </Header>}
+                                { u.roles === "ROLE_ADMIN" && <Header color='violet'> {t('administrator')} </Header>}
+                            </Segment>
+                            <Segment>
+                                {u.isConfirmed ? t('confirmed') : t('unconfirmed')}
+                            </Segment>
+
+                        </Segment.Group>
                         <Menu className="unmarged" >
                             <Menu.Item>
                                 <Item.Header >{ u.firstname + " " + u.lastname }</Item.Header>
@@ -293,10 +315,6 @@ const [userDropSelected, setUserDropSelected] = useState([])
                                                 </Dropdown.Item>*/}
                                             { u.roles !== "ROLE_ADMIN" &&
                                                 <Dropdown.Item onClick={() => handleEnabling(u)}>
-                                                    {/*<Button onClick={() => handleEnabling(u)}
-                                                            color={ u.roles === "" ? "blue" : "pink"}
-                                                    >{ u.roles === "" ? t('enable') : t('disable') }
-                                                    </Button>*/}
                                                     { u.roles === "" ?
                                                         <Label color="blue">{t('enable')} </Label>
                                                         :
@@ -322,8 +340,9 @@ const [userDropSelected, setUserDropSelected] = useState([])
                                     <Item.Content verticalAlign='middle'>
                                         <Item.Description>
                                             <Label
-                                                as={u.email === userAPI.checkMail() ? "a:disabled" : "a"}
-                                                basic color={u.email === userAPI.checkMail()? '': 'teal'}
+                                                as="a"
+                                                disabled={u.email === userAPI.checkMail()}
+                                                basic color={u.email === userAPI.checkMail()? 'grey': 'teal'}
                                                 href={"mailto:" + u.email} icon='mail' content={u.email}
 
                                             />
@@ -357,116 +376,6 @@ const [userDropSelected, setUserDropSelected] = useState([])
                         </Segment.Group>
                     </Segment>
                 ))
-
-                /*<>
-                    <Form>
-                    <Form.Field>
-                        <Grid textAlign='center' columns={4} celled="internally" stackable>
-                            <Grid.Row>
-                                <Grid.Column width="4"> { t('user') } </Grid.Column>
-                                <Grid.Column width="4"> { t('contact') } </Grid.Column>
-                                <Grid.Column width="4"> { t('address') } </Grid.Column>
-                                <Grid.Column width="4"> { t('picture') } </Grid.Column>
-                            </Grid.Row>
-
-                            {userDropSelected.map( u => (
-                                <Grid.Row key={u.id}>
-                                    <Grid.Column>
-                                        <Item>
-                                            <Dropdown item text='Action' loading={loader2}>
-                                                <Dropdown.Menu>
-                                                    <>
-                                                        <Dropdown.Item onClick={() => handleAction("editUser", u)}>
-                                                            {t('edit') + " " + t('user')}
-                                                        </Dropdown.Item>
-                                                        <Dropdown.Item onClick={() => handleAction("editEmail", u)}>
-                                                            {t('edit') + " " + t('email')}
-                                                        </Dropdown.Item>
-                                                        <Dropdown.Item onClick={() => handleAction("editAddress", u)}>
-                                                            {t('edit') + " " + t('address')}
-                                                        </Dropdown.Item>
-                                                        {/!*<Dropdown.Item>
-                                                            {t('delete') + " " + t("picture")}
-                                                        </Dropdown.Item>*!/}
-                                                        <Dropdown.Item onClick={() => handleEnabling(u)}>
-                                                            {u.roles === "" ? t('enable') : t('disable') }
-                                                        </Dropdown.Item>
-                                                        {/!*<Dropdown.Item>
-                                                            {t("delete")}
-                                                        </Dropdown.Item>*!/}
-                                                    </>
-                                                </Dropdown.Menu>
-                                            </Dropdown>
-                                        </Item>
-
-
-                                        { u.roles === "" ?
-                                            <Label color="pink">{t('disabled')} </Label>
-                                            :
-                                            <Label color="blue">{t('enabled') } </Label>
-                                        }
-                                        <Item.Header >{ u.firstname + " " + u.lastname }</Item.Header>
-                                    </Grid.Column>
-                                    <Grid.Column>
-                                        <Item>
-
-                                            <Item.Content verticalAlign='middle'>
-                                                <Item.Description>
-                                                    <p>{ u.email }</p>
-                                                    <p>{ u.mobile ? u.mobile : t('not_specified') }</p>
-                                                    <p>{ u.phone ? u.phone : t('not_specified') }</p>
-                                                </Item.Description>
-                                            </Item.Content>
-                                        </Item>
-                                    </Grid.Column>
-                                    <Grid.Column>
-                                        <Grid columns={2} stackable>
-                                            <Grid.Column>
-                                                <Item>
-                                                    <Item.Content>
-                                                        { u.address &&
-                                                        <Item.Description>
-                                                            <p>{ u.address.address }</p>
-                                                            <p>{ u.address.complement ? u.address.complement : t('not_specified') }</p>
-
-                                                        </Item.Description>
-                                                        }
-                                                        {!u.address &&
-                                                        <Item.Description> { t('address') + " " + t('not_specified') }</Item.Description>
-                                                        }
-
-                                                    </Item.Content>
-                                                </Item>
-                                            </Grid.Column>
-
-                                            <Grid.Column>
-                                                <Item>
-                                                    {u.address &&
-                                                    <Item.Description>
-                                                        <p>{u.address.city}</p>
-                                                        <p>{u.address.zipCode}</p>
-                                                        <p>{u.address.country}</p>
-                                                    </Item.Description>
-                                                    }
-                                                    {!u.address &&
-                                                    <Item.Description> { t('address') + " " + t('not_specified') }</Item.Description>
-                                                    }
-                                                </Item>
-                                            </Grid.Column>
-
-                                        </Grid>
-
-                                    </Grid.Column>
-                                    <Grid.Column>
-                                        <Picture size="tiny" picture={u.picture} />
-                                    </Grid.Column>
-                                </Grid.Row>
-                            ))}
-                        </Grid>
-                    </Form.Field>
-                </Form>
-                </>*/
-
             }
 
             {!loader && userDropSelected.length === 0 &&

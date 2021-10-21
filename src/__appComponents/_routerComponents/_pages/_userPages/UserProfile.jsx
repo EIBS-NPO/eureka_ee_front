@@ -17,7 +17,8 @@ const UserProfile = ({ history, t }) => {
 
     useEffect(async () => {
         setLoader(true)
-        if (authAPI.isAuthenticated()) {
+        let isAuth = authAPI.isAuthenticated()
+        if(isAuth){
             userAPI.get("email", authAPI.getUserMail())
                 .then(response => {
                     setUser(response.data[0])

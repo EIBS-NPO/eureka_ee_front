@@ -212,7 +212,7 @@ const AddressForm = ({ type, obj, setter }) => {
                                     content= { t('delete') } onClick={handleDelete}
                                 />*/}
                             </Button.Group>
-                            
+
                             <Segment basic>
                                 <Button
                                     basic icon='remove circle'

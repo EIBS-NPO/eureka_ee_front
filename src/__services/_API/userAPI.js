@@ -53,10 +53,17 @@ const register = (user) =>  {
     })
 }
 
-const put = (user, putRelationWith={}) => {
+const put = (user, putRelationWith={}, adminManagment= {}) => {
 
     let bodyFormData = getbodyFormData(user);
+    if(adminManagment.length !== 0 ){
+        bodyFormData.append("admin", "1")
+        if(adminManagment.roles !== undefined){
+            bodyFormData.append("roles", adminManagment.roles ? "ROLE_USER": null)
+        }
+    }
 
+    console.log(bodyFormData)
     return Axios({
         method: 'post',
         url: USR_API + "/update",
@@ -81,8 +88,8 @@ const askForgotPasswordToken = (email) => {
     return Axios.put(USR_API + "/forgotPassword", {email:email} )
 }
 
-const get = (access = null, email = null, id = null) => {
-    let params ="?"
+const get = (access = null, email = null, id = null, admin=undefined) => {
+    let params = admin === true ?"?admin=1&":"?";
     if(access !== null){ params += "access=" + access }
     if(id !== null){
         if( params !== "" ) { params += "&"}

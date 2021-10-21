@@ -1,20 +1,17 @@
 import Axios from "axios";
-import {ADMIN_API, ORG_API} from "../../config";
+import {ADMIN_API, USR_API, ORG_API} from "../../config";
 
 
 /** ADMIN USER **/
 function getUser(access = null, id =null) {
-    let params = "?";
-    if(access !== null){ params += "access=" + access }
+    let params = "?admin=1";
+    if(access !== null){ params += "&access=" + access }
     if(id !== null){
-        if( params !== "" ) { params += "&"}
-        params += "id=" + id
+        params += "&id=" + id
     }
-    if(params === "?" ){
-        return Axios.get(ADMIN_API +"/user" )
-    }else {
-        return Axios.get(ADMIN_API + "/user" + params)
-    }
+
+    return Axios.get(USR_API +"/public" + params)
+
 }
 
 const putUser = (user) => {
