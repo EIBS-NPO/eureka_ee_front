@@ -43,6 +43,18 @@ const getbodyFormData = (user) => {
     return bodyFormData;
 }
 
+const getUrlParams = (access, user=undefined, admin=undefined) => {
+    let params = "?access="+access
+    if(admin === true) params += "&admin=1";
+    if(user && user.id) params += "&id="+user.id
+    if(user && user.firstname) params += "&firstname="+user.firstname
+    if(user && user.lastname) params += "&lastname="+user.lastname
+    if(user && user.email) params += "&email="+user.email
+    if(user && user.phone) params += "&phone="+user.phone
+    if(user && user.mobile) params += "&mobile="+user.mobile
+    return params
+}
+
 const register = (user) =>  {
     let bodyFormData = getbodyFormData(user);
     return Axios({
@@ -88,7 +100,11 @@ const askForgotPasswordToken = (email) => {
     return Axios.put(USR_API + "/forgotPassword", {email:email} )
 }
 
-const get = (access = null, email = null, id = null, admin=undefined) => {
+const get = (access, user, admin= false) =>{
+    return Axios.get(USR_API + "/public" + getUrlParams(access, user, admin) )
+}
+
+const get2 = (access = null, email = null, id = null, admin=undefined) => {
     let params = admin === true ?"?admin=1&":"?";
     if(access !== null){ params += "access=" + access }
     if(id !== null){

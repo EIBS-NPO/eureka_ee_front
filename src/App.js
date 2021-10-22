@@ -4,7 +4,7 @@ import { createMedia } from "@artsy/fresnel";
 import AuthContext from "./__appContexts/AuthContext";
 import MediaContext from "./__appContexts/MediaContext";
 
-import AppRouter from "./__appComponents/AppRouter";
+import AppRouter from "./___router/AppRouter";
 
 import authAPI from "./__services/_API/authAPI";
 
@@ -39,7 +39,7 @@ import fileAPI from "./__services/_API/fileAPI";
      // todo provoque un rechargement de la page, a placer dans le compo nécessaire, avec loader
      const [allowedMimes, setAllowedMimes] = useState([])
      useEffect(async()=>{
-
+//todo :alert console for async
          let response = await fileAPI.getAllowedMime()
              .catch(error =>{
                  console.log(error.response)

@@ -1,4 +1,4 @@
-import LanguageSelector from "../__appComponents/_routerComponents/_mainComponents/LanguageSelector";
+import LanguageSelector from "../___pages/components/menus/components/LanguageSelector";
 import AuthContext from "./AuthContext";
 import {useContext} from "react";
 import {Dropdown} from "semantic-ui-react";
