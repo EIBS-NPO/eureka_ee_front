@@ -11,6 +11,7 @@ export function RefreshOptionAndDroppedSelection(options, droppedSelection, init
     //force eventually DropSelected refresh
  //   let dropIsRefresh = false
     index = droppedSelection.indexOf(droppedSelection.find(a => a.id === initialObjectId))
+
     if (index !== -1) {
         droppedSelection.splice(index, 1, updatedObject);
      //   dropIsRefresh = true

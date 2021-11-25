@@ -13,7 +13,7 @@ import {DisplayConfirmAccountProcess, UpdateUserForm} from "../components/entity
 import {AddressForm} from "../components/Address";
 import mailerAPI from "../../__services/_API/mailerAPI";
 import authAPI from "../../__services/_API/authAPI";
-import {HandleGetUsers } from "../../__services/_Entity/userServices";
+import {HandleGetUsers, HandleUserUpdate} from "../../__services/_Entity/userServices";
 
 const UserPage_Admin = ({history}) => {
     const { t } = useTranslation()
@@ -31,9 +31,9 @@ const UserPage_Admin = ({history}) => {
 
 
     const handleAction = ( type, user ) => {
-            if(type === "handleEnabling"){
+            /*if(type === "handleEnabling"){
                 user = {id:user.id, roles:user.roles}
-            }
+            }*/
             setSelectedUser(user)
             setActionSelected(type)
             setShow(true)
@@ -60,6 +60,7 @@ const UserPage_Admin = ({history}) => {
     //todo check if run  maybe conflic with return array or not by bdd
     //tod voir ci-dessous
     const postTreatment = async (userResponse) => {
+
         //if admin change user's email
         if (selectedUser.email !== userResponse.email) {
             //send confirm mail to the userUpdated
@@ -81,17 +82,27 @@ const UserPage_Admin = ({history}) => {
             if(userResponse.firstname !== firstname)setFirstname(userResponse.firstname)
             if(userResponse.lastname !== lastname)setLastname(userResponse.lastname)
         }
-        RefreshOptionAndDroppedSelection(users, userDropSelected, selectedUser.id, userResponse[0])
+        RefreshOptionAndDroppedSelection(users, userDropSelected, selectedUser.id, userResponse)
         hideModal()
     }
 
-    const postTreatmentConfirmUser = () => {
-        HandleGetUsers({access:"search", user:{id:selectedUser.id}},
-            postTreatment, setPostTreatmentLoader, setError, history, true)
+    const postTreatmentConfirmUser = async () => {
+        function prePostTreatment(response) {
+            postTreatment(response[0])
+        }
+        await HandleGetUsers({access: "search", user: {id: selectedUser.id}},
+            prePostTreatment, setPostTreatmentLoader, setError, history, true
+        )
+    }
+
+    const HandleEnabling = (user) => {
+        HandleUserUpdate(
+            {id:user.id, roles:user.roles},
+            postTreatment, setPostTreatmentLoader, setError, history, true
+        )
     }
 
     const [userDropSelected, setUserDropSelected] = useState([])
-
     return (
         <div className="card">
             <h1> {t("admin_users")}</h1>
@@ -199,14 +210,14 @@ const UserPage_Admin = ({history}) => {
 
                             {actionSelected === 'handleEnabling' &&
                                 <>
-                                    <p> TODO Enabling confirm message TODO</p>
+                                    <p> TODO trad Enabling confirm message TODO</p>
                                     <p> Un utilisateur désactivé, pour toujours se connecter, mais ne pourra plus créer/modifier de ressource. Sn propre compte y compris. </p>
                                     <p> Il ne pourra plus voir les ressources privées non plus. </p>
 
                                     <Button.Group>
                                         <Button size="small" onClick={hideModal}> { t("cancel") } </Button>
                                         <Button.Or />
-                                        {/*<Button size="small" positive onClick={()=>preSubmit(selectedUser)} > { t("confirm") } </Button>*/}
+                                        <Button size="small" positive onClick={()=>HandleEnabling(selectedUser)} > { t("confirm") } </Button>
                                     </Button.Group>
                                 </>
 

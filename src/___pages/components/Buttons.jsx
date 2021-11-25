@@ -92,7 +92,7 @@ export const BtnRemove = ({ t, removeAction, iconName= undefined }) => {
 export const MailInput = ({t, email, isConfirmed, isAdmin=false}) => {
     return(
         email ?
-            isConfirmed && isAdmin ?
+            isConfirmed ?
                 <Label
                     as="a"
                     basic color="teal"
@@ -102,13 +102,15 @@ export const MailInput = ({t, email, isConfirmed, isAdmin=false}) => {
                 />
             :
                 <Label
-                    basic color="red"
+                    as="a"
+                    basic color={ isAdmin ? "red" : "teal"}
+                    href={"mailto:" + email}
                     icon='mail'
-                    content={ t('not_confirmed') }
+                    content={email }
                 />
         :
             <Label
-                basic color="teal"
+                basic color="red"
                 icon='mail'
                 content={ t('not_specified') }
             />

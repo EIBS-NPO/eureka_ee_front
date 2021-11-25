@@ -730,7 +730,7 @@ const HeaderMenu = () => {
                     />
                 </Segment>*/}
 
-                <Header as='h1' >
+                <Header >
                     <Image
                         alt="Eureka Empowerment environment logo"
                         src={eee_logo}
@@ -775,7 +775,7 @@ const HeaderMenu = () => {
             <Segment id="header_menu" basic>
                {/* <EEE_Header />*/}
                 <Media greaterThan="xs">
-                    <Segment.Group horizontal basic>
+                    <Segment.Group horizontal>
                         <Segment id="logo" basic textAlign='center' float="left">
                             <Image
                                 alt='Eureka-Interreg V FWVL'

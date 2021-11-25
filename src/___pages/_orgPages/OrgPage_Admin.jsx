@@ -39,15 +39,6 @@ const OrgPage_Admin = (history ) => {
         }
 
     }
-/*
-    const [modalSettings, setModalSettings] = useState({
-        show:false,
-        title:"",
-        message:"",
-        action:{},
-        target:{},
-        cancel:{}
-    })*/
 
     const cancelForm = () => {
         hideModal()
@@ -146,7 +137,7 @@ const OrgPage_Admin = (history ) => {
 
             {!searchLoader && orgDropSelected.length > 0 &&
                 orgDropSelected.map(o => (
-                    <ManageOrg org={o}  handleAction={handleAction} loader={loader2}/>
+                    <ManageOrg key={o.id} org={o}  handleAction={handleAction} loader={loader2}/>
                 ))
             }
 

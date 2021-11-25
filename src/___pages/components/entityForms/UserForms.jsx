@@ -16,6 +16,7 @@ import {
     HandleUserUpdate
 } from "../../../__services/_Entity/userServices";
 import {LoaderWithMsg} from "../Loader";
+import {BtnForSaveOrCancel} from "../Buttons";
 
 export const CommonUserFormFields = ({t, user, setUser, errors }) => {
     return (
@@ -170,10 +171,15 @@ export const DisplayConfirmAccountProcess = ({t, tokenActivation, postTreatment,
             {forAdmin && !loader && !isConfirmHandle &&
                 <>
                     <Message warning> { t('are_you_sure?')} </Message>
+
                     <Button.Group>
                         <Button size="small" onClick={(e) => handleCancel(e)}> { t("cancel") } </Button>
                         <Button.Or />
-                        <Button size="small" positive onClick={ ()=>setIsConfirmHandle(true)}> { t("save") } </Button>
+                        <Button
+                            size="small"
+                            positive
+                            onClick={ ()=>setIsConfirmHandle(true)}
+                        > { t("save") } </Button>
                     </Button.Group>
                 </>
 

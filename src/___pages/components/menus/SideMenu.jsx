@@ -222,7 +222,7 @@ const HeaderMenu = ( props ) => {
         return (
                 <Media className="parent-sidebar" greaterThan="xs">
                         <Segment id="sidebar" className="overflowed-invisible" floated='left' vertical basic padded >
-                            {/*<Eeelogo/>*/}
+                            <Eeelogo/>
                             <SideDesktop/>
                         </Segment>
 

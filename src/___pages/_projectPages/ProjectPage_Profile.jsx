@@ -4,6 +4,7 @@ import { useTranslation, withTranslation} from "react-i18next";
 import AuthContext from "../../__appContexts/AuthContext";
 import {HandleGetProjects } from "../../__services/_Entity/projectServices";
 import {DisplayProject} from "../components/ManageProject";
+import {ContentContainer} from "../components/Loader";
 
 const ProjectPage_Profile = (props) => {
     const { t } = useTranslation()

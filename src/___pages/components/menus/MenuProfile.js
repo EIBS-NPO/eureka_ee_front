@@ -25,7 +25,7 @@ export const DropdownItem = ({ t, setActiveItem, item , isOwner= false, isAdmin=
 
     return (
         <>
-            { item.header && item.header &&
+            { item.header &&
                 <Dropdown.Header
                     content={ t( getGenderTrad(item.itemName) ) +" "+ t(item.header) }
                 />

@@ -87,6 +87,7 @@ const ManageOrg = ({org, handleAction, loader = false}) => {
     )
 }
 
+//todo fluid bad don't know where
 export const DisplayOrg = ({t, ctx, isOwner, org, setOrg, loader, history} ) =>{
 
     const [activeItem, setActiveItem] = useState("presentation")
