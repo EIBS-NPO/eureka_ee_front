@@ -194,7 +194,7 @@ export const DisplayConfirmAccountProcess = ({t, tokenActivation, postTreatment,
     )
 }
 
-//todo  restyle or not
+//todo  restyle
 export const SearchUserForm = ({user, setUser, handleSubmit, formErrors, forAdmin = false}) => {
     const { t } = useTranslation()
     return (

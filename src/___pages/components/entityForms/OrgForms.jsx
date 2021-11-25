@@ -236,7 +236,7 @@ export const ProjectsMenuForOrg = ({ isReferent, org, setFilteredProjects, userP
     }
 
     return (
-        <Menu>
+        <Menu stackable>
             {( isReferent || org.isAssigned || isAdmin ) &&
             <Dropdown item text={ t('associate_with') + " " +  t('project') }
                       loading={ loaders }
@@ -303,7 +303,7 @@ export const ActivitiesMenuForOrg = ({t, isReferent, org, setFilteredActivities,
     }
 
     return (
-        <Menu>
+        <Menu stackable >
             {(isReferent || org.isAssigned || isAdmin ) &&
             <Dropdown item text={ t('share') + " " + t('activity')} loading={ loaders } scrolling >
                 <Dropdown.Menu>
@@ -321,7 +321,7 @@ export const ActivitiesMenuForOrg = ({t, isReferent, org, setFilteredActivities,
                 </Dropdown.Menu>
             </Dropdown>
             }
-            <Menu.Item>
+            <Menu.Item position="right">
                 <SearchInput
                     elementList={org.activities}
                     setResultList={setFilteredActivities}

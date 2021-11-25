@@ -1,45 +1,50 @@
-import {Dropdown, Header, Image, Segment} from "semantic-ui-react";
+import {Dropdown, Header, Segment} from "semantic-ui-react";
+
+function getGenderTrad(itemName){
+    let traductionKey="share_in"
+    switch(itemName){
+        case "organization":
+        case "activity":
+            traductionKey = "f_gender_shared_in"
+            break;
+        case "project":
+            traductionKey = "m_gender_shared_in"
+            break;
+        case "organizations":
+        case "activities":
+            traductionKey = "f_plural_shared_in"
+            break;
+        case "projects":
+            traductionKey = "m_plural_shared_in"
+            break;
+    }
+    return traductionKey
+}
 
 export const DropdownItem = ({ t, setActiveItem, item , isOwner= false, isAdmin= false }) => {
 
-    /*
-    { avatar: true, src: '/images/avatar/small/elliot.jpg' },
-     */
     return (
         <>
-            {item.header && item.header && <Dropdown.Header content={item.header}/>}
+            { item.header && item.header &&
+                <Dropdown.Header
+                    content={ t( getGenderTrad(item.itemName) ) +" "+ t(item.header) }
+                />
+            }
             <Dropdown.Item
                 key= { item.itemName }
                 onClick={ () => setActiveItem( item.itemName ) }
                 text= { item.text ?  <Header> {item.text} </Header>
                     :
-                     t('no_' + item.itemName)
-                     (isOwner || isAdmin) &&   <Header> t("add_" + item.itemName) </Header>
+                    <Header>
+                        {t('no_' + item.itemName)}
+                        {(isOwner || isAdmin) &&  <Header.Subheader> {t("add")} </Header.Subheader>}
+                    </Header>
+
                 }
                 image= {item.picture ? {avatar: true, src: `data:image/jpeg;base64,${item.picture}` }
                     : undefined
                 }
             />
-           {/* <Dropdown.Item onClick={ () => setActiveItem( item.itemName ) } >
-                { item.text &&
-                <span>
-                    {item.picture &&
-                    <Image src ={`data:image/jpeg;base64,${item.picture}`}   avatar size="mini"/>
-                    }
-                    <Header> {item.text} </Header>
-                </span>
-                }
-
-                { !item.text &&
-                <>
-                    { t('no_' + item.itemName) }
-                    {(isOwner || isAdmin) &&
-                    <Header>  {"add_" + item.itemName} </Header>
-                    }
-                </>
-                }
-
-            </Dropdown.Item>*/}
             <Dropdown.Divider />
         </>
 

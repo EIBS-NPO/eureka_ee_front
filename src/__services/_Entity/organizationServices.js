@@ -63,8 +63,8 @@ export const HandleGetOrgs = async (params, postTreatment, setLoader = undefined
     if (params.access === 'public') {
         //or all or partner
         if(!params.org) params.access = "all"
-        //todo test work for all and partner too
 
+        //todo handle errors
         orgAPI.getPublic(params.access, params.org)
             .then(response => {
                 //    postTreatment( response.data.length === 1 ? response.data[0] : response.data )

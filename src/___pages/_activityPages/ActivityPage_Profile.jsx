@@ -1,9 +1,9 @@
 
 import React, { useEffect, useState, useContext } from 'react';
-import {Container, Segment, Message} from "semantic-ui-react";
+import {Container, Message} from "semantic-ui-react";
 import {useTranslation, withTranslation} from "react-i18next";
 import AuthContext from "../../__appContexts/AuthContext";
-import {LoaderWithMsg} from "../components/Loader";
+import {ContentContainer} from "../components/Loader";
 import { HandleGetActivities } from "../../__services/_Entity/activityServices";
 import {DisplayActivity} from "../components/ManageActivity";
 
@@ -44,7 +44,13 @@ const ActivityPage_Profile = ( props ) => {
 
             //load the activity
             await HandleGetActivities(
-                {access: ctx, activity:{id:urlParams[1]}}, postTreatment, setLoader, setError, false, props.history )
+                {access: ctx, activity:{id:urlParams[1]}},
+                postTreatment,
+                setLoader,
+                setError,
+                false,
+                props.history
+            )
         }
         fetchData()
         //dismiss unmounted warning
@@ -55,11 +61,10 @@ const ActivityPage_Profile = ( props ) => {
 
     return (
 
-        <Segment className="card" basic>
-            <LoaderWithMsg
-                isActive={loader}
-                msg={props.t('loading') +" : " + props.t('activity') }
-            />
+        <ContentContainer
+            loaderActive={loader}
+            loaderMsg={ props.t('loading') +" : " + props.t('activity') }
+        >
 
             {!loader &&
             <>
@@ -85,7 +90,7 @@ const ActivityPage_Profile = ( props ) => {
                 }
             </>
             }
-        </Segment>
+        </ContentContainer>
     );
 };
 

@@ -8,6 +8,7 @@ import {checkActivityFormValidity, HandleCreateActivity} from "../../__services/
 import {FileUploadFormInput} from "../components/FilesComponents";
 import FileInfos from "../components/forms/fileHandler/FileInfos";
 import { BtnRemove} from "../components/Buttons";
+import {ContentContainer} from "../components/Loader";
 
 const CreateActivity = ({ history, t }) => {
 
@@ -36,23 +37,6 @@ const CreateActivity = ({ history, t }) => {
             await HandleCreateActivity(newActivity, postTreatment, setLoader, setErrors, history)
         }
     }
-  /*  const handleSubmit = async(event) => {
-        event.preventDefault()
-        activity.summary = summary
-        let newActivity
-
-        //create activity entity
-        let response = await activityAPI.post(activity)
-            .catch(error => {
-                console.log(error.response)
-                setErrors(error.response)
-            })
-        if(response && response.status === 200){//if success
-            newActivity = response.data[0]
-        }
-        setActivity(newActivity)
-        history.replace('/activity/owned_' + newActivity.id)
-    };*/
 
     const [errors, setErrors] = useState({
         file:"",
@@ -71,43 +55,36 @@ const CreateActivity = ({ history, t }) => {
     }
 
     return (
-        <div className="card">
+        <ContentContainer
+            loaderActive={loader}
+            loaderMsg={ t('loading') +" : " + t('creation') +" "+ t('activity') }
+        >
             <h1> {t('new_activity')} </h1>
+            {!loader &&
             <Segment.Group horizontal>
                 <Segment>
-                    <PictureForm entityType="activity" entity={activity} setter={setActivity} />
+                    <PictureForm entityType="activity" entity={activity} setter={setActivity}/>
                 </Segment>
                 <Segment placeholder>
                     <Container textAlign='center'>
-                        <FileInfos activity={activity} />
-                        <FileUploadFormInput activity={activity} setActivity={setActivity} />
+                        <FileInfos activity={activity}/>
+                        <FileUploadFormInput activity={activity} setActivity={setActivity}/>
                         {activity.file &&
-                            <BtnRemove t={t} removeAction={(e)=>handleCancel(e)} />
+                        <BtnRemove t={t} removeAction={(e) => handleCancel(e)}/>
                         }
-                        {/*<FileUploadForm
-                            t={t}
-                            activity={activity}
-                            postTreatment={setActivity}
-                            error={errors}
-                            history={history}
-                        />*/}
-                        {/*<FileUpload
-                            activity={ activity } setter={ setActivity }
-                            handleDirect={false}
-                            errors={errors.file?errors.file:undefined}
-                        />*/}
                     </Container>
                 </Segment>
             </Segment.Group>
-
+            }
+            {!loader &&
             <CreateActivityForm
-                activity={activity} setActivity={setActivity}
-                handleSubmit={preSubmit}
-                loader={loader} errors={errors}
-                history={history}
+            activity={activity} setActivity={setActivity}
+            handleSubmit={preSubmit}
+            errors={errors}
+            history={history}
             />
-
-        </div>
+            }
+        </ContentContainer>
     );
 };
 

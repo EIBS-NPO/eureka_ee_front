@@ -1,10 +1,10 @@
 
 import React, {useEffect, useState, useContext} from 'react';
-import {Container, Segment, Message } from "semantic-ui-react";
+import {Container,  Message } from "semantic-ui-react";
 import {withTranslation} from "react-i18next";
 import AuthContext from "../../__appContexts/AuthContext";
 import {HandleGetOrgs } from "../../__services/_Entity/organizationServices";
-import {LoaderWithMsg} from "../components/Loader";
+import {ContentContainer} from "../components/Loader";
 import {DisplayOrg} from "../components/ManageOrg";
 
 
@@ -58,7 +58,7 @@ const OrgPage_Profile = (props) => {
             }
 
             await HandleGetOrgs(
-                {access:ctx, project:{id:urlParams[1]}},
+                {access:ctx, org:{id:urlParams[1]}},
                 postTreatment,
                 setLoader,
                 setErrors,
@@ -77,11 +77,10 @@ const OrgPage_Profile = (props) => {
     }, []);
 
     return (
-        <Segment className="card">
-            <LoaderWithMsg
-                isActive={loader}
-                msg={props.t('loading') +" : " + props.t('organization') }
-            />
+        <ContentContainer
+            loaderActive={loader}
+            loaderMsg={ props.t('loading') +" : " + props.t('organization') }
+        >
             {!loader &&
                 <>
                 {org ?
@@ -107,7 +106,7 @@ const OrgPage_Profile = (props) => {
                 }
             </>
             }
-        </Segment>
+        </ContentContainer>
     );
 };
 

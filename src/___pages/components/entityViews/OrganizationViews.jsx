@@ -144,7 +144,7 @@ export const PresentationPanelForOrg = ({ ctx, org, setOrg, isReferent }) => {
             />
             :
             <>
-                <Card obj={org} type="org" profile={true} withPicture={false} ctx={ ctx }/>
+                <Card obj={org} type="org" profile={true} ctx={ ctx }/>
 
                 {isAuthenticated && isReferent && !isForm &&
                 <BtnForEdit t={t} handleForm={ ()=>setIsForm(true) }/>

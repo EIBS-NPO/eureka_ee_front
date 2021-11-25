@@ -1,11 +1,8 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {
-    Container, Segment, Message
-} from "semantic-ui-react";
+import {Container, Message} from "semantic-ui-react";
 import { useTranslation, withTranslation} from "react-i18next";
 import AuthContext from "../../__appContexts/AuthContext";
 import {HandleGetProjects } from "../../__services/_Entity/projectServices";
-import {LoaderWithMsg} from "../components/Loader";
 import {DisplayProject} from "../components/ManageProject";
 
 const ProjectPage_Profile = (props) => {
@@ -58,11 +55,10 @@ const ProjectPage_Profile = (props) => {
     }, []);
 
     return (
-        <Segment className="card">
-            <LoaderWithMsg
-                isActive={loader}
-                msg={props.t('loading') +" : " + props.t('project') }
-            />
+        <ContentContainer
+            loaderActive={loader}
+            loaderMsg={ props.t('loading') +" : " + props.t('project') }
+        >
 
             {!loader &&
             <>
@@ -87,7 +83,7 @@ const ProjectPage_Profile = (props) => {
                     }
                 </>
                 }
-        </Segment>
+        </ContentContainer>
     );
 };
 

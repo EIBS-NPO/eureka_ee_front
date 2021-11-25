@@ -12,12 +12,12 @@ import {
 import { useHistory } from "react-router-dom";
 
 
-export const CreateActivityForm = ( { activity, setActivity, handleSubmit, loader, errors }) => {
+export const CreateActivityForm = ( { activity, setActivity, handleSubmit, errors }) => {
 
     const { t } = useTranslation()
 
     return (
-        <Form onSubmit={()=>handleSubmit(activity)} loading={loader}>
+        <Form onSubmit={()=>handleSubmit(activity)} >
             <TextFormField t={t}
                            fieldName="title"
                            iconName="tag"
@@ -182,7 +182,7 @@ export const ProjectMenuForActivity = ({ t, activityProject, userProjects, userA
     }
 
     return (
-        <Menu>
+        <Menu stackable>
             {!activityProject &&
             <Dropdown item text={ t('share_in') + " " +  t('project')} loading={loader} disabled={loader}>
                 <Dropdown.Menu>
@@ -239,7 +239,7 @@ export const OrgMenuForActivity = ({ t, isOwner, activityOrg, userOrgs, userAssi
         )
     }
     return (
-        <Menu>
+        <Menu stackable>
             {(isOwner || isAdmin) && !activityOrg &&
             <Dropdown item text={ t('share_in') + " " +  t('organization') } loading={loader} scrolling>
                 <Dropdown.Menu>

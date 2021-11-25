@@ -4,7 +4,6 @@ import PictureForm from "../forms/picture/PictureForm";
 import {useTranslation, withTranslation} from "react-i18next";
 import React, {useContext, useEffect, useState} from "react";
 import handleChange, { DatesFormFields, MultiTextArea, TextFormField} from "../forms/formsServices";
-import {EndDateFormInput, StartDateFormInput} from "../Date";
 import {useHistory} from "react-router-dom";
 import {
     checkProjectChanges,
@@ -138,26 +137,6 @@ export const UpdatedProjectForm = ({project, postTreatment, forAdmin = false, ca
                         loader={loader}
                         errors={errors}
                     />
-                    {/*<Segment>
-                        <Label attached="top">
-                            { t('dating') }
-                        </Label>
-
-                        <StartDateFormInput
-                            object={updatedProject}
-                            setObject={setUpdatedProject}
-                            loader={loader}
-                            errors={errors}
-                        />
-
-                        <EndDateFormInput
-                            object={updatedProject}
-                            setObject={setUpdatedProject}
-                            loader={loader}
-                            errors={errors}
-                        />
-
-                    </Segment>*/}
 
                     <BtnForSaveOrCancel
                         t={t}
@@ -214,7 +193,7 @@ export const ActivitiesMenuForProject = ({t, isOwner, project, setFilteredActivi
     }
 
     return (
-        <Menu>
+        <Menu stackable>
             {(isOwner || project.isAssigned || isAdmin ) &&
             <Dropdown item text={ t('share') + " " +  t('activity')} loading={loader} disabled={loader}>
                 <Dropdown.Menu>
@@ -231,7 +210,7 @@ export const ActivitiesMenuForProject = ({t, isOwner, project, setFilteredActivi
                 </Dropdown.Menu>
             </Dropdown>
             }
-            <Menu.Item>
+            <Menu.Item position="right">
                 <SearchInput
                     elementList={project.activities}
                     setResultList={setFilteredActivities}
@@ -270,7 +249,7 @@ export const OrgsMenuForProject = ({ t, projectOrg, userOrgs, userAssignOrgs, lo
     }
 
     return (
-        <Menu>
+        <Menu stackable>
             {!projectOrg &&
             <Dropdown item text={ t('associate_with') + " " +  t('organization')} loading={loader} disabled={loader} scrolling>
                 <Dropdown.Menu>

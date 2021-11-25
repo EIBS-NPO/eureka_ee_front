@@ -81,7 +81,14 @@
   "add": "ajouter",
   "share": "partager",
   "associate": "associer",
+
   "share_in": "partager dans",
+  "f_gender_shared_in": "partagée dans",
+  "m_gender_shared_in": "partagé dans",
+  "m_plural_shared_in": "partagés dans",
+  "f_plural_shared_in": "partagées dans",
+
+
   "associate_with": "associer avec",
   "other": "autre",
   "later": "plus tard",

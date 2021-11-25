@@ -29,7 +29,7 @@ const CreateOrg = ({ history, t }) => {
         //todo verif handle address?
         if(checkOrgFormValidity( newOrg, setErrors )){
 
-            HandleCreateOrg( newOrg, postTreatment, setLoader, setErrors, history)
+            await HandleCreateOrg( newOrg, postTreatment, setLoader, setErrors, history)
         }
  //       if (address.address) { org.address = address}
         //   setOrg({...org, description: desc})
@@ -39,33 +39,6 @@ const CreateOrg = ({ history, t }) => {
     const postTreatment = ( orgResult, urlMsg ) => {
         history.replace("/org/owned_" + orgResult.id + urlMsg)
     }
-    /*const handleSubmit = async() => {
-        setLoader(true)
-        let newOrg
-        let urlMsg = ""
-
-        if(await (authAPI.isAuthenticated())) {
-            let response = await OrgAPI.post(org)
-                .catch(error => {
-                    console.log(error.response.data)
-                    setErrors(error.response.data);
-                })
-            if (response && response.status >= 200 && response.status < 300) {
-                switch (response.status) {
-                    case 206 :
-                        newOrg = response.data[1]
-                        urlMsg = "_" + response.data[0].split(" : ")[2];
-                        break;
-                    default :
-                        newOrg = response.data[0]
-                }
-            }else {
-                history.replace('/login')
-            }
-        }
-
-        history.replace("/org/owned_" + newOrg.id + urlMsg)
-    };*/
 
     const [errors, setErrors] = useState({
         name: "",

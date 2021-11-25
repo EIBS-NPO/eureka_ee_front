@@ -147,7 +147,7 @@ export const PresentationPanelForProject = ({ ctx, project, setProject, isOwner 
             />
             :
             <>
-                <Card obj={project} type="project" profile={true} withPicture={false} ctx={ctx} />
+                <Card obj={project} type="project" profile={true} ctx={ctx} />
 
                 {isAuthenticated && isOwner && !isForm &&
                 <BtnForEdit t={t} handleForm={()=>setIsForm(true)} />
