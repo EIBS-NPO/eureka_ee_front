@@ -54,7 +54,7 @@ const remove = (id) => {
 }
 
 const getAllowedMime = () =>{
-    return Axios.get(API_URL + "/file/allowed")
+    return Axios.get(API_URL + "/activity/allowed/public")
 }
 
 // eslint-disable-next-line import/no-anonymous-default-export

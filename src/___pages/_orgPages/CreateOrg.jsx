@@ -1,15 +1,11 @@
 
-//todo look attention folder
 import React, { useState} from "react";
 import { withTranslation } from 'react-i18next';
-import OrgAPI from "../../__services/_API/orgAPI";
-import {Label, Segment, Button, Form, Icon, Item, Loader} from "semantic-ui-react";
+import { Segment, Loader} from "semantic-ui-react";
 
-import TextAreaMultilang from "../components/TextAreaMultilang";
 import PictureForm from "../components/forms/picture/PictureForm";
-import AddressForm from "../components/forms/_ATTENTION/AddressForm2";
-import authAPI from "../../__services/_API/authAPI";
-import utilities from "../../__services/utilities";
+import {checkOrgFormValidity, HandleCreateOrg} from "../../__services/_Entity/organizationServices";
+import {CreateOrgForm} from "../components/entityForms/OrgForms";
 
 const CreateOrg = ({ history, t }) => {
 
@@ -18,35 +14,32 @@ const CreateOrg = ({ history, t }) => {
         picture:undefined,
         name: "",
         type: "",
-        description: {},
+        description: {
+            "en-GB":"",
+            "fr-FR":"",
+            "nl-BE":""
+        },
         email: "",
         phone: "",
         address: undefined
     });
 
-    const [address, setAddress] = useState({})
+    const preSubmit = async ( newOrg ) => {
+        //todo checkValidity
+        //todo verif handle address?
+        if(checkOrgFormValidity( newOrg, setErrors )){
 
-    const [desc, setDesc] = useState({
-        'en-GB':"",
-        'fr-FR':"",
-        'nl-BE':""
-    })
-
-    //todo redundant const, place it into a service ?
-    const handleChange = (event) => {
-        const { name, value } = event.currentTarget;
-        setOrg({ ...org, [name]: value });
-    };
-
-    const preSubmit = async (event) => {
-        event.preventDefault()
-        org.description = desc;
-        if (address.address) { org.address = address}
+            HandleCreateOrg( newOrg, postTreatment, setLoader, setErrors, history)
+        }
+ //       if (address.address) { org.address = address}
         //   setOrg({...org, description: desc})
-        handleSubmit()
+      //  handleSubmit()
     }
 
-    const handleSubmit = async() => {
+    const postTreatment = ( orgResult, urlMsg ) => {
+        history.replace("/org/owned_" + orgResult.id + urlMsg)
+    }
+    /*const handleSubmit = async() => {
         setLoader(true)
         let newOrg
         let urlMsg = ""
@@ -72,10 +65,11 @@ const CreateOrg = ({ history, t }) => {
         }
 
         history.replace("/org/owned_" + newOrg.id + urlMsg)
-    };
+    };*/
 
     const [errors, setErrors] = useState({
         name: "",
+        description:"",
         type: "",
         email: "",
         phone: "",
@@ -89,85 +83,8 @@ const CreateOrg = ({ history, t }) => {
                     <Segment>
                         <PictureForm entityType="org" entity={org} setter={setOrg} />
                     </Segment>
-                    <Form onSubmit={preSubmit}>
-                        <Segment>
-                            {/*<Label attached='top'>
-                                <h4>{utilities.strUcFirst(t("contact"))}</h4>
-                            </Label>*/}
-                            <Item>
-                                <Form.Input
-                                    label={t('name')}
-                                    name="name"
-                                    value={org.name}
-                                    onChange={handleChange}
-                                    placeholder={t('name') + "..."}
-                                    type="text"
-                                    error={errors.name ? errors.name : null}
-                                    required
-                                />
-                            </Item>
-                            <Item>
-                                <Form.Input
-                                    label={t('legal_status')}
-                                    name="type"
-                                    type="text"
-                                    value={org.type}
-                                    onChange={handleChange}
-                                    placeholder={t('legal_status') + "..."}
-                                    error={errors.type ? errors.type : null}
-                                    required
-                                />
-                            </Item>
-                        </Segment>
 
-                        <Segment>
-                            <Label attached='top'>
-                                <h4>{utilities.strUcFirst(t("contact"))}</h4>
-                            </Label>
-                            <Form.Input
-                                icon='mail'
-                                iconPosition='left'
-
-                                label={t('email')}
-                                name="email"
-                                type="email"
-                                value={org.email}
-                                onChange={handleChange}
-                                placeholder={t('email') + "..."}
-                                error={errors.email ? errors.email : null}
-                            />
-                            <Form.Input
-                                icon='phone'
-                                iconPosition='left'
-
-                                label={t('phone')}
-                                name="phone"
-                                type="phone"
-                                value={org.phone}
-                                onChange={handleChange}
-                                placeholder={t('phone') + "..."}
-                                error={errors.phone ? errors.phone : null}
-                            />
-                            <Segment>
-                                <AddressForm address={address} setAddress={setAddress} isRequired={true}/>
-                            </Segment>
-
-                        </Segment>
-
-                        <Segment>
-                            <Label attached="top">
-                                { t('description') }
-                            </Label>
-                            <TextAreaMultilang  tabText={desc} setter={setDesc} name="description" min={2} max={500}/>
-                        </Segment>
-
-                        <Button fluid animated >
-                            <Button.Content visible>{ t('save') } </Button.Content>
-                            <Button.Content hidden>
-                                <Icon name='save' />
-                            </Button.Content>
-                        </Button>
-                    </Form>
+                    <CreateOrgForm org={org} setOrg={setOrg} handleSubmit={preSubmit} loader={loader} errors={errors}/>
                 </>
 
             }

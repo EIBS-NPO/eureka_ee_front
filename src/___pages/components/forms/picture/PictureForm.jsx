@@ -3,7 +3,7 @@ import React from 'react';
 import {Image, Item } from "semantic-ui-react";
 import ImageUpload from "./ImageUpload";
 
-const PictureForm = ({ entityType, entity, setter, isCircular = false}) => {
+const PictureForm = ({ entity, setter, isCircular = false}) => {
 
     const srcImgToBlob = (blob) => {
         return  URL.createObjectURL(blob);
@@ -34,7 +34,6 @@ const PictureForm = ({ entityType, entity, setter, isCircular = false}) => {
                             }
                             <ImageUpload
                                 setter={setter}
-                                type={entityType}
                                 entity={entity}
                             />
                         </Item.Description>

@@ -4,8 +4,36 @@ export const checkPassword = (password) => {
     return regex.test(password)
 }
 
+export const checkUrlToken = (urlToken) => {
+    //todo
+}
+
 export const checkStringLenght = (str, min, max) => {
     return str.length >= min && str.length <= max
+}
+
+
+export const checkMultiTextHaveText = ( tabText ) => {
+    let result = false
+    for (const text of Object.entries(tabText)) {
+        if( text[1] !== "") result = true
+    }
+    return result
+}
+
+export const checkMultiTextHaveChange = async (initialTabText, actualTabText = {}) => {
+    let result = undefined
+  //  function checkChange() {
+        for (const [keyText, text] of Object.entries(actualTabText)) {
+            //  console.log(["text",text])
+            //  console.log(["intitialText",initialTabText[keyText]])
+            //  if(text !== initialTabText[keyText]) result = true
+            if (text !== initialTabText[keyText]) result = true
+        }
+  //  }
+  //  await checkChange()
+    return result ? result : false
+    //   return result
 }
 
 /*

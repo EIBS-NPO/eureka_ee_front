@@ -1,94 +1,74 @@
-import {Button, Form, Segment} from "semantic-ui-react";
+
 import React, {useState} from "react";
+import {Dropdown, Segment} from "semantic-ui-react";
 import {useTranslation} from "react-i18next";
+import { getSearchOptionFor } from "./searchMenuConfig"
+import { SearchUserForm } from "../../../entityForms/UserForms";
+import { SearchOrgForm } from "../../../entityForms/OrgForms";
+import { SearchProjectForm } from "../../../entityForms/ProjectForms";
+import {SearchActivityForm} from "../../../entityForms/ActivityForms";
 
 //todo check unused var
-export const UserSearchMenu = ({handleSearch, forAdmin = false}) => {
+export const SearchMenu = ({handleSearch, searchFor, forAdmin = false}) => {
     const { t } = useTranslation()
-    const[loader, seLoader] = useState(false)
-    const [user, setUser] = useState({})
+
+    const [object, setObject] = useState({})
+
+    //todo pass setter to froms to ?
     const [formErrors, setFormsErrors] = useState({
         email: "",
         lastname: "",
         firstname: "",
     })
 
+    //todo searchFor plural?
+    const [searchValue, setSearchValue] = useState('select_option_for_'+searchFor+'s')
+    const searchOptions = getSearchOptionFor(searchFor, t)
+
+    const searchChange = (e, {value}) => {
+        setSearchValue(value)
+        if(value !== 'select_option_for_load_'+searchFor+'s' && value !== "search"){
+            handleSubmit(e,value, forAdmin, object)
+        }
+    }
+
+    //todo
     const [active, setActive] = useState("")
 
-    const handleChange = (event) => {
-        const { name, value } = event.currentTarget;
-        setUser({ ...user, [name]: value });
-    };
-
-    const handleSubmit = (event, access, forAdmin, user = undefined) => {
-        console.log(event.currentTarget.name)
+    const handleSubmit = (event, access, forAdmin, submitedObject = undefined) => {
         setActive(event.currentTarget.name)
-        handleSearch(access, forAdmin, user)
+        console.log(submitedObject)
+        handleSearch(access, forAdmin, submitedObject)
+    }
+
+    const searchForm = () => {
+        switch(searchFor){
+            case "user":
+                return <SearchUserForm user={object} setUser={setObject} handleSubmit={handleSubmit} formErrors={formErrors} forAdmin={true} />
+            case "org":
+                return <SearchOrgForm org={object} setOrg={setObject} handleSubmit={handleSubmit} formErrors={formErrors} forAdmin={true} />
+            case "project":
+                return <SearchProjectForm project={object} setProject={setObject} handleSubmit={handleSubmit} formErrors={formErrors} forAdmin={true} />
+            case "activity":
+                return <SearchActivityForm activity={object} setActivity={setObject} handleSubmit={handleSubmit} formErrors={formErrors} forAdmin={true}/>
+
+        }
     }
 
     return (
-    <>
-        <Segment attached='bottom' >
-            <Form>
-                <Form.Group className="center wrapped" widths="equals">
-                    <Form.Input
-                        icon='user'
-                        iconPosition='left'
-                        placeholder={t("firstname")}
-                        name="firstname"
-                        type="text"
-                        value={user.firstname ? user.firstname : ""}
-                        onChange={handleChange}
-                        error={formErrors && formErrors.firstname ? formErrors.firstname : null}
-                    />
-                    <Form.Input
-                        icon='user'
-                        iconPosition='left'
-                        placeholder={t("lastname")}
-                        name="lastname"
-                        type="text"
-                        value={user.lastname ? user.lastname : ""}
-                        onChange={handleChange}
-                        error={formErrors && formErrors.lastname ? formErrors.lastname : null}
-                    />
-                    <Form.Input
-                        icon='user'
-                        iconPosition='left'
-                        placeholder={t("email")}
-                        name="email"
-                        type="text"
-                        value={user.email ? user.email : ""}
-                        onChange={handleChange}
-                        error={formErrors && formErrors.email ? formErrors.email : null}
-                    />
-                    {/*<Form.Button name="search" content={t('search')} basic color={active==="search"?"blue":"grey"}/>*/}
-                    <Form.Field>
-                        <Button name="search" content={t('search')}
-                                onClick={(e)=>handleSubmit(e,"search", forAdmin, user)}
-                                color={active==="search"?"blue":"grey"}
-                                basic
-                        />
-                    </Form.Field>
-                </Form.Group>
-            </Form>
-            <Button name="all" content={t('all')}
-                    onClick={(e)=>handleSubmit(e,"all", forAdmin)}
-                    color={active==="all"?"blue":"grey"}
-                    basic
+        <Segment >
+            <Dropdown
+                text={t(searchValue)}
+                closeOnBlur
+                value={searchValue}
+                options={searchOptions}
+                onChange={searchChange}
+                fluid
             />
 
-            <Button name="unConfirmed" content={t('unConfirmed')}
-                    onClick={(e)=>handleSubmit(e,"unConfirmed", forAdmin)}
-                    color={active==="unConfirmed"?"blue":"grey"}
-                    basic
-            />
-
-            <Button name="disabled" content={t('disabled')}
-                    onClick={(e)=>handleSubmit(e,"disabled", forAdmin)}
-                    color={active==="disabled"?"blue":"grey"}
-                    basic
-            />
+            {searchValue === "search" &&
+                searchForm()
+            }
         </Segment>
-    </>
     )
 }

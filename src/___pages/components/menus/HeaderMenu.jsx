@@ -1,14 +1,15 @@
-import {Button, Dropdown, Header, Icon, Image, Menu, Segment} from "semantic-ui-react";
+
+import React, {useContext, useState} from "react";
+import {Button, Dropdown, Header, Icon, Image, Item, Menu, Segment} from "semantic-ui-react";
 import {useTranslation, withTranslation} from "react-i18next";
 import {NavLink, useHistory} from "react-router-dom";
 import AuthContext from "../../../__appContexts/AuthContext";
-import {useContext, useState} from "react";
-import authAPI from "../../../__services/_API/authAPI";
-import LanguageSelector from "./components/LanguageSelector";
-import interreg_logo from "../../../_resources/logos/Interreg.jpg";
-import eee_banner from "../../../_resources/logos/EEE-banner1280-378-max.png"
 import MediaContext from "../../../__appContexts/MediaContext";
 import {strUcFirst} from "../../../__services/utilities";
+import LanguageSelector from "./components/LanguageSelector";
+import interreg_logo from "../../../_resources/logos/Interreg.jpg";
+
+import eee_logo from "../../../_resources/logos/icone-eureka.png"
 
 
 const HeaderMenu = () => {
@@ -18,24 +19,36 @@ const HeaderMenu = () => {
     const { t } = useTranslation()
     const history = useHistory();
 
-    const { isAuthenticated, setIsAuthenticated,
-        setIsAdmin,
-        lastname, setLastname,
-        firstname, setFirstname
-    } = useContext(AuthContext)
+    const { isAuthenticated, isAdmin, lastname, firstname} = useContext(AuthContext)
 
+
+    //todo  test
     const handleLogout = (props) => {
-        authAPI.logout()
+        /*authAPI.logout()
         setIsAuthenticated(false)
         setIsAdmin(false)
         setFirstname("")
-        setLastname("")
-        history.replace("/")
+        setLastname("")*/
+        history.replace("/login")
     };
+
+    const onClickMenu = (event) => {
+        const { name, value } = event.currentTarget;
+    //    setAddress({ ...address, [name]: value });
+    }
 
     const LogoLink = () => {
         return(
             <Segment id="bannerbar" >
+               {/* <Segment id="logo" basic textAlign="center">
+                    <Image
+                        alt="Eureka Empowerment environment logo"
+                        src={eee_logo}
+                        as='a'
+                        href="/"
+                    />
+                </Segment>*/}
+
                 <Segment id="logo" basic textAlign='center' >
                     <Image
                         alt='Eureka-Interreg V FWVL'
@@ -45,6 +58,7 @@ const HeaderMenu = () => {
                         target='_blank'
                     />
                 </Segment>
+
                 {/*<Segment id="logo" basic textAlign='center' >
                     <Image
                         alt='Eureka-Interreg V FWVL'
@@ -54,12 +68,12 @@ const HeaderMenu = () => {
                         target='_blank'
                     />
                 </Segment>*/}
-                <Segment className="banner" basic textAlign='center' >
+            {/*    <Segment className="banner" basic textAlign='center'>
                     <Image
                         alt='Eureka-Empowerment-Environment Eureka-Interreg V FWVL'
                         src={eee_banner}
                     />
-                </Segment>
+                </Segment>*/}
                 {/*<Segment className="banner" basic textAlign='center' >
                     <Image
                         alt='Eureka-Empowerment-Environment Eureka-Interreg V FWVL'
@@ -73,7 +87,15 @@ const HeaderMenu = () => {
 
     const HomeButton = () => {
         return (
-                <Button
+            <Segment id="logo" basic textAlign="center">
+                <Image
+                    alt="Eureka Empowerment environment logo"
+                    src={eee_logo}
+                    as='a'
+                    href="/"
+                />
+            </Segment>
+               /* <Button
                     icon="home"
                     as={NavLink}
                     to="/"
@@ -81,7 +103,7 @@ const HeaderMenu = () => {
                    // style={{background-color:"$second-color"}}
                     className="btn-secondary"
                   //  color={<color>$second-color</color>}
-                />
+                />*/
         )
     }
 
@@ -162,7 +184,7 @@ const HeaderMenu = () => {
 
         const LoginMenu = () => {
             return (
-                    <Dropdown button text={firstname + ' ' + lastname} className="btn-secondary-inverted">
+                    <Dropdown button text={ firstname + ' ' + lastname} className="btn-secondary-inverted">
                         <Dropdown.Menu>
                             <Dropdown.Item
                                 as={NavLink}
@@ -316,7 +338,7 @@ const HeaderMenu = () => {
                                 as={NavLink}
                                 to="/login"
                                 content={t("Login")}
-                                onClick={(value)=>showHandler("all")}
+                                onClick={()=>showHandler("all")}
                                 className="btn-secondary-inverted"
                             />
                             <Button.Or text={t("or")} />
@@ -324,7 +346,7 @@ const HeaderMenu = () => {
                                 as={NavLink}
                                 to="/register"
                                 content={t("Sign_up")}
-                                onClick={(value)=>showHandler("all")}
+                                onClick={()=>showHandler("all")}
                                 className="btn-secondary-inverted"
                             />
                         </Button.Group>
@@ -343,18 +365,20 @@ const HeaderMenu = () => {
                                 <Header>
                                     {strUcFirst(firstname) + ' ' + strUcFirst(lastname)}
                                     <Header.Subheader>
-                                        <NavLink
+                                        <Item
                                             as={NavLink}
+                                            onClick={()=>showHandler("all")}
                                             to="/account"
                                             content={t("account")}
                                         />
-                                        {/*Manage your account*/}
+                                        Manage your account
                                     </Header.Subheader>
                                 </Header>
                             </Menu.Item>
 
                             <Menu.Item
                                 as={NavLink}
+                                onClick={()=>showHandler("all")}
                                 to="/account"
                                 content={t("account")}
                             />
@@ -367,20 +391,6 @@ const HeaderMenu = () => {
 
 
                     </Menu>
-                   /* <Dropdown button text={firstname + ' ' + lastname} className="btn-secondary-inverted">
-                        <Dropdown.Menu>
-                            <Dropdown.Item
-                                as={NavLink}
-                                to="/account"
-                                text={t("account")}
-                            />
-                            <Dropdown.Item
-                                as={Button}
-                                onClick={handleLogout}
-                                text={t('Logout')}
-                            />
-                        </Dropdown.Menu>
-                    </Dropdown>*/
                 )
             }
 
@@ -409,27 +419,70 @@ const HeaderMenu = () => {
                     <>
                         <Menu.Item
                             as={NavLink}
+                            onClick={(value)=>showHandler("all")}
                             to="/admin/users"
                             name={t("users")}
                         />
                         <Menu.Item
                             as={NavLink}
+                            onClick={(value)=>showHandler("all")}
                             to="/admin/orgs"
                             name={t("organizations")}
                         />
                         <Menu.Item
                             as={NavLink}
+                            onClick={(value)=>showHandler("all")}
                             to="/admin/projects"
                             content={t("projects")}
                         />
                         <Menu.Item
                             as={NavLink}
+                            onClick={(value)=>showHandler("all")}
                             to="/admin/activities"
                             content={t("activities")}
                         />
                     </>
                     }
 
+                </>
+            )
+        }
+
+        const NewMenu = () => {
+            return (
+                <>
+                    <Menu.Item
+                        as={Button}
+                        content={strUcFirst(t("new"))}
+                        icon={<Icon name={showTable.newMenu ? "minus" : "dropdown"} className="btn-secondary"/>}
+                        onClick={(value) => showHandler("newMenu")}
+                        //className="btn-secondary"
+                        className={showTable.newMenu ? "btn-menu-open" : ""}
+                        fluid
+                    />
+
+                    {showTable.newMenu &&
+                    <>
+                        <Menu.Item
+                            as={NavLink}
+                            onClick={(value) => showHandler("all")}
+                            to="/create_activity"
+                            content={t("activity")}
+                        />
+                        <Menu.Item
+                            as={NavLink}
+                            onClick={(value) => showHandler("all")}
+                            to="/create_project"
+                            content={t("project")}
+                        />
+                        <Menu.Item
+                            as={NavLink}
+                            onClick={(value) => showHandler("all")}
+                            to="/create_org"
+                            content={t("organization")}
+                        />
+                    </>
+                    }
                 </>
             )
         }
@@ -453,11 +506,13 @@ const HeaderMenu = () => {
                         <>
                             <Menu.Item
                                 as={NavLink}
+                                onClick={(value)=>showHandler("all")}
                                 to="/all_activities/owned"
                                 content={t("my_activities")}
                             />
                             <Menu.Item
                                 as={NavLink}
+                                onClick={(value)=>showHandler("all")}
                                 to="/all_activities/followed"
                                 content={t("my_favorites")}
                             />
@@ -465,6 +520,7 @@ const HeaderMenu = () => {
                         }
                         <Menu.Item
                             as={NavLink}
+                            onClick={(value)=>showHandler("all")}
                             to="/all_activities/public"
                             content={t("public_activities")}
                         />
@@ -495,11 +551,13 @@ const HeaderMenu = () => {
                         <>
                             <Menu.Item
                                 as={NavLink}
+                                onClick={(value)=>showHandler("all")}
                                 to="/all_projects/owned"
                                 content={t("my_projects")}
                             />
                             <Menu.Item
                                 as={NavLink}
+                                onClick={(value)=>showHandler("all")}
                                 to="/all_projects/followed"
                                 content={t("my_favorites")}
                             />
@@ -508,6 +566,7 @@ const HeaderMenu = () => {
 
                         <Menu.Item
                             as={NavLink}
+                            onClick={(value)=>showHandler("all")}
                             to="/all_projects/public"
                             content={t("all_projects")}
                         />
@@ -534,6 +593,7 @@ const HeaderMenu = () => {
                         {isAuthenticated &&
                         <Menu.Item
                             as={NavLink}
+                            onClick={(value)=>showHandler("all")}
                             to="/all_organizations/owned"
                             content={t("my_orgs")}
                         />
@@ -541,6 +601,7 @@ const HeaderMenu = () => {
 
                         <Menu.Item
                             as={NavLink}
+                            onClick={(value)=>showHandler("all")}
                             to="/all_organizations/public"
                             content={t("all_org")}
                         />
@@ -553,26 +614,39 @@ const HeaderMenu = () => {
 
         const TestMenu = () =>{
             return (
-                <Menu className="menubar spaced-menu absPos " borderless vertical>
+                <Menu className="menubar spaced-menu absPos " borderless vertical secondary>
                     <Menu borderless>
                         {/*<Menu.Item content={<HomeButton/>}/>*/}
-                        <Menu.Item
-                            as={NavLink}
-                            to="/"
-                            icon={<Icon name="home" className="btn-secondary-inverted" size="big"/>}
-                        />
-                        <Menu.Item
-                            as={Button}
-                            icon={<Icon name="sidebar" className="btn-secondary-inverted" size="big"/>}
-                            onClick={(value)=>showHandler("all")}
-                            //     className="btn-secondary"
-                        />
+                      {/*  <Segment id="logo" basic textAlign='center' >*/}
+                     {/*   <Menu.Header>
+                            <Image
+                                alt='Eureka-Interreg V FWVL'
+                                src={interreg_logo}
+                                as='a'
+                                href='https://www.eureka-interreg.org/'
+                                target='_blank'
+                                   size="small"
+                            />
+                        </Menu.Header>*/}
+
+                        {/*</Segment>*/}
+
+                        <Menu.Menu position="right">
+                            <Menu.Item
+                                as={Button}
+                                icon={<Icon name="sidebar" className="btn-secondary-inverted" size="big"/>}
+                                onClick={()=>showHandler("all")}
+                                //     className="btn-secondary"
+                            />
+                        </Menu.Menu>
+
 
                     </Menu>
                     {showTable.all &&
                     <Segment id="sidebarXs" className="overflowed-invisible" >
                         <Menu.Item className="no-v-padded" content={<UserMenu/>}/>
-                        <Menu.Item className="no-v-padded" content={<AdminMenu/>}/>
+                        {isAuthenticated && isAdmin && <Menu.Item className="no-v-padded" content={<AdminMenu/>}/>}
+                        {isAuthenticated && <Menu.Item className="no-v-padded" content={<NewMenu />} /> }
                         <Menu.Item className="no-v-padded" content={<ActivityMenu/>}/>
                         <Menu.Item className="no-v-padded" content={<ProjectMenu/>}/>
                         <Menu.Item className="no-v-padded" content={<OrgMenu/>}/>
@@ -582,7 +656,7 @@ const HeaderMenu = () => {
                 </Menu>
             )
         }
-
+        //todo add newMenu et voir pourquoi adminMenu ne s'affiche pas
         return ( <TestMenu/> )
     }
 
@@ -606,9 +680,9 @@ const HeaderMenu = () => {
                     direction='right'
                     options={options}
                 />*/}
-                <Menu.Item>
+             {/*   <Menu.Item>
                     <HomeButton />
-                </Menu.Item>
+                </Menu.Item>*/}
                 <Menu.Item>
                     <Dropdown
                         text='Menu'
@@ -643,59 +717,102 @@ const HeaderMenu = () => {
         )
     }
 
-    const MenuTest = () => {
+    const EEE_Header = () => {
+        return(
+            <Header className="mainTitle unmarged" as='h1' textAlign="center">
+               {/* <Segment id="logo" basic textAlign='center' float="left">
+                    <Image
+                        alt='Eureka-Interreg V FWVL'
+                        src={interreg_logo}
+                        as='a'
+                        href='https://www.eureka-interreg.org/'
+                        target='_blank'
+                    />
+                </Segment>*/}
 
-        const [show, setShow] = useState(false)
-        const showHandler = () => {
-            show ? setShow(false) : setShow(true)
-        }
-
-        return (
-            <Menu vertical>
-                <Menu.Item
-                    as={Button}
-                    content="clic me"
-                    onClick={showHandler}
-                    to="/"
-                    className="btn-secondary"
-                />
-                {show &&
-                    <Menu.Menu >
-                        <Menu.Item content=" élément 1"/>
-                        <Menu.Item content=" élément 2"/>
-                        <Menu.Item content=" élément 3"/>
-                        <Menu.Item content=" élément 4"/>
-                    </Menu.Menu>
-                }
-            </Menu>
+                <Header as='h1' >
+                    <Image
+                        alt="Eureka Empowerment environment logo"
+                        src={eee_logo}
+                        as='a'
+                        href="/"
+                    />
+                    Eureka Empowerment Environment
+                    <Header.Subheader>
+                        Inscrivez-vous, partagez, collaborez, échangez, enrichissez-vous !
+                    </Header.Subheader>
+                </Header>
+                {/*<Segment id="logo" basic textAlign='center' >
+                    <Image
+                        circular
+                        alt="Eureka Empowerment environment logo"
+                        src={eee_logo}
+                        as='a'
+                        href="/"
+                        size="medium"
+                    />
+                </Segment>*/}
+             {/*   Eureka Empowerment Environment*/}
+            </Header>
         )
     }
 
+    const Eeelogo = () => {
+        return(
+            <Image
+                alt="Eureka Empowerment environment logo"
+                src={eee_logo}
+                as={NavLink}
+                to="/"
+                size="small"
+            />
+        )
+    }
     return(
         <>
-            <LogoLink/>
+            <EEE_Header/>
+            {/*<LogoLink/>*/}
             <Segment id="header_menu" basic>
-
+               {/* <EEE_Header />*/}
                 <Media greaterThan="xs">
-                    <Menu className="menubar spaced-menu" borderless>
-                        <Menu.Item>
+                    <Segment.Group horizontal basic>
+                        <Segment id="logo" basic textAlign='center' float="left">
+                            <Image
+                                alt='Eureka-Interreg V FWVL'
+                                src={interreg_logo}
+                                as='a'
+                                href='https://www.eureka-interreg.org/'
+                                target='_blank'
+                            />
+                        </Segment>
+                        <Segment basic >
+                            <Menu className="menubar spaced-menu" borderless>
+                                {/*  <Menu.Item>
                             <HomeButton/>
-                        </Menu.Item>
-                        <Menu.Item>
-                            <NewMenu/>
-                        </Menu.Item>
+                        </Menu.Item>*/}
+                                {isAuthenticated &&
+                                <Menu.Item>
+                                    <NewMenu/>
+                                </Menu.Item>
+                                }
 
-                        <Menu.Menu >
-                            <Menu.Item >
-                                <UserMenu/>
-                            </Menu.Item>
-                            <Menu.Item >
-                                <LanguageSelector />
-                            </Menu.Item>
-                        </Menu.Menu>
+                                <Menu.Menu >
+                                    <Menu.Item >
+                                        <UserMenu/>
+                                    </Menu.Item>
+                                    <Menu.Item >
+                                        <LanguageSelector />
+                                    </Menu.Item>
+                                </Menu.Menu>
 
-                    </Menu>
 
+                            </Menu>
+                        </Segment>
+
+                        {/*<Menu.Item>
+                            <h1 className="mainTitle"> Eureka Empowerment Environment</h1>
+                        </Menu.Item>*/}
+                    </Segment.Group>
                 </Media>
 
                 <Media at="xs">

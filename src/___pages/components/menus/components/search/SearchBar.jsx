@@ -1,52 +1,61 @@
-import authAPI from "../../../../../__services/_API/authAPI";
-import userAPI from "../../../../../__services/_API/userAPI";
-import React, {useState} from "react";
-import {useTranslation, withTranslation} from "react-i18next";
-import {useHistory} from "react-router-dom";
-import {UserSearchMenu} from "./SearchMenus";
+
+import React, {useContext, useState} from "react";
+import { withTranslation } from "react-i18next";
+import { useHistory } from "react-router-dom";
+import { SearchMenu } from "./SearchMenus";
+import AuthContext from "../../../../../__appContexts/AuthContext";
+import {HandleGetUsers} from "../../../../../__services/_Entity/userServices";
+import {HandleGetActivities} from "../../../../../__services/_Entity/activityServices";
+import {HandleGetProjects} from "../../../../../__services/_Entity/projectServices";
+import {HandleGetOrgs} from "../../../../../__services/_Entity/organizationServices";
 
 //todo check unused var
-const SearchBar = ({setData, setDropedData, searchFor, forAdmin}) => {
+const SearchBar = ({setData, setDropedData, searchFor, setLoader, forAdmin}) => {
     const history = useHistory();
-    const { t } = useTranslation()
-    const [loader, setLoader] = useState(false)
+    //todo error
     const [error, setError] = useState(undefined)
+
+    const isAdmin = useContext(AuthContext).isAdmin
+
     const handleSearch = async (access,  admin= false, searchParams= undefined) => {
-        setLoader(true)
         setData([])
         setDropedData([])
         setError("")
-        let isAuth = authAPI.isAuthenticated()
-        if (isAuth) {
             switch(searchFor){
                 case "user":
-                    userAPI.get(access, searchParams, admin?authAPI.isAdmin():undefined)
-                        .then(response => {
-                            console.log(response.data)
-                            setData(response.data)
-                        })
-                        .catch(error => {
-                            setError(error.response.data[0])
-                        })
-                        .finally(() => {
-                            setLoader(false)
-                        })
+                    await HandleGetUsers(
+                        {access:access, user:searchParams},
+                        setData, setLoader, setError,
+                        history, forAdmin && isAdmin === true
+                    )
                     break
                 case "activity":
+                    await HandleGetActivities(
+                        {access: access, activity: searchParams},
+                        setData, setLoader, setError,
+                        history, forAdmin && isAdmin === true
+                    )
                     break;
                 case "project":
+                    await HandleGetProjects(
+                        {access: access, project: searchParams},
+                        setData, setLoader, setError,
+                        history, forAdmin && isAdmin === true
+                    )
                     break;
                 case "org":
+                    await HandleGetOrgs(
+                        {access: access, org: searchParams},
+                        setData, setLoader, setError,
+                        history, forAdmin && isAdmin === true
+                    )
                     break;
             }
-        } else {
-            history.replace('/login')
-        }
 
     }
 
     return (
-        searchFor === "user" && <UserSearchMenu handleSearch={handleSearch} forAdmin={forAdmin} />
+        <SearchMenu handleSearch={handleSearch} searchFor={searchFor} forAdmin={forAdmin}/>
     )
 }
 

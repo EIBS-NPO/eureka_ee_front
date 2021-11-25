@@ -1,15 +1,34 @@
-import {Container, Dropdown, Message} from "semantic-ui-react";
-import React, {useEffect, useRef} from "react";
-import {useTranslation} from "react-i18next";
+import {Button, Container, Dropdown, Message} from "semantic-ui-react";
+import React, {useEffect, useRef, useState} from "react";
+import {useTranslation, withTranslation} from "react-i18next";
 
+
+export function RefreshOptionAndDroppedSelection(options, droppedSelection, initialObjectId, updatedObject) {
+
+    let index = options.indexOf(options.find(a => a.id === initialObjectId))
+    options.splice(index, 1, updatedObject);
+
+    //force eventually DropSelected refresh
+ //   let dropIsRefresh = false
+    index = droppedSelection.indexOf(droppedSelection.find(a => a.id === initialObjectId))
+    if (index !== -1) {
+        droppedSelection.splice(index, 1, updatedObject);
+     //   dropIsRefresh = true
+    }
+
+  //  return {options:options, dropIsRefresh:dropIsRefresh, droppedSelection:droppedSelection}
+}
 
 const MultiSelect = ({optionsList, textKeyList = [], setSelected, placeholder, loader} ) => {
     const dropRef = useRef("userDropSelect");
 
+    //todo mult select fait iech pour la maj des options et selected,
+    // faire passer option et selected en props.?
     const { t } = useTranslation()
+    const [selectLoader, setSelectLoader] = useState(false)
+
     //clear select when a new optionsList is loaded
     useEffect(()=>{
-      //  console.log(dropRef.current);
         dropRef.current.clearValue()
     },[optionsList])
 
@@ -25,7 +44,6 @@ const MultiSelect = ({optionsList, textKeyList = [], setSelected, placeholder, l
         let options = []
         optionsList.length > 0 && optionsList.map((opt, key) => {
             options.push({
-                //image: opt.picture ? { avatar: true, src: `data:image/jpeg;base64,${ opt.picture }` } : undefined,
                 image: { avatar: true, src:
                                     opt.picture ? `data:image/jpeg;base64,${ opt.picture }`
                                 :   'https://react.semantic-ui.com/images/wireframe/square-image.png'
@@ -39,29 +57,34 @@ const MultiSelect = ({optionsList, textKeyList = [], setSelected, placeholder, l
         return options
     }
 
-    const onChange = (event, data) => {
-        /*setSelected(
-            optionsList.find( o => o.id.toString() === data.value)
-        );*/
-        //setSelected(data.value)
-        //months.splice(4, 1); pour suppr element 4
-        console.log(data.value)
+    const onChange = async (event, data) => {
+        setSelectLoader(true)
         let arr = []
-        data.value.map((vId) => {
+        await data.value.map((vId) => {
             let selected = optionsList.find(u => u.id === vId)
-            if(selected !== undefined){arr.push(optionsList.find(u => u.id === vId))}
+            if (selected !== undefined) {
+                arr.push(selected)
+            }
         })
         setSelected(arr);
+        setSelectLoader(false)
     };
+
+    const selectAll = async () => {
+        await dropRef.current.clearValue()
+        await setSelected(optionsList)
+    }
 
     return (
         <>
             <Container textAlign="center">
                 <Message info size="mini">
-                    {optionsList.length === 0 && <p>{ t('no_result') }</p>}
-                    {optionsList.length > 0 && <p>{optionsList.length +" results"}</p>}
+                    {loader && <p>{t('loading')}</p>}
+                    {!loader && optionsList.length === 0 && <p>{ t('no_result') }</p>}
+                    {!loader && optionsList.length > 0 && <p>{optionsList.length +" results"}</p>}
                 </Message>
             </Container>
+
             <Dropdown
                 id="userDropSelect"
                 ref={dropRef}
@@ -75,24 +98,16 @@ const MultiSelect = ({optionsList, textKeyList = [], setSelected, placeholder, l
                 onChange={onChange}
                 placeholder={placeholder}
                 loading={loader}
-                color="blue"
+                disabled={optionsList.length <= 0}
+            />
+            <Button name="selectAll" content={t('all')}
+                    onClick={()=>selectAll()}
+                    color="blue"
+                    disabled={optionsList.length <= 0}
+                    basic
             />
         </>
-
-    /*<Dropdown
-        fluid
-        selection
-        multiple={multiple}
-        search={search}
-        options={options}
-        value={value}
-        placeholder='Add Users'
-        onChange={this.handleChange}
-        onSearchChange={this.handleSearchChange}
-        disabled={isFetching}
-        loading={isFetching}
-    />*/
     )
 }
 
-export default MultiSelect;
+export default withTranslation()(MultiSelect);

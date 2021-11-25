@@ -1,10 +1,12 @@
 import React, {useContext, useState} from 'react'
 import { withTranslation } from "react-i18next";
-import {Button, Icon, Menu, Segment} from "semantic-ui-react";
+import {Button, Icon, Image, Menu, Segment} from "semantic-ui-react";
 import AuthContext from "../../../__appContexts/AuthContext";
 import MediaContext from "../../../__appContexts/MediaContext";
 import {strUcFirst} from "../../../__services/utilities";
 import {NavLink} from "react-router-dom";
+import eee_logo from "../../../_resources/logos/icone-eureka.png"
+import interreg_banniere from "../../../_resources/interreg_banniere.jpg";
 
 const HeaderMenu = ( props ) => {
 
@@ -190,13 +192,26 @@ const HeaderMenu = ( props ) => {
         )
     }
 
+    const Eeelogo = () => {
+        return(
+            <Image
+                alt="Eureka Empowerment environment logo"
+                src={eee_logo}
+                as={NavLink}
+                to="/"
+                size="small"
+            />
+        )
+    }
     const SideDesktop = () => {
         return (
             <>
-                {isAdmin && <AdminMenu/>}
-                <ActivityMenu/>
-                <ProjectMenu/>
-                <OrgMenu/>
+
+                    {isAuthenticated && isAdmin && <AdminMenu/>}
+                    <ActivityMenu/>
+                    <ProjectMenu/>
+                    <OrgMenu/>
+
             </>
 
         )
@@ -205,13 +220,13 @@ const HeaderMenu = ( props ) => {
     const SideNavBar = ( ) => {
 
         return (
-            <>
                 <Media className="parent-sidebar" greaterThan="xs">
-                    <Segment id="sidebar" className="overflowed-invisible" floated='left' vertical basic padded >
-                        <SideDesktop/>
-                    </Segment>
+                        <Segment id="sidebar" className="overflowed-invisible" floated='left' vertical basic padded >
+                            <Eeelogo/>
+                            <SideDesktop/>
+                        </Segment>
+
                 </Media>
-            </>
         )
     }
 

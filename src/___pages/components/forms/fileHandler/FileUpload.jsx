@@ -1,6 +1,6 @@
 
 import React, {useContext, useState} from 'react';
-import { Message, Item, Button, Form, Icon, Loader } from "semantic-ui-react";
+import {Message, Item, Button, Form, Icon, Loader, Segment} from "semantic-ui-react";
 import {useTranslation, withTranslation} from "react-i18next";
 import authAPI from "../../../../__services/_API/authAPI";
 import FileInfos from "./FileInfos";
@@ -12,6 +12,7 @@ import activityAPI from "../../../../__services/_API/activityAPI";
  * @param history for redirect if necessary
  * @param activity activity or activityFile entity get by backend
  * @param setter to update the state of activity
+ * @param cancelForm
  * @param hideModal if a modal is necessary
  * @param handleDirect to call directly the backend
  * @param errors for error throws by front controls
@@ -19,11 +20,12 @@ import activityAPI from "../../../../__services/_API/activityAPI";
  * @constructor
  * @author Thierry Fauconnier <th.fauconnier@outlook.fr>
  */
-const FileUpload = ( { history=undefined, activity, setter, hideModal=false, handleDirect=true, errors=undefined}) => {
+const FileUpload = ( { history=undefined, activity, setter, cancelForm, hideModal, handleSubmit = undefined, errors=undefined}) => {
     const { t } = useTranslation()
 
     const [isSave, setIsSave] = useState(false)
-    const [activityFile, setActivityFile] = useState(undefined)
+    const [newFile, setNewFile] = useState(undefined)
+
     const [loader, setLoader] = useState(false)
 
     const currentFile = activity.file ? activity.file :  activity
@@ -32,8 +34,8 @@ const FileUpload = ( { history=undefined, activity, setter, hideModal=false, han
 
     const allowedMimes = useContext(MediaContext).allowedMimes
 
-    const isValid = () => {
-        let fileType = currentFile.type ? currentFile.type : currentFile.fileType
+    const isValid = (testedFile) => {
+        let fileType = testedFile.type ? testedFile.type : testedFile.fileType
         return allowedMimes.includes(fileType)
     }
 
@@ -45,28 +47,41 @@ const FileUpload = ( { history=undefined, activity, setter, hideModal=false, han
         let reader = new FileReader()
 
         reader.addEventListener('load', () => {
-            setActivityFile(reader.result)
+            setNewFile(reader.result)
         }, false)
 
         if (file) {
             reader.readAsDataURL(file)
-            setter({...activity, "file": file})
+            if(handleSubmit === undefined){
+                setNewFile(file)
+            }else {
+                setter({...activity, "file": file})
+            }
         }
     }
 
 
+    const preSubmit = () => {
+     //   event.preventDefault()
+        //todo check validation
+        if(handleSubmit !== undefined){
+            handleSubmit(activity)
+        }else {
+            handleSubmitFile()
+        }
+    }
 
-    const handleSubmitFile = (event) => {
-        event.preventDefault()
+    const handleSubmitFile = () => {
+    //    event.preventDefault()
 
         setLoader(true)
-console.log(activity)
        // if(activity.fileType){ //for update a file
-        activityAPI.put(activity, {"file": currentFile})
+        activityAPI.put({id:activity.id, file:newFile}, {})
             .then(response => {
                 setter(response.data[0])
                 setIsSave(true)
                 history.replace('/activity/owned_' + response.data[0].id)
+                hideModal()
             })
             .catch(error => {
                 setError(error.response)
@@ -74,22 +89,31 @@ console.log(activity)
             .finally(() => setLoader(false))
 
     }
-
+//todo put for delete
+    //have add if(han
     const handleDelete = () => {
-        if ( !authAPI.isAuthenticated ) {
-            history.replace.push('/login')
-        }
 
-        setLoader(true)
-        activityAPI.put(activity, {"file": null})
-            .then(response => {
-                setter(response.data[0])
-                history.replace('/activity/owned_' + response.data[0].id)
-            })
-            .catch(error => {
-                console.log(error.response)
-            })
-            .finally(() => setLoader(false))
+        setNewFile(null)
+        handleSubmitFile()
+        /*if(handleSubmit === undefined){
+            if ( !authAPI.isAuthenticated ) {
+                history.replace.push('/login')
+            }
+
+            setLoader(true)
+            activityAPI.put(activity, {"file": null}, {})
+                .then(response => {
+                    setter(response.data[0])
+                    history.replace('/activity/owned_' + response.data[0].id)
+                })
+                .catch(error => {
+                    console.log(error.response)
+                })
+                .finally(() => setLoader(false))
+        }else {
+            handleSubmit({id: activity.id, file:null})
+        }
+*/
     }
 
     return (
@@ -106,7 +130,7 @@ console.log(activity)
 
             {!loader &&
                 <Item>
-                    <FileInfos file={ currentFile } isValid={isValid()} />
+                    <FileInfos file={ currentFile } isValid={isValid(currentFile)} />
                     {error &&
                         <Message error icon="file" header={ error.status }>
                             <p> { error.data }</p>
@@ -114,17 +138,17 @@ console.log(activity)
                         </Message>
                     }
 
-                    {activity.file !== undefined && !error && !isValid() &&
+                    {activity.file !== undefined && !error && !isValid(currentFile) &&
                         <Message error icon="file" >
                             <p>{t("Supported_Media_Type") + allowedMimes.join(',')} </p>
                         </Message>
                     }
 
-                    {activity.file !== undefined && !isSave && isValid() &&
+                    {newFile !== undefined && !isSave && isValid(newFile) &&
                         <Message info icon="file outline" header={ t('ready')} content={t('file_ready')}/>
                     }
 
-                        <Form onSubmit={handleSubmitFile}>
+                        <Form onSubmit={preSubmit}>
                             <label htmlFor="inputUploadFile" className="ui basic button mini">
                                 { t('select') }
                                 <input
@@ -137,14 +161,29 @@ console.log(activity)
                                 />
                             </label>
 
-                            {activity.file && handleDirect &&
-                            <Button fluid animated disabled={!isValid()}>
-                                <Button.Content visible >{t('save')} </Button.Content>
-                                <Button.Content hidden>
-                                    <Icon name='save'/>
-                                </Button.Content>
-                            </Button>
+                            {newFile && handleSubmit === undefined &&
+                                <Segment className="center" basic>
+                                    <Form.Group>
+                                        <Button.Group>
+                                            <Button size="small" onClick={cancelForm}> { t("cancel") } </Button>
+                                            <Button.Or />
+                                            <Button size="small" positive disabled={!isValid(newFile)}> { t("save") } </Button>
+                                        </Button.Group>
+                                    </Form.Group>
+                                </Segment>
                             }
+
+
+
+                            {/*
+                                activity.file && handleDirect &&
+                                <Button fluid animated disabled={!isValid()}>
+                                    <Button.Content visible >{t('save')} </Button.Content>
+                                    <Button.Content hidden>
+                                        <Icon name='save'/>
+                                    </Button.Content>
+                                </Button>
+                            */}
                         </Form>
 
                     {activity.fileType &&
@@ -158,7 +197,7 @@ console.log(activity)
                         </Form>
                     }
 
-                    {hideModal !== false &&
+                    {/*{hideModal !== false &&
                     <Form onSubmit={hideModal}>
                         <Button fluid animated >
                             <Button.Content visible>{ t('finish') } </Button.Content>
@@ -167,7 +206,7 @@ console.log(activity)
                             </Button.Content>
                         </Button>
                     </Form>
-                    }
+                    }*/}
                 </Item>
             }
     </>

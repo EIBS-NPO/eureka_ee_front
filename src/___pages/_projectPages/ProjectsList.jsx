@@ -1,9 +1,10 @@
+
 import React, { useEffect, useState } from 'react';
-import {Container, Header, Input, Loader, Menu, Message, Segment} from 'semantic-ui-react'
-import projectAPI from "../../__services/_API/projectAPI";
+import {Container, Header, Input, Menu, Message, Segment} from 'semantic-ui-react'
 import Card from "../components/Card";
-import authAPI from "../../__services/_API/authAPI";
 import {withTranslation} from "react-i18next";
+import {ContentContainer } from "../components/Loader";
+import {HandleGetProjects} from "../../__services/_Entity/projectServices";
 
 const ProjectsList = ( props ) => {
     const urlParams = props.match.params.ctx
@@ -15,46 +16,46 @@ const ProjectsList = ( props ) => {
     const [projects, setProjects] = useState([])
     const [assignProjects, setAssignProjects] = useState([])
 
-    const [loader, setLoader] = useState();
+    const [loader, setLoader] = useState(false);
 
     const [ctx, setCtx] = useState("")
 
+    //todo
+    const [errors, setErrors] = useState("")
     useEffect(async () => {
-        setLoader(true)
-        checkCtx()
-            .then(async (ctx) => {
-                setCtx(ctx)
-                if(ctx === 'public'){
-                    let response = await projectAPI.getPublic()
-                        .catch(error => console.log(error.response))
-                    if(response.status === 200){
-                        setProjects(response.data)
+
+        async function fetchData(){
+            //todo
+            checkCtx()
+                .then(async (ctx) => {
+
+                    setCtx(ctx)
+                        await HandleGetProjects(
+                            { access:ctx},
+                            setProjects,
+                            setLoader,
+                            setErrors,
+                            props.history
+                        )
+                    if(ctx === "owned"){ //if ctx owned get assigned too
+                        await HandleGetProjects(
+                            { access:"assigned"},
+                            setAssignProjects,
+                            setLoader,
+                            setErrors,
+                            props.history
+                        )
                     }
-                }else {
-                    if(await (authAPI.isAuthenticated())){
-                        let response = await projectAPI.getProject(ctx)
-                            .catch(error => console.log(error.response))
-                        if(response && response.status === 200){
-                            setProjects(response.data)
-                        }
+                })
+        }
 
-                        if(ctx === 'owned'){ // assigned project for myProject page
-                            let response = await projectAPI.getProject("assigned")
-                                .catch(error => console.log(error.response))
-                            if(response && response.status === 200){
-                                console.log(response.data)
-                                setAssignProjects(response.data)
-                            }
-                        }
-                    }else {
-                        authAPI.logout()
-                        props.history.replace("/")
-                    }
+        fetchData()
 
-                }
-            })
-
-        setLoader(false)
+        //dismiss unmounted warning
+        return () => {
+            setProjects({});
+            setAssignProjects({});
+        };
     }, [urlParams]);
 
     const Title = () => {
@@ -82,7 +83,6 @@ const ProjectsList = ( props ) => {
     }
 
     const filteredList = (list) => {
-     //   console.log(list)
         return list.filter(p =>
             p.title.toLowerCase().includes(search.toLowerCase()) ||
             p.creator.firstname.toLowerCase().includes(search.toLowerCase()) ||
@@ -91,7 +91,11 @@ const ProjectsList = ( props ) => {
     }
 
     return (
-        <div className="card">
+        <ContentContainer
+            loaderActive={loader}
+            loaderMsg={ props.t('loading') +" : " + props.t('projects') }
+        >
+
             <Title />
             {ctx === "owned" &&
                 <>
@@ -207,18 +211,7 @@ const ProjectsList = ( props ) => {
                 </>
             }
 
-            {loader &&
-            <Segment>
-                <Loader
-                    active
-                    content={
-                        <p>{props.t('loading') +" : " + props.t('project') }</p>
-                    }
-                    inline="centered"
-                />
-            </Segment>
-            }
-        </div>
+        </ContentContainer>
     );
 }
 

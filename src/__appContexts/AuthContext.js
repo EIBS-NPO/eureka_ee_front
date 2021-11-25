@@ -1,6 +1,5 @@
 import React from "react";
 import authAPI from "../__services/_API/authAPI";
-import Axios from "axios";
 
 export default React.createContext({
     isAuthenticated: authAPI.setup(),
@@ -11,21 +10,11 @@ export default React.createContext({
     setFirstname: ( value ) => { },
     lastname: undefined,
     setLastname: ( value ) => { },
+    email: undefined,
+    setEmail: (value) => {},
     needConfirm: undefined,
     setNeedConfirm:(value) => {},
 
     partnerList: [],
     setPartnerList: (value) => {}
-/*
-    logout: () => {
-        window.localStorage.removeItem("authToken");
-        window.localStorage.removeItem("refreshToken");
-        if (Axios.defaults.headers["Authorization"]){
-            delete Axios.defaults.headers["Authorization"];
-        }
-        this.setIsAuthenticated(false)
-        this.setIsAdmin(false)
-        this.setFirstname("")
-        this.setLastname("")
-    }*/
 });

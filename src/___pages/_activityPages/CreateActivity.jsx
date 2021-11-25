@@ -1,42 +1,42 @@
+
 import React, { useState } from "react";
 import { withTranslation } from 'react-i18next';
-import {Button, Checkbox, Container, Form, Icon, Item, Label, Segment } from "semantic-ui-react";
-import activityAPI from "../../__services/_API/activityAPI";
-import TextAreaMultilang from "../components/TextAreaMultilang";
-import FileUpload from "../components/forms/fileHandler/FileUpload";
+import { Container, Segment } from "semantic-ui-react";
 import PictureForm from "../components/forms/picture/PictureForm";
+import {CreateActivityForm} from "../components/entityForms/ActivityForms";
+import {checkActivityFormValidity, HandleCreateActivity} from "../../__services/_Entity/activityServices";
+import {FileUploadFormInput} from "../components/FilesComponents";
+import FileInfos from "../components/forms/fileHandler/FileInfos";
+import { BtnRemove} from "../components/Buttons";
 
 const CreateActivity = ({ history, t }) => {
-    /*if (!authAPI.isAuthenticated()) {
-        authAPI.logout()
-        history.replace("/")
-    }*/
 
+    const [loader, setLoader] = useState(false)
     const [activity, setActivity] = useState({
         id: undefined,
         picture:undefined,
         file:undefined,
         title: "",
-        summary: {},
+        summary: {
+            "en-GB":"",
+            "fr-FR":"",
+            "nl-BE":""
+        },
         isPublic: false,
     });
 
-    const handleChange = (event) => {
-        const { name, value } = event.currentTarget;
-        setActivity({ ...activity, [name]: value });
-    };
-
-    const handlePublication = () => {
-        if(!activity.isPublic){
-            setActivity({ ...activity, "isPublic": true })
-        }else {
-            setActivity({ ...activity, "isPublic": false })
-        }
+    const postTreatment = ( newActivity ) => {
+        setActivity(newActivity)
+        history.replace('/activity/owned_' + newActivity.id)
     }
 
-    const [summary, setSummary] = useState([])
-
-    const handleSubmit = async(event) => {
+    const preSubmit = async (newActivity) => {
+        if (checkActivityFormValidity(newActivity, setErrors)) {
+            //handlingRequest
+            await HandleCreateActivity(newActivity, postTreatment, setLoader, setErrors, history)
+        }
+    }
+  /*  const handleSubmit = async(event) => {
         event.preventDefault()
         activity.summary = summary
         let newActivity
@@ -50,38 +50,9 @@ const CreateActivity = ({ history, t }) => {
         if(response && response.status === 200){//if success
             newActivity = response.data[0]
         }
-
-        /*//add picture to the created activity
-        if(activity.picture){
-            let bodyFormData = new FormData();
-            bodyFormData.append('image', activity.picture)
-            bodyFormData.append('id', newActivity.id)
-            await fileAPI.uploadPic("activity", bodyFormData)
-                .catch(error => {
-                    console.log(error.response)
-                    setErrors({...error,"picture":error.response})
-                })
-        }*/
-
-        //add file to the created activity
-       /* if(activity.file){
-            let bodyFormData = new FormData();
-            bodyFormData.append('file', activity.file)
-            bodyFormData.append('id', newActivity.id)
-
-            let response = await fileAPI.postFile(bodyFormData)
-                .catch(error => {
-                    console.log(error.response)
-                    setErrors({...error,"file":error.response})
-                })
-            if(response && response.status === 200){//if success
-                newActivity = response.data[0]
-            }
-
-        }*/
         setActivity(newActivity)
         history.replace('/activity/owned_' + newActivity.id)
-    };
+    };*/
 
     const [errors, setErrors] = useState({
         file:"",
@@ -93,6 +64,12 @@ const CreateActivity = ({ history, t }) => {
         summary:""
     });
 
+    const handleCancel = (e) => {
+        e.preventDefault()
+        setActivity({ ...activity, file:undefined })
+        //     if(onClose !== undefined) onClose(e)
+    }
+
     return (
         <div className="card">
             <h1> {t('new_activity')} </h1>
@@ -102,63 +79,34 @@ const CreateActivity = ({ history, t }) => {
                 </Segment>
                 <Segment placeholder>
                     <Container textAlign='center'>
-                        <FileUpload activity={ activity } setter={ setActivity } handleDirect={false} errors={errors.file?errors.file:undefined}/>
+                        <FileInfos activity={activity} />
+                        <FileUploadFormInput activity={activity} setActivity={setActivity} />
+                        {activity.file &&
+                            <BtnRemove t={t} removeAction={(e)=>handleCancel(e)} />
+                        }
+                        {/*<FileUploadForm
+                            t={t}
+                            activity={activity}
+                            postTreatment={setActivity}
+                            error={errors}
+                            history={history}
+                        />*/}
+                        {/*<FileUpload
+                            activity={ activity } setter={ setActivity }
+                            handleDirect={false}
+                            errors={errors.file?errors.file:undefined}
+                        />*/}
                     </Container>
                 </Segment>
             </Segment.Group>
 
-            <Form onSubmit={handleSubmit}>
-                <Segment>
-                    <Form.Input
-                        iconPosition='left'
+            <CreateActivityForm
+                activity={activity} setActivity={setActivity}
+                handleSubmit={preSubmit}
+                loader={loader} errors={errors}
+                history={history}
+            />
 
-                        label={t('title')}
-                        name="title"
-                        value={activity.title}
-                        onChange={handleChange}
-                        placeholder={t('title') + "..."}
-                        type="text"
-                        error={errors.title ? errors.title : null}
-                        required
-                    />
-                </Segment>
-
-
-                <Segment>
-                    <Label attached="top">
-                        { t('description') }
-                    </Label>
-                    <TextAreaMultilang  tabText={summary} setter={setSummary} name="summary" min={2} max={500}/>
-
-                </Segment>
-
-                <Segment>
-                    <Item>
-                        {activity.isPublic ?
-                            <Label color="green" size="small" horizontal>
-                                { t("public") }
-                            </Label>
-                            :
-                            <Label size="small" horizontal>
-                                { t("private") }
-                            </Label>
-                        }
-                        <Checkbox
-                            name='isPublic'
-                            checked={activity.isPublic}
-                            onChange={handlePublication}
-                            toggle
-                        />
-                    </Item>
-                </Segment>
-
-                <Button className="ui primary basic button" fluid animated >
-                    <Button.Content visible>{ t('save') } </Button.Content>
-                    <Button.Content hidden>
-                        <Icon name='save' />
-                    </Button.Content>
-                </Button>
-            </Form>
         </div>
     );
 };

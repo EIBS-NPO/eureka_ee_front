@@ -1,14 +1,21 @@
 
 import Axios from "axios";
-import {ACT_API, FOLW_ACT } from "../../config";
+import {ACT_API, API_URL } from "../../config";
 
 const getBodyFormData = (activity) => {
+    //todo add if
     let bodyFormData = new FormData();
-    bodyFormData.append('title', activity.title)
-    bodyFormData.append('isPublic', activity.isPublic)
-    bodyFormData.append('summary', JSON.stringify(activity.summary))
     if(activity.id !== undefined){
         bodyFormData.append('id', activity.id)
+    }
+    if(activity.title !== undefined){
+        bodyFormData.append('title', activity.title)
+    }
+    if(activity.isPublic !== undefined){
+        bodyFormData.append('isPublic', activity.isPublic)
+    }
+    if(activity.summary !== undefined){
+        bodyFormData.append('summary', JSON.stringify(activity.summary))
     }
     if(activity.pictureFile !== undefined){
         bodyFormData.append('pictureFile', activity.pictureFile)
@@ -24,7 +31,45 @@ const getBodyFormData = (activity) => {
         let project = activity.project === null ? null : activity.project.id
         bodyFormData.append('project', project)
     }
+    if(activity.follow !== undefined){
+        bodyFormData.append('follow', "true")
+    }
     return bodyFormData;
+}
+
+const getUrlParams = (access, activity = undefined, admin = undefined) => {
+    console.log(activity)
+    let params = "?access="+access
+    if(admin === true) params += "&admin=1";
+    if(access !== "all") {
+        if (activity) {
+            if (activity.id) params += "&id=" + activity.id
+            if (activity.title) params += "&title=" + activity.title
+
+            //by creator
+            if (activity.creator) {
+                if (activity.creator.id) params += "&creator_id=" + activity.creator.id
+                if (activity.creator.firstname) params += "&creator_firstname=" + activity.creator.firstname
+                if (activity.creator.lastname) params += "&creator_lastname=" + activity.creator.lastname
+                if (activity.creator.email) params += "&creator_email=" + activity.creator.email
+            }
+
+            //by project
+            if (activity.project) {
+                if (activity.project.id) params += "&project_id=" + activity.project.id
+                if (activity.project.title) params += "&project_title=" + activity.project.title
+            }
+
+            //by org
+            if (activity.organization) {
+                if (activity.organization.id) params += "&organization_id=" + activity.organization.id
+                if (activity.organization.name) params += "&organization_name=" + activity.organization.name
+                if (activity.organization.email) params += "&organization_email=" + activity.organization.email
+            }
+        }
+    }
+
+    return params
 }
 
 const post = (activity) => {
@@ -37,25 +82,13 @@ const post = (activity) => {
     })
 }
 
-const put = (activity, putRelationWith={}) => {
-    if(putRelationWith.org !== undefined){
-        activity.organization = putRelationWith.org
-    }
-    if(putRelationWith.project !== undefined){
-        activity.project = putRelationWith.project
-    }
-    if(putRelationWith["pictureFile"] !== undefined){
-        activity.pictureFile = putRelationWith["pictureFile"]
-    }
-    if(putRelationWith["file"] !== undefined){
-        activity.file = putRelationWith["file"]
-    }
+const put = (activity, adminManagment) => {
     let bodyFormData = getBodyFormData(activity)
 
-    //add after for multiRelationnal (ListOf)
-    if(putRelationWith["follow"] !== undefined){
-        bodyFormData.append('follow', "true")
+    if( adminManagment.admin ) {
+        bodyFormData.append("admin", "1")
     }
+
     return Axios({
         method: 'post',
         url: ACT_API+"/update",
@@ -64,72 +97,38 @@ const put = (activity, putRelationWith={}) => {
     })
 }
 
-const get = (context, id = null, orgId = null, projectId = null) => {
-    let params = "?ctx="+ context
-    if(id !== null){
-        params += "&id="+ id
-    }
-    return Axios.get(ACT_API + params)
+const get = (access, activity, admin = false) => {
+    return Axios.get(ACT_API + getUrlParams(access, activity, admin))
 }
 
-function getActivity(access =null, id =null){
-    let params = "?";
-    if(access !== null){ params += "access=" + access }
-    if(id !== null){
-        if( params !== "" ) { params += "&"}
-        params += "id=" + id
-    }
-    if(params === "?" ){
-        return Axios.get(ACT_API )
-    }else {
-        return Axios.get(ACT_API + params)
-    }
+const getPublic = (access, activity) => {
+    return Axios.get(ACT_API + "/public" + getUrlParams(access, activity))
 }
 
-const getPublic = (id = null) => {
-    if(id === null ){
-        return Axios.get(ACT_API + "/public")
-    }else {
-        return Axios.get(ACT_API + "/public?id="+ id)
+const download = (isPublic, id, access) => {
+    let url = "/activity/download"
+    if(isPublic){
+        url += "/public"
     }
-
+     url += "?id=" +id+ "&access=" +access
+    return Axios.get(API_URL +url,
+        {responseType: 'arraybuffer'}
+    )
 }
 
 const remove = (id) => {
     return Axios.delete(ACT_API + "?id=" + id)
 }
 
-const addFollow = (activityId) => {
-    return Axios.put(FOLW_ACT + "/add", { "activityId":activityId })
-}
 
-const rmvFollow = (activityId) => {
-    return Axios.put(FOLW_ACT + "/remove", { "activityId":activityId })
-}
-
-const getFollowers = (id) => {
-    return Axios.get(FOLW_ACT + "/public?id="+id)
-}
-
-const getFavorites = () => {
-    return Axios.get(FOLW_ACT + "/myFavorites")
-}
-
-const isFollowing = (activityId) => {
-    return Axios.get(FOLW_ACT + "?activityId=" + activityId)
-}
+//todo place upload here
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
     post,
     put,
     get,
-    getActivity,
     getPublic,
-    remove,
-    addFollow,
-    rmvFollow,
-    getFollowers,
-    getFavorites,
-    isFollowing
+    download,
+    remove
 };

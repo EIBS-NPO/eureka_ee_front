@@ -16,19 +16,15 @@ const Card = ({ obj, type, profile=false, ctx=undefined, withPicture=true }) => 
     const isAuth = useContext(AuthContext).isAuthenticated;
     const [owner, setOwner] = useState(false);
     const [isOwner, setIsOwner] = useState(false);
- //   const [isAssign, setIsAssign] = useState(undefined)
-    const [isPublic, setIsPublic] = useState(undefined)
 
     function getTranslate(typeText) {
         if(obj[typeText]){
-           if(obj[typeText][lg]) {
+           if(obj[typeText][lg] && obj[typeText][lg] !== "") {
                 return obj[typeText][lg]
-            }else if(obj[typeText]['en-GB']) {
+            }else if(obj[typeText]['en-GB'] && obj[typeText]['en-GB'] !== "") {
                return obj[typeText]['en-GB']
-           }
-        }else {
-            return t('no_' + typeText)
-        }
+           }else return t('no_' + typeText)
+        }else return t('no_' + typeText)
     }
 
     const getLink = () => {
@@ -56,9 +52,14 @@ const Card = ({ obj, type, profile=false, ctx=undefined, withPicture=true }) => 
             setOwner(obj && obj.creator)
         }else if (type === "activity"){
             setIsOwner(obj && obj.creator && obj.creator.id === authAPI.getId())
-            setIsPublic(obj && obj.isPublic)
             setOwner(obj && obj.creator)
         }
+        //dismiss unmounted warning
+        return () => {
+            setIsOwner(false)
+            setOwner({})
+        };
+
     },[obj])
 
     return (
@@ -112,39 +113,21 @@ const Card = ({ obj, type, profile=false, ctx=undefined, withPicture=true }) => 
                 <Item.Content>
                     <Item.Group>
                         <Item>
-
-                            {withPicture &&
-                                <Container textAlign='center'>
-                                    <Picture size="small" picture={obj.picture} />
-                                </Container>
-                            }
-
-
-                            { (type === "org" || type === "project" ) &&
-                                <Container textAlign='center'>
-                                    <Item.Content>
-                                        <Item.Header as="h4">
-                                            { t('description') }
-                                        </Item.Header>
-                                        <Item.Description className="wordWrap">
-                                            { getTranslate("description") }
-                                        </Item.Description>
-                                    </Item.Content>
-                                </Container>
-                            }
-
-                            { type === "activity" &&
-                            <Container textAlign='center'>
-                                <Item.Content>
+                            <Item.Content>
+                                <Segment className="unmarged"  padded='very' basic >
                                     <Item.Header as="h4">
-                                        { t('summary') }
+                                        { (type === "org" || type === "project" ) && t('description') }
+                                        { type === "activity" && t('summary') }
                                     </Item.Header>
                                     <Item.Description className="wordWrap">
-                                        { getTranslate("summary") }
+                                        {withPicture && obj.picture &&
+                                            <Picture size="small" picture={obj.picture} isFloat="left"/>
+                                        }
+                                        { (type === "org" || type === "project" ) && getTranslate("description") }
+                                        { type === "activity" && getTranslate("summary") }
                                     </Item.Description>
-                                </Item.Content>
-                            </Container>
-                            }
+                                </Segment>
+                            </Item.Content>
                         </Item>
                     </Item.Group>
 

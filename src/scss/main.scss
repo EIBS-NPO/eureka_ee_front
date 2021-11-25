@@ -58,6 +58,11 @@ min-70% pour voir mettre en width
     justify-content: center;*/
 }
 
+.mainTitle {
+    color:$second-color;
+    min-height: 100px!important;
+}
+
 #dimmer {
     z-index:50;
 }
@@ -118,6 +123,11 @@ min-70% pour voir mettre en width
     padding-right: unset !important;
 }
 
+#sidebar-container{
+    display: flex;
+    flex-direction: column;
+    float: left;
+}
 #sidebar {
     /*.parent-div{
         position: sticky;
@@ -362,8 +372,10 @@ width:auto;
 }
 
 .minH-50{
-    min-height: 50%;
+    min-height: 50vh;
 }
+
+
 
 .DropMenuBottom {
     left:0%!important;
@@ -397,6 +409,17 @@ width:auto;
     align-items: center;
 }
 
+.stretch {
+    align-items:stretch !important;
+}
+
+.space-around {
+    justify-content: space-around;
+}
+
+.wrapped {
+    flex-wrap:wrap;
+}
 
 .heightLess {
     min-height:0!important;
@@ -418,6 +441,10 @@ width:auto;
     width:50%!important;
 }
 
+.w-300px{
+    width:300px!important;
+}
+
 .margAuto {
     margin:auto!important;
 }
@@ -427,7 +454,13 @@ width:auto;
     height:50px;
 }
 
+.row {
+    display:flex;
+    flex-direction: row;
+}
+
 .column {
+    display: flex;
     flex-direction: column;
 }
 

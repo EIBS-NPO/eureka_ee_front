@@ -2,34 +2,46 @@
 import React, {useContext, useEffect, useState} from "react";
 import AuthContext from "../__appContexts/AuthContext";
 import AuthAPI from "../__services/_API/authAPI";
-import {Button, Form, Input, Loader, Message} from "semantic-ui-react";
+import {Button, Form, Input, Loader, Message, Segment} from "semantic-ui-react";
 import authAPI from "../__services/_API/authAPI";
 import {useTranslation, withTranslation} from "react-i18next";
 import userAPI from "../__services/_API/userAPI";
 import mailerAPI from "../__services/_API/mailerAPI";
+import ChangePasswordForm from "./components/forms/AskchangePassword";
+import {EmailFormField, PasswordFormField} from "./components/forms/formsServices";
 
 const LoginPage = (props ) => {
 
 
     const {
         isAuthenticated, setIsAuthenticated, setIsAdmin,
-        setFirstname, setLastname,
+        setFirstname, setLastname, setEmail,
         needConfirm, setNeedConfirm
     } = useContext(AuthContext);
 
     const [mailIsSent, setMailIsSent] = useState(false)
 
-    useEffect(()=>{
-
+    const checkLoginAccess = () =>{
         if (isAuthenticated === true) {
             authAPI.logout()
             setIsAuthenticated(false)
             setIsAdmin(false)
             setFirstname("")
             setLastname("")
-            //  props.history.replace('/');
+            setEmail(undefined)
         }
-    },[])
+    }
+    useEffect(()=>{
+        checkLoginAccess()
+        /*if (isAuthenticated === true) {
+            authAPI.logout()
+            setIsAuthenticated(false)
+            setIsAdmin(false)
+            setFirstname("")
+            setLastname("")
+            setEmail(undefined)
+        }*/
+    },[/*isAuthenticated, setIsAuthenticated, setIsAdmin, setFirstname, setLastname, setEmail*/])
 
     const [loader, setLoader] = useState(false)
     const [loaderMessage, setLoaderMessage] = useState("")
@@ -42,25 +54,20 @@ const LoginPage = (props ) => {
 
     const [error, setError] = useState("");
 
-
-    const handleChange = (event) => {
-        const value = event.currentTarget.value;
-        const name = event.currentTarget.name;
-
-        setCredential({ ...credentials, [name]: value });
-    };
-
     const handleSubmit = () => {
+
+        setNeedConfirm(false)
+        setError("")
 
         setLoaderMessage(t("Connexion"))
         setLoader(true)
         AuthAPI.authenticate(credentials)
             .then((response) => {
-                setError("")
                 setIsAuthenticated(true)
-                setIsAdmin(authAPI.isAdmin())
-                setFirstname(authAPI.getFirstname())
-                setLastname(authAPI.getLastname())
+                setIsAdmin(authAPI.getRole() === "ROLE_ADMIN")
+                setFirstname(response.data.firstname)
+                setLastname(response.data.lastname)
+                setEmail(response.data.email)
                 props.history.replace("/")
             })
             .catch(error => {
@@ -82,7 +89,8 @@ const LoginPage = (props ) => {
         e.preventDefault()
         setLoaderSend(true)
         if(credentials.email){
-            userAPI.get("search", {email:credentials.email})
+            /*userAPI.getPublic("search", {email:credentials.email})*/
+            userAPI.getDataForConfirmEmail(credentials.email)
                 .then(response => {
                     mailerAPI.sendConfirmMail(t, response.data[0])
                         .then(res => {
@@ -106,27 +114,9 @@ const LoginPage = (props ) => {
         setForgetForm(true)
     }
 
-    const [isForgotMailSent, setIsForgotMailSent] = useState(false)
     const cancelForgetForm = (e) => {
         e.preventDefault()
         setForgetForm(false)
-    }
-    const handleSendForgotPassMail = () => {
-        if(credentials.email !== ""){
-            userAPI.askForgotPasswordToken(credentials.email)
-                .then(user => {
-                    mailerAPI.sendForgotPassordMail(t, user.data[0])
-                        .then(res => {
-                            setIsForgotMailSent(true)
-                            console.log(res)
-                        })
-                        .catch(err => console.log(err))
-                })
-                .catch(err => {
-                    console.log(err)
-                })
-        }
-
     }
 
     //todo loader ne fonctionne pas...
@@ -137,70 +127,44 @@ const LoginPage = (props ) => {
             }
 
             {!loader && !forgetForm &&
-            <>
+            <Segment basic>
                 <Form onSubmit={handleSubmit} >
-                    <Form.Input
-                        icon='user'
-                        iconPosition='left'
-                        name="email"
-                        value={credentials.email}
-                        label={t('email')}
-                        placeholder='Email'
-                        onChange={handleChange}
-                   //     error={error ? error : null}
-                        required
+
+                    <EmailFormField t={t}
+                                   fieldName={"email"} email={credentials.email}
+                                   setEmail={(value)=>setCredential({...credentials, "email":value })}
+                                   errors={error}
                     />
-                    <Form.Input
-                        icon='lock'
-                        iconPosition='left'
-                        name="password"
-                        value={credentials.password}
-                        label={t('password')}
-                        type='password'
-                        onChange={handleChange}
-                   //     error={error ? error : null}
-                        required
+
+                    <PasswordFormField t={t}
+                                       fieldName={"password"} password={credentials.password}
+                                       setPassword={(value)=>setCredential({...credentials, "password":value})}
+                                       errors={error}
                     />
 
                     <Button className="ui primary basic button" content={t('Login')} />
+                    {!loader && error &&
+                        <Message negative>
+                            <Message.Item> { t(error) } </Message.Item>
+                        </Message>
+                    }
                 </Form>
-                <a href="#" onClick={(e)=>showForgetPass(e)} >{t('forgot_password')}</a>
-            </>
+                <p>
+                    <Button className="ui basic button" content={t('forgot_password')} onClick={(e)=>showForgetPass(e)} />
+                </p>
+
+            </Segment>
             }
 
 
             {!loader && forgetForm &&
-            <Form onSubmit={handleSendForgotPassMail} loading={loader}>
-                <Form.Input
-                    icon='user'
-                    iconPosition='left'
-                    name="email"
-                    type="email"
-                    value={credentials.email}
-                    label={t('email')}
-                    placeholder='Email'
-                    onChange={handleChange}
-                    error={error ? error : null}
-                    required
-                />
-                <Button className="ui primary basic button" content={t('send_me_mail')} />
-                <Button className="ui secondary basic button" onClick={(e)=>cancelForgetForm(e)} content={t('cancel')} />
-            </Form>
-            }
-
-            {!loader && error &&
-            <Message warning compact>
-                <Message.Header content={t('Error')} />
-                <Message.Content>
-                    <p>{error}</p>
-                </Message.Content>
-            </Message>
+                <ChangePasswordForm cancelForm={cancelForgetForm} />
             }
 
             {!loader &&  needConfirm &&
                 <Message warning>
                     <Message.Header content={t('Your account has not been activated')} />
-                    <Message.Item>
+
                         <p>{t('check_your_mails')}</p>
                         <p>{t('dont_receive_mail?')}</p>
                         {!mailIsSent &&
@@ -219,7 +183,7 @@ const LoginPage = (props ) => {
                             <p>{t('mail_send_to_you')}</p>
                         }
 
-                    </Message.Item>
+
                 </Message>
                 }
         </div>

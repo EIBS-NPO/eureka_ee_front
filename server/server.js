@@ -1,6 +1,8 @@
 const express = require('express');
 const app = express();
-require('dotenv').config({path:__dirname+'/./../.env'})
+
+//todo change env / env.local
+require('dotenv').config({path:__dirname+'/./../.env.local'})
 
 const path = require('path');
 const { sendEmail } = require("./mailer")

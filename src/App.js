@@ -1,3 +1,4 @@
+
 import React, {useEffect, useState} from 'react';
 import { createMedia } from "@artsy/fresnel";
 
@@ -13,12 +14,15 @@ import 'react-phone-number-input/style.css'
 import './scss/main.scss';
 import './scss/components/Modal.scss'
 import fileAPI from "./__services/_API/fileAPI";
+import {HandleGetOrgs} from "./__services/_Entity/organizationServices";
+import orgAPI from "./__services/_API/orgAPI";
 
  function App({history}) {
 
      const [isAuthenticated, setIsAuthenticated] = useState( window.localStorage.getItem("authToken") != null )
      const [firstname, setFirstname] = useState( authAPI.getFirstname())
      const [lastname, setLastname] = useState( authAPI.getLastname())
+     const [email, setEmail] = useState( authAPI.getEmail())
      const [isAdmin, setIsAdmin] = useState(authAPI.isAdmin())
      const [partnerList, setPartnerList] = useState([])
      const [needConfirm, setNeedConfirm] = useState(undefined)
@@ -38,16 +42,36 @@ import fileAPI from "./__services/_API/fileAPI";
 
      // todo provoque un rechargement de la page, a placer dans le compo nécessaire, avec loader
      const [allowedMimes, setAllowedMimes] = useState([])
-     useEffect(async()=>{
-//todo :alert console for async
-         let response = await fileAPI.getAllowedMime()
+
+     const [errors, setErrors] = useState('')
+
+     function getAllowedMimeType(){
+         fileAPI.getAllowedMime()
+             .then(response => {
+                 setAllowedMimes(response.data[0].split(','))
+             })
              .catch(error =>{
                  console.log(error.response)
              })
-         if(response && response.status === 200){
-             setAllowedMimes(response.data[0].split(','))
-         }
+     }
+     function getPartner(){
+         HandleGetOrgs(
+             {access:"public", org:{partner:true}},
+             setPartnerList,
+             setErrors,
+             history
+         )
+       /*  orgAPI.getPublic( "public",{partner:true})
+             .then(response => {
+                 setPartnerList(response.data)
+             })
+             .catch(error => console.log(error))*/
+     }
+     useEffect(()=>{
+         getAllowedMimeType()
+         getPartner()
      },[])
+
   return (
       <>
         <style>{mediaStyles}</style>
@@ -56,6 +80,7 @@ import fileAPI from "./__services/_API/fileAPI";
               isAuthenticated, setIsAuthenticated,
               firstname, setFirstname,
               lastname, setLastname,
+              email, setEmail,
               isAdmin, setIsAdmin,
               partnerList, setPartnerList,
               needConfirm, setNeedConfirm

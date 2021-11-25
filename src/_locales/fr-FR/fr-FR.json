@@ -16,11 +16,13 @@
   "account": "compte",
   "user": "utilisateur",
   "users": "utilisateurs",
+  "administrator": "administrateur",
   "action": "action",
   "enable": "activer",
   "disable": "désactiver",
   "partners": "les partenaires",
   "lastname": "nom",
+  "creator": "créateur",
 
 
   "my_activities" : "mes activités",
@@ -90,6 +92,7 @@
   "ask_select_activity": "Veuillez selectionner une activité",
   "select": "selectionner",
 
+  "unConfirmed": "non confirmé",
   "this_is_your": "c'est votre",
   "no_def": "non défini",
   "no_description": "aucune description",
@@ -97,7 +100,7 @@
   "no_members": "auncun membre",
   "no_file": "Aucun document",
   "no_summary": "aucun résumé",
-  "no_org": "aucune organisation",
+  "no_organization": "aucune organisation",
   "no_project": "aucun projet",
   "no_activity": "aucune activité",
   "no_free_activities": "aucune activité disponible",
@@ -162,7 +165,8 @@
   "Invalid credentials.": "Mauvais login ou mot de passe",
   "Your account has not been activated": "Votre compte doit être activé",
   "check_your_mails": "veuillez vérifier vos emails",
-  "mail_send_to_you": "Une email vous a été envoyé.",
+  "mail_send_to_you": "Un email vous a été envoyé.",
+  "will_be_disconected": "Vous allez être deconnecté.",
 
   "create_your_account": "Création de votre compte",
   "sending_confirm_email": "Envoie de l'email de confirmation",
@@ -183,8 +187,9 @@
   "success_activation": "Votre compte a été activé avec succés. Bienvenue!",
 
   "are_you_sure?": "Êtes vous sûr?",
-  "confirm_your_registration": "Confirmer votre inscription",
-  "confirm_registration_message": "Pour confirmer votre inscription, cliquer sur le lien suivant.",
+  "confirm_your_email_account": "Confirmer votre email",
+  "confirm_account_message": "Pour confirmer votre compte, cliquer sur le lien suivant.",
+  "change_mail_caution": "vous serez déconnecté pour confirmer votre nouvel email",
   "forgot_password": "Mot de passe oublié",
   "forgot_password_message": "Pour créer votre nouveau mot de passe, veuillez cliquer sur le lien ci-dessous et entrer ce code de résiliation dans le formulaire en plus de votre nouveau mot de passe.",
   "dont_receive_mail?": "vous n'avez pas recu le mail?",
@@ -201,11 +206,11 @@
 
   "User's email already exist": "cet email est déjà utilisé",
 
-  "remove_activity_message": "Si votre activité est privée, les membres de ce groupe ne pourront plus y accéder.",
-  "add_activity_message": "Même si votre activité est privée, les membres de ce groupe pourront y accéder.",
+  "remove_share_in_message": "Les membres de ce groupe ne pourront plus accéder à cette ressource si elle est privée, ainsi qu'aux ressources privées qu'elle peut contenir.",
+  "add_share_in_message": "Les membres de ce groupe vont pouvoir accéder à cette ressource si elle est privée, ainsi qu'aux ressources privées qu'elle peut contenir.",
 
-  "remove_org_message": "Les membres de votre organisation ne pourront plus accéder aux ressources privés de ce groupe.",
-  "add_org_message": "",
-
-  "invalid_country_phoneNumber": "Numéro invalide pour ce pays, il ne sera pas sauvegardé"
+  "invalid_country_phoneNumber": "Numéro invalide pour ce pays.",
+  "select_option_for_load_users": "Selectionner une option pour charger les utilisateurs",
+  "select_option_for_load_orgs": "Selectionner une option pour charger les organisations",
+  "search": "recherche"
 }

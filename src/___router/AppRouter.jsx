@@ -1,4 +1,5 @@
-import React, {lazy, Suspense } from "react";
+
+import React, {lazy, Suspense} from "react";
 import {Loader, Segment} from "semantic-ui-react";
 import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
 
@@ -12,28 +13,28 @@ import AdminRoute from "./AdminRoute";
 
 const Home = lazy(() => import('../___pages/HomePage'));
 const Login = lazy(() => import('../___pages/LoginPage'));
-const ForgotPassword = lazy(() => import('../___pages/ForgotPassword'));
-const Register = lazy(() => import('../___pages/RegisterPage'));
+const ForgotPassword = lazy(() => import('../___pages/ChangePassword_Page'));
+const Register = lazy(() => import('../___pages/_userPages/UserPage_Registration'));
 const Activation = lazy(()=> import('../___pages/ActivationPage'))
 
 const CreateOrg = lazy(() => import('../___pages/_orgPages/CreateOrg'));
 const CreateProject = lazy(() => import('../___pages/_projectPages/CreateProject'));
 const CreateActivity = lazy(() => import('../___pages/_activityPages/CreateActivity'));
 
-const ProfilUser = lazy(() => import('../___pages/_userPages/UserProfile'));
+const ProfilUser = lazy(() => import('../___pages/_userPages/UserPage_Profile'));
+const ProfilUserPublic = lazy(() => import('../___pages/_userPages/UserPage_publicProfile'));
+const ProfilOrg = lazy(() => import('../___pages/_orgPages/OrgPage_Profile'));
+const ProfilProject = lazy(() => import('../___pages/_projectPages/ProjectPage_Profile'));
+const ProfilActivity = lazy(() => import('../___pages/_activityPages/ActivityPage_Profile'));
 
- const ProfilOrg = lazy(() => import('../___pages/_orgPages/OrgProfile'));
-
-const ProfilProject = lazy(() => import('../___pages/_projectPages/ProjectProfile'));
-const ProfilActivity = lazy(() => import('../___pages/_activityPages/ActivityProfile'));
-
-const OrgList = lazy(() => import('../___pages/_orgPages/OrgList'));
+const OrgList = lazy(() => import('../___pages/_orgPages/OrgPage_List'));
 const ProjectsList = lazy(() => import('../___pages/_projectPages/ProjectsList'));
-const ActivitiesList = lazy(() => import('../___pages/_activityPages/ActivitiesList'));
+const ActivitiesList = lazy(() => import('../___pages/_activityPages/ActivityPage_List'));
 
-const AdminUsers = lazy(()=> import('../___pages/_userPages/AdminUsers'))
-const AdminOrgs = lazy(()=> import('../___pages/_orgPages/AdminOrgs'))
-const AdminProjects = lazy(()=> import('../___pages/_projectPages/AdminProjects'))
+const AdminUsers = lazy(()=> import('../___pages/_userPages/UserPage_Admin'))
+const AdminOrgs = lazy(()=> import('../___pages/_orgPages/OrgPage_Admin'))
+const AdminProjects = lazy(()=> import('../___pages/_projectPages/ProjectPage_Admin'))
+const AdminActivities = lazy(()=> import('../___pages/_activityPages/ActivityPage_Admin'))
 
 const AppRouter = () => {
 
@@ -58,6 +59,7 @@ const AppRouter = () => {
                             <Route path="/org/:id" component={ProfilOrg}/>
                             <Route path="/project/:id" component={ProfilProject}/>
                             <Route path="/activity/:id" component={ProfilActivity}/>
+                            <Route path="/user/:id" component={ProfilUserPublic}/>
                             <PrivateRoute path="/account" component={ProfilUser}/>
 
                             <PrivateRoute path="/create_org" component={CreateOrg}/>
@@ -67,12 +69,13 @@ const AppRouter = () => {
                             <AdminRoute path="/admin/users" component={AdminUsers} />
                             <AdminRoute path="/admin/orgs" component={AdminOrgs} />
                             <AdminRoute path="/admin/projects" component={AdminProjects} />
+                            <AdminRoute path="/admin/activities" component={AdminActivities} />
 
                         </Switch>
                     </Suspense>
                 </Segment>
             </Segment>
-            <Footer/>
+            <Footer />
         </Router>
     )
 }

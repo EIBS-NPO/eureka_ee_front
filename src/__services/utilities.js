@@ -53,6 +53,20 @@ export function getTimestamp(date){
     return (new Date(newDate).getTime());
 }
 
+export function getTranslateFromTextTable(o, typeText, translator, lg) {
+    if(o[typeText]){
+        if(o[typeText][lg]) {
+            return o[typeText][lg]
+        }else if(o[typeText]['en']) {
+            return o[typeText]['en']
+        }else {
+            return translator('no_' + lg + "_" + typeText)
+        }
+    }else {
+        return translator('no_' + lg + "_" + typeText )
+    }
+}
+
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
     strUcFirst,
@@ -62,5 +76,6 @@ export default {
     removeDaysToDate,
     octetsToKilos,
     getTimestamp,
-    clone
+    clone,
+    getTranslateFromTextTable
 };

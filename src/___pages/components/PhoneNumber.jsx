@@ -12,6 +12,7 @@ import {useTranslation, withTranslation} from "react-i18next";
 
 import Flags from 'country-flag-icons/react/3x2'
 import {hasFlag} from "country-flag-icons";
+import {Button, Form, Icon, Message, Segment} from "semantic-ui-react";
 
 export const PhoneFormInput = ({object, setObject, phoneType}) => {
     const {t, i18n}= useTranslation()
@@ -28,10 +29,13 @@ export const PhoneFormInput = ({object, setObject, phoneType}) => {
                     setError(undefined)
                     setObject({ ...object, [phoneType]: phoneNumber });
             }else{
-                setError(t('invalid_country_phoneNumber'))
+                setError(t('invalid'))
             }
 
-        }else{setObject({...object,[phoneType]: null})}
+        }else if(phoneNumber === null){
+            setObject({...object,[phoneType]: null})
+        }
+        else{setObject({...object,[phoneType]: undefined})}
     },[phoneNumber])
 
     const europeanCountry = [
@@ -39,31 +43,46 @@ export const PhoneFormInput = ({object, setObject, phoneType}) => {
         "|"
     ]
 
+    const handleRemove = (e) => {
+        e.preventDefault()
+        setObject({...object,[phoneType]: null})
+        setPhoneNumber(null)
+    }
+
     return (
         <>
             {phoneType === "phone" &&
-                <PhoneInput
-                    defaultCountry={lg}
-                    initialValueFormat="national"
-                    countryOptionsOrder={europeanCountry}
-                    limitMaxLength
-                    value={phoneNumber}
-                    onChange={setPhoneNumber}
-                    error={!!error}
-                />
+                <Segment className="row space-around unpadded" basic>
+                    <PhoneInput
+                        defaultCountry={lg}
+                        initialValueFormat="national"
+                        countryOptionsOrder={europeanCountry}
+                        limitMaxLength
+                        value={ phoneNumber }
+                        onChange={ setPhoneNumber }
+                        error={error ? error : ""}
+                    />
+                    {phoneNumber && <Icon name='eraser' link onClick={(e) => handleRemove(e)} />}
+                    {phoneNumber && error && <Icon name="x" color="red" /> }
+                    {phoneNumber && !error && <Icon name="check circle outline" color="green" /> }
+                </Segment>
+
             }
             { phoneType === "mobile" &&
-                <MobileInput
-                    defaultCountry={lg}
-                    initialValueFormat="national"
-                    countryOptionsOrder={["FR","NL","GB","|"]}
-                    value={phoneNumber}
-                    onChange={setPhoneNumber}
-                    error={!!error}
-                />
+                <Segment className="row space-around unpadded" basic>
+                    <MobileInput
+                        defaultCountry={lg}
+                        initialValueFormat="national"
+                        countryOptionsOrder={europeanCountry}
+                        value={phoneNumber}
+                        onChange={setPhoneNumber}
+                        error={error ? error : ""}
+                    />
+                    {phoneNumber && <Icon name='eraser' link onClick={(e) => handleRemove(e)} />}
+                    {phoneNumber && error && <Icon name="x" color="red" /> }
+                    {phoneNumber && !error && <Icon name="check circle outline" color="green" /> }
+                </Segment>
             }
-            {error && <p className="error">{error}</p>}
-
         </>
 
         )

@@ -1,6 +1,6 @@
 import Axios from "axios";
 
-const sendForgotPassordMail = (translator, user) => {
+const sendForgotPasswordMail = (translator, user) => {
     let token = user.gpAttributes["user.token.resetPassword"].propertyValue[0]
     let password = user.gpAttributes["user.token.resetPassword"].propertyValue[1]
     return Axios.post("/send",{emailData : {
@@ -27,8 +27,8 @@ const sendConfirmMail = (translator, user) => {
     let token = user.gpAttributes["user.token.activation"].propertyValue[0]
    return Axios.post("/send",{emailData : {
             email : user.email,
-            subject: translator("confirm_your_registration"),
-            text: translator("confirm_registration_message"),
+            subject: translator("confirm_your_email_account"),
+            text: translator("confirm_account_message"),
             template : "email_confirmLink",
             context : {
                 title : translator("confirm_your_registration"),
@@ -44,6 +44,6 @@ const sendConfirmMail = (translator, user) => {
 }
 
 export  default {
-    sendForgotPassordMail,
+    sendForgotPasswordMail,
     sendConfirmMail
 }

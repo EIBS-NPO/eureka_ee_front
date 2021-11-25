@@ -4,6 +4,10 @@ import {USR_API} from "../../config";
 
 const getbodyFormData = (user) => {
     let bodyFormData = new FormData();
+
+    if(user.id !== undefined){
+        bodyFormData.append('id', user.id)
+    }
     if(user.firstname !== undefined){
         bodyFormData.append('firstname', user.firstname)
     }
@@ -19,39 +23,78 @@ const getbodyFormData = (user) => {
     if(user.mobile !== undefined){
         bodyFormData.append("mobile", user.mobile)
     }
-    if(user.id !== undefined){
-        bodyFormData.append('id', user.id)
-    }
     if(user.password !== undefined){
         bodyFormData.append('password', user.password)
     }
-    /*if(user.picture !== undefined){
-        bodyFormData.append('pictureFile', user.picture)
-    }*/
     if(user.pictureFile !== undefined){
         bodyFormData.append('pictureFile', user.pictureFile)
     }
     if(user.address !== undefined){
-        bodyFormData.append("address", user.address.address)
-        bodyFormData.append("zipCode", user.address.zipCode)
-        bodyFormData.append("city", user.address.city)
-        bodyFormData.append("country", user.address.country)
-        if(user.address.complement !== undefined){
-            bodyFormData.append("complement", user.address.complement)
+        if(user.address !== null){
+            // bodyFormData.append("address", JSON.stringify(user.address))
+            bodyFormData.append("address", user.address.address)
+            bodyFormData.append("zipCode", user.address.zipCode)
+            bodyFormData.append("city", user.address.city)
+            bodyFormData.append("country", user.address.country)
+            if(user.address.complement !== undefined){
+                bodyFormData.append("complement", user.address.complement)
+            }
+        }else{
+            bodyFormData.append("address", null)
         }
+
     }
+
+    //followingActivity
+    if(user.followingActivityId) bodyFormData.append("followActivity", user.followingActivityId)
+
+    //followProject
+    if(user.followingProjectId) bodyFormData.append("followProject", user.followingProjectId)
+    if(user.assigningProjectId) bodyFormData.append('assigningProject', user.assigningProjectId)
+
+    //org membership
+    if(user.orgMemberId) bodyFormData.append('memberOf', user.orgMemberId)
+
     return bodyFormData;
+}
+
+const putBodyFormDataForAdmin = ( user, bodyFormData, adminManagement ) => {
+    bodyFormData.append("admin", "1")
+    if(adminManagement.roles !== undefined){
+        bodyFormData.append("roles", adminManagement.roles ? "ROLE_USER": null)
+    }
+    //todo pouvoir supprimer la gpaActivition de l'user pour le confirmer
+    if(adminManagement.confirmAccount !== undefined){
+        bodyFormData.append("confirmAccount", true)
+    }
+    return bodyFormData
 }
 
 const getUrlParams = (access, user=undefined, admin=undefined) => {
     let params = "?access="+access
     if(admin === true) params += "&admin=1";
-    if(user && user.id) params += "&id="+user.id
-    if(user && user.firstname) params += "&firstname="+user.firstname
-    if(user && user.lastname) params += "&lastname="+user.lastname
-    if(user && user.email) params += "&email="+user.email
-    if(user && user.phone) params += "&phone="+user.phone
-    if(user && user.mobile) params += "&mobile="+user.mobile
+    if(access !== "all"){
+        if(user){
+            if(user.id) params += "&id=" + user.id
+            if(user.firstname) params += "&firstname=" + user.firstname
+            if(user.lastname) params += "&lastname=" + user.lastname
+            if(user.email) params += "&email=" + user.email
+            if(user.phone) params += "&phone=" + user.phone
+            if(user.mobile) params += "&mobile=" + user.mobile
+
+            //by following activity
+            if(user.followingActivityId) params += "&followingActivity_id=" + user.followingActivityId
+
+            //by following project
+            if(user.followingProjectId) params += "&followingProject_object=" + user.followingProjectId
+            if(user.projectIsFollowing) params += "&followingProject_isFollowing=" + user.projectIsFollowing
+            if(user.projectIsAssigning) params += "&followingProject_isAssigning=" + user.projectIsAssigning
+
+            //by org
+            if(user.orgMemberId) params += "&memberOf_id=" + user.orgMemberId
+        }
+    }
+
     return params
 }
 
@@ -65,17 +108,16 @@ const register = (user) =>  {
     })
 }
 
-const put = (user, putRelationWith={}, adminManagment= {}) => {
-
+const put = (user, putRelationWith={}, adminManagement= undefined) => {
     let bodyFormData = getbodyFormData(user);
-    if(adminManagment.length !== 0 ){
-        bodyFormData.append("admin", "1")
-        if(adminManagment.roles !== undefined){
-            bodyFormData.append("roles", adminManagment.roles ? "ROLE_USER": null)
-        }
+    if(adminManagement !== undefined ){
+        bodyFormData = putBodyFormDataForAdmin(user, bodyFormData, adminManagement)
+        /*bodyFormData.append("admin", "1")
+        if(adminManagement.roles !== undefined){
+            bodyFormData.append("roles", adminManagement.roles ? "ROLE_USER": null)
+        }*/
     }
 
-    console.log(bodyFormData)
     return Axios({
         method: 'post',
         url: USR_API + "/update",
@@ -90,49 +132,32 @@ const put = (user, putRelationWith={}, adminManagment= {}) => {
         })*/
 }
 
+const getDataForConfirmEmail = (unconfirmedUserEmail) => {
+    if(unconfirmedUserEmail) {
+        return Axios.get(USR_API + "/public/activation?email=" + unconfirmedUserEmail)
+    }
+}
+
 const activation = (activationToken) => {
     if(activationToken){
-        return Axios.post(USR_API+"/activation", {"token":activationToken})
+        return Axios.post(USR_API+"/public/activation", {"token":activationToken})
     }
 }
 
 const askForgotPasswordToken = (email) => {
-    return Axios.put(USR_API + "/forgotPassword", {email:email} )
+    return Axios.put(USR_API + "/public/forgotPassword", {email:email} )
 }
 
 const get = (access, user, admin= false) =>{
-    return Axios.get(USR_API + "/public" + getUrlParams(access, user, admin) )
+    return Axios.get(USR_API + getUrlParams(access, user, admin) )
 }
 
-const get2 = (access = null, email = null, id = null, admin=undefined) => {
-    let params = admin === true ?"?admin=1&":"?";
-    if(access !== null){ params += "access=" + access }
-    if(id !== null){
-        if( params !== "" ) { params += "&"}
-        params += "id=" + id
-    }
-    if(email !== null){
-        if( params !== "" ) { params += "&"}
-        params += "email=" + email
-    }
-    /*if(access === "owned"){params = "?access=owned"}
-    else if(access === "id"){ params = "?access=id"}*/
-    return Axios.get(USR_API + "/public" + params )
+const getPublic = ( access, user ) =>{
+    return Axios.get(USR_API + "/public" + getUrlParams( "search", user ) )
 }
 
 const resetPass = (passTab) => {
-    return Axios.post(USR_API +"/resetPassword", passTab)
-}
-
-const resetEmail = (email, id = null) => {
-    let data = {
-        email:email
-    }
-    if(id !== null) {
-        data[id] = id
-    }
-
-    return Axios.post(USR_API +"/email", data)
+    return Axios.post(USR_API +"/public/resetPassword", passTab)
 }
 
 const checkRole = () => {
@@ -150,12 +175,12 @@ const checkMail = () => {
     }
 }
 
-const activ = (userId, isActiv) => {
+/*const activ = (userId, isActiv) => {
     return Axios.put(USR_API + "/activ", {
         id:userId,
         isDisable:isActiv
     })
-}
+}*/
 
         /*
         function checkLastName() {
@@ -182,14 +207,14 @@ const activ = (userId, isActiv) => {
         export default {
             register,
    //         askActivation,
+            getDataForConfirmEmail,
             activation,
             askForgotPasswordToken,
             checkRole,
             checkMail,
             put,
             get,
-            resetPass,
-            resetEmail,
-            activ
+            getPublic,
+            resetPass
         };
 

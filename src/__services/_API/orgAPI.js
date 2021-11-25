@@ -2,12 +2,19 @@ import Axios from "axios";
 import {ORG_API} from "../../config";
 
 const getBodyFormData = (org) => {
-    console.log(org)
     let bodyFormData = new FormData();
-    bodyFormData.append('name', org.name)
-    bodyFormData.append('type', org.type)
-    bodyFormData.append('email', org.email)
-    bodyFormData.append('description', JSON.stringify(org.description))
+    if(org.name !== undefined){
+        bodyFormData.append('name', org.name)
+    }
+    if(org.type !== undefined){
+        bodyFormData.append('type', org.type)
+    }
+    if(org.email !== undefined){
+        bodyFormData.append('email', org.email)
+    }
+    if(org.description !== undefined){
+        bodyFormData.append('description', JSON.stringify(org.description))
+    }
     if(org.phone !== undefined){
         bodyFormData.append('phone', org.phone)
     }
@@ -23,10 +30,39 @@ const getBodyFormData = (org) => {
         bodyFormData.append("city", org.address.city)
         bodyFormData.append("country", org.address.country)
         if(org.address.complement !== undefined){
-            bodyFormData.append("complement", org.address.complement)
+            bodyFormData.append("complement", org.address.complement === "" ? null : org.address.complement)
         }
     }
+    if(org.project !== undefined){
+        bodyFormData.append("project", org.project.id)
+    }if(org.activity !== undefined){
+        bodyFormData.append("activity", org.activity.id)
+    }
     return bodyFormData
+}
+
+//todo add for partner //todo for test
+const getUrlParams = (access, org = undefined, admin = undefined) => {
+    let params = "?access="+access
+    if(admin === true) params += "&admin=1";
+    if(access !== "all") {
+        if(org) {
+            if (org.id) params += "&id=" + org.id
+            if (org.name) params += "&name=" + org.name
+            if (org.email) params += "&email=" + org.email
+            if (org.phone) params += "&phone=" + org.phone
+
+            //only partner //maybe public access //todo
+            if(org.partner) params += "&partner=1"
+
+            //by referent relation
+            if (org.referent && org.referent.id) params += "&referent_id=" + org.referent.id
+            if (org.referent && org.referent.firstname) params += "&referent_firstname=" + org.referent.firstname
+            if (org.referent && org.referent.lastname) params += "&referent_lastname=" + org.referent.lastname
+            if (org.referent && org.referent.email) params += "&referent_email=" + org.referent.email
+        }
+    }
+    return params
 }
 
 const post = (org) => {
@@ -39,18 +75,15 @@ const post = (org) => {
     })
 }
 
-const put = (org, putRelationWith = {}) => {
-    if(putRelationWith["pictureFile"] !== undefined){
-        org.pictureFile = putRelationWith["pictureFile"]
-    }
+const put = (org, adminManagment = {}) => {
+
     let bodyFormData = getBodyFormData(org)
 
-    //add after for multiRelationnal (ListOf)
-    if(putRelationWith["project"] !== undefined){
-        bodyFormData.append('project', putRelationWith["project"].id)
-    }
-    if(putRelationWith["activity"] !== undefined){
-        bodyFormData.append('activity', putRelationWith["activity"].id)
+    if(adminManagment.length !== 0 ){
+        bodyFormData.append("admin", "1")
+        if(adminManagment.partner !== undefined){
+            bodyFormData.append("partner", adminManagment.partner)
+        }
     }
 
     return Axios({
@@ -59,79 +92,15 @@ const put = (org, putRelationWith = {}) => {
         data: bodyFormData,
         headers: {'Content-Type': 'multipart/form-data'}
     })
-    /*let data = {
-          "orgId" : org.id,
-          "name" : org.name,
-          "type": org.type,
-          "email": org.email,
-          "phone" : org.phone,
-          'description': org.description
-      }
-      if(org.partner !== undefined){
-          data["isPartner"] = org.partner
-      }
-      return Axios.put(ORG_API, data)*/
 }
 
-function getPublic(id = null, isPartner=null){
-    let endPoint = ORG_API;
-    if(id === null){
-        if(isPartner !== null){
-            endPoint += "/public?partner"
-        }
-        else{
-            endPoint += "/public";
-        }
-    }else {
-        endPoint += "/public?id=" + id;
-    }
-    return Axios.get(endPoint)
+function get(access , org, admin = false){
+    return Axios.get(ORG_API + getUrlParams(access, org, admin))
+
 }
 
-function getOrg(access =null, id =null){
-    let params = "?";
-    if(access !== null){ params += "access=" + access }
-    if(id !== null){
-        if( params !== "" ) { params += "&"}
-        params += "id=" + id
-    }
-    if(params === "?" ){
-        return Axios.get(ORG_API )
-    }else {
-        return Axios.get(ORG_API + params)
-    }
-}
-
-const uploadPic = (bodyFormData) => {
-    return Axios({
-        method: 'post',
-        url: ORG_API + "/picture",
-        data: bodyFormData,
-        headers: {'Content-Type': 'multipart/form-data'}
-    })
-}
-
-//todo useless?
-const downloadPic = (picture) => {
-    return Axios.get(ORG_API + "/picture/?pic=" + picture)
-}
-
-const manageActivity = (activity, orgId) => {
-    return Axios.put(ORG_API + "/manageActivity", {
-            orgId: orgId,
-            activityId: activity.id
-        })
-}
-
-const manageProject = (project, orgId) => {
-    return Axios.put(ORG_API + "/manageProject", {
-        orgId: orgId,
-        projectId: project.id
-    })
-}
-
-const getMembered = () => {
-    return Axios.get(ORG_API + "/membered")
+function getPublic(access, org){
+    return Axios.get(ORG_API + "/public" + getUrlParams(access, org))
 }
 
 const remove = (orgId) => {
@@ -144,10 +113,5 @@ export default {
     put,
     remove,
     getPublic,
-    getOrg,
-    uploadPic,
-    downloadPic,
-    manageActivity,
-    manageProject,
-    getMembered
+    get
 };

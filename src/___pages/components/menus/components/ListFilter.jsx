@@ -16,15 +16,17 @@ import {useTranslation, withTranslation} from "react-i18next";
  *                      "lastname",
  *                      {address:
  *                          ["city"]
-*                       }
+ *                       }
  *             ]
  *     }
  * @param setResultList stack back the filtering results
+ * @param isDisabled
  * @returns {JSX.Element}
  * @constructor
  */
-const SearchInput = ({elementList, researchFields, setResultList}) => {
+const SearchInput = ({elementList, researchFields, setResultList, isDisabled=false}) => {
 
+    console.log(elementList)
     /**
      * i18n translation
      */
@@ -66,7 +68,7 @@ const SearchInput = ({elementList, researchFields, setResultList}) => {
      */
     function checkByAttribute (object, attributeTable, objectKey =undefined, result = undefined ){
             if (!Array.isArray(attributeTable) && typeof attributeTable !== "object") { //if attribute
-                console.log(objectKey + ":" + attributeTable)
+            //    console.log(objectKey + ":" + attributeTable)
                 return searchInObject(object, objectKey, attributeTable)
             } else if ((typeof attributeTable === "object")) { // else search deeper
                 for (const [key, value] of Object.entries(attributeTable)) {
@@ -85,7 +87,7 @@ const SearchInput = ({elementList, researchFields, setResultList}) => {
      * @param result
      * @returns {boolean|undefined}
      */
-    function searchInObject (object, subTarget, keyword, isFinish = false, result = undefined) {
+    function searchInObject (object, subTarget, keyword, isFinish = false, result = undefined ) {
         if (!isFinish || result !== true) { //for trace back and stop treatment when found result
 
             let foundObject = (subTarget !== "main") ? findSubObject(object, subTarget) : object
@@ -109,7 +111,7 @@ const SearchInput = ({elementList, researchFields, setResultList}) => {
 
     useEffect( () => {
         let tab=[]
-        elementList.map(object => {
+        elementList && elementList.map(object => {
             if(checkByAttribute(object, researchFields)){ //recursive check by Attribute
                 tab.push(object)
             }
@@ -123,6 +125,7 @@ const SearchInput = ({elementList, researchFields, setResultList}) => {
             value={ search }
             onChange={handleSearch}
             placeholder={  t('search') + "..."}
+            disabled ={ isDisabled }
         />
     )
 }

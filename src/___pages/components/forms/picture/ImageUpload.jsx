@@ -7,7 +7,7 @@ import MediaContext from "../../../../__appContexts/MediaContext";
 import {useTranslation} from "react-i18next";
 
 //todo traduction
-const ImageUpload = ({ setter, type, entity}) => {
+const ImageUpload = ({ setter, entity}) => {
 
     const Media = useContext(MediaContext).Media
 
@@ -58,33 +58,6 @@ const ImageUpload = ({ setter, type, entity}) => {
 
     const handleDelete = (e) => {
         e.preventDefault()
-      //  if(entity.id !== undefined){
-           /* if(type === "activity"){
-                activityAPI.put(entity, {"pictureFile": null} )
-                    .then(response => {
-                        setter({ ...entity, "picture": response.data[0].picture })
-                        hideModal()
-                    })
-                    .catch(error => {
-                        //handle error
-                        console.log(error)
-                        console.log(error.response);
-                    });
-            }
-            else if(type === "project"){
-                    projectAPI.put(entity, {"pictureFile": null} )
-                        .then(response => {
-                            setter({ ...entity, "picture": response.data[0].picture })
-                            hideModal()
-                        })
-                        .catch(error => {
-                            //handle error
-                            console.log(error)
-                            console.log(error.response);
-                        });
-                }
-            }*/
-           //todo handle org, project, and user
         setter({ ...entity, "picture": null })
         setter({ ...entity, "pictureFile": null})
     }
