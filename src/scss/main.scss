@@ -1,22 +1,196 @@
-@import "./utilities/variables.scss";
+@import "utilities/colors";
+
+/*@media screen and (max-width: 430px)
+{
+    flex-wrap: wrap;
+    !* Rédigez vos propriétés CSS ici *!
+}
+
+@media screen and (min-width: 431px) and (max-width: 767px)
+{
+    !* Rédigez vos propriétés CSS ici *!
+}
+
+@media screen and (min-width: 768px) and (max-width: 1023px)
+{
+    !* Rédigez vos propriétés CSS ici *!
+}
+
+@media screen and (min-width: 1024px) and (max-width: 1023px)
+{
+    !* Rédigez vos propriétés CSS ici *!
+}*/
+
+/*
+min-70% pour voir mettre en width
+ */
+/*body{
+    width: 100%;
+}*/
 
 #main {
     display:flex;
-    flex-direction: column;
-    position:absolute;
+  /*  position: fixed;*/
+  /*  top: 160px;*/
+   // flex-direction: column;
+  //  max-width: 300px;
+  //  height:100vh;
     bottom:0px;
-    top:0px;
-    left:0px;
-    right:0px;
+  //  top:0px;
+  /*  left: 200px;
+    right:0px;*/
+//    overflow:auto;
+    min-height: 70vh;
+    /*max-height:100vh;*/ //todo pagination
+    justify-content: center;
+    padding:unset;
+   /* max-width:100%;*/
+   /* padding-bottom: 60px;*/
+
+    /*@media screen and (max-width: 601px)
+    {
+        justify-content: center;
+    }
+    @media screen and (min-width: 601px)
+    {
+        justify-content: space-between;
+    }
+    justify-content: center;*/
+}
+
+.mainTitle {
+    color:$second-color;
+    min-height: 100px!important;
+}
+
+#dimmer {
+    z-index:50;
+}
+
+#sidePusher {
+    z-index:50;
+    width:100vh;
+}
+
+#dropXs {
+    width:50%;
+    text-align: center;
+}
+
+#noSidePusher {
+    z-index:1;
+    width:0;
+}
+
+#mainMenu{
+    position:fixed;
+ //   z-index:100;
+    width: -webkit-fill-available;
+    width: 100%;
+}
+
+.menubar{
+    width:100% !important;
+    margin:auto !important;
+}
+
+.absPos {
+    position:absolute;
+}
+
+.parent-sidebar {
+    position: sticky;
+    top: 50px;
+}
+
+.overflowed-invisible {
+    overflow: auto;
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+.overflowed-invisible::-webkit-scrollbar {
+    display: none;
+}
+
+.no-v-padded {
+    padding-top: unset !important;
+    padding-bottom: unset !important;
+}
+
+.no-h-padded {
+    padding-left: unset !important;
+    padding-right: unset !important;
+}
+
+#sidebar-container{
+    display: flex;
+    flex-direction: column;
+    float: left;
+}
+#sidebar {
+    /*.parent-div{
+        position: sticky;
+        top: 25%;
+    }*/
+    height: 65vh;
+    padding-left: unset;
+    padding-right: unset;
+}
+
+#sidebarXs {
+    height:50vh;
+    padding: unset;
+
+    button{
+        border-bottom: 1px solid $second-color;
+        border-right: 1px solid $second-color;
+        border-radius:30px;
+    }
+
+    .btn-menu-open {
+        border-color: $fourth-color;
+    //    border-radius:30px 30px 50% 50%;
+    }
+
+    a{
+       // background-color:$fourth-color;
+    }
+}
+
+#content{
+    display: flex;
+}
+
+#SubMainMenu {
+    display:flex;
+    //   position: fixed;
+  //  top: 20%;
+    // flex-direction: column;
+    //  max-width: 300px;
+    //  height:100vh;
+  //  bottom:0px;
+    //  top:0px;
+ //   left:0px;
+//    right:0px;
+    //    overflow:auto;
+    min-height: 70vh;
+    max-height:100vh;
+ //   justify-content: center;
 }
 
 #main_top {
-    z-index: 1;
+    //z-index: 1;
     display:flex;
     flex-direction: row;
-    height:100px;
+    align-items: center;
+    justify-content: space-around;
+    // flex-wrap: wrap;
+   // background: linear-gradient(to right, white 20%, $second-color);
     box-shadow: 0px 10px 10px rgba(black,0.5);
 }
+
+
 
 #main_middle{
     display:flex;
@@ -30,8 +204,9 @@
 }
 
 #left_menu {
-    background-color: rgb(253,198,8);
-    min-width: 20%;
+width:auto;
+   // background-color: rgb(253,198,8);
+   // min-width: 20%;
 }
 
 /*#main_menu {
@@ -62,12 +237,105 @@
 }
 
 .card{
+    //width:75%;
     background-color: white;
-    border:2px #A36298 solid;
-    border-radius: 10px;
-    margin: 15px;
-    box-shadow: 10px 10px 10px rgba(black,0.5);
-    padding: 50px;
+   /* border:2px #A36298 solid;
+    border-radius: 10px;*/
+//    margin: 15px;
+   /* @media screen and (min-width: 601px)
+    {
+        margin-left: auto;
+    }*/
+  /*  box-shadow: 10px 10px 10px rgba(black,0.5);*/
+ //   padding-top: 50px;
+    overflow: auto;
+    width:100% !important;
+    text-align: center;
+   // overflow-y:auto;
+}
+
+.profil-header {
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+}
+
+.profil-header-content {
+    width:100%;
+}
+
+.profil-header-title{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    padding:unset !important;
+    width: 100%;
+
+    p {
+        /* margin: 0 0 1em; */
+        line-height: 0.5em;
+        font-size: 0.7em !important;
+        font-weight: normal;
+    }
+}
+
+.profil-header-menu {
+ //   background-color: rgba($third-color,0.5) !important;
+    justify-content: space-around;
+}
+
+.content-description {
+    display: flex;
+    flex-direction: column;
+    width:70vh !important;
+}
+
+.backdrop {
+    position:absolute !important;
+    display: flex !important;
+    justify-content: flex-end;
+    top:0;
+    right:0;
+   // left:0;
+  //  bottom:0;
+    width:400px;
+    min-width: 400px;
+    max-width: 400px;
+    height:400px;
+    overflow: hidden;
+    z-index:1;
+    margin:unset
+}
+
+.near-backdrop{
+    z-index:2;
+}
+
+.bg-circle {
+    top: -95px;
+    left: -30px;
+    width: 300px;
+    height: 300px;
+    border-radius: 175px !important;
+    background: linear-gradient(to right, $fourth-color, $second-color) !important;
+    z-index:1;
+}
+
+.unmarged {
+    margin:0!important;
+}
+
+.unpadded {
+    padding:unset !important;
+}
+
+.top-1rem {
+    margin-top: 1rem!important;
+}
+
+.breakWord{
+    word-break: break-word;
 }
 
 .user{
@@ -75,10 +343,53 @@
 }
 
 .item {
+    text-align: center!important;
     align-items: center;
     justify-content: center;
+    color:black!important;
 }
 
+.menuDropItem {
+    display: flex!important;
+    flex-direction: column!important;
+    color:black!important;
+}
+
+.borderless {
+    border:none!important;
+    box-shadow: none!important;
+}
+
+.simpleBorder {
+    border:1px solid black;
+}
+
+.error {
+    color:red;
+    background-color: rgb(255,180,180);
+    border:1px solid red;
+    border-radius:4px;
+}
+
+.minH-50{
+    min-height: 50vh;
+}
+
+
+
+.DropMenuBottom {
+    left:0%!important;
+    top:100%!important;
+    width:100%;
+//    margin-left: -1.5rem!important;
+}
+
+.HeaderIcon {
+  display: flex!important;
+  flex-direction: column!important;
+  align-items: center;
+  //width:100px;
+}
 /*.content_box {
     width:300px;
     height:300px;
@@ -90,13 +401,7 @@
     vertical-align: center;
 }*/
 
-.space_row{
-    width:90%;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items:center; //vertical
-}
+
 
 .center{
     display:flex;
@@ -104,29 +409,63 @@
     align-items: center;
 }
 
+.stretch {
+    align-items:stretch !important;
+}
+
+.space-around {
+    justify-content: space-around;
+}
+
+.wrapped {
+    flex-wrap:wrap;
+}
+
+.heightLess {
+    min-height:0!important;
+}
+
+.text-center {
+    text-align:center!important;
+}
+
+.w-70{
+    width:70%!important;
+}
+
+.w-25{
+    width:25%!important;
+}
+
+.w-50{
+    width:50%!important;
+}
+
+.w-300px{
+    width:300px!important;
+}
+
+.margAuto {
+    margin:auto!important;
+}
+
 .CropBox{
     width:10px;
     height:50px;
 }
 
+.row {
+    display:flex;
+    flex-direction: row;
+}
+
 .column {
+    display: flex;
     flex-direction: column;
 }
 
 li {
     list-style: none;
-}
-
-#logo {
-    max-width: 20%;
-    min-width: 20%;
-    height: 100px;
-}
-
-#logo img{
-    max-width: 100%;
-    max-height: 100px;
-    height:auto;
 }
 
 .fr_flag {
@@ -142,4 +481,12 @@ li {
 .nl_flag {
     background: url("../_resources/flags/belgium_round_icon_640.png") center center no-repeat;
     background-size: 150%;
+}
+
+h1 {
+    text-align: center;
+}
+
+h2 {
+    word-break: break-word;
 }
