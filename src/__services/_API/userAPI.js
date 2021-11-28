@@ -146,7 +146,16 @@ const activation = (activationToken) => {
 }
 
 const askForgotPasswordToken = (email) => {
-    return Axios.put(USR_API + "/public/forgotPassword", {email:email} )
+    let formData = new FormData()
+    formData.append("email",email)
+
+    return Axios({
+        method: 'put',
+        url: USR_API + "/public/forgotPassword",
+        data: formData,
+        headers: {'Content-Type': 'multipart/form-data'}
+    })
+  //  return Axios.put(USR_API + "/public/forgotPassword", {email:email} )
 }
 
 const get = (access, user, admin= false) =>{

@@ -19,8 +19,16 @@ const logout = async () => {
 }
 
 const authenticate = (credentials) => {
-    return Axios
-        .post(LOGIN_API, credentials)
+    let formData = new FormData()
+    formData.append("email", credentials.email)
+    formData.append("password", credentials.password)
+
+    return Axios({
+        method: 'post',
+        url: USR_API + "/register",
+        data: formData,
+        headers: {'Content-Type': 'multipart/form-data'}
+    })
         .then((response) => {
             let token = response.data.token
             let refreshToken = response.data.refresh_token
