@@ -38,7 +38,7 @@ export const ActivityHeader = ( { t, activity, setActivity } ) => {
 
 export const PresentationPanelForActivity = ({ ctx, activity, setActivity, isOwner, forAdmin = false }) => {
     const {t} = useTranslation()
-    const {isAdmin, isAuthenticated} = useContext(AuthContext).isAuthenticated
+    const { isAdmin, isAuthenticated } = useContext(AuthContext)
 
     const [isForm, setIsForm] = useState(false)
 
@@ -206,15 +206,15 @@ export const ProjectPanelForActivity = ({ t, activity, isOwner, postTreatment, h
 
             {!updatedActivityLoader && !assignedProjectLoader && !userProjectLoader &&
             <>
-                {isOwner || ( forAdmin && isAdmin ) &&
-                <ProjectMenuForActivity
-                    t={t}
-                    activityProject={ activity.project ? activity.project : undefined }
-                    userProjects={userProjects}
-                    userAssignProjects={assignedProjects}
-                    loader={ updatedActivityLoader }
-                    handleAction={ handleAction }
-                />
+                { ( isOwner || ( forAdmin && isAdmin ) ) &&
+                    <ProjectMenuForActivity
+                        t={t}
+                        activityProject={ activity.project ? activity.project : undefined }
+                        userProjects={ userProjects }
+                        userAssignProjects={ assignedProjects }
+                        loader={ updatedActivityLoader }
+                        handleAction={ handleAction }
+                    />
                 }
 
                 {confirm.show && confirm.type === "add" && !activity.project &&
@@ -371,7 +371,7 @@ export const OrgPanelForActivity = ({ t, activity, isOwner, postTreatment, histo
 
             {!updatedActivityLoader && !userAssignOrgsLoader && !userOrgsLoader &&
             <>
-                {isOwner || ( forAdmin && isAdmin ) &&
+                { ( isOwner || ( forAdmin && isAdmin ) ) &&
                 <OrgMenuForActivity
                     t={t}
                     isOwner={isOwner}
@@ -440,14 +440,14 @@ export const ActivityPanelsContent = ({ t, ctx, activeItem, activity, setActivit
             }
 
             {activeItem === "upload" && (ctx==="owned" || ctx==="asssigned") &&
-            <PanelContent>
-                <UploadPanelForActivity
-                    t={t}
-                    activity={activity}
-                    setActivity={setActivity}
-                    history={ history }
-                />
-            </PanelContent>
+                <PanelContent>
+                    <UploadPanelForActivity
+                        t={t}
+                        activity={activity}
+                        setActivity={setActivity}
+                        history={ history }
+                    />
+                </PanelContent>
             }
 
             {activeItem === "project" && (

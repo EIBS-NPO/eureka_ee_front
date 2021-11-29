@@ -6,6 +6,7 @@ import AuthContext from "../../__appContexts/AuthContext";
 import {ContentContainer} from "../components/Loader";
 import { HandleGetActivities } from "../../__services/_Entity/activityServices";
 import {DisplayActivity} from "../components/ManageActivity";
+import {ActivityHeader} from "../components/entityViews/ActivityViews";
 
 const ActivityPage_Profile = ( props ) => {
 
@@ -69,8 +70,8 @@ const ActivityPage_Profile = ( props ) => {
             {!loader &&
             <>
                 {activity ?
-               //     <>
-              //          <ActivityHeader t={ t } activity={activity} setActivity={setActivity} />
+                    <>
+                        <ActivityHeader t={ t } activity={activity} setActivity={setActivity} />
                         <DisplayActivity
                             t={t}
                             ctx={ctx}
@@ -80,7 +81,7 @@ const ActivityPage_Profile = ( props ) => {
                             loader={loader}
                             history={props.history}
                         />
-                //    </>
+                    </>
                     :
                     <Container textAlign='center'>
                         <Message size='mini' info>
