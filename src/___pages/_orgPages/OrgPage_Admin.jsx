@@ -192,11 +192,14 @@ const OrgPage_Admin = (history ) => {
                             }
                             {actionSelected === "editAddress" &&
                             <AddressForm
-                                handleSubmit={handleUpdate}
-                                obj={selectedOrg}
-                                isRequired={true}
-                                errors={error} loader={loader2}
+                                t={t}
+                                history={history}
+                                object={selectedOrg}
+                                addressFor="org"
+                                postTreatment={postTreatment}
                                 cancel={cancelForm}
+                                isRequired={true}
+                                forAdmin={true}
                             />
                             }
                             {actionSelected === "editMembership" &&
