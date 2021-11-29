@@ -44,12 +44,12 @@ export const HandleUpdateOrg = async (updatedOrg, postTreatment, setLoader, setE
         //handle enable/disable partner
         if(updatedOrg.partner !== undefined){adminManagment["partner"] = updatedOrg.partner}
 
-        orgAPI.put(updatedOrg, {}, adminManagment)
+        orgAPI.put(updatedOrg, adminManagment)
             .then(response => {
                 postTreatment(response.data[0])
             })
             .catch(error => {
-                console.log(error.response)
+            //    console.log(error.response)
                 setErrors(error.response);
             })
             .finally(() => setLoader(false))

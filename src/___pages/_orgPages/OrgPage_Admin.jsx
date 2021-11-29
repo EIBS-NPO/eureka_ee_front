@@ -1,6 +1,6 @@
 
 import {useTranslation, withTranslation} from "react-i18next";
-import React, {useContext, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {Menu, Segment, Message, Container, Loader } from "semantic-ui-react";
 import Modal from "../components/Modal";
 import {AddressForm} from "../components/Address";
@@ -15,6 +15,7 @@ import {UpdateAssignedForm} from "../components/FollowersComponents";
 import {ActivitiesPanelForOrg, ProjectsPanelForOrg} from "../components/entityViews/OrganizationViews";
 import {BtnOnCLick} from "../components/Buttons";
 import {HandleUpdateOrg} from "../../__services/_Entity/organizationServices";
+import {ContentContainer} from "../components/Loader";
 
 const OrgPage_Admin = (history ) => {
     const { t } = useTranslation()
@@ -29,10 +30,12 @@ const OrgPage_Admin = (history ) => {
     const [actionSelected, setActionSelected] = useState(undefined)
     const [show, setShow] = useState(false)
 
-    const handleAction = ( type, org ) => {
-        if(type === "editPartner"){
-            handleUpdate({id:org.id, partner: !(org.partner && org.partner) })
-        }else {
+    const handleAction = async (type, org) => {
+        setSelectedOrg(org)
+        if (type === "editPartner") {
+            await HandleUpdateOrg({id: org.id, partner: true}, postTreatment, setLoader, setError, history, true)
+        }
+        else {
             setSelectedOrg(org)
             setActionSelected(type)
             setShow(true)
@@ -51,70 +54,41 @@ const OrgPage_Admin = (history ) => {
         setLoader2(false)
     }
 
-    const postTreatment = ( orgResult ) => {
-        RefreshOptionAndDroppedSelection(orgs, orgDropSelected, selectedOrg.id, orgResult)
+    const postTreatment = async (orgResult) => {
+        let orgId
+        if(selectedOrg) { orgId = selectedOrg.id} else { orgId = orgResult.id}
+        await RefreshOptionAndDroppedSelection(orgs, orgDropSelected, orgId, orgResult)
 
         //todo partnerFooter Refresh
         //partner refresh //todo
-        let partner = partnerList.find(p => p.id === orgResult.id);
-        if(partner !== undefined && orgResult.partner === undefined){
-            //remove partner
-            partnerList.splice(partnerList.indexOf(partner), 1);
-            setPartnerList(partnerList)
-        }else if( partner === undefined && orgResult.partner !== undefined){
-            //add partner
-            partnerList.push(orgResult)
-            setPartnerList(partnerList)
-        }
+        /*      let partner = partnerList.find(p => p.id === orgResult.id);
+              if(partner !== undefined && orgResult.partner === undefined){
+                  //remove partner
+                  partnerList.splice(partnerList.indexOf(partner), 1);
+                  setPartnerList(partnerList)
+              }else if( partner === undefined && orgResult.partner !== undefined){
+                  //add partner
+                  partnerList.push(orgResult)
+                  setPartnerList(partnerList)
+              }*/
 
-        if(actionSelected !== "editProjectsOrg" && actionSelected !== "editActivitiesOrg"){
+        if (actionSelected !== "editProjectsOrg" && actionSelected !== "editActivitiesOrg") {
             hideModal()
-        }else {
+        } else {
             setSelectedOrg(orgResult)
         }
     }
 
-
-    //todo
-    //just used for address, make address Service
-    const handleUpdate = async (updatedOrg) => {
-        setLoader(true)
-        if (await authAPI.isAuthenticated()) {
-            let adminManagment = {admin:true}
-
-            //handle enable/disable partner
-            if(updatedOrg.partner !== undefined){adminManagment["partner"] = updatedOrg.partner}
-
-            await HandleUpdateOrg( updatedOrg, postTreatment, setLoader, setError, history, true)
-
-        } else {
-            history.replace('/login')
-        }
-    }
-
-  /*  const handlePartner = (org) => {
-        setLoader(true)
-        if(org.partner !== undefined ){
-            org.partner = false
-        }else {
-            org.partner = true
-        }
-        orgAPI.put(org)
-            .then((response) => {
-               // let upOrg = orgs.find(o => o.id === org.id)
-
-                let index = orgs.indexOf(response.data[0])
-
-                orgs.splice(index, 1, response.data[0]);
-            })
-            .catch(error => console.log(error))
-            .finally( () => setLoader(false))
-    }
-*/
     const [searchLoader, setSearchLoader] = useState(false)
     const [orgDropSelected, setOrgDropSelected] = useState([])
+
+        console.log(orgDropSelected)
+
     return (
-        <div className="card">
+        <ContentContainer
+            loaderActive={false}
+            loaderMsg={ t('loading') +" : " + t('organizations') }
+        >
             <h1> {t("admin_orgs")}</h1>
             <Menu vertical fluid>
                 <SearchBar
@@ -137,7 +111,7 @@ const OrgPage_Admin = (history ) => {
 
             {!searchLoader && orgDropSelected.length > 0 &&
                 orgDropSelected.map(o => (
-                    <ManageOrg key={o.id} org={o}  handleAction={handleAction} loader={loader2}/>
+                    <ManageOrg key={o.id} org={o}  handleAction={handleAction} loader={loader}/>
                 ))
             }
 
@@ -165,7 +139,7 @@ const OrgPage_Admin = (history ) => {
             </Message>
             }
 
-            {loader &&
+            {/*{loader &&
             <Segment>
                 <Loader
                     active
@@ -175,7 +149,7 @@ const OrgPage_Admin = (history ) => {
                     inline="centered"
                 />
             </Segment>
-            }
+            }*/}
 
             <Modal show={show} handleClose={hideModal} title={ t(actionSelected) } >
                 <div className="card minH-50">
@@ -250,7 +224,7 @@ const OrgPage_Admin = (history ) => {
                 </div>
             </Modal>
 
-        </div>
+        </ContentContainer>
     )
 }
 

@@ -8,6 +8,7 @@ import {AddressDisplay } from "./Address";
 import {OrgPanelsContent,} from "./entityViews/OrganizationViews";
 import {DropdownProfilEntity} from "./menus/MenuProfile";
 import {menuItemListForOrg} from "../../__services/_Entity/organizationServices";
+import {ContentContainer} from "./Loader";
 
 
 const ManageOrg = ({org, handleAction, loader = false}) => {
@@ -16,6 +17,7 @@ const ManageOrg = ({org, handleAction, loader = false}) => {
 
     return (
         <Segment basic key={org.id}>
+
             <Menu className="unmarged" >
                 <Menu.Item fluid>
                     <Item.Content>
@@ -67,22 +69,24 @@ const ManageOrg = ({org, handleAction, loader = false}) => {
                 </Menu.Menu>
             </Menu>
 
-            <Segment.Group horizontal className="unmarged" >
+                <Segment.Group horizontal className="unmarged" >
 
-                <Segment className="unmarged w-70"  padded='very'>
-                    <Picture size="tiny" picture={org.picture} isFloat="left" />
+                    <Segment className="unmarged w-70"  padded='very'>
+                        <Picture size="tiny" picture={org.picture} isFloat="left" />
 
-                    <MultilingualTextDisplay object={org} typeText="description"/>
+                        <MultilingualTextDisplay object={org} typeText="description"/>
+                    </Segment>
+
+                    <Segment  className="w-25">
+                        <AddressDisplay object={org} />
+                    </Segment>
+
+                </Segment.Group>
+
+                <Segment className="unmarged unpadded" size="small">
+                    <p>{t('referent') + " " + org.referent.firstname + " " + org.referent.lastname}</p>
                 </Segment>
 
-                <Segment  className="w-25">
-                    <AddressDisplay object={org} />
-                </Segment>
-
-            </Segment.Group>
-            <Segment className="unmarged unpadded" size="small">
-                <p>{t('referent') + " " + org.referent.firstname + " " + org.referent.lastname}</p>
-            </Segment>
         </Segment>
     )
 }
