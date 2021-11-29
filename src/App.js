@@ -58,6 +58,7 @@ import orgAPI from "./__services/_API/orgAPI";
          HandleGetOrgs(
              {access:"public", org:{partner:true}},
              setPartnerList,
+             undefined,
              setErrors,
              history
          )

@@ -201,9 +201,12 @@ const OrgPage_Admin = (history ) => {
                             }
                             {actionSelected === "editMembership" &&
                             <UpdateAssignedForm
+                                t={t}
+                                isOwner={false}
                                 object={selectedOrg}
                                 objectType="org"
                                 onClose={cancelForm}
+                                history={history}
                                 forAdmin={true}
                             />
                             }
