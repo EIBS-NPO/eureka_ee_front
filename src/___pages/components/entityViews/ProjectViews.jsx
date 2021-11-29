@@ -35,7 +35,6 @@ export const ProjectHeader = ({ t, ctx, project, setProject }) => {
             </Header>
         </Segment>
     )
-    //todo
 }
 
 export const MenuPanelsProjectGreaterXS = ({ Media, project, activeItem, setActiveItem, PanelsContent }) => {
@@ -229,7 +228,7 @@ export const ActivitiesPanelForProject = ({ t, project, postTreatment, history, 
                 )
             } else if (forAdmin) {
                 let owner = {id: project.creator.id}
-                await HandleGetActivities({access: "search", project: { creator: owner}},
+                await HandleGetActivities({access: "search", project: { creator: owner } },
                     setUserActivities,
                     setUserActivitiesLoader,
                     setError, history, forAdmin && isAdmin

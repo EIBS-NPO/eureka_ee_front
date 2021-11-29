@@ -1,5 +1,5 @@
 
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Dropdown, Item, Menu, Segment} from "semantic-ui-react";
 import Picture from "./Picture";
 import { useTranslation, withTranslation } from "react-i18next";

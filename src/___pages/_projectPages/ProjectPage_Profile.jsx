@@ -5,6 +5,7 @@ import AuthContext from "../../__appContexts/AuthContext";
 import {HandleGetProjects } from "../../__services/_Entity/projectServices";
 import {DisplayProject} from "../components/ManageProject";
 import {ContentContainer} from "../components/Loader";
+import {ProjectHeader} from "../components/entityViews/ProjectViews";
 
 const ProjectPage_Profile = (props) => {
     const { t } = useTranslation()
@@ -64,8 +65,8 @@ const ProjectPage_Profile = (props) => {
             {!loader &&
             <>
                 {project ?
-             //       <>
-              //          <ProjectHeader t={t} ctx={ctx} project={project} setProject={setProject} />
+                    <>
+                        <ProjectHeader t={t} ctx={ctx} project={project} setProject={setProject} />
                         <DisplayProject
                             t={t} ctx={ctx}
                             project={project}
@@ -74,7 +75,7 @@ const ProjectPage_Profile = (props) => {
                             history={props.history}
                             loader={loader}
                         />
-             //       </>
+                    </>
                     :
                         <Container textAlign='center'>
                             <Message size='mini' info>

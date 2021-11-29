@@ -211,12 +211,8 @@ export const ProjectsPanelForOrg = ({ t, org, postTreatment, history, needConfir
         }
     }
 
-    /**
-     * initial data loading
-     */
-    useEffect(() => {
-        async function fetchData() {
-            await setIsReferent(org.referent && org.referent.email === email)
+    async function fetchData() {
+        await setIsReferent(org.referent && org.referent.email === email)
 
             if (!forAdmin && (isReferent || org.isAssigned)) {
                 //load user's projects
@@ -244,15 +240,37 @@ export const ProjectsPanelForOrg = ({ t, org, postTreatment, history, needConfir
                     setError, history, forAdmin && isAdmin
                 )
             }
-        }
 
+    }
+
+
+    //todo make postTreatment for refresh.
+    /**
+     * initial data loading
+     */
+    /*useEffect(()=>{
         fetchData();
         //dismiss unmounted warning
         return () => {
             setUserProjects({});
             setAssignedProjects({});
         };
+    },[])
+*/
+
+    /**
+     * refresh data loading
+     */
+    useEffect(() => {
+        fetchData();
+
+        //dismiss unmounted warning
+        return () => {
+            setUserProjects({});
+            setAssignedProjects({});
+        };
     }, [org])
+    //todo when postTreatment made, remove useEffect dep
 
         return (
             <Segment padded="very" basic>
@@ -384,30 +402,42 @@ export const ActivitiesPanelForOrg = ({ t, org, postTreatment, history, needConf
         }
     }
 
+    async function fetchData() {
+        await setIsReferent(org.referent && org.referent.email === email)
+
+        if (!forAdmin && (isReferent || org.isAssigned)) {
+            //load user's projects
+            await HandleGetActivities({access: 'owned'},
+                setUserActivities,
+                setUserActivitiesLoader,
+                setError, history,
+                false
+            )
+        } else if (forAdmin) {
+            let referent = {id: org.referent.id}
+            await HandleGetActivities({access: "search", project: { creator: referent}},
+                setUserActivities,
+                setUserActivitiesLoader,
+                setError, history, forAdmin && isAdmin
+            )
+        }
+    }
+
     /**
      * initial data loading
      */
-    useEffect(() => {
-        async function fetchData() {
-            await setIsReferent(org.referent && org.referent.email === email)
+    useEffect(()=>{
+        fetchData();
+        //dismiss unmounted warning
+        return () => {
+            setUserActivities({});
+        };
+    },[])
 
-            if (!forAdmin && (isReferent || org.isAssigned)) {
-                //load user's projects
-                await HandleGetActivities({access: 'owned'},
-                    setUserActivities,
-                    setUserActivitiesLoader,
-                    setError, history,
-                    false
-                )
-            } else if (forAdmin) {
-                let referent = {id: org.referent.id}
-                await HandleGetActivities({access: "search", project: { creator: referent}},
-                    setUserActivities,
-                    setUserActivitiesLoader,
-                    setError, history, forAdmin && isAdmin
-                )
-            }
-        }
+    /**
+     * refresh data loading
+     */
+    useEffect(() => {
         fetchData();
         //dismiss unmounted warning
         return () => {

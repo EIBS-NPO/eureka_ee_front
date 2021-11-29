@@ -143,7 +143,10 @@ export function menuItemListForProject ( project, isOwner=false, isAdmin=false){
     )
 
     //activities
-    itemTable.push( { itemName:"activities", header:"activities" } )
+    itemTable.push( { itemName:"activities",
+        header:"activities",
+        text : project.activities && project.activities.length > 0 ? project.activities.length +" " : undefined
+    })
 
     return itemTable
 }

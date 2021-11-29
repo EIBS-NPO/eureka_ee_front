@@ -6,6 +6,7 @@ import AuthContext from "../../__appContexts/AuthContext";
 import {HandleGetOrgs } from "../../__services/_Entity/organizationServices";
 import {ContentContainer} from "../components/Loader";
 import {DisplayOrg} from "../components/ManageOrg";
+import {OrgHeader} from "../components/entityViews/OrganizationViews";
 
 
 const OrgPage_Profile = (props) => {
@@ -84,8 +85,8 @@ const OrgPage_Profile = (props) => {
             {!loader &&
                 <>
                 {org ?
-              //      <>
-             //           <OrgHeader message={message} org={org} />
+                    <>
+                        <OrgHeader message={message} org={org} />
 
                         <DisplayOrg
                             t={props.t}
@@ -96,7 +97,7 @@ const OrgPage_Profile = (props) => {
                             loader={loader}
                             history={props.history}
                         />
-           //         </>
+                    </>
                     :
                     <Container textAlign='center'>
                         <Message size='mini' info>
