@@ -82,6 +82,7 @@ const post = (activity) => {
     })
 }
 
+//followed
 const put = (activity, adminManagment) => {
     let bodyFormData = getBodyFormData(activity)
 
