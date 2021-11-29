@@ -1,8 +1,7 @@
 import Axios from "axios";
 import jwt_decode from "jwt-decode";
-import {API_URL, LOGIN_API, USR_API} from "../../config";
-import AuthContext from "../../__appContexts/AuthContext";
-import {useContext} from "react";
+import {API_URL, USR_API} from "../../config";
+import axios from "axios";
 
 const logout = async () => {
 
@@ -19,17 +18,14 @@ const logout = async () => {
 }
 
 const authenticate = (credentials) => {
-    let formData = new FormData()
-    formData.append("email", credentials.email)
-    formData.append("password", credentials.password)
-
     return Axios({
         method: 'post',
-        url: USR_API + "/register",
-        data: formData,
-        headers: {'Content-Type': 'multipart/form-data'}
-    })
-        .then((response) => {
+        url: API_URL + "/login",
+        data:credentials,
+        headers: {'Content-Type': 'application/json'}
+        })
+  //  return Axios.post(API_URL + "/login", credentials)
+        .then(response => {
             let token = response.data.token
             let refreshToken = response.data.refresh_token
             window.localStorage.setItem("authToken", token);

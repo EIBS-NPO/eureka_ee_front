@@ -3,7 +3,7 @@ import React from "react";
 
 export const ContentContainer = ( props ) => {
 
-    console.log(props.loaderActive)
+ //   console.log(props.loaderActive)
     return(
         <div className="card">
             <LoaderWithMsg msg={props.loaderMsg} isActive={ props.loaderActive }/>

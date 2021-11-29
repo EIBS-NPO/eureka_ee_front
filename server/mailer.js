@@ -13,7 +13,7 @@ const nodemailer = require('nodemailer'),
 const sendEmail = (emailData, cb) => {
 
     const mailOptions = {
-        from: 'EUREKA_EMPOWERMENT_ENVIRONMENT@mail.fake', //todo replace by process.env.REACT_APP_MAIL,
+        from: process.env.APP_MAIL, //todo replace by process.env.REACT_APP_MAIL,
         to : emailData.email,
         subject : emailData.subject,
         text : emailData.text,

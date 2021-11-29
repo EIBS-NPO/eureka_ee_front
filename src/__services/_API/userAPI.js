@@ -59,7 +59,7 @@ const getbodyFormData = (user) => {
 }
 
 const putBodyFormDataForAdmin = ( user, bodyFormData, adminManagement ) => {
-    console.log(adminManagement)
+//    console.log(adminManagement)
     bodyFormData.append("admin", "1")
     if(adminManagement.roles !== undefined){
         bodyFormData.append("roles", adminManagement.roles ? "ROLE_USER": null)
@@ -146,16 +146,16 @@ const activation = (activationToken) => {
 }
 
 const askForgotPasswordToken = (email) => {
-    let formData = new FormData()
-    formData.append("email",email)
+ //   let formData = new FormData()
+   // formData.append("email",email)
 
-    return Axios({
+    /*return Axios({
         method: 'put',
         url: USR_API + "/public/forgotPassword",
         data: formData,
         headers: {'Content-Type': 'multipart/form-data'}
-    })
-  //  return Axios.put(USR_API + "/public/forgotPassword", {email:email} )
+    })*/
+    return Axios.put(USR_API + "/public/forgotPassword", {email:email} )
 }
 
 const get = (access, user, admin= false) =>{
