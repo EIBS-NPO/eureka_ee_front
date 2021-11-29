@@ -36,9 +36,9 @@ export const ActivityHeader = ( { t, activity, setActivity } ) => {
     )
 }
 
-export const PresentationPanelForActivity = ({ ctx, activity, setActivity, isOwner }) => {
+export const PresentationPanelForActivity = ({ ctx, activity, setActivity, isOwner, forAdmin = false }) => {
     const {t} = useTranslation()
-    const isAuthenticated = useContext(AuthContext).isAuthenticated
+    const {isAdmin, isAuthenticated} = useContext(AuthContext).isAuthenticated
 
     const [isForm, setIsForm] = useState(false)
 
@@ -55,7 +55,7 @@ export const PresentationPanelForActivity = ({ ctx, activity, setActivity, isOwn
                 <Segment.Group horizontal className="borderless">
                     <Segment className="unpadded">
                         <Card obj={activity} type="activity" profile={true} ctx={ctx}/>
-                        <FileDownloadForm activity={activity} access={ctx}/>
+                        <FileDownloadForm activity={activity} isAdmin={isAdmin && forAdmin}/>
                     </Segment>
 
                 </Segment.Group>
@@ -433,7 +433,7 @@ export const OrgPanelForActivity = ({ t, activity, isOwner, postTreatment, histo
     )
 }
 
-export const ActivityPanelsContent = ({ t, ctx, activeItem, activity, setActivity, isOwner, history }) => {
+export const ActivityPanelsContent = ({ t, ctx, activeItem, activity, setActivity, isOwner, forAdmin, history }) => {
     return (
         <>
             {activeItem === "presentation" &&
@@ -443,6 +443,7 @@ export const ActivityPanelsContent = ({ t, ctx, activeItem, activity, setActivit
                         activity={activity}
                         setActivity={setActivity}
                         isOwner={isOwner}
+                        forAdmin={forAdmin}
                     />
                 </PanelContent>
             }

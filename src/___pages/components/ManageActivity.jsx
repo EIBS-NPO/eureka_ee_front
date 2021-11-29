@@ -66,7 +66,7 @@ const ManageActivity = ({activity, handleAction, loader = false}) => {
             }
 
             <Segment className="unmarged">
-                <FileDownloadForm activity={activity} access="admin" />
+                <FileDownloadForm activity={activity} isAdmin={true} />
             </Segment>
 
         </Segment>
@@ -115,6 +115,7 @@ export const DisplayActivity = ({t, ctx, isOwner, activity, setActivity, loader,
                 activity={activity}
                 setActivity={setActivity}
                 isOwner={isOwner}
+                forAdmin={false}
                 history={history}
             />
 

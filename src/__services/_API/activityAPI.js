@@ -38,7 +38,7 @@ const getBodyFormData = (activity) => {
 }
 
 const getUrlParams = (access, activity = undefined, admin = undefined) => {
-    console.log(activity)
+
     let params = "?access="+access
     if(admin === true) params += "&admin=1";
     if(access !== "all") {
@@ -105,7 +105,16 @@ const getPublic = (access, activity) => {
     return Axios.get(ACT_API + "/public" + getUrlParams(access, activity))
 }
 
-const download = (isPublic, id, access) => {
+const download = (activity, admin = false) => {
+    let urlParams = ""
+    if( activity.isPublic && admin === false ) urlParams += "/public"
+    urlParams += "?id=" + activity.id
+    if( admin ) urlParams += "&admin=1"
+    return Axios.get(ACT_API + "/download" + urlParams,
+        {responseType: 'arraybuffer'}
+    )
+}
+/*const download = (isPublic, id, access) => {
     let url = "/activity/download"
     if(isPublic){
         url += "/public"
@@ -114,7 +123,7 @@ const download = (isPublic, id, access) => {
     return Axios.get(API_URL +url,
         {responseType: 'arraybuffer'}
     )
-}
+}*/
 
 const remove = (id) => {
     return Axios.delete(ACT_API + "?id=" + id)

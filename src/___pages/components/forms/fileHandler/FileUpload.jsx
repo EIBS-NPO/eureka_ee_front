@@ -89,31 +89,11 @@ const FileUpload = ( { history=undefined, activity, setter, cancelForm, hideModa
             .finally(() => setLoader(false))
 
     }
-//todo put for delete
-    //have add if(han
+
     const handleDelete = () => {
 
         setNewFile(null)
         handleSubmitFile()
-        /*if(handleSubmit === undefined){
-            if ( !authAPI.isAuthenticated ) {
-                history.replace.push('/login')
-            }
-
-            setLoader(true)
-            activityAPI.put(activity, {"file": null}, {})
-                .then(response => {
-                    setter(response.data[0])
-                    history.replace('/activity/owned_' + response.data[0].id)
-                })
-                .catch(error => {
-                    console.log(error.response)
-                })
-                .finally(() => setLoader(false))
-        }else {
-            handleSubmit({id: activity.id, file:null})
-        }
-*/
     }
 
     return (

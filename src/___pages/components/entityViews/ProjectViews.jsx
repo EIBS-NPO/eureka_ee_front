@@ -330,9 +330,6 @@ export const OrgsPanelForProject = ({ t, project, postTreatment, history, needCo
     const [userOrgs, setUserOrgs] = useState([])
     const [userAssignOrgs, setUserAssignOrgs] = useState([])
 
-    console.log(userOrgs)
-    console.log(userAssignOrgs)
-
     const [userOrgsLoader, setUserOrgsLoader] = useState(false)
     const [userAssignOrgsLoader, setUserAssignOrgsLoader] = useState(false)
 
