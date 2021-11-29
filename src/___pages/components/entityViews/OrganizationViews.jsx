@@ -298,7 +298,7 @@ export const ProjectsPanelForOrg = ({ t, org, postTreatment, history, needConfir
 
                                     }
 
-                                    {confirm.show && confirm.type === "remove" &&
+                                    {confirm.show && confirm.type === "remove" && confirm.actionTarget.id === project.id &&
                                     <ConfirmActionForm t={t}
                                                  confirmMessage={t("remove_share_in_message")}
                                                  confirmAction={() => handle(project)}
@@ -458,7 +458,7 @@ export const ActivitiesPanelForOrg = ({ t, org, postTreatment, history, needConf
                             </Button>
                             }
 
-                            {confirm.show && confirm.type === "remove" &&
+                            {confirm.show && confirm.type === "remove" && confirm.actionTarget.id === activity.id &&
                             <ConfirmActionForm t={t}
                                          confirmMessage={t("remove_share_in_message")}
                                          confirmAction={() => handle(activity)}
