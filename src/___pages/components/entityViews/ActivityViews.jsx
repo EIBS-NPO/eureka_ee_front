@@ -97,9 +97,8 @@ export const UploadPanelForActivity = ({ t, activity, setActivity, history, forA
 }
 
 export const ProjectPanelForActivity = ({ t, activity, isOwner, postTreatment, history, needConfirm, forAdmin=false }) => {
-//console.log(preLoads)
+
     const { isAdmin } = useContext(AuthContext)
-   // const [isOwner, setIsOwner] = useState( false )
 
     const [userProjects, setUserProjects] = useState( [])
     const [assignedProjects, setAssignedProjects] = useState( [])
@@ -195,7 +194,6 @@ export const ProjectPanelForActivity = ({ t, activity, isOwner, postTreatment, h
     }, [activity])
 
     return (
-        /*<Segment attached='bottom' >*/
         <Segment basic>
             {(updatedActivityLoader || assignedProjectLoader || userProjectLoader) &&
             <Segment padded="very" basic>
@@ -208,7 +206,7 @@ export const ProjectPanelForActivity = ({ t, activity, isOwner, postTreatment, h
 
             {!updatedActivityLoader && !assignedProjectLoader && !userProjectLoader &&
             <>
-                {isOwner &&
+                {isOwner || ( forAdmin && isAdmin ) &&
                 <ProjectMenuForActivity
                     t={t}
                     activityProject={ activity.project ? activity.project : undefined }
@@ -255,7 +253,6 @@ export const ProjectPanelForActivity = ({ t, activity, isOwner, postTreatment, h
                 }
             </>
             }
-
 
         </Segment>
     )
