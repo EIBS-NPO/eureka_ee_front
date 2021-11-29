@@ -425,7 +425,7 @@ export const MembersTableForAdmin = ({ t, owner, members, loader, handleAction, 
     const getOptions = () => {
         let options = []
         unMembers.map(u => {
-            if(u.i !== owner.id){
+            if(u.id !== owner.id && members.find( m => m.id === u.id) === undefined){
                 options.push(
                     { key: u.id,
                         text: u.id + " " + u.firstname + " " + u.lastname + " " + u.email,
@@ -469,7 +469,7 @@ export const MembersTableForAdmin = ({ t, owner, members, loader, handleAction, 
                 {!loader && members.length > 0 &&
                 members.map(member => (
                     member.id !== owner.id &&
-                    <Table.Row>
+                    <Table.Row key={member.id}>
                         <Table.Cell>{member.id}</Table.Cell>
                         <Table.Cell>{member.firstname + " " + member.lastname}</Table.Cell>
                         <Table.Cell>{member.email}</Table.Cell>

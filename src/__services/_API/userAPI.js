@@ -59,7 +59,7 @@ const getbodyFormData = (user) => {
 }
 
 const putBodyFormDataForAdmin = ( user, bodyFormData, adminManagement ) => {
-    console.log(adminManagement)
+
     bodyFormData.append("admin", "1")
     if(adminManagement.roles !== undefined){
         bodyFormData.append("roles", adminManagement.roles ? "ROLE_USER": null)
