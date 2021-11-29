@@ -28,6 +28,7 @@ const ActivityPage_Admin = (history ) => {
 
     //modal
     const [actionSelected, setActionSelected] = useState(undefined)
+
     const [show, setShow] = useState(false)
     const handleAction = ( type, a ) => {
         setActivitySelected(a)
@@ -150,14 +151,14 @@ const ActivityPage_Admin = (history ) => {
                                     />
                                 }
                                 {actionSelected === "editOrgActivity" &&
-                                <OrgPanelForActivity
-                                    t={t}
-                                    activity={ activitySelected }
-                                    postTreatment={ postTreatment}
-                                    history={history}
-                                    needConfirm={true}
-                                    forAdmin={true}
-                                />
+                                    <OrgPanelForActivity
+                                        t={t}
+                                        activity={ activitySelected }
+                                        postTreatment={ postTreatment}
+                                        history={history}
+                                        needConfirm={true}
+                                        forAdmin={true}
+                                    />
                                 }
                                 {actionSelected === "editProjectActivity" &&
                                 <ProjectPanelForActivity

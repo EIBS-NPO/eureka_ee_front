@@ -325,31 +325,25 @@ export const OrgPanelForActivity = ({ t, activity, isOwner, postTreatment, histo
             await setIsOrgReferent( activity.organization && activity.organization.referent.email === email)
 
             if (!forAdmin && (isOwner || isOrgReferent) ) {
-                //load user's org
-               /* if(!preLoads.userOrgs){*/
                     await HandleGetOrgs({access: 'owned'},
                         setUserOrgs,
                         setUserOrgsLoader,
                         setErrors, history, false
                     )
-          //      }else setUserOrgs( preLoads.userOrgs )
-
-               /* if(!preLoads.userAssignOrgs){*/
                     await HandleGetOrgs({access: 'assigned'},
                         setUserAssignOrgs,
                         setUserAssignOrgsLoader,
                         setErrors, history, false
                     )
-          //      }else setUserAssignOrgs( preLoads.userAssignOrgs )
 
             }else if(forAdmin){
                 let owner = {id: activity.creator.id}
-                await HandleGetOrgs({access: "search", project: { creator: owner}},
+                await HandleGetOrgs({access: "owned", org: { referent: { id: owner.id } } },
                     setUserOrgs,
                     setUserOrgsLoader,
                     setErrors, history, forAdmin && isAdmin
                 )
-                await HandleGetProjects({access: "search", project: { followings: {isAssign: true, follower: owner} }},
+                await HandleGetOrgs({access: "assigned", org: { assigned: { id: owner.id } } },
                     setUserAssignOrgs,
                     setUserAssignOrgsLoader,
                     setErrors, history, forAdmin && isAdmin
@@ -373,14 +367,14 @@ export const OrgPanelForActivity = ({ t, activity, isOwner, postTreatment, histo
             <Segment padded="very" basic>
                 <LoaderWithMsg
                     isActive={ true }
-                    msg={t('loading') + " : " + t('organizations')}
+                    msg={t('loading') + " : " + t('organization')}
                 />
             </Segment>
             }
 
             {!updatedActivityLoader && !userAssignOrgsLoader && !userOrgsLoader &&
             <>
-                {isOwner &&
+                {isOwner || ( forAdmin && isAdmin ) &&
                 <OrgMenuForActivity
                     t={t}
                     isOwner={isOwner}

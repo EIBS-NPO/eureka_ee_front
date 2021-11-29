@@ -56,11 +56,22 @@ const getUrlParams = (access, org = undefined, admin = undefined) => {
             if(org.partner) params += "&partner=1"
 
             //by referent relation
-            if (org.referent && org.referent.id) params += "&referent_id=" + org.referent.id
-            if (org.referent && org.referent.firstname) params += "&referent_firstname=" + org.referent.firstname
-            if (org.referent && org.referent.lastname) params += "&referent_lastname=" + org.referent.lastname
-            if (org.referent && org.referent.email) params += "&referent_email=" + org.referent.email
+            if(org.referent){
+                if (org.referent.id) params += "&referent_id=" + org.referent.id
+                if (org.referent.firstname) params += "&referent_firstname=" + org.referent.firstname
+                if (org.referent.lastname) params += "&referent_lastname=" + org.referent.lastname
+                if (org.referent.email) params += "&referent_email=" + org.referent.email
+            }
+
+
+            //by member
+            if(org.assigned) { //params += "&access=assigned"
+                if(org.assigned.id) params += "&id=" + org.assigned.id
+              //  if(org.followings.follower) params += "&follower_id=" + org.followings.follower.id
+            }
         }
+
+        //todo  by member
     }
     return params
 }

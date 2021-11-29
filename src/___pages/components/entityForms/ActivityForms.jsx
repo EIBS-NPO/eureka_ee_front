@@ -218,6 +218,7 @@ export const ProjectMenuForActivity = ({ t, activityProject, userProjects, userA
 export const OrgMenuForActivity = ({ t, isOwner, activityOrg, userOrgs, userAssignOrgs, loader, handleAction, isAdmin =false }) => {
 
     const getItemsOptions = ( itemsList, dividerTitle, loader ) => {
+
         return (
             <>
                 <Dropdown.Header content={ dividerTitle } />
@@ -228,7 +229,6 @@ export const OrgMenuForActivity = ({ t, isOwner, activityOrg, userOrgs, userAssi
                     {itemsList.map(item =>
                         <Dropdown.Item key={item.id}
                                        onClick={ ()=>handleAction( "add", item) }
-                                       disabled={!!item.organization }
                         >
                             <Icon name="plus"/> {item.name}
                         </Dropdown.Item>
@@ -238,9 +238,11 @@ export const OrgMenuForActivity = ({ t, isOwner, activityOrg, userOrgs, userAssi
             </>
         )
     }
+
     return (
         <Menu stackable>
-            {(isOwner || isAdmin) && !activityOrg &&
+          {/*  {(isOwner || isAdmin) && !activityOrg &&*/}
+            {!activityOrg &&
             <Dropdown item text={ t('share_in') + " " +  t('organization') } loading={loader} scrolling>
                 <Dropdown.Menu>
                     {(userOrgs.length === 0 && userAssignOrgs.length === 0) &&
@@ -257,6 +259,7 @@ export const OrgMenuForActivity = ({ t, isOwner, activityOrg, userOrgs, userAssi
                 </Dropdown.Menu>
             </Dropdown>
             }
+
             {activityOrg &&
             <Menu.Item
                 onClick={()=>handleAction( "remove", activityOrg)}
