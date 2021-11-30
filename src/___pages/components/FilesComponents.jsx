@@ -157,7 +157,7 @@ export const FileUploadForm = ({t, activity, postTreatment, error, history, forA
     )
 }
 
-export const FileDownloadForm = ({ activity, access }) => {
+export const FileDownloadForm = ({ activity, isAdmin = undefined}) => {
 
     const { t } = useTranslation()
 
@@ -165,7 +165,7 @@ export const FileDownloadForm = ({ activity, access }) => {
 
     const downloadFile = () => {
         setLoader(true)
-        activityAPI.download(activity.isPublic, activity.id, access)
+        activityAPI.download(activity, isAdmin)
             .then(response => {
                 let blob = new Blob([response.data], { type: activity.fileType });
                 let link = document.createElement('a')

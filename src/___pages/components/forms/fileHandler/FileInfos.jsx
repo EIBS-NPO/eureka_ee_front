@@ -13,7 +13,7 @@ import {useTranslation, withTranslation} from "react-i18next";
  * @author Thierry Fauconnier <th.fauconnier@outlook.fr>
  */
 const FileInfos = ( { activity } ) => {
-console.log(activity)
+
     const { t } = useTranslation()
 
     const isFromDB = activity && activity.filename && activity.file === undefined

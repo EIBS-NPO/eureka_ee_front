@@ -60,10 +60,10 @@ const ChangePassword_Page = (props) => {
     //todo sortir erreur input dans p?
 
     const handleForgetPass = async () => {
-        await setForm({...form, resetPasswordToken: urlParams[1] })
+    //  await setForm({...form, resetPasswordToken: urlParams[1] })
         if(checkFormValidity()){
             setLoader(true)
-            await userAPI.resetPass(form)
+            await userAPI.resetPass({...form, resetPasswordToken: urlParams[1] })
                 .then(() => {
                     setResetSuccess(true)
                     setLoader(false)

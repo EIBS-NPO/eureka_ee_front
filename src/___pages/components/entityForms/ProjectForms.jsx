@@ -89,7 +89,7 @@ export const UpdatedProjectForm = ({project, postTreatment, forAdmin = false, ca
     const preSubmit = async () => {
         if (checkProjectFormValidity(updatedProject, setErrors)) {
             await HandleUpdateProject(
-                checkProjectChanges(updatedProject, project, true),
+                await checkProjectChanges(updatedProject, project, true),
                 postTreatment,
                 setLoader,
                 setErrors,

@@ -26,7 +26,6 @@ import {useTranslation, withTranslation} from "react-i18next";
  */
 const SearchInput = ({elementList, researchFields, setResultList, isDisabled=false}) => {
 
-    console.log(elementList)
     /**
      * i18n translation
      */

@@ -1,14 +1,14 @@
-import {Loader} from "semantic-ui-react";
+import {Loader, Segment} from "semantic-ui-react";
 import React from "react";
 
 export const ContentContainer = ( props ) => {
 
  //   console.log(props.loaderActive)
     return(
-        <div className="card">
+        <Segment className="card">
             <LoaderWithMsg msg={props.loaderMsg} isActive={ props.loaderActive }/>
            { props.children }
-        </div>
+        </Segment>
     )
 }
 

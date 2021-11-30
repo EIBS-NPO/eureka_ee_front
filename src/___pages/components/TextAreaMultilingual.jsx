@@ -16,7 +16,6 @@ import {getTranslateFromTextTable} from "../../__services/utilities";
  */
 const TextAreaMultilingual = ({ tabText, setTabText, name, min, max }) => {
 
-    console.log(tabText)
     const {t,  i18n } = useTranslation()
     const [lg, setLg ] = useState(i18n.language)
 

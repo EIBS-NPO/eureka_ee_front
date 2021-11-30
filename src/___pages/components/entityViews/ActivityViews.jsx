@@ -36,9 +36,9 @@ export const ActivityHeader = ( { t, activity, setActivity } ) => {
     )
 }
 
-export const PresentationPanelForActivity = ({ ctx, activity, setActivity, isOwner }) => {
+export const PresentationPanelForActivity = ({ ctx, activity, setActivity, isOwner, forAdmin = false }) => {
     const {t} = useTranslation()
-    const isAuthenticated = useContext(AuthContext).isAuthenticated
+    const { isAdmin, isAuthenticated } = useContext(AuthContext)
 
     const [isForm, setIsForm] = useState(false)
 
@@ -55,7 +55,7 @@ export const PresentationPanelForActivity = ({ ctx, activity, setActivity, isOwn
                 <Segment.Group horizontal className="borderless">
                     <Segment className="unpadded">
                         <Card obj={activity} type="activity" profile={true} ctx={ctx}/>
-                        <FileDownloadForm activity={activity} access={ctx}/>
+                        <FileDownloadForm activity={activity} isAdmin={isAdmin && forAdmin}/>
                     </Segment>
 
                 </Segment.Group>
@@ -97,9 +97,8 @@ export const UploadPanelForActivity = ({ t, activity, setActivity, history, forA
 }
 
 export const ProjectPanelForActivity = ({ t, activity, isOwner, postTreatment, history, needConfirm, forAdmin=false }) => {
-//console.log(preLoads)
+
     const { isAdmin } = useContext(AuthContext)
-   // const [isOwner, setIsOwner] = useState( false )
 
     const [userProjects, setUserProjects] = useState( [])
     const [assignedProjects, setAssignedProjects] = useState( [])
@@ -195,7 +194,6 @@ export const ProjectPanelForActivity = ({ t, activity, isOwner, postTreatment, h
     }, [activity])
 
     return (
-        /*<Segment attached='bottom' >*/
         <Segment basic>
             {(updatedActivityLoader || assignedProjectLoader || userProjectLoader) &&
             <Segment padded="very" basic>
@@ -208,15 +206,15 @@ export const ProjectPanelForActivity = ({ t, activity, isOwner, postTreatment, h
 
             {!updatedActivityLoader && !assignedProjectLoader && !userProjectLoader &&
             <>
-                {isOwner &&
-                <ProjectMenuForActivity
-                    t={t}
-                    activityProject={ activity.project ? activity.project : undefined }
-                    userProjects={userProjects}
-                    userAssignProjects={assignedProjects}
-                    loader={ updatedActivityLoader }
-                    handleAction={ handleAction }
-                />
+                { ( isOwner || ( forAdmin && isAdmin ) ) &&
+                    <ProjectMenuForActivity
+                        t={t}
+                        activityProject={ activity.project ? activity.project : undefined }
+                        userProjects={ userProjects }
+                        userAssignProjects={ assignedProjects }
+                        loader={ updatedActivityLoader }
+                        handleAction={ handleAction }
+                    />
                 }
 
                 {confirm.show && confirm.type === "add" && !activity.project &&
@@ -255,7 +253,6 @@ export const ProjectPanelForActivity = ({ t, activity, isOwner, postTreatment, h
                 }
             </>
             }
-
 
         </Segment>
     )
@@ -325,31 +322,25 @@ export const OrgPanelForActivity = ({ t, activity, isOwner, postTreatment, histo
             await setIsOrgReferent( activity.organization && activity.organization.referent.email === email)
 
             if (!forAdmin && (isOwner || isOrgReferent) ) {
-                //load user's org
-               /* if(!preLoads.userOrgs){*/
                     await HandleGetOrgs({access: 'owned'},
                         setUserOrgs,
                         setUserOrgsLoader,
                         setErrors, history, false
                     )
-          //      }else setUserOrgs( preLoads.userOrgs )
-
-               /* if(!preLoads.userAssignOrgs){*/
                     await HandleGetOrgs({access: 'assigned'},
                         setUserAssignOrgs,
                         setUserAssignOrgsLoader,
                         setErrors, history, false
                     )
-          //      }else setUserAssignOrgs( preLoads.userAssignOrgs )
 
             }else if(forAdmin){
                 let owner = {id: activity.creator.id}
-                await HandleGetOrgs({access: "search", project: { creator: owner}},
+                await HandleGetOrgs({access: "owned", org: { referent: { id: owner.id } } },
                     setUserOrgs,
                     setUserOrgsLoader,
                     setErrors, history, forAdmin && isAdmin
                 )
-                await HandleGetProjects({access: "search", project: { followings: {isAssign: true, follower: owner} }},
+                await HandleGetOrgs({access: "assigned", org: { assigned: { id: owner.id } } },
                     setUserAssignOrgs,
                     setUserAssignOrgsLoader,
                     setErrors, history, forAdmin && isAdmin
@@ -373,14 +364,14 @@ export const OrgPanelForActivity = ({ t, activity, isOwner, postTreatment, histo
             <Segment padded="very" basic>
                 <LoaderWithMsg
                     isActive={ true }
-                    msg={t('loading') + " : " + t('organizations')}
+                    msg={t('loading') + " : " + t('organization')}
                 />
             </Segment>
             }
 
             {!updatedActivityLoader && !userAssignOrgsLoader && !userOrgsLoader &&
             <>
-                {isOwner &&
+                { ( isOwner || ( forAdmin && isAdmin ) ) &&
                 <OrgMenuForActivity
                     t={t}
                     isOwner={isOwner}
@@ -433,7 +424,7 @@ export const OrgPanelForActivity = ({ t, activity, isOwner, postTreatment, histo
     )
 }
 
-export const ActivityPanelsContent = ({ t, ctx, activeItem, activity, setActivity, isOwner, history }) => {
+export const ActivityPanelsContent = ({ t, ctx, activeItem, activity, setActivity, isOwner, forAdmin, history }) => {
     return (
         <>
             {activeItem === "presentation" &&
@@ -443,19 +434,20 @@ export const ActivityPanelsContent = ({ t, ctx, activeItem, activity, setActivit
                         activity={activity}
                         setActivity={setActivity}
                         isOwner={isOwner}
+                        forAdmin={forAdmin}
                     />
                 </PanelContent>
             }
 
             {activeItem === "upload" && (ctx==="owned" || ctx==="asssigned") &&
-            <PanelContent>
-                <UploadPanelForActivity
-                    t={t}
-                    activity={activity}
-                    setActivity={setActivity}
-                    history={ history }
-                />
-            </PanelContent>
+                <PanelContent>
+                    <UploadPanelForActivity
+                        t={t}
+                        activity={activity}
+                        setActivity={setActivity}
+                        history={ history }
+                    />
+                </PanelContent>
             }
 
             {activeItem === "project" && (
