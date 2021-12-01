@@ -3,7 +3,7 @@ import React, {useEffect, useState} from 'react';
 import {Label, Segment} from "semantic-ui-react";
 import UserProfile from "./components/ProfileUser";
 import PassChangeForm from "../components/forms/AskChangePasswordModalForm";
-import {ContentContainer, LoaderWithMsg} from "../components/Loader";
+import {ContentContainer } from "../components/Loader";
 import {HandleGetUsers} from "../../__services/_Entity/userServices";
 import {withTranslation} from "react-i18next";
 import {ProfileAddress} from "../components/ProfileAddress";

@@ -16,7 +16,7 @@ import {
     HandleUserUpdate
 } from "../../../__services/_Entity/userServices";
 import {LoaderWithMsg} from "../Loader";
-import {BtnForSaveOrCancel} from "../Buttons";
+import {BtnForSaveOrCancel, MailInput} from "../Buttons";
 
 export const CommonUserFormFields = ({t, user, setUser, errors }) => {
     return (
@@ -269,7 +269,8 @@ export const DisplayUser = ({ user, setSwitchEdit, editable }) => {
                     </Item>
                     <Item>
                         <Item.Content>
-                            <Label as="a" href={"mailto:" + user.email} icon='mail' content={user.email} />
+                            <MailInput t={t} email={user.email} isConfirmed={user.isConfirmed } isAdmin={ false }/>
+                            {/*<Label as="a" href={"mailto:" + user.email} icon='mail' content={user.email} />*/}
                         </Item.Content>
                     </Item>
                     <Item>

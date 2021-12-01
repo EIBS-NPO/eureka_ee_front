@@ -72,6 +72,7 @@ const putBodyFormDataForAdmin = ( user, bodyFormData, adminManagement ) => {
 }
 
 const getUrlParams = (access, user=undefined, admin=undefined) => {
+    console.log(user)
     let params = "?access="+access
     if(admin === true) params += "&admin=1";
     if(access !== "all"){

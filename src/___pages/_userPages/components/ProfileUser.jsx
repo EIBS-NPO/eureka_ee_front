@@ -18,6 +18,7 @@ const ProfileUser = ({ user, setUser, withForm = false }, forAdmin=false) => {
     const { email, isAdmin, firstname, setFirstname, lastname, setLastname, setNeedConfirm} = useContext(AuthContext);
 
     const [update, setUpdate] = useState(false)
+    //todo
     const [errors, setErrors] = useState({
         lastname: "",
         firstname: "",
@@ -29,7 +30,7 @@ const ProfileUser = ({ user, setUser, withForm = false }, forAdmin=false) => {
         setUpdate(false)
     }
 
-    const [loader, setLoader] = useState(false);
+  //  const [loader, setLoader] = useState(false);
 
     const postTreatment = async (userResponse) => {
         setUser(userResponse)
@@ -50,40 +51,6 @@ const ProfileUser = ({ user, setUser, withForm = false }, forAdmin=false) => {
                 .catch(err => console.log(err))
         }
     }
-    /*const postTreatment = (userResponse) => {
-        //if email was changed
-       /!* if(userSubmitted.email && userSubmitted.email !== email){
-            //send email activation for the new Email
-            mailerAPI.sendConfirmMail(t, userResponse)
-                .then(() => {
-                    setNeedConfirm(true)
-                    history.replace("/login")
-                })
-                .catch(err => console.log(err))
-        }*!/
-    //    else{
-            setterUser(userResponse)
-           /!* setFirstname(authAPI.getFirstname())
-            setLastname(authAPI.getLastname())*!/
-            setUpdate(false)
-    //    }
-    }*/
-
-    /*const preSubmit = (userSubmitted) => {
-        if (authAPI.isAuthenticated()) {
-            if(checkFormValidity(userSubmitted, setErrors)){
-
-                //only pass changes
-                if( user.phone === userSubmitted.phone) userSubmitted.phone = undefined
-                if( user.mobile === userSubmitted.mobile) userSubmitted.mobile = undefined
-
-                //handlingRequest
-                HandleUserUpdate( userSubmitted, postTreatment, setLoader, setErrors, history )
-            }
-        }else{
-            history.replace("/login")
-        }
-    }*/
 
     const switchUpdate = (e) => {
         e.preventDefault()

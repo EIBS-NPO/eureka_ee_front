@@ -91,30 +91,48 @@ export const PhoneFormInput = ({object, setObject, phoneType}) => {
 export const PhoneDisplay = ({phoneNumber}) =>{
     const {t} = useTranslation()
 
+    const [flag, setFlag] = useState(undefined)
+
+    useEffect(()=> {
+        getFlag()
+
+        //dismiss unmounted warning
+        return () => {
+            setFlag({});
+        };
+
+    },[])
     function getCountryFromNumber (phoneNumber) {
         const pPN = parsePhoneNumber(phoneNumber)
-        if (pPN) {
+        if (pPN !== undefined) {
             return pPN.country;
-        }
+        }else return undefined
     }
 
     const getFlag = () => {
         let country = getCountryFromNumber(phoneNumber)
+        console.log(country)
         if(country !== undefined){
             if(hasFlag(country)){
                 let Flg = Flags[country]
-                return  <Flg title={country+"_flag"} width={"21px"} className="simpleBorder"/>;
-            }else return ""
-        }else return ""
+                setFlag(<Flg title={country+"_flag"} width={"21px"} className="simpleBorder"/>)
+               // return  ;
+            }//else return ""
+        }//else return ""
     }
 
     return (
         phoneNumber  ?
-            <p>
-                {getFlag()}
-                {"  (+"+getCountryCallingCode(getCountryFromNumber(phoneNumber))+")  "}
-                {formatPhoneNumber(phoneNumber)   }
-            </p>
+            flag !== undefined ?
+                <p className="item">
+                    {flag}
+                    {"  (+"+getCountryCallingCode(getCountryFromNumber(phoneNumber))+")  "}
+                    {formatPhoneNumber(phoneNumber)   }
+                </p>
+            :
+                <p>
+                    { phoneNumber }
+                </p>
         :
             <p>{t('not_specified')}</p>
 

@@ -39,7 +39,7 @@ export const HandleUserUpdate = async (userSubmitted, postTreatment, setLoader, 
     } else history.replace('/login')
 };
 
-export const HandleGetUsers = (params, postTreatment, setLoader, setErrors, history = undefined, isAdmin = false) => {
+export const HandleGetUsers = async (params, postTreatment, setLoader, setErrors, history = undefined, isAdmin = false) => {
 
     setLoader(true)
     if (params.access === 'public') {
@@ -55,7 +55,7 @@ export const HandleGetUsers = (params, postTreatment, setLoader, setErrors, hist
                 setLoader(false)
             })
     } else {
-        if (authAPI.isAuthenticated()) {
+        if (await authAPI.isAuthenticated()) {
             userAPI.get(params.access, params.user, isAdmin)
                 .then(response => {
                     postTreatment(response.data)

@@ -33,33 +33,7 @@ export const FollowingFormInput = ({ obj, handleSubmit}) => {
 
     const handleForm = () => {
         setLoader(true)
-        handleSubmit(
-            {id: obj.id}
-        )
-        /*if(type === "activity"){
-            activityAPI.put(obj, {follow:true})
-                .then((response) => {
-                    setter(response.data[0])
-                })
-                .catch((error) => {
-                    console.log(error.response)
-                })
-                .finally(() => {
-                    setLoader(false)
-                })
-        }
-        else {
-            projectAPI.put(obj, {"follow":true})
-                .then( response => {
-                    setter(response.data[0])
-                })
-                .catch(error => {
-                    console.log(error)
-                })
-                .finally(() => {
-                    setLoader(false)
-                })
-        }*/
+        handleSubmit( {id: obj.id} )
     }
 
     return (

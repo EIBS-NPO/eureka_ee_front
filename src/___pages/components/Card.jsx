@@ -7,6 +7,8 @@ import Picture from "./Picture";
 import {NavLink} from "react-router-dom";
 import authAPI from "../../__services/_API/authAPI";
 import AuthContext from "../../__appContexts/AuthContext";
+import {MailInput} from "./Buttons";
+import {PhoneDisplay} from "./PhoneNumber";
 
 const Card = ({ obj, type, profile=false, ctx=undefined, withPicture=true }) => {
 
@@ -142,7 +144,7 @@ const Card = ({ obj, type, profile=false, ctx=undefined, withPicture=true }) => 
                                     </Item.Header>
                                     <Item.Extra>
                                         {type !== "user" && ctx !=="create" &&
-                                        <Label as='a' basic image>
+                                        <Label as='a' href={"/user/"+owner.id} basic image>
                                             {owner && (owner.lastname + ' ' + owner.firstname)}
 
                                             {type === "referent" && <Label.Detail>{ t('referent') }</Label.Detail>}
@@ -166,18 +168,16 @@ const Card = ({ obj, type, profile=false, ctx=undefined, withPicture=true }) => 
 
                                         {(obj.email || obj.phone) &&
                                         <>
-                                            {
-                                                obj.email &&
-                                                    <Label as="a" href={"mailto:" + obj.email} icon='mail'
-                                                           content={obj.email}/>
+                                            {obj.email &&
+                                            <MailInput t={t} email={obj.email} isConfirmed={obj.isConfirmed } isAdmin={ false }/>
                                             }
 
                                             {obj.mobile &&
-                                                <Label icon='mobile' content={obj.mobile}/>
+                                                <PhoneDisplay phoneNumber={obj.mobile}/>
                                             }
 
                                             {obj.phone &&
-                                                <Label icon='phone' content={obj.phone}/>
+                                                <PhoneDisplay phoneNumber={obj.phone}/>
                                             }
                                         </>
                                         }
