@@ -63,8 +63,8 @@ const OrgPage_Profile = (props) => {
                 postTreatment,
                 setLoader,
                 setErrors,
-                false,
-                props.history
+                props.history,
+                false
             )
         }
 

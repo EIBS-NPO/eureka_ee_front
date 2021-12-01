@@ -144,7 +144,7 @@ const Card = ({ obj, type, profile=false, ctx=undefined, withPicture=true }) => 
                                     </Item.Header>
                                     <Item.Extra>
                                         {type !== "user" && ctx !=="create" &&
-                                        <Label as='a' href={"/user/"+owner.id} basic image>
+                                        <Label as='a' href={"/user/public_"+owner.id} basic image>
                                             {owner && (owner.lastname + ' ' + owner.firstname)}
 
                                             {type === "referent" && <Label.Detail>{ t('referent') }</Label.Detail>}
@@ -154,13 +154,13 @@ const Card = ({ obj, type, profile=false, ctx=undefined, withPicture=true }) => 
                                         }
 
                                         {obj.project &&
-                                            <Label as='a' href={"/project/"+obj.project.id} basic image >
+                                            <Label as='a' href={"/project/public_"+obj.project.id} basic image >
                                                 { obj.project.title }
                                                 <Label.Detail>{ t('project') }</Label.Detail>
                                             </Label>
                                         }
                                         {obj.organization &&
-                                            <Label as='a' href={"/org/"+obj.organization.id} basic image >
+                                            <Label as='a' href={"/org/public_"+obj.organization.id} basic image >
                                                 {obj.organization.name}
                                                 <Label.Detail>{ t('organization') }</Label.Detail>
                                             </Label>

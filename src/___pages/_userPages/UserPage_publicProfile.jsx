@@ -11,7 +11,7 @@ const UserPage_publicProfile = (props, { history}) => {
 
     const {t} = useTranslation()
     const [user, setUser ] = useState({})
-    const userId = props.match.params.id
+    const urlParams = props.match.params.id.split('_')
 
     const [loader, setLoader] = useState(true)
 
@@ -21,7 +21,7 @@ const UserPage_publicProfile = (props, { history}) => {
         setUser(userResponse[0])
     }
     useEffect(() => {
-        HandleGetUsers({access:"public", user:{ id:userId } },
+        HandleGetUsers({access:urlParams[0], user:{ id:urlParams[1] } },
             postTreatment,
             setLoader,
             setErrors,
