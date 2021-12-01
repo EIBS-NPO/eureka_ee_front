@@ -219,5 +219,30 @@
   "add_activity_message": "Même si votre activité est privée, les membres de ce groupe pourront y accéder.",
 
   "remove_org_message": "Les membres de votre organisation n’auront plus accès aux ressources privées de ce groupe.",
-  "add_org_message": ""
+  "add_org_message": "",
+
+
+  "eee_home_1": "Le projet EEE (Eureka Empowerment Environment) est une application web permettant d’intégrer et de partager les outils permettant de reproduire les actions pilotes mises en place par les différents partenaires ; et ce afin de faciliter l’échange de pratiques sur l’engagement des citoyens.",
+
+  "eee_home_2": "Il doit également permettre des collaborations aisées entre plusieurs personnes via le partage d’expériences (rédaction de compte-rendu disponibles en ligne et partage de fichiers).",
+
+  "eee_home_3": "Cette plateforme de partage est destinée :",
+
+  "eee_home_4": "Au partenaire du projet Eureka : ",
+  "eee_home_5": "Partager leurs projets et leurs activités ",
+  "eee_home_6": "Documenter leurs actions pilotes",
+  "eee_home_7": "Communiquer et échanger avec le public ayant suivi les actions et les associations souhaitant reproduire celles-ci.",
+
+  "eee_home_8": " Le public :",
+  "eee_home_9": "Accéder à certains documents",
+  "eee_home_10": "Echanger avec les partenaires référents",
+
+  "eee_home_11": "Autres associations :",
+  "eee_home_12": "Télécharger les outils afin de mener les actions ",
+  "eee_home_13": "Communiquer avec les porteurs de projet",
+  "eee_home_14": "Accéder aux comptes-rendus des actions",
+  "eee_home_15": "Echanger et effectuer des retours sur la menée des actions",
+  "eee_home_16": "Il est nécessaire de créer un compte sur la plateforme afin d’accéder à l’ensemble des informations.",
+  "eee_home_17": " Dans le respect de la philosophie du projet, la plateforme a été placé sous licence Open Source (licence MIT) permettant à chacun de télécharger, installer, copier et modifier librement l’application web. Un dépôt GitHub est disponible pour télécharger le code source : "
+
 }

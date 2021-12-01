@@ -219,6 +219,29 @@
   "add_activity_message": "Even if your activity is private, members of this group will be able to access it.",
 
   "remove_org_message": "Members of your organization will no longer be able to access the private resources of this group.",
-  "add_org_message": ""
+  "add_org_message": "",
+
+  "eee_home_1": "The Eureka Empowerment Environment (EEE) project is a web-based application for integrating and sharing tools to replicate the pilot actions implemented by the various partners; to facilitate the exchange of practices on citizen engagement.",
+
+  "eee_home_2": "It must also allow easy collaboration between several people via the sharing of experiences (writing reports available online and file sharing).",
+
+  "eee_home_3": "This sharing platform is intended to:",
+
+  "eee_home_4": "To the Eureka project partner: ",
+  "eee_home_5": "Share their projects and activities ",
+  "eee_home_6": "Document their pilot actions",
+  "eee_home_7": "Communicate and exchange with the public following the actions and associations wishing to reproduce them.",
+
+  "eee_home_8": " The public:",
+  "eee_home_9": "Accessing certain documents",
+  "eee_home_10": "Exchange with the referring partners",
+
+  "eee_home_11": "Other associations:",
+  "eee_home_12": "Download the tools to carry out the actions ",
+  "eee_home_13": "Communicate with project leaders",
+  "eee_home_14": "Access action reports",
+  "eee_home_15": "Exchange and make feedback on the actions taken",
+  "eee_home_16": "It is necessary to create an account on the platform in order to access all the information.",
+  "eee_home_17": " In keeping with the philosophy of the project, the platform has been licensed under Open Source (MIT license) allowing everyone to freely download, install, copy and modify the web application. A GitHub repository is available to download the source code: "
 
 }
