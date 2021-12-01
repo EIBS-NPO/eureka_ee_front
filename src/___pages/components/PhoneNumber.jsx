@@ -111,7 +111,6 @@ export const PhoneDisplay = ({phoneNumber}) =>{
 
     const getFlag = () => {
         let country = getCountryFromNumber(phoneNumber)
-        console.log(country)
         if(country !== undefined){
             if(hasFlag(country)){
                 let Flg = Flags[country]
