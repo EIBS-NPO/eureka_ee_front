@@ -25,7 +25,7 @@ export const ProjectHeader = ({ t, ctx, project, setProject }) => {
                 <Picture size="small" picture={project.picture} />
             </Header>
             <Header floated='right'>
-                {isAuth && ctx !== "public" &&
+                {isAuth &&
                 <FollowingActivityForm obj={project} setter={setProject} type="project" />
                 }
                 <h1>{ project.title }</h1>
