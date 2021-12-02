@@ -24,10 +24,8 @@ import {BtnAnimForSave, BtnForSaveOrCancel} from "../Inputs/Buttons";
 import SearchInput from "../menus/components/ListFilter";
 import { AllAddressFormField} from "../entityViews/AddressView";
 
-//todo make same style of other
 export const CreateOrgForm = ( { org, setOrg, handleSubmit, loader, errors}) => {
 
-    //todo les forms sans balise form pour fusion avec address
     const { t } = useTranslation()
     return (
         <>
@@ -84,12 +82,6 @@ export const CreateOrgForm = ( { org, setOrg, handleSubmit, loader, errors}) => 
             />
 
             <BtnAnimForSave t={t} isDisabled={false} />
-            {/*<Button fluid animated >
-                <Button.Content visible>{ t('save') } </Button.Content>
-                <Button.Content hidden>
-                    <Icon name='save' />
-                </Button.Content>
-            </Button>*/}
         </Form>
     </>
     )

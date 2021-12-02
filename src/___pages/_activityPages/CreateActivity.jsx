@@ -77,10 +77,10 @@ const CreateActivity = ({ history, t }) => {
             }
             {!loader &&
             <CreateActivityForm
-            activity={activity} setActivity={setActivity}
-            handleSubmit={preSubmit}
-            errors={errors}
-            history={history}
+                activity={activity} setActivity={setActivity}
+                handleSubmit={preSubmit}
+                errors={errors}
+                history={history}
             />
             }
         </ContentContainer>
