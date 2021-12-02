@@ -21,7 +21,7 @@ const HomePage = ( props ) => {
                             />
                             Eureka Empowerment Environment
                             <Header.Subheader>
-                                Inscrivez-vous, partagez, collaborez, échangez, enrichissez-vous !
+                                { props.t('eee_subtitle')}
                             </Header.Subheader>
                         </Header>
                     </Grid.Row>

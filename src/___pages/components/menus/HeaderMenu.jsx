@@ -492,7 +492,7 @@ const HeaderMenu = () => {
                     />
                     Eureka Empowerment Environment
                     <Header.Subheader>
-                        { t('eee_subTitle') }
+                        { t('eee_subtitle') }
                     </Header.Subheader>
                 </Header>
             </Header>
