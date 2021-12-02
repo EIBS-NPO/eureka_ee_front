@@ -1,6 +1,6 @@
 
 import {useTranslation, withTranslation} from "react-i18next";
-import React, {useContext, useState} from "react";
+import React, { useState} from "react";
 import {Menu, Segment, Message, Container } from "semantic-ui-react";
 import Modal from "../components/Modal";
 import {AddressForm} from "../components/entityViews/AddressView";
@@ -9,7 +9,6 @@ import MultiSelect, {RefreshOptionAndDroppedSelection} from "../components/menus
 import SearchBar from "../components/menus/components/search/SearchBar";
 import ManageOrg from "../components/entityViews/ManageOrg";
 import {UpdatedOrgForm} from "../components/entityForms/OrgForms";
-import AuthContext from "../../__appContexts/AuthContext";
 import {UpdateAssignedForm} from "../components/Inputs/FollowersComponents";
 import {ActivitiesPanelForOrg, ProjectsPanelForOrg} from "../components/entityViews/OrganizationViews";
 import {BtnOnCLick} from "../components/Inputs/Buttons";

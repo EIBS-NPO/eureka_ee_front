@@ -59,7 +59,7 @@ const LoginPage = (props ) => {
         setNeedConfirm(false)
         setError("")
 
-        setLoaderMessage(t("Connexion"))
+        setLoaderMessage(t("Login"))
         setLoader(true)
         AuthAPI.authenticate(credentials)
             .then((response) => {
@@ -119,7 +119,6 @@ const LoginPage = (props ) => {
         setForgetForm(false)
     }
 
-    //todo loader ne fonctionne pas...
     return (
         <div className="card">
             {loader &&
