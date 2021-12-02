@@ -1,71 +1,22 @@
 @import "../utilities/colors";
 
-/*@media screen and (max-width: 430px)
-{
-  #main_menu_list {
-    flex-wrap: wrap;
-  }
-  !* Rédigez vos propriétés CSS ici *!
-}
-
-@media screen and (max-width: 669px)
-{
-  #main_menu_list{
-    flex-direction:row;
-  }
-}
-
-@media screen and (min-width: 670px) and (max-width: 1023px)
-{
-  #main_menu_list{
-    flex-direction:column;
-  }
-}
-
-@media screen and (min-width: 1024px) and (max-width: 1023px)
-{
-  #main_menu_list{
-    flex-direction:row;
-  }
-}*/
-
-/*#main_menu { //todo switch to header_menu
-  display: flex;
- // justify-content: center;
-  align-items: center;
-  justify-content: space-around;
-  z-index:1;
- // width:100%;
- // background-color: $second-color;
-  //background: linear-gradient(to right, white 20%, $second-color );
- // height: 130px;
-  margin: auto;
-  min-width: 50%;
-  border: none;
-  box-shadow: none;
-  flex-wrap: wrap;
-  !*box-shadow: 10px 10px 10px rgba(black,0.5);*!
-
-  !*:last-child{
-    align-self: flex-end;
-  }*!
-}*/
-
 #header_menu {
   position: sticky;
   top: 0;
   z-index: 10;
-//  justify-items: center;
   width:100%;
   margin: unset;
   padding: unset;
-//  :first-child{}
 }
 
 
 
 #side_menu {
   height:100%;
+}
+
+#sandwichMenu{
+  color:$second-color;
 }
 
 .spaced-menu{
@@ -87,18 +38,12 @@
 }
 
 #logo {
- // width: 250px;
- // min-width: 250px;
   max-width: 250px;
   padding:unset;
- // margin: 20px;
-  //min-width: 300px;
-  //height: 145px;
   img {
     width: 100%;
     height:auto;
   }
-  //display: inline-block;
 }
 
 .banner {
@@ -109,26 +54,8 @@
     width: 100%;
     height:auto;
   }
-  //display: inline-block;
 }
-
-/*.push {
-  align-items: flex-end;
-  margin-left: auto;
-}*/
-
-/*.space_row{
-  width:90%;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items:center; //vertical
-}*/
 
 .wrapped{
   flex-wrap: wrap;
 }
-
-/*.menuDropItem {
-  color:black!important;
-}*/

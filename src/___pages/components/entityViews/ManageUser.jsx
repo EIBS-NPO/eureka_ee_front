@@ -1,10 +1,7 @@
-import {Dropdown, Header, Icon, Item, Label, Menu, Segment} from "semantic-ui-react";
-import Picture from "./Picture";
+import {Dropdown, Header, Label, Menu, Segment} from "semantic-ui-react";
 import React from "react";
 import {useTranslation, withTranslation} from "react-i18next";
-import {PhoneDisplay} from "./PhoneNumber";
-import {AddressDisplay} from "./Address";
-import {UserCard} from "./entityViews/UserViews";
+import {UserCard} from "./UserViews";
 
 const ManageUser = ({user, handleAction, loader= false}) => {
 
@@ -46,9 +43,6 @@ const ManageUser = ({user, handleAction, loader= false}) => {
                             </Dropdown.Item>
                             }
 
-                            {/*<Dropdown.Item>
-                                            {t("delete")}
-                                                </Dropdown.Item>*/}
                         </Dropdown.Menu>
                     </Dropdown>
                 </Menu.Menu>

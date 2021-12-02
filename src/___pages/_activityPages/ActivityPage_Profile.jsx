@@ -5,7 +5,7 @@ import {useTranslation, withTranslation} from "react-i18next";
 import AuthContext from "../../__appContexts/AuthContext";
 import {ContentContainer} from "../components/Loader";
 import { HandleGetActivities } from "../../__services/_Entity/activityServices";
-import {DisplayActivity} from "../components/ManageActivity";
+import {DisplayActivity} from "../components/entityViews/ManageActivity";
 import {ActivityHeader} from "../components/entityViews/ActivityViews";
 
 const ActivityPage_Profile = ( props ) => {

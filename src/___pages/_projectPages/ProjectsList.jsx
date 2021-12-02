@@ -1,10 +1,11 @@
 
 import React, { useEffect, useState } from 'react';
 import {Container, Header, Input, Menu, Message, Segment} from 'semantic-ui-react'
-import Card from "../components/Card";
+import Card from "../components/entityViews/Card";
 import {withTranslation} from "react-i18next";
 import {ContentContainer } from "../components/Loader";
 import {HandleGetProjects} from "../../__services/_Entity/projectServices";
+import SearchInput from "../components/menus/components/ListFilter";
 
 const ProjectsList = ( props ) => {
     const urlParams = props.match.params.ctx
@@ -90,6 +91,9 @@ const ProjectsList = ( props ) => {
         )
     }
 
+    const [projectsFiltered, setProjectsFiltered] = useState([])
+    const [projectsPartnersFiltered, setProjectsPartnersFiltered] = useState([])
+
     return (
         <ContentContainer
             loaderActive={loader}
@@ -117,16 +121,20 @@ const ProjectsList = ( props ) => {
                     <>
                     {activeItem === 'myProjects' &&
                     <Segment attached='bottom'>
-                        <Menu>
-                            <Menu.Item position="right">
-                                <Input name="search" value={ search ? search : ""}
-                                       onChange={handleSearch}
-                                       placeholder={  props.t('search') + "..."}
-                                />
-                            </Menu.Item>
-                        </Menu>
-                        {projects && filteredList(projects).length > 0 ?
-                        filteredList(projects).map(project => (
+                        <Menu.Item position="right">
+                            <SearchInput
+                                elementList={ projects }
+                                setResultList={ setProjectsFiltered }
+                                researchFields={{
+                                    main: ["title"],
+                                    description:[ props.i18n.language ],
+                                    creator: ["firstname", "lastname"]
+                                }}
+                                isDisabled ={ loader }
+                            />
+                        </Menu.Item>
+                        {projects && projectsFiltered.length > 0 ?
+                            projectsFiltered.map(project => (
                             <Segment key={project.id} raised>
                                 <Card history={props.history}
                                       key={project.id}
@@ -150,13 +158,20 @@ const ProjectsList = ( props ) => {
                     <Segment attached='bottom'>
                             <Menu>
                                 <Menu.Item position="right">
-                                    <Input name="search" value={ search ? search : ""}
-                                           onChange={handleSearch}
-                                           placeholder={  props.t('search') + "..."}    />
+                                    <SearchInput
+                                        elementList={ assignProjects }
+                                        setResultList={ setProjectsPartnersFiltered }
+                                        researchFields={{
+                                            main: ["title"],
+                                            description:[ props.i18n.language ],
+                                            creator: ["firstname", "lastname"]
+                                        }}
+                                        isDisabled ={ loader }
+                                    />
                                 </Menu.Item>
                             </Menu>
-                        {assignProjects && filteredList(assignProjects).length > 0 ?
-                        filteredList(assignProjects).map(project => (
+                        {assignProjects && projectsPartnersFiltered.length > 0 ?
+                            projectsPartnersFiltered.map(project => (
                             <Segment key={project.id} raised>
                                 <Card history={props.history}
                                       key={project.id}
@@ -182,26 +197,30 @@ const ProjectsList = ( props ) => {
 
             {ctx !== "owned" && !loader &&
                 <>
-                <Menu>
                     <Menu.Item position="right">
-                        <Input name="search" value={ search ? search : ""}
-                               onChange={handleSearch}
-                               placeholder={  props.t('search') + "..."}    />
+                        <SearchInput
+                            elementList={ projects }
+                            setResultList={ setProjectsFiltered }
+                            researchFields={{
+                                main: ["title"],
+                                description:[ props.i18n.language ],
+                                creator: ["firstname", "lastname"]
+                            }}
+                            isDisabled ={ loader }
+                        />
                     </Menu.Item>
-                </Menu>
-                    {projects && filteredList(projects).length > 0 ?
-                    filteredList(projects).map(project => (
-                        <Segment key={project.id} raised>
-                            <Card history={props.history}
-                                  key={project.id}
-                                  obj={project}
-                                  type="project"
-                                  isLink={true}
-                                  ctx={ctx}
-                            />
-                        </Segment>
-                    ))
-                    :
+                    {projects && projectsFiltered.length > 0 ?
+                        projectsFiltered.map(project => (
+                            <Segment key={project.id} raised>
+                                <Card history={props.history}
+                                      key={project.id}
+                                      obj={project}
+                                      type="project"
+                                      isLink={true}
+                                      ctx='owned'/>
+                            </Segment>
+                        ))
+                        :
                         <Container textAlign='center'>
                             <Message size='mini' info>
                                 {props.t("no_result")}

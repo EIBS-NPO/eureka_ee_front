@@ -2,10 +2,12 @@
 import React, {useEffect, useState} from "react";
 import {Button, Form, Icon, Item, Label } from "semantic-ui-react";
 import {useTranslation} from "react-i18next";
-import {TextFormField} from "./forms/formsServices";
-import {HandleUserUpdate} from "../../__services/_Entity/userServices";
-import {HandleUpdateOrg} from "../../__services/_Entity/organizationServices";
-import {asAddressChange, checkAddressFormValidity} from "../../__services/_Entity/addressServices";
+import {TextFormField} from "../forms/formsServices";
+import {HandleUserUpdate} from "../../../__services/_Entity/userServices";
+import {HandleUpdateOrg} from "../../../__services/_Entity/organizationServices";
+import {asAddressChange, checkAddressFormValidity} from "../../../__services/_Entity/addressServices";
+import userAPI from "../../../__services/_API/userAPI";
+import utilities from "../../../__services/utilities";
 
 export const AllAddressFormField = ({ address, setAddress, errors }) => {
     const {t}=useTranslation()
@@ -172,6 +174,60 @@ export const AddressDisplay = ({ object, editable=false, setSwitch=undefined }) 
             </Item>
             }
         </Item>
+    )
+}
+
+export const ProfileAddress = ({ t, history, type, obj, setObject, withForm=false }) => {
+
+    const [isForm,setIsForm] = useState(false)
+
+    const isOwner = () => {
+        let userMail = userAPI.checkMail()
+
+        if(type === "user"){
+            return obj && obj.email === userMail
+        }
+        else{
+            return obj.referent.email === userMail
+        }
+    }
+
+    const postTreatment = (objectResponse) => {
+        setObject(objectResponse)
+        setIsForm(false)
+    }
+
+    return (
+        <Item.Group>
+            <Item>
+                <Item.Content>
+                    <Label attached='top'>
+                        <h4>{utilities.strUcFirst(t("address"))}</h4>
+                    </Label>
+                    {isForm &&
+                    <AddressForm
+                        t={t}
+                        history={history}
+                        object={ obj }
+                        addressFor={"user"}
+                        postTreatment={postTreatment}
+                        cancel={ ()=>setIsForm(false) }
+                    />
+                    }
+                    {!isForm &&
+                    <Item.Description>
+                        <Item.Group divided >
+                            <AddressDisplay
+                                object={ obj }
+                                setSwitch={ ()=>setIsForm(true) }
+                                editable={ withForm && isOwner() === true }
+                            />
+                        </Item.Group>
+                    </Item.Description>
+                    }
+                </Item.Content>
+            </Item>
+        </Item.Group>
     )
 }
 

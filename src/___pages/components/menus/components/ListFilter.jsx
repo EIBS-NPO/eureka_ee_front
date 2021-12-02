@@ -26,6 +26,7 @@ import {useTranslation, withTranslation} from "react-i18next";
  */
 const SearchInput = ({elementList, researchFields, setResultList, isDisabled=false}) => {
 
+    console.log(elementList)
     /**
      * i18n translation
      */
@@ -44,13 +45,15 @@ const SearchInput = ({elementList, researchFields, setResultList, isDisabled=fal
      * @returns {undefined|unknown} return undefined if no found
      */
     function findSubObject (object, subObjectName) {
-        for (const [elementKey, elementValue] of Object.entries(object)) {
-            if (typeof elementValue === "object") {
-                if (elementKey === subObjectName) {
-                    return elementValue
-                } else {
-                    let deepObject = findSubObject(elementValue, subObjectName)
-                    if(deepObject !== undefined) return deepObject
+        if(object !== null){
+            for (const [elementKey, elementValue] of Object.entries(object)) {
+                if (typeof elementValue === "object") {
+                    if (elementKey === subObjectName) {
+                        return elementValue
+                    } else {
+                        let deepObject = findSubObject(elementValue, subObjectName)
+                        if(deepObject !== undefined) return deepObject
+                    }
                 }
             }
         }

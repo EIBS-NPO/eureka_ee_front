@@ -6,7 +6,6 @@ import '../../../../scss/components/Modal.scss';
 import MediaContext from "../../../../__appContexts/MediaContext";
 import {useTranslation} from "react-i18next";
 
-//todo traduction
 const ImageUpload = ({ setter, entity}) => {
 
     const Media = useContext(MediaContext).Media

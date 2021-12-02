@@ -32,8 +32,11 @@ const SearchBar = ({setData, setDropedData, searchFor, setLoader, forAdmin}) => 
                 case "activity":
                     await HandleGetActivities(
                         {access: access, activity: searchParams},
-                        setData, setLoader, setError,
-                        history, forAdmin && isAdmin === true
+                        setData,
+                        setLoader,
+                        setError,
+                        forAdmin && isAdmin === true,
+                        history
                     )
                     break;
                 case "project":

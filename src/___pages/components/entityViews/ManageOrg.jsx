@@ -1,14 +1,13 @@
 
 import React, {useState} from "react";
 import {Dropdown, Item, Label, Menu, Segment} from "semantic-ui-react";
-import Picture from "./Picture";
+import Picture from "../Inputs/Picture";
 import {useTranslation, withTranslation} from "react-i18next";
-import { MultilingualTextDisplay } from "./TextAreaMultilingual";
-import {AddressDisplay } from "./Address";
-import {OrgPanelsContent,} from "./entityViews/OrganizationViews";
-import {DropdownProfilEntity} from "./menus/MenuProfile";
-import {menuItemListForOrg} from "../../__services/_Entity/organizationServices";
-import {ContentContainer} from "./Loader";
+import { MultilingualTextDisplay } from "../Inputs/TextAreaMultilingual";
+import {AddressDisplay } from "./AddressView";
+import {OrgPanelsContent,} from "./OrganizationViews";
+import {DropdownProfilEntity} from "../menus/MenuProfile";
+import {menuItemListForOrg} from "../../../__services/_Entity/organizationServices";
 
 
 const ManageOrg = ({org, handleAction, loader = false}) => {
@@ -32,9 +31,6 @@ const ManageOrg = ({org, handleAction, loader = false}) => {
                             <Dropdown.Item onClick={() => handleAction("editOrganization", org)}>
                                 {t('edit') + " " + t('organization')}
                             </Dropdown.Item>
-                            {/*<Dropdown.Item onClick={() => handleAction("editEmail", o)}>
-                                        {t('edit') + " " + t('email')}
-                                    </Dropdown.Item>*/}
                             <Dropdown.Item onClick={() => handleAction("editAddress", org)}>
                                 {t('edit') + " " + t('address')}
                             </Dropdown.Item>
@@ -57,13 +53,6 @@ const ManageOrg = ({org, handleAction, loader = false}) => {
                                 {org.partner &&  <Label color="pink" >{ t('untag') + " " + t('partner')}</Label>}
                             </Dropdown.Item>
 
-
-                            {/*<Dropdown.Item>
-                                                    {t('delete') + " " + t("picture")}
-                                                </Dropdown.Item>*/}
-                            {/*<Dropdown.Item>
-                                                    {t("delete")}
-                                                </Dropdown.Item>*/}
                         </Dropdown.Menu>
                     </Dropdown>
                 </Menu.Menu>
@@ -91,7 +80,6 @@ const ManageOrg = ({org, handleAction, loader = false}) => {
     )
 }
 
-//todo fluid bad don't know where
 export const DisplayOrg = ({t, ctx, isOwner, org, setOrg, loader, history} ) =>{
 
     const [activeItem, setActiveItem] = useState("presentation")

@@ -1,10 +1,11 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {Container, Header, Input, Menu, Message, Segment} from 'semantic-ui-react'
 import { withTranslation } from 'react-i18next';
-import Card from "../components/Card";
+import Card from "../components/entityViews/Card";
 import {HandleGetActivities} from "../../__services/_Entity/activityServices";
 import {ContentContainer} from "../components/Loader";
 import AuthContext from "../../__appContexts/AuthContext";
+import SearchInput from "../components/menus/components/ListFilter";
 
 const ActivityPage_List = (props ) => {
     const urlParams = props.match.params.ctx
@@ -37,7 +38,6 @@ const ActivityPage_List = (props ) => {
                     setCtx(ctx)
                     if (ctx !== '') { //if valid ctx
                         //public or private access
-                        //todo maybe need other params for other context
                         let ctxAccess
                         let activityParams = {}
                         switch(ctx){
@@ -66,7 +66,7 @@ const ActivityPage_List = (props ) => {
 
         //dismiss unmounted warning
         return () => {
-            setActivities({});
+            setActivities([]);
         };
     }, [urlParams]);
 
@@ -87,19 +87,8 @@ const ActivityPage_List = (props ) => {
 
     const [activeItem, setActiveItem] = useState('myPublic')
 
-    const [search, setSearch] = useState("")
-    const handleSearch = (event) => {
-        const value = event.currentTarget.value;
-        setSearch(value);
-    }
-
-    const filteredList = (list) => {
-        return list.filter(p =>
-            p.title.toLowerCase().includes(search.toLowerCase()) ||
-            p.creator.firstname.toLowerCase().includes(search.toLowerCase()) ||
-            p.creator.lastname.toLowerCase().includes(search.toLowerCase())
-        )
-    }
+    const [publicActivitiesFiltered, setPublicActivitiesFiltered] = useState([])
+    const [privateActivitiesFiltered, setPrivateActivitiesFiltered] = useState([])
 
     return (
         <ContentContainer
@@ -132,14 +121,19 @@ const ActivityPage_List = (props ) => {
                     {activeItem === 'myPublic' &&
                     <Segment attached='bottom'>
                         <Menu>
-                            <Menu.Item position="right">
-                                <Input name="search" value={search ? search : ""}
-                                       onChange={handleSearch}
-                                       placeholder={props.t('search') + "..."}/>
-                            </Menu.Item>
+                            <SearchInput
+                                elementList={ activities.filter(a => a.isPublic === true) }
+                                setResultList={ setPublicActivitiesFiltered }
+                                researchFields={{
+                                    main: ["title"],
+                                    summary:[ props.i18n.language ],
+                                    creator: ["firstname", "lastname"]
+                                }}
+                                isDisabled ={ loader }
+                            />
                         </Menu>
-                        {activities && filteredList(activities.filter(a => a.isPublic === true)).length > 0 ?
-                            filteredList(activities.filter(a => a.isPublic === true)).map(activity => (
+                        {activities && publicActivitiesFiltered.length > 0 ?
+                            publicActivitiesFiltered.map(activity => (
                                 <Segment key={activity.id} raised>
                                     <Card history={props.history} key={activity.id} obj={activity} type="activity"
                                           isLink={true}
@@ -159,14 +153,19 @@ const ActivityPage_List = (props ) => {
                     {activeItem === 'myPrivate' &&
                     <Segment attached='bottom'>
                         <Menu>
-                            <Menu.Item position="right">
-                                <Input name="search" value={search ? search : ""}
-                                       onChange={handleSearch}
-                                       placeholder={props.t('search') + "..."}/>
-                            </Menu.Item>
+                            <SearchInput
+                                elementList={ activities.filter(a => a.isPublic === false) }
+                                setResultList={ setPrivateActivitiesFiltered }
+                                researchFields={{
+                                    main: ["title"],
+                                    summary:[ props.i18n.language ],
+                                    creator: ["firstname", "lastname"]
+                                }}
+                                isDisabled ={ loader }
+                            />
                         </Menu>
-                        {activities && filteredList(activities.filter(a => a.isPublic === false)).length > 0 ?
-                            filteredList(activities.filter(a => a.isPublic === false)).map(activity => (
+                        {activities && privateActivitiesFiltered.length > 0 ?
+                            privateActivitiesFiltered.map(activity => (
                                 <Segment key={activity.id} raised>
                                     <Card history={props.history} key={activity.id} obj={activity} type="activity"
                                           isLink={true}
@@ -188,21 +187,23 @@ const ActivityPage_List = (props ) => {
                 {ctx !== "owned" &&
                 <>
                     <Menu>
-                        <Menu.Item position="right">
-                            <Input name="search" value={ search ? search : ""}
-                                   onChange={handleSearch}
-                                   placeholder={  props.t('search') + "..."}    />
-                        </Menu.Item>
+                        <SearchInput
+                            elementList={ activities.filter(a => a.isPublic === true) }
+                            setResultList={ setPublicActivitiesFiltered }
+                            researchFields={{
+                                main: ["title"],
+                                summary:[ props.i18n.language ],
+                                creator: ["firstname", "lastname"]
+                            }}
+                            isDisabled ={ loader }
+                        />
                     </Menu>
-                    {activities && filteredList(activities).length > 0 ?
-                        filteredList(activities).map(activity => (
+                    {activities && publicActivitiesFiltered.length > 0 ?
+                        publicActivitiesFiltered.map(activity => (
                             <Segment key={activity.id} raised>
-                                <Card
-                                    history={props.history}
-                                    key={activity.id}
-                                    obj={activity}
-                                    type="activity"
-                                    isLink={true}/>
+                                <Card history={props.history} key={activity.id} obj={activity} type="activity"
+                                      isLink={true}
+                                      ctx={ctx}/>
                             </Segment>
                         ))
                         :

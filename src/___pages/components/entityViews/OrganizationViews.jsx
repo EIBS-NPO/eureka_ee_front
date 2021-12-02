@@ -1,22 +1,19 @@
 import AuthContext from "../../../__appContexts/AuthContext";
 import {Button, Container, Dropdown, Header, Icon, Item, Label, Menu, Message, Segment} from "semantic-ui-react";
-import Picture from "../Picture";
+import Picture from "../Inputs/Picture";
 import { useTranslation } from "react-i18next";
 import { ActivitiesMenuForOrg, ProjectsMenuForOrg, UpdatedOrgForm } from "../entityForms/OrgForms";
-import Card from "../Card";
-import { BtnForEdit } from "../Buttons";
+import Card from "./Card";
+import { BtnForEdit } from "../Inputs/Buttons";
 import { useContext, useEffect, useState } from "react";
 import { HandleGetActivities } from "../../../__services/_Entity/activityServices";
 import { HandleGetProjects } from "../../../__services/_Entity/projectServices";
 import { HandleUpdateOrg } from "../../../__services/_Entity/organizationServices";
 import { LoaderWithMsg } from "../Loader";
 import { ConfirmActionForm } from "../forms/formsServices";
-import {UpdateAssignedForm} from "../FollowersComponents";
+import {UpdateAssignedForm} from "../Inputs/FollowersComponents";
 import {PanelContent} from "../menus/MenuProfile";
-import ProfileAddress from "../ProfileAddress";
-import {NavLink} from "react-router-dom";
-import {PhoneDisplay} from "../PhoneNumber";
-import {AddressDisplay} from "../Address";
+import {ProfileAddress} from "./AddressView";
 
 export const OrgHeader = ({ message, org }) => {
     return (
@@ -38,90 +35,6 @@ export const OrgHeader = ({ message, org }) => {
         </Segment>
     )
 }
-
-/*export const MenuPanelsOrgGreaterXS = ({ Media, activeItem, setActiveItem, PanelsContent }) => {
-    const {t} = useTranslation()
-    return (
-        <Media greaterThan="xs">
-            <Menu attached='top' tabular>
-                <Menu.Item
-                    name='presentation'
-                    active={activeItem === 'presentation'}
-                    onClick={(e, { name }) => setActiveItem(name)}
-                >
-                    <Header >
-                        { t("presentation") }
-                    </Header>
-                </Menu.Item>
-                <Menu.Item
-                    name='address'
-                    active={activeItem === 'address'}
-                    onClick={(e, { name }) => setActiveItem(name)}
-                >
-                    <Header >
-                        { t("address") }
-                    </Header>
-                </Menu.Item>
-                <Menu.Item
-                    name='membership'
-                    active={activeItem === 'membership'}
-                    onClick={(e, { name }) => setActiveItem(name)}
-                >
-                    <Header >
-                        { t("membership") }
-                    </Header>
-                </Menu.Item>
-                <Menu.Item
-                    name='projects'
-                    active={activeItem === 'projects'}
-                    onClick={(e, { name }) => setActiveItem(name)}
-                >
-                    <Header >
-                        { t("projects") }
-                    </Header>
-                </Menu.Item>
-                <Menu.Item
-                    name='activities'
-                    active={activeItem === 'activities'}
-                    onClick={(e, { name }) => setActiveItem(name)}
-                >
-                    <Header >
-                        { t("activities") }
-                    </Header>
-                </Menu.Item>
-            </Menu>
-
-            { PanelsContent }
-        </Media>
-    )
-}*/
-
-/*export const MenuPanelsOrgAtXS = ({ Media, activeItem, setActiveItem, PanelsContent }) => {
-    const {t} = useTranslation()
-
-    return (
-        <Media at="xs">
-            <Menu attached='top' tabular>
-                <Dropdown text={activeItem}>
-                    <Dropdown.Menu >
-                        <Dropdown.Item name='presentation' active={activeItem === 'presentation'} onClick={(e, { name }) => setActiveItem(name)} content={ t("presentation") }
-                        />
-                        <Dropdown.Item name='address' active={activeItem === 'address'} onClick={(e, { name }) => setActiveItem(name)} content={ t("address") }
-                        />
-                        <Dropdown.Item name='membership' active={activeItem === 'membership'} onClick={(e, { name }) => setActiveItem(name)} content={ t("membership") }
-                        />
-                        <Dropdown.Item name='projects' active={activeItem === 'projects'} onClick={(e, { name }) => setActiveItem(name)} content={ t("projects") }
-                        />
-                        <Dropdown.Item name='activities' active={activeItem === 'activities'} onClick={(e, { name }) => setActiveItem(name)} content={ t("activities") }
-                        />
-                    </Dropdown.Menu>
-                </Dropdown>
-            </Menu>
-
-            { PanelsContent }
-        </Media>
-    )
-}*/
 
 export const PresentationPanelForOrg = ({ ctx, org, setOrg, isReferent }) => {
     const {t} = useTranslation()
@@ -245,18 +158,6 @@ export const ProjectsPanelForOrg = ({ t, org, postTreatment, history, needConfir
 
 
     //todo make postTreatment for refresh.
-    /**
-     * initial data loading
-     */
-    /*useEffect(()=>{
-        fetchData();
-        //dismiss unmounted warning
-        return () => {
-            setUserProjects({});
-            setAssignedProjects({});
-        };
-    },[])
-*/
 
     /**
      * refresh data loading
@@ -589,8 +490,6 @@ export const OrgPartnerCard = ({ org }) => {
         <Segment className="w-300px unpadded center" basic>
             <h3>{ org.name }</h3>
 
-           {/* <Segment className="center unmarged unpadded wrapped" basic>*/}
-
                 <Picture
                     className="margAuto"
                     picture={org.picture}
@@ -600,8 +499,6 @@ export const OrgPartnerCard = ({ org }) => {
                     linkTo={"#"}
                     isFLoat="right"
                 />
-
-          {/*  </Segment>*/}
 
         </Segment>
 

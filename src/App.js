@@ -13,9 +13,8 @@ import 'semantic-ui-css/semantic.min.css'
 import 'react-phone-number-input/style.css'
 import './scss/main.scss';
 import './scss/components/Modal.scss'
-import fileAPI from "./__services/_API/fileAPI";
 import {HandleGetOrgs} from "./__services/_Entity/organizationServices";
-import orgAPI from "./__services/_API/orgAPI";
+import activityAPI from "./__services/_API/activityAPI";
 
  function App({history}) {
 
@@ -46,7 +45,7 @@ import orgAPI from "./__services/_API/orgAPI";
      const [errors, setErrors] = useState('')
 
      function getAllowedMimeType(){
-         fileAPI.getAllowedMime()
+         activityAPI.getAllowedMime()
              .then(response => {
                  setAllowedMimes(response.data[0].split(','))
              })
@@ -62,11 +61,6 @@ import orgAPI from "./__services/_API/orgAPI";
              setErrors,
              history
          )
-       /*  orgAPI.getPublic( "public",{partner:true})
-             .then(response => {
-                 setPartnerList(response.data)
-             })
-             .catch(error => console.log(error))*/
      }
      useEffect(()=>{
          getAllowedMimeType()

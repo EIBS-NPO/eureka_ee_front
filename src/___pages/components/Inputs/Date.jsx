@@ -1,8 +1,8 @@
 
 import {Form, Icon, Item, Label} from "semantic-ui-react";
 import {useTranslation} from "react-i18next";
-import utilities from "../../__services/utilities";
-import handleChange from "./forms/formsServices";
+import utilities from "../../../__services/utilities";
+import handleChange from "../forms/formsServices";
 import React from "react";
 
 export const StartDateFormInput = ({object, setObject, loader, errors}) => {

@@ -5,9 +5,9 @@ import { Container, Segment } from "semantic-ui-react";
 import PictureForm from "../components/forms/picture/PictureForm";
 import {CreateActivityForm} from "../components/entityForms/ActivityForms";
 import {checkActivityFormValidity, HandleCreateActivity} from "../../__services/_Entity/activityServices";
-import {FileUploadFormInput} from "../components/FilesComponents";
-import FileInfos from "../components/forms/fileHandler/FileInfos";
-import { BtnRemove} from "../components/Buttons";
+import {FileUploadFormInput, FileInfos} from "../components/Inputs/FilesComponents";
+//import FileInfos from "../components/forms/fileHandler/FileInfos";
+import { BtnRemove} from "../components/Inputs/Buttons";
 import {ContentContainer} from "../components/Loader";
 
 const CreateActivity = ({ history, t }) => {

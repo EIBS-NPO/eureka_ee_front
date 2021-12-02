@@ -5,7 +5,7 @@ import {withTranslation} from "react-i18next";
 import AuthContext from "../../__appContexts/AuthContext";
 import {HandleGetOrgs } from "../../__services/_Entity/organizationServices";
 import {ContentContainer} from "../components/Loader";
-import {DisplayOrg} from "../components/ManageOrg";
+import {DisplayOrg} from "../components/entityViews/ManageOrg";
 import {OrgHeader} from "../components/entityViews/OrganizationViews";
 
 
@@ -63,8 +63,8 @@ const OrgPage_Profile = (props) => {
                 postTreatment,
                 setLoader,
                 setErrors,
-                false,
-                props.history
+                props.history,
+                false
             )
         }
 

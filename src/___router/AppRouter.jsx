@@ -13,9 +13,9 @@ import AdminRoute from "./AdminRoute";
 
 const Home = lazy(() => import('../___pages/HomePage'));
 const Login = lazy(() => import('../___pages/LoginPage'));
-const ForgotPassword = lazy(() => import('../___pages/ChangePassword_Page'));
+const ForgotPassword = lazy(() => import('../___pages/_userPages/ChangePassword_Page'));
 const Register = lazy(() => import('../___pages/_userPages/UserPage_Registration'));
-const Activation = lazy(()=> import('../___pages/ActivationPage'))
+const Activation = lazy(()=> import('../___pages/_userPages/ActivationPage'))
 
 const CreateOrg = lazy(() => import('../___pages/_orgPages/CreateOrg'));
 const CreateProject = lazy(() => import('../___pages/_projectPages/CreateProject'));

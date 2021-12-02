@@ -14,16 +14,15 @@ import {
     Table
 } from "semantic-ui-react";
 import {useTranslation} from "react-i18next";
-import userAPI from "../../__services/_API/userAPI";
-import authAPI from "../../__services/_API/authAPI";
-import Card from "./Card";
-import AuthContext from "../../__appContexts/AuthContext";
-import {HandleGetUsers} from "../../__services/_Entity/userServices";
-import {ConfirmActionForm} from "./forms/formsServices";
-import {SearchUserForm} from "./entityForms/UserForms";
+import userAPI from "../../../__services/_API/userAPI";
+import authAPI from "../../../__services/_API/authAPI";
+import AuthContext from "../../../__appContexts/AuthContext";
+import {HandleGetUsers} from "../../../__services/_Entity/userServices";
+import {ConfirmActionForm} from "../forms/formsServices";
+import {SearchUserForm} from "../entityForms/UserForms";
 import {BtnRemove } from "./Buttons";
-import {LoaderWithMsg} from "./Loader";
-import {UserCard} from "./entityViews/UserViews";
+import {LoaderWithMsg} from "../Loader";
+import {UserCard} from "../entityViews/UserViews";
 
 
 //todo not use for the moment
@@ -33,33 +32,7 @@ export const FollowingFormInput = ({ obj, handleSubmit}) => {
 
     const handleForm = () => {
         setLoader(true)
-        handleSubmit(
-            {id: obj.id}
-        )
-        /*if(type === "activity"){
-            activityAPI.put(obj, {follow:true})
-                .then((response) => {
-                    setter(response.data[0])
-                })
-                .catch((error) => {
-                    console.log(error.response)
-                })
-                .finally(() => {
-                    setLoader(false)
-                })
-        }
-        else {
-            projectAPI.put(obj, {"follow":true})
-                .then( response => {
-                    setter(response.data[0])
-                })
-                .catch(error => {
-                    console.log(error)
-                })
-                .finally(() => {
-                    setLoader(false)
-                })
-        }*/
+        handleSubmit( {id: obj.id} )
     }
 
     return (
@@ -73,8 +46,6 @@ export const FollowingFormInput = ({ obj, handleSubmit}) => {
         </Form>
     )
 }
-
-//todo formsAdminFllowers
 
 export const UpdateFollowersForm = ({ history, object, objectType, onClose= undefined }) => {
 
@@ -521,7 +492,6 @@ export const MembersTableForAdmin = ({ t, owner, members, loader, handleAction, 
     )
 }
 
-//todo discrim with referent and creator org and project
 export const MembersTable = ({ t, object, owner, isOwner, members, handleSubmit, history }) => {
 
     const { isAuthenticated } = useContext(AuthContext)

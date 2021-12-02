@@ -1,12 +1,14 @@
 
 import React, {useState, useEffect, useContext} from 'react';
-import '../../scss/components/cardOrg.scss';
+import '../../../scss/components/cardOrg.scss';
 import {useTranslation, withTranslation} from 'react-i18next';
 import {Icon, Header, Segment, Container, Item, Label } from "semantic-ui-react";
-import Picture from "./Picture";
+import Picture from "../Inputs/Picture";
 import {NavLink} from "react-router-dom";
-import authAPI from "../../__services/_API/authAPI";
-import AuthContext from "../../__appContexts/AuthContext";
+import authAPI from "../../../__services/_API/authAPI";
+import AuthContext from "../../../__appContexts/AuthContext";
+import {MailInput} from "../Inputs/Buttons";
+import {PhoneDisplay} from "../Inputs/PhoneNumber";
 
 const Card = ({ obj, type, profile=false, ctx=undefined, withPicture=true }) => {
 
@@ -142,7 +144,7 @@ const Card = ({ obj, type, profile=false, ctx=undefined, withPicture=true }) => 
                                     </Item.Header>
                                     <Item.Extra>
                                         {type !== "user" && ctx !=="create" &&
-                                        <Label as='a' basic image>
+                                        <Label as='a' href={"/user/public_"+owner.id} basic image>
                                             {owner && (owner.lastname + ' ' + owner.firstname)}
 
                                             {type === "referent" && <Label.Detail>{ t('referent') }</Label.Detail>}
@@ -152,13 +154,13 @@ const Card = ({ obj, type, profile=false, ctx=undefined, withPicture=true }) => 
                                         }
 
                                         {obj.project &&
-                                            <Label as='a' href={"/project/"+obj.project.id} basic image >
+                                            <Label as='a' href={"/project/public_"+obj.project.id} basic image >
                                                 { obj.project.title }
                                                 <Label.Detail>{ t('project') }</Label.Detail>
                                             </Label>
                                         }
                                         {obj.organization &&
-                                            <Label as='a' href={"/org/"+obj.organization.id} basic image >
+                                            <Label as='a' href={"/org/public_"+obj.organization.id} basic image >
                                                 {obj.organization.name}
                                                 <Label.Detail>{ t('organization') }</Label.Detail>
                                             </Label>
@@ -166,18 +168,16 @@ const Card = ({ obj, type, profile=false, ctx=undefined, withPicture=true }) => 
 
                                         {(obj.email || obj.phone) &&
                                         <>
-                                            {
-                                                obj.email &&
-                                                    <Label as="a" href={"mailto:" + obj.email} icon='mail'
-                                                           content={obj.email}/>
+                                            {obj.email &&
+                                            <MailInput t={t} email={obj.email} isConfirmed={obj.isConfirmed } isAdmin={ false }/>
                                             }
 
                                             {obj.mobile &&
-                                                <Label icon='mobile' content={obj.mobile}/>
+                                                <PhoneDisplay phoneNumber={obj.mobile}/>
                                             }
 
                                             {obj.phone &&
-                                                <Label icon='phone' content={obj.phone}/>
+                                                <PhoneDisplay phoneNumber={obj.phone}/>
                                             }
                                         </>
                                         }

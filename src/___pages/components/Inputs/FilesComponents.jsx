@@ -1,15 +1,59 @@
 
 import React, {useContext, useState} from "react";
 import {Button, Container, Form, Header, Icon, Item, Message, Segment} from "semantic-ui-react";
-import MediaContext from "../../__appContexts/MediaContext";
+import MediaContext from "../../../__appContexts/MediaContext";
 import { useTranslation } from "react-i18next";
-import FileInfos from "./forms/fileHandler/FileInfos";
-import activityAPI from "../../__services/_API/activityAPI";
-import {HandleUpdateActivity} from "../../__services/_Entity/activityServices";
-import AuthContext from "../../__appContexts/AuthContext";
-import {ConfirmActionForm } from "./forms/formsServices";
+import activityAPI from "../../../__services/_API/activityAPI";
+import {HandleUpdateActivity} from "../../../__services/_Entity/activityServices";
+import AuthContext from "../../../__appContexts/AuthContext";
+import {ConfirmActionForm } from "../forms/formsServices";
 import {BtnDelete } from "./Buttons";
+import utilities from "../../../__services/utilities";
 
+/**
+ *
+ * @param file
+ * @returns {JSX.Element}
+ * @constructor
+ * @author Thierry Fauconnier <th.fauconnier@outlook.fr>
+ */
+export const FileInfos = ( { activity } ) => {
+
+    const { t } = useTranslation()
+
+    const isFromDB = activity && activity.filename && activity.file === undefined
+
+    const fileSize =
+        (activity && activity.file && activity.file.size) ? activity.file.size
+            : activity && activity.size ? activity.size : undefined
+
+    const filename =
+        activity && activity.file && activity.file.name ?
+            activity.file.name
+            : activity && activity.filename ? activity.filename : undefined
+
+    const isValid = isFromDB ? true : activity && activity.isValid
+
+    return (
+        <Item>
+
+            {!fileSize &&
+            <Header icon>
+                <Icon name='pdf file outline'/>
+                {t('no_file')}
+            </Header>
+            }
+
+            {fileSize && isValid !== undefined &&
+            <Header icon color = { isFromDB ? "blue" : isValid ? "teal" : "red" }>
+                <Icon name='file pdf' />
+                <p>{ filename }</p>
+                <p>{utilities.octetsToKilos(fileSize) + "kB"}</p>
+            </Header>
+            }
+        </Item>
+    )
+}
 
 export const FileUploadFormInput = ({activity, setActivity}) => {
 

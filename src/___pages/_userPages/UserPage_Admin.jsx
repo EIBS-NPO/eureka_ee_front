@@ -8,9 +8,9 @@ import AuthContext from "../../__appContexts/AuthContext";
 import MultiSelect, {RefreshOptionAndDroppedSelection} from "../components/menus/components/MultiSelect";
 
 import SearchBar from "../components/menus/components/search/SearchBar";
-import ManageUser from "../components/ManageUser";
+import ManageUser from "../components/entityViews/ManageUser";
 import {DisplayConfirmAccountProcess, UpdateUserForm} from "../components/entityForms/UserForms";
-import {AddressForm} from "../components/Address";
+import {AddressForm} from "../components/entityViews/AddressView";
 import mailerAPI from "../../__services/_API/mailerAPI";
 import authAPI from "../../__services/_API/authAPI";
 import {HandleGetUsers, HandleUserUpdate} from "../../__services/_Entity/userServices";

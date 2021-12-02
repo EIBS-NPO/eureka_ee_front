@@ -1,13 +1,13 @@
 
 import React, {useEffect, useState} from "react";
 import {Dropdown, Item, Menu, Segment} from "semantic-ui-react";
-import Picture from "./Picture";
+import Picture from "../Inputs/Picture";
 import { useTranslation, withTranslation } from "react-i18next";
-import { MultilingualTextDisplay } from "./TextAreaMultilingual";
+import { MultilingualTextDisplay } from "../Inputs/TextAreaMultilingual";
 
-import { ProjectPanelsContent} from "./entityViews/ProjectViews";
-import {DropdownProfilEntity} from "./menus/MenuProfile";
-import {menuItemListForProject} from "../../__services/_Entity/projectServices";
+import { ProjectPanelsContent} from "./ProjectViews";
+import {DropdownProfilEntity} from "../menus/MenuProfile";
+import {menuItemListForProject} from "../../../__services/_Entity/projectServices";
 
 
 const ManageProject = ({project, handleAction, loader = false}) => {

@@ -2,12 +2,12 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {Button, Form, Icon, Item, Label, Message, Segment} from "semantic-ui-react";
 import PictureForm from "../forms/picture/PictureForm";
-import {PhoneDisplay } from "../PhoneNumber";
+import {PhoneDisplay } from "../Inputs/PhoneNumber";
 import {useTranslation, withTranslation} from "react-i18next";
 
 
 import {EmailFormField, handleChange, PasswordFormField, PhoneFormField, TextFormField} from "../forms/formsServices";
-import Picture from "../Picture";
+import Picture from "../Inputs/Picture";
 import authAPI from "../../../__services/_API/authAPI";
 import AuthContext from "../../../__appContexts/AuthContext";
 import {
@@ -16,7 +16,7 @@ import {
     HandleUserUpdate
 } from "../../../__services/_Entity/userServices";
 import {LoaderWithMsg} from "../Loader";
-import {BtnForSaveOrCancel} from "../Buttons";
+import { MailInput} from "../Inputs/Buttons";
 
 export const CommonUserFormFields = ({t, user, setUser, errors }) => {
     return (
@@ -269,7 +269,8 @@ export const DisplayUser = ({ user, setSwitchEdit, editable }) => {
                     </Item>
                     <Item>
                         <Item.Content>
-                            <Label as="a" href={"mailto:" + user.email} icon='mail' content={user.email} />
+                            <MailInput t={t} email={user.email} isConfirmed={user.isConfirmed } isAdmin={ false }/>
+                            {/*<Label as="a" href={"mailto:" + user.email} icon='mail' content={user.email} />*/}
                         </Item.Content>
                     </Item>
                     <Item>
