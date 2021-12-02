@@ -71,8 +71,6 @@ export const AddressForm = ({t, history, object, addressFor, postTreatment, canc
     const [loader, setLoader] = useState(false)
     const [errors, setErrors] = useState("")
 
-    //todo handleCancel
-    //todo test
     const handleCancel = (e) => {
         e.preventDefault()
      //   setAddressUpdated( object.address ? object.address : undefined )
@@ -116,13 +114,6 @@ export const AddressForm = ({t, history, object, addressFor, postTreatment, canc
             }
         }
     }
-
-   /* const handleDelete = (e) => {
-        e.preventDefault()
-        setAddress(undefined)
-        /!*setter({ ...entity, "picture": null })
-        setter({ ...entity, "pictureFile": null})*!/
-    }*/
 
     return (
         <Form onSubmit={preSubmit} loading={loader}>
@@ -230,5 +221,3 @@ export const ProfileAddress = ({ t, history, type, obj, setObject, withForm=fals
         </Item.Group>
     )
 }
-
-//todo replace ProfileAddress here
