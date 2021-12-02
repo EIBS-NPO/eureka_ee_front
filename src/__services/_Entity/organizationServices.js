@@ -163,13 +163,17 @@ export function menuItemListForOrg ( org, isOwner=false, isAdmin=false ) {
         //membership
         itemTable.push( { itemName:"membership", text:"membership"})
 
-        //todo add number of projects.
         //projects
-        itemTable.push( { itemName:"projects", text:"projects"})
-
-        //todo add number of activities
+        itemTable.push( { itemName:"projects",
+            header:"projects",
+            text : org.activities && org.activities.length > 0 ? org.activities.length + " " : undefined
+        })
+    
         //organization
-        itemTable.push({ itemName:"activities", text: "activities" })
+        itemTable.push({ itemName:"activities",
+            header: "activities",
+            text: org.projects && org.projects.length > 0 ? org.projects.length + " " : undefined
+        })
 
     return itemTable
 }

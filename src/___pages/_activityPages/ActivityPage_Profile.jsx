@@ -15,7 +15,6 @@ const ActivityPage_Profile = ( props ) => {
     const [ctx, setCtx] = useState("")
     const {email, isAuthenticated} = useContext(AuthContext);
 
-    //todo check ctx possible
     const checkCtx = () => {
         if(urlParams[0] === 'public' || urlParams[0] === 'owned' || urlParams[0] === 'followed' || urlParams[0] === 'private') {
             if (urlParams[0] !== "public" && !isAuthenticated) {

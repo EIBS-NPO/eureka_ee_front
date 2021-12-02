@@ -33,7 +33,7 @@ export const DropdownItem = ({ t, setActiveItem, item , isOwner= false, isAdmin=
             <Dropdown.Item
                 key= { item.itemName }
                 onClick={ () => setActiveItem( item.itemName ) }
-                text= { item.text ?  <Header> {item.text} </Header>
+                text= { item.text ?  <Header> { t(item.text) } </Header>
                     :
                     <Header>
                         {t('no_' + item.itemName)}
@@ -56,19 +56,14 @@ export const DropdownProfilEntity = ({ t, setActiveItem, ctx, menuItemsList, isA
 
     return (
         menuItemsList.map((menuItem, key) => (
-           /* <>
-                {menuItem.header && menuItem.header && <Dropdown.Header content={menuItem.header}/>}*/
-                <DropdownItem
-                    key={key}
-                    t={t}
-                    setActiveItem={setActiveItem}
-                    isOwner={ (ctx==="owned" || ctx==="asssigned") }
-                    isAdmin={isAdmin}
-                    item={menuItem}
-                />
-        //        <Dropdown.Divider />
-       //     </>
-
+            <DropdownItem
+                key={key}
+                t={t}
+                setActiveItem={setActiveItem}
+                isOwner={ (ctx==="owned" || ctx==="asssigned") }
+                isAdmin={isAdmin}
+                item={menuItem}
+            />
         ))
     )
 }
