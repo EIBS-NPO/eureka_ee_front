@@ -34,7 +34,6 @@ const ActivityPage_List = (props ) => {
             setLoader(true)
             checkCtx()
                 .then(async (ctx) => {
-                    console.log(ctx)
                     setCtx(ctx)
                     if (ctx !== '') { //if valid ctx
                         //public or private access
