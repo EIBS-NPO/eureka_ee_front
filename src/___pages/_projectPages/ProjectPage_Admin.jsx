@@ -11,11 +11,11 @@ import {
 import Modal from "../components/Modal";
 import MultiSelect, {RefreshOptionAndDroppedSelection} from "../components/menus/components/MultiSelect";
 import SearchBar from "../components/menus/components/search/SearchBar";
-import ManageProject from "../components/ManageProject";
+import ManageProject from "../components/entityViews/ManageProject";
 import {UpdatedProjectForm} from "../components/entityForms/ProjectForms";
-import {UpdateAssignedForm, UpdateFollowersForm} from "../components/FollowersComponents";
+import {UpdateAssignedForm, UpdateFollowersForm} from "../components/Inputs/FollowersComponents";
 import {ActivitiesPanelForProject, OrgsPanelForProject} from "../components/entityViews/ProjectViews";
-import {BtnOnCLick} from "../components/Buttons";
+import {BtnOnCLick} from "../components/Inputs/Buttons";
 
 const ProjectPage_Admin = ( history ) => {
 

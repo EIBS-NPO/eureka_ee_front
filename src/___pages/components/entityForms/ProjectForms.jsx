@@ -11,7 +11,7 @@ import {
     HandleUpdateProject
 } from "../../../__services/_Entity/projectServices";
 import AuthContext from "../../../__appContexts/AuthContext";
-import {BtnForSaveOrCancel} from "../Buttons";
+import {BtnForSaveOrCancel} from "../Inputs/Buttons";
 import SearchInput from "../menus/components/ListFilter";
 
 

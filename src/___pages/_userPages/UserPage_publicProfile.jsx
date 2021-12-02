@@ -1,9 +1,9 @@
 
 import React, { useEffect, useState} from 'react';
 import {Segment} from "semantic-ui-react";
-import UserProfile from "./components/ProfileUser";
+import {ProfileUser} from "../components/entityViews/UserViews";
 import {useTranslation, withTranslation} from "react-i18next";
-import AddressProfile from "../components/ProfileAddress";
+import {ProfileAddress} from "../components/entityViews/AddressView";
 import {LoaderWithMsg} from "../components/Loader";
 import {HandleGetUsers} from "../../__services/_Entity/userServices";
 
@@ -39,11 +39,11 @@ const UserPage_publicProfile = (props, { history}) => {
             {!loader &&
             <>
                 <Segment>
-                    <UserProfile user={user} setterUser={setUser} />
+                    <ProfileUser user={user} setterUser={setUser} />
                 </Segment>
 
                 <Segment>
-                    <AddressProfile type="user" obj={user} setter={setUser} />
+                    <ProfileAddress t={props.t} type="user" obj={user} setter={setUser} />
                 </Segment>
             </>
             }

@@ -1,8 +1,8 @@
 
 import React, {useContext, useState} from "react";
 import {withTranslation} from "react-i18next";
-import AuthContext from "../__appContexts/AuthContext";
-import {DisplayConfirmAccountProcess} from "./components/entityForms/UserForms";
+import AuthContext from "../../__appContexts/AuthContext";
+import {DisplayConfirmAccountProcess} from "../components/entityForms/UserForms";
 
 const ActivationPage = (props) => {
     const isAuthenticated = useContext(AuthContext).isAuthenticated;

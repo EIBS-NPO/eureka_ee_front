@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
 import {Container, Header, Input, Menu, Message, Segment} from 'semantic-ui-react'
-import Card from "../components/Card";
+import Card from "../components/entityViews/Card";
 import {withTranslation} from "react-i18next";
 import {ContentContainer } from "../components/Loader";
 import {HandleGetProjects} from "../../__services/_Entity/projectServices";

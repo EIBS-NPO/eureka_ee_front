@@ -1,13 +1,15 @@
 
-import React, {useContext} from "react";
-import {AddressDisplay} from "../Address";
+import React, {useContext, useState} from "react";
+import {AddressDisplay} from "./AddressView";
 import {Header, Icon, Item, Label} from "semantic-ui-react";
-import Picture from "../Picture";
+import Picture from "../Inputs/Picture";
 import {useTranslation} from "react-i18next";
-import {PhoneDisplay} from "../PhoneNumber";
-import {NavLink} from "react-router-dom";
-import {MailInput} from "../Buttons";
+import {PhoneDisplay} from "../Inputs/PhoneNumber";
+import {NavLink, useHistory} from "react-router-dom";
+import {MailInput} from "../Inputs/Buttons";
 import AuthContext from "../../../__appContexts/AuthContext";
+import mailerAPI from "../../../__services/_API/mailerAPI";
+import UpdateUserForm, {DisplayUser} from "../entityForms/UserForms";
 
 //todo const card for designContainer
 export const UserCard = ({ user, forAdmin = false }) => {
@@ -68,4 +70,79 @@ export const UserCard = ({ user, forAdmin = false }) => {
         </Item>
 
     )
+}
+
+export const ProfileUser = ({ user, setUser, withForm = false }, forAdmin=false) => {
+
+    const { t } = useTranslation()
+    const history = useHistory()
+
+    const { email, isAdmin, firstname, setFirstname, lastname, setLastname, setNeedConfirm} = useContext(AuthContext);
+
+    const [update, setUpdate] = useState(false)
+    //todo
+    const [errors, setErrors] = useState({
+        lastname: "",
+        firstname: "",
+        phone:"",
+        mobile:""
+    });
+
+    const cancelForm = () => {
+        setUpdate(false)
+    }
+
+    //  const [loader, setLoader] = useState(false);
+
+    const postTreatment = async (userResponse) => {
+        setUser(userResponse)
+        //refresh AuthContext
+        if (firstname !== userResponse.firstname) setFirstname(userResponse.firstname)
+        if (lastname !== userResponse.lastname) setLastname(userResponse.lastname)
+
+        //if user change his email
+        console.log(email)
+        console.log(userResponse.email)
+        if(email !== userResponse.email){
+            console.log(userResponse)
+            mailerAPI.sendConfirmMail( t, userResponse)
+                .then(() => {
+                    setNeedConfirm(true)
+                    history.replace("/login")
+                })
+                .catch(err => console.log(err))
+        }
+    }
+
+    const switchUpdate = (e) => {
+        e.preventDefault()
+        setUpdate(true);
+    }
+
+    return (
+        <Item.Group>
+            <Item>
+                <Item.Content>
+
+                    <Label attached='top'>
+                        <h4> { t('profile') } </h4>
+                    </Label>
+
+                    {update &&
+                    <UpdateUserForm
+                        user={user}
+                        postTreatment={postTreatment}
+                        forAdmin={forAdmin && isAdmin === true}
+                        cancelForm={cancelForm}
+                    />
+                    }
+
+                    {!update &&
+                    <DisplayUser user={user} setSwitchEdit={switchUpdate} editable={withForm}/>
+                    }
+
+                </Item.Content>
+            </Item>
+        </Item.Group>
+    );
 }

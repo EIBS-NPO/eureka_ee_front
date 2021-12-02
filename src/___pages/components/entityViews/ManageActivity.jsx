@@ -1,13 +1,13 @@
 
 import { useState} from "react";
 import {Dropdown, Item, Menu, Segment} from "semantic-ui-react";
-import Picture from "./Picture";
-import {MultilingualTextDisplay} from "./TextAreaMultilingual";
+import Picture from "../Inputs/Picture";
+import {MultilingualTextDisplay} from "../Inputs/TextAreaMultilingual";
 import {useTranslation, withTranslation} from "react-i18next";
-import {FileDownloadForm } from "./FilesComponents";
-import {ActivityPanelsContent} from "./entityViews/ActivityViews";
-import {DropdownProfilEntity} from "./menus/MenuProfile";
-import {menuItemListForActivity} from "../../__services/_Entity/activityServices";
+import {FileDownloadForm } from "../Inputs/FilesComponents";
+import {ActivityPanelsContent} from "./ActivityViews";
+import {DropdownProfilEntity} from "../menus/MenuProfile";
+import {menuItemListForActivity} from "../../../__services/_Entity/activityServices";
 
 
 const ManageActivity = ({activity, handleAction, loader = false}) => {

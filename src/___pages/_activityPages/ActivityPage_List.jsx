@@ -1,7 +1,7 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {Container, Header, Input, Menu, Message, Segment} from 'semantic-ui-react'
 import { withTranslation } from 'react-i18next';
-import Card from "../components/Card";
+import Card from "../components/entityViews/Card";
 import {HandleGetActivities} from "../../__services/_Entity/activityServices";
 import {ContentContainer} from "../components/Loader";
 import AuthContext from "../../__appContexts/AuthContext";

@@ -5,10 +5,10 @@ import React, {useState} from "react";
 import {useTranslation, withTranslation} from "react-i18next";
 import Modal from "../components/Modal";
 import {UpdatedActivityForm} from "../components/entityForms/ActivityForms";
-import ManageActivity from "../components/ManageActivity";
-import {FileUploadForm} from "../components/FilesComponents";
-import {UpdateFollowersForm} from "../components/FollowersComponents";
-import {BtnOnCLick} from "../components/Buttons";
+import ManageActivity from "../components/entityViews/ManageActivity";
+import {FileUploadForm} from "../components/Inputs/FilesComponents";
+import {UpdateFollowersForm} from "../components/Inputs/FollowersComponents";
+import {BtnOnCLick} from "../components/Inputs/Buttons";
 import {OrgPanelForActivity, ProjectPanelForActivity} from "../components/entityViews/ActivityViews";
 
 

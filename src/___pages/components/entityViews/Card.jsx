@@ -1,14 +1,14 @@
 
 import React, {useState, useEffect, useContext} from 'react';
-import '../../scss/components/cardOrg.scss';
+import '../../../scss/components/cardOrg.scss';
 import {useTranslation, withTranslation} from 'react-i18next';
 import {Icon, Header, Segment, Container, Item, Label } from "semantic-ui-react";
-import Picture from "./Picture";
+import Picture from "../Inputs/Picture";
 import {NavLink} from "react-router-dom";
-import authAPI from "../../__services/_API/authAPI";
-import AuthContext from "../../__appContexts/AuthContext";
-import {MailInput} from "./Buttons";
-import {PhoneDisplay} from "./PhoneNumber";
+import authAPI from "../../../__services/_API/authAPI";
+import AuthContext from "../../../__appContexts/AuthContext";
+import {MailInput} from "../Inputs/Buttons";
+import {PhoneDisplay} from "../Inputs/PhoneNumber";
 
 const Card = ({ obj, type, profile=false, ctx=undefined, withPicture=true }) => {
 

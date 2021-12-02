@@ -115,16 +115,10 @@ const download = (activity, admin = false) => {
         {responseType: 'arraybuffer'}
     )
 }
-/*const download = (isPublic, id, access) => {
-    let url = "/activity/download"
-    if(isPublic){
-        url += "/public"
-    }
-     url += "?id=" +id+ "&access=" +access
-    return Axios.get(API_URL +url,
-        {responseType: 'arraybuffer'}
-    )
-}*/
+
+const getAllowedMime = () =>{
+    return Axios.get(API_URL + "/activity/allowed/public")
+}
 
 const remove = (id) => {
     return Axios.delete(ACT_API + "?id=" + id)
@@ -140,5 +134,6 @@ export default {
     get,
     getPublic,
     download,
+    getAllowedMime,
     remove
 };

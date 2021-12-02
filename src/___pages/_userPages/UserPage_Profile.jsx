@@ -1,12 +1,12 @@
 
 import React, {useEffect, useState} from 'react';
 import {Label, Segment} from "semantic-ui-react";
-import UserProfile from "./components/ProfileUser";
+import {ProfileUser} from "../components/entityViews/UserViews";
 import PassChangeForm from "../components/forms/AskChangePasswordModalForm";
 import {ContentContainer } from "../components/Loader";
 import {HandleGetUsers} from "../../__services/_Entity/userServices";
 import {withTranslation} from "react-i18next";
-import {ProfileAddress} from "../components/ProfileAddress";
+import {ProfileAddress} from "../components/entityViews/AddressView";
 
 const UserPage_Profile = ({ history, t }) => {
 
@@ -41,7 +41,7 @@ const UserPage_Profile = ({ history, t }) => {
                 </Segment>
 
                 <Segment>
-                    <UserProfile user={user} setUser={setUser} withForm={true}/>
+                    <ProfileUser user={user} setUser={setUser} withForm={true}/>
                 </Segment>
 
                 <Segment>

@@ -2,18 +2,18 @@ import {useContext, useEffect, useState} from "react";
 import AuthContext from "../../../__appContexts/AuthContext";
 import {useTranslation} from "react-i18next";
 import {Button, Container, Dropdown, Header, Icon, Image, Menu, Message, Segment} from "semantic-ui-react";
-import Picture from "../Picture";
+import Picture from "../Inputs/Picture";
 import FollowingActivityForm from "../forms/FollowingForm";
 import {ActivitiesMenuForProject, OrgsMenuForProject, UpdatedProjectForm} from "../entityForms/ProjectForms";
-import Card from "../Card";
-import {BtnForEdit} from "../Buttons";
+import Card from "./Card";
+import {BtnForEdit} from "../Inputs/Buttons";
 import authAPI from "../../../__services/_API/authAPI";
 import {HandleGetOrgs } from "../../../__services/_Entity/organizationServices";
 import {HandleGetProjects, HandleUpdateProject} from "../../../__services/_Entity/projectServices";
 import {LoaderWithMsg} from "../Loader";
 import {ConfirmActionForm } from "../forms/formsServices";
 import {HandleGetActivities} from "../../../__services/_Entity/activityServices";
-import {UpdateAssignedForm} from "../FollowersComponents";
+import {UpdateAssignedForm} from "../Inputs/FollowersComponents";
 import {PanelContent} from "../menus/MenuProfile";
 
 export const ProjectHeader = ({ t, ctx, project, setProject }) => {

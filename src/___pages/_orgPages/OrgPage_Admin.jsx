@@ -1,25 +1,23 @@
 
 import {useTranslation, withTranslation} from "react-i18next";
-import React, {useContext, useEffect, useState} from "react";
-import {Menu, Segment, Message, Container, Loader } from "semantic-ui-react";
+import React, {useContext, useState} from "react";
+import {Menu, Segment, Message, Container } from "semantic-ui-react";
 import Modal from "../components/Modal";
-import {AddressForm} from "../components/Address";
-import authAPI from "../../__services/_API/authAPI";
+import {AddressForm} from "../components/entityViews/AddressView";
 
 import MultiSelect, {RefreshOptionAndDroppedSelection} from "../components/menus/components/MultiSelect";
 import SearchBar from "../components/menus/components/search/SearchBar";
-import ManageOrg from "../components/ManageOrg";
+import ManageOrg from "../components/entityViews/ManageOrg";
 import {UpdatedOrgForm} from "../components/entityForms/OrgForms";
 import AuthContext from "../../__appContexts/AuthContext";
-import {UpdateAssignedForm} from "../components/FollowersComponents";
+import {UpdateAssignedForm} from "../components/Inputs/FollowersComponents";
 import {ActivitiesPanelForOrg, ProjectsPanelForOrg} from "../components/entityViews/OrganizationViews";
-import {BtnOnCLick} from "../components/Buttons";
+import {BtnOnCLick} from "../components/Inputs/Buttons";
 import {HandleUpdateOrg} from "../../__services/_Entity/organizationServices";
 import {ContentContainer} from "../components/Loader";
 
 const OrgPage_Admin = (history ) => {
     const { t } = useTranslation()
-    const { partnerList, setPartnerList } = useContext(AuthContext)
 
     const [orgs, setOrgs] = useState([])
     const [selectedOrg, setSelectedOrg] = useState(undefined)
@@ -58,19 +56,6 @@ const OrgPage_Admin = (history ) => {
         let orgId
         if(selectedOrg) { orgId = selectedOrg.id} else { orgId = orgResult.id}
         await RefreshOptionAndDroppedSelection(orgs, orgDropSelected, orgId, orgResult)
-
-        //todo partnerFooter Refresh
-        //partner refresh //todo
-        /*      let partner = partnerList.find(p => p.id === orgResult.id);
-              if(partner !== undefined && orgResult.partner === undefined){
-                  //remove partner
-                  partnerList.splice(partnerList.indexOf(partner), 1);
-                  setPartnerList(partnerList)
-              }else if( partner === undefined && orgResult.partner !== undefined){
-                  //add partner
-                  partnerList.push(orgResult)
-                  setPartnerList(partnerList)
-              }*/
 
         if (actionSelected !== "editProjectsOrg" && actionSelected !== "editActivitiesOrg") {
             hideModal()
@@ -138,18 +123,6 @@ const OrgPage_Admin = (history ) => {
                 <p>{ error }</p>
             </Message>
             }
-
-            {/*{loader &&
-            <Segment>
-                <Loader
-                    active
-                    content={
-                        <p>{ t('loading') +" : " +  t('organization') + "s" }</p>
-                    }
-                    inline="centered"
-                />
-            </Segment>
-            }*/}
 
             <Modal show={show} handleClose={hideModal} title={ t(actionSelected) } >
                 <div className="card minH-50">

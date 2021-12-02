@@ -2,7 +2,7 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {useTranslation, withTranslation} from 'react-i18next';
 import {Container, Header, Input, Menu, Message, Segment} from "semantic-ui-react";
-import Card from "../components/Card";
+import Card from "../components/entityViews/Card";
 import authAPI from "../../__services/_API/authAPI";
 import AuthContext from "../../__appContexts/AuthContext";
 import {ContentContainer} from "../components/Loader";

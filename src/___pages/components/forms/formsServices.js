@@ -1,11 +1,11 @@
 
 import {Button, Container, Form, Icon, Input, Label, Message, Segment} from "semantic-ui-react";
 import React from "react";
-import {PhoneFormInput} from "../PhoneNumber";
-import {BtnOnCLick} from "../Buttons";
-import TextAreaMultilingual from "../TextAreaMultilingual";
-import {EndDateFormInput, StartDateFormInput} from "../Date";
-import {PublicationFormInput} from "../Publication";
+import {PhoneFormInput} from "../Inputs/PhoneNumber";
+import {BtnOnCLick} from "../Inputs/Buttons";
+import TextAreaMultilingual from "../Inputs/TextAreaMultilingual";
+import {EndDateFormInput, StartDateFormInput} from "../Inputs/Date";
+import {PublicationFormInput} from "../Inputs/Publication";
 
 export function handleChange (event, entity, setter) {
     const { name, value } = event.currentTarget;

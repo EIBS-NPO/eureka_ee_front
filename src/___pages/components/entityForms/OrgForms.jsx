@@ -20,9 +20,9 @@ import utilities from "../../../__services/utilities";
 import {checkOrgChanges, checkOrgFormValidity, HandleUpdateOrg} from "../../../__services/_Entity/organizationServices";
 import AuthContext from "../../../__appContexts/AuthContext";
 import {useHistory} from "react-router-dom";
-import {BtnAnimForSave, BtnForSaveOrCancel} from "../Buttons";
+import {BtnAnimForSave, BtnForSaveOrCancel} from "../Inputs/Buttons";
 import SearchInput from "../menus/components/ListFilter";
-import { AllAddressFormField} from "../Address";
+import { AllAddressFormField} from "../entityViews/AddressView";
 
 //todo make same style of other
 export const CreateOrgForm = ( { org, setOrg, handleSubmit, loader, errors}) => {

@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react'
 import {Message, Icon, Container, Label, Form, Item, Flag, Segment} from 'semantic-ui-react'
 import {useTranslation, withTranslation} from 'react-i18next'
-import {getTranslateFromTextTable} from "../../__services/utilities";
+import {getTranslateFromTextTable} from "../../../__services/utilities";
 
 /**
  *

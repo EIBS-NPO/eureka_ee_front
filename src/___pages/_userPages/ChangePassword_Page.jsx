@@ -2,10 +2,10 @@
 import {Button, Form, Message} from "semantic-ui-react";
 import React, {useState} from "react";
 import {useTranslation, withTranslation} from "react-i18next";
-import userAPI from "../__services/_API/userAPI";
+import userAPI from "../../__services/_API/userAPI";
 
-import { checkPassword } from '../__services/formPatternControl';
-import handleChange from "./components/forms/formsServices";
+import { checkPassword } from '../../__services/formPatternControl';
+import handleChange from "../components/forms/formsServices";
 
 
 const ChangePassword_Page = (props) => {
