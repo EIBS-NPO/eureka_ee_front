@@ -69,9 +69,7 @@ export const PresentationPanelForActivity = ({ ctx, activity, setActivity, isOwn
 
 export const UploadPanelForActivity = ({ t, activity, setActivity, history, forAdmin=false }) => {
     const { isAdmin } = useContext(AuthContext)
-    //todo
     const [error, setError]= useState("")
-    //todo dropZone
 
     const postTreatment = (activityResult) => {
         setActivity(activityResult)

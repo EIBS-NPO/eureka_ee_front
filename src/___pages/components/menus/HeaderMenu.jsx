@@ -1,6 +1,6 @@
 
 import React, {useContext, useState} from "react";
-import {Button, Divider, Dropdown, Header, Icon, Image, Item, Menu, Segment} from "semantic-ui-react";
+import {Button, Divider, Dropdown, Header, Icon, Image, Menu, Segment} from "semantic-ui-react";
 import {useTranslation, withTranslation} from "react-i18next";
 import {NavLink, useHistory} from "react-router-dom";
 import AuthContext from "../../../__appContexts/AuthContext";
@@ -21,8 +21,6 @@ const HeaderMenu = () => {
 
     const { isAuthenticated, isAdmin, lastname, firstname} = useContext(AuthContext)
 
-
-    //todo  test
     const handleLogout = () => {
         history.replace("/login")
     };

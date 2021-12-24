@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
-import {Container, Header, Input, Menu, Message, Segment} from 'semantic-ui-react'
+import {Container, Header, Menu, Message, Segment} from 'semantic-ui-react'
 import Card from "../components/entityViews/Card";
 import {withTranslation} from "react-i18next";
 import {ContentContainer } from "../components/Loader";
@@ -21,12 +21,10 @@ const ProjectsList = ( props ) => {
 
     const [ctx, setCtx] = useState("")
 
-    //todo
     const [errors, setErrors] = useState("")
     useEffect(async () => {
 
         async function fetchData(){
-            //todo
             checkCtx()
                 .then(async (ctx) => {
 

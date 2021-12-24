@@ -27,10 +27,8 @@ const OrgPage_Profile = (props) => {
 
     const [loader, setLoader] = useState(false);
 
-    //todo
     const [message, setMessage] = useState(undefined)
 
-    //todo errors
     const [errors, setErrors] = useState(false)
 
     /**

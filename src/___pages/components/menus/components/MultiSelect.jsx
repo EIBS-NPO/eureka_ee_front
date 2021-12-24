@@ -23,8 +23,6 @@ export function RefreshOptionAndDroppedSelection(options, droppedSelection, init
 const MultiSelect = ({optionsList, textKeyList = [], setSelected, placeholder, loader} ) => {
     const dropRef = useRef("userDropSelect");
 
-    //todo mult select fait iech pour la maj des options et selected,
-    // faire passer option et selected en props.?
     const { t } = useTranslation()
     const [selectLoader, setSelectLoader] = useState(false)
 

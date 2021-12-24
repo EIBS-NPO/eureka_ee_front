@@ -56,6 +56,4 @@ const ManageUser = ({user, handleAction, loader= false}) => {
     )
 }
 
-//todo userAddress.jsx
-
 export default withTranslation()(ManageUser)

@@ -1,16 +1,14 @@
 
 import React, {useContext, useEffect, useState} from 'react';
 import {useTranslation, withTranslation} from 'react-i18next';
-import {Container, Header, Input, Menu, Message, Segment} from "semantic-ui-react";
+import {Container, Header, Menu, Message, Segment} from "semantic-ui-react";
 import Card from "../components/entityViews/Card";
-import authAPI from "../../__services/_API/authAPI";
 import AuthContext from "../../__appContexts/AuthContext";
 import {ContentContainer} from "../components/Loader";
 import {HandleGetOrgs} from "../../__services/_Entity/organizationServices";
 import SearchInput from "../components/menus/components/ListFilter";
 
 const OrgPage_List = (props ) => {
-    const { isAuthenticated } = useContext(AuthContext)
     const { i18n } = useTranslation()
     const urlParams = props.match.params.ctx
 
@@ -25,7 +23,6 @@ const OrgPage_List = (props ) => {
 
     const [loader, setLoader] = useState(false);
 
-    //todo errors
     const [errors, setErrors] = useState("")
 
     useEffect(() => {

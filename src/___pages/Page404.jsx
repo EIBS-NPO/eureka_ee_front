@@ -1,6 +1,4 @@
 
-
-//todo unused
 import React, { useEffect} from "react";
 import {withTranslation} from "react-i18next";
 

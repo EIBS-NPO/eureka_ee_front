@@ -46,7 +46,6 @@ export function checkAddressFormValidity (address, setErrors ) {
 
 export function asAddressChange(initialAddress, actualAddress, returnOnlyChanges = false ){
 
-    //todo useIt !!
     if(returnOnlyChanges) {
         //submit only really changes
         if(initialAddress){

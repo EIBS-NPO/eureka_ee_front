@@ -25,15 +25,10 @@ const CreateOrg = ({ history, t }) => {
     });
 
     const preSubmit = async ( newOrg ) => {
-        //todo checkValidity
-        //todo verif handle address?
         if(checkOrgFormValidity( newOrg, setErrors )){
 
             await HandleCreateOrg( newOrg, postTreatment, setLoader, setErrors, history)
         }
- //       if (address.address) { org.address = address}
-        //   setOrg({...org, description: desc})
-      //  handleSubmit()
     }
 
     const postTreatment = ( orgResult, urlMsg ) => {

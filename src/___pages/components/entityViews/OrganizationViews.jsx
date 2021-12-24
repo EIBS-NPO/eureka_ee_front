@@ -156,9 +156,6 @@ export const ProjectsPanelForOrg = ({ t, org, postTreatment, history, needConfir
 
     }
 
-
-    //todo make postTreatment for refresh.
-
     /**
      * refresh data loading
      */
@@ -171,7 +168,6 @@ export const ProjectsPanelForOrg = ({ t, org, postTreatment, history, needConfir
             setAssignedProjects({});
         };
     }, [org])
-    //todo when postTreatment made, remove useEffect dep
 
         return (
             <Segment padded="very" basic>

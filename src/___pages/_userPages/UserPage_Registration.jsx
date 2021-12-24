@@ -33,10 +33,10 @@ const UserPage_Registration = ({ history }) => {
     const postTreatment = (newUser) => {
         setLoaderMessage(t('sending_confirm_email'))
         mailerAPI.sendConfirmMail(t, newUser)
-            .then(res => {
+            .then(() => {
                 setNeedConfirm(true)
                 history.replace('/login')
-            })//todo hanldle error
+            })
             .catch(err => console.log(err))
     }
 

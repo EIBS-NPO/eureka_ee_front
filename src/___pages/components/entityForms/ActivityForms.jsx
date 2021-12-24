@@ -97,10 +97,6 @@ export const UpdatedActivityForm = ( {activity, postTreatment, forAdmin = false,
     const preSubmit = async () => {
         if (checkActivityFormValidity(updatedActivity, setErrors)) {
 
-            //todo make check in activityService
-            //submit only really changes
-           // if (updatedActivity.title === activity.title) updatedActivity.title = undefined
-         //   if (updatedActivity.isPublic === activity.isPublic) updatedActivity.isPublic = undefined
             let activityWithChanges = await asActivityChange(activity, updatedActivity, true)
             await HandleUpdateActivity(
                 activityWithChanges,
@@ -286,20 +282,16 @@ export const SearchActivityForm = ({activity, setActivity, handleSubmit, formErr
     const preSubmit = (e) => {
         if (creator !== undefined) {
             activity["creator"] = creator
-            // await setProject({...project, ["creator"]: creator})
         }
         if (project !== undefined) {
             activity["project"] = project
-            // await setProject({...project, ["creator"]: creator})
         }
         if (org !== undefined) {
             activity["organization"] = org
-            //  await setProject({...project, ["organization"]: org})
         }
         handleSubmit(e, "search", forAdmin, activity)
     }
 
-    //todo
     return (
         <Form>
             <Form.Group className="center wrapped" widths="equal">

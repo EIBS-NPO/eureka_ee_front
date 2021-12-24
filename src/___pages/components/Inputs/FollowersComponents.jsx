@@ -25,7 +25,6 @@ import {LoaderWithMsg} from "../Loader";
 import {UserCard} from "../entityViews/UserViews";
 
 
-//todo not use for the moment
 export const FollowingFormInput = ({ obj, handleSubmit}) => {
 
     const [loader, setLoader] = useState(false)
@@ -87,7 +86,6 @@ export const UpdateFollowersForm = ({ history, object, objectType, onClose= unde
         followers.splice(followers.findIndex(f => f.id === user.id), 1)
     }
 
-    //todo
     const submit = async (user, action) => {
         setLoader(true)
         if (await authAPI.isAuthenticated()) {
@@ -119,7 +117,6 @@ export const UpdateFollowersForm = ({ history, object, objectType, onClose= unde
         }
     }
 
-    //todo
     useEffect(async () => {
         setLoader(true)
         setSelectLoader(true)
@@ -229,7 +226,7 @@ export const UpdateFollowersForm = ({ history, object, objectType, onClose= unde
 export const UpdateAssignedForm = ({t, isOwner, object, objectType, onClose = undefined, history, forAdmin = false}) => {
 
     const { isAuthenticated, isAdmin } = useContext(AuthContext);
-    //todo errors
+
     const [errors, setErrors] = useState("")
 
     function getOwner(){
@@ -248,11 +245,10 @@ export const UpdateAssignedForm = ({t, isOwner, object, objectType, onClose = un
         if(onClose !== undefined) onClose(e)
     }
 
-    //todo setting Referent Or creator
     useEffect(async () => {
 
         async function fetchData(){
-            //todo check
+
             let userSearchParams = {}
             if(objectType === "org"){
                 userSearchParams["orgMemberId"] = object.id
@@ -279,11 +275,6 @@ export const UpdateAssignedForm = ({t, isOwner, object, objectType, onClose = un
         };
     },[object])
 
-    //todo
-    /*function postTreatment (user) {
-        if (action === "remove") removeMember(user)
-        else addMember(user)
-    }*/
     function addMember(user) {
         members.push(user)
         unMembers.splice(unMembers.findIndex(f => f.id === user.id),1)
@@ -298,7 +289,6 @@ export const UpdateAssignedForm = ({t, isOwner, object, objectType, onClose = un
     const [loader, setLoader] = useState(false)
     const [selectLoader, setSelectLoader] = useState(false)
 
-    //todo
     const submit = async (user, action) => {
         setLoader(true)
         let userPutParams = {id: user.id}
@@ -500,12 +490,10 @@ export const MembersTable = ({ t, object, owner, isOwner, members, handleSubmit,
     const [users, setUsers] = useState([])
     const [searchLoader, setSearchLoader] = useState(false)
 
-    //todo errors
     const [errors, setErrors] = useState("")
 
     const [selectedUser, setSelectedUser] = useState(undefined)
 
-    //todo check
     const handleSearch = async (e, access,  admin= false, searchParams= undefined) => {
         e.preventDefault()
         HandleGetUsers(

@@ -34,7 +34,7 @@ export const HandleUserUpdate = async (userSubmitted, postTreatment, setLoader, 
                 setErrors(error.response.data)
             })
             .finally(() => {
-                setLoader(false) //todo check when loader need false (with lodal or not)
+                setLoader(false)
             })
     } else history.replace('/login')
 };
@@ -67,7 +67,6 @@ export const HandleGetUsers = async (params, postTreatment, setLoader, setErrors
     }
 }
 
-//todo placer dans modal admin userPage_admin et page activation
 export const HandleConfirmUserEmailAccount = (tokenActivation, postTreatment, setLoader, setError, forAdmin = false) => {
     setLoader(true)
     userAPI.activation(tokenActivation)
@@ -82,7 +81,7 @@ export const HandleConfirmUserEmailAccount = (tokenActivation, postTreatment, se
         .catch(error => {
             console.log(error)
             console.log(error.response)
-            setError(error.response) //todo test with an error
+            setError(error.response)
             setLoader(false)
         })
     //    .finally(()=>setLoader(false))

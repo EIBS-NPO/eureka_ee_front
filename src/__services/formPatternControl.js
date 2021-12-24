@@ -4,10 +4,6 @@ export const checkPassword = (password) => {
     return regex.test(password)
 }
 
-export const checkUrlToken = (urlToken) => {
-    //todo
-}
-
 export const checkStringLenght = (str, min, max) => {
     return str.length >= min && str.length <= max
 }

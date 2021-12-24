@@ -12,7 +12,7 @@ export const HandleCreateProject = async ( newProject, postTreatment, setLoader,
                 postTreatment(response.data[0])
             })
             .catch(error => {
-                console.log(error.response.data) //todo remove
+                console.log(error.response.data)
                 setErrors(error.response.data);
             })
             .finally(()=>{
@@ -35,7 +35,6 @@ export const HandleUpdateProject = async ( updatedProject, postTreatment, setLoa
                 postTreatment( response.data[0] )
             })
             .catch(error => {
-                console.log(error) //todo remove
                 setErrors(error.response.data)
             })
             .finally(()=> {
@@ -55,7 +54,6 @@ export const HandleGetProjects = async (params, postTreatment, setLoader, setErr
                 postTreatment(response.data)
             })
             .catch(error => {
-                console.log(error)//todo remove
                 setErrors(error.response.data)
             })
             .finally(() => setLoader(false))
@@ -66,7 +64,6 @@ export const HandleGetProjects = async (params, postTreatment, setLoader, setErr
                     postTreatment(response.data)
                 })
                 .catch(error => {
-                    console.log(error) //todo remove
                     setErrors(error.response.data)
                 })
                 .finally(async () => {

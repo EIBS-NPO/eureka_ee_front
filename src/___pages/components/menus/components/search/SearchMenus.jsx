@@ -8,20 +8,17 @@ import { SearchOrgForm } from "../../../entityForms/OrgForms";
 import { SearchProjectForm } from "../../../entityForms/ProjectForms";
 import {SearchActivityForm} from "../../../entityForms/ActivityForms";
 
-//todo check unused var
 export const SearchMenu = ({handleSearch, searchFor, forAdmin = false}) => {
     const { t } = useTranslation()
 
     const [object, setObject] = useState({})
 
-    //todo pass setter to froms to ?
     const [formErrors, setFormsErrors] = useState({
         email: "",
         lastname: "",
         firstname: "",
     })
 
-    //todo searchFor plural?
     const [searchValue, setSearchValue] = useState('select_option_for_'+searchFor+'s')
     const searchOptions = getSearchOptionFor(searchFor, t)
 
@@ -32,7 +29,6 @@ export const SearchMenu = ({handleSearch, searchFor, forAdmin = false}) => {
         }
     }
 
-    //todo
     const [active, setActive] = useState("")
 
     const handleSubmit = (event, access, forAdmin, submitedObject = undefined) => {

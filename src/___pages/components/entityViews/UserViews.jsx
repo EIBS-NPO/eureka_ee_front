@@ -11,12 +11,10 @@ import AuthContext from "../../../__appContexts/AuthContext";
 import mailerAPI from "../../../__services/_API/mailerAPI";
 import UpdateUserForm, {DisplayUser} from "../entityForms/UserForms";
 
-//todo const card for designContainer
 export const UserCard = ({ user, forAdmin = false }) => {
 
     const isAdmin = useContext(AuthContext).isAdmin
     const {t} = useTranslation()
-    //todo item.Group
 
     return (
         <Item>
@@ -58,10 +56,6 @@ export const UserCard = ({ user, forAdmin = false }) => {
                     </Item>
 
                 </Item.Extra>
-                {/*<p> { user.firstname +" "+ user.lastname } </p>*/}
-              {/*  <p> { user.email } </p>
-                <p> { user.mobile } </p>
-                <p> { user.phone } </p>*/}
 
                 <AddressDisplay object={user}/>
 
@@ -80,19 +74,11 @@ export const ProfileUser = ({ user, setUser, withForm = false }, forAdmin=false)
     const { email, isAdmin, firstname, setFirstname, lastname, setLastname, setNeedConfirm} = useContext(AuthContext);
 
     const [update, setUpdate] = useState(false)
-    //todo
-    const [errors, setErrors] = useState({
-        lastname: "",
-        firstname: "",
-        phone:"",
-        mobile:""
-    });
+
 
     const cancelForm = () => {
         setUpdate(false)
     }
-
-    //  const [loader, setLoader] = useState(false);
 
     const postTreatment = async (userResponse) => {
         setUser(userResponse)

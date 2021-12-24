@@ -15,7 +15,6 @@ const UserPage_publicProfile = (props, { history}) => {
 
     const [loader, setLoader] = useState(true)
 
-    //todo
     const [errors, setErrors] = useState(false)
     const postTreatment = ( userResponse ) => {
         setUser(userResponse[0])

@@ -37,7 +37,6 @@ const CreateProject = ({ history, t }) => {
     }
     const preSubmit = ( newProject ) => {
 
-        //todo checkFormValidity
         if(checkProjectFormValidity( newProject, setErrors )){
             HandleCreateProject(newProject, postTreatment, setLoader, setErrors, history)
         }

@@ -63,7 +63,7 @@ const putBodyFormDataForAdmin = ( user, bodyFormData, adminManagement ) => {
     if(adminManagement.roles !== undefined){
         bodyFormData.append("roles", adminManagement.roles ? "ROLE_USER": null)
     }
-    //todo pouvoir supprimer la gpaActivition de l'user pour le confirmer
+
     if(adminManagement.confirmAccount !== undefined){
         bodyFormData.append("confirmAccount", true)
     }

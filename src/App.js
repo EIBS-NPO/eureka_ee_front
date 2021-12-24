@@ -39,7 +39,6 @@ import activityAPI from "./__services/_API/activityAPI";
      const mediaStyles = AppMedia.createMediaStyle();
      const { Media, MediaContextProvider } = AppMedia;
 
-     // todo provoque un rechargement de la page, a placer dans le compo nécessaire, avec loader
      const [allowedMimes, setAllowedMimes] = useState([])
 
      const [errors, setErrors] = useState('')

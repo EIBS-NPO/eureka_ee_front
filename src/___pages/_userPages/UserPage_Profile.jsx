@@ -14,7 +14,6 @@ const UserPage_Profile = ({ history, t }) => {
 
     const [loader, setLoader] = useState(false)
 
-    //todo
     const [errors, setErrors] = useState(false)
 
     const setUserData = (userResponse) => {

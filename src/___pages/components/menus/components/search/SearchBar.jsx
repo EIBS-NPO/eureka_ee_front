@@ -9,10 +9,9 @@ import {HandleGetActivities} from "../../../../../__services/_Entity/activitySer
 import {HandleGetProjects} from "../../../../../__services/_Entity/projectServices";
 import {HandleGetOrgs} from "../../../../../__services/_Entity/organizationServices";
 
-//todo check unused var
 const SearchBar = ({setData, setDropedData, searchFor, setLoader, forAdmin}) => {
     const history = useHistory();
-    //todo error
+
     const [error, setError] = useState(undefined)
 
     const isAdmin = useContext(AuthContext).isAdmin

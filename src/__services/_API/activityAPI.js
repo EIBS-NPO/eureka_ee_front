@@ -3,7 +3,6 @@ import Axios from "axios";
 import {ACT_API, API_URL } from "../../config";
 
 const getBodyFormData = (activity) => {
-    //todo add if
     let bodyFormData = new FormData();
     if(activity.id !== undefined){
         bodyFormData.append('id', activity.id)
@@ -123,9 +122,6 @@ const getAllowedMime = () =>{
 const remove = (id) => {
     return Axios.delete(ACT_API + "?id=" + id)
 }
-
-
-//todo place upload here
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {

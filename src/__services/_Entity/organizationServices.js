@@ -64,7 +64,6 @@ export const HandleGetOrgs = async (params, postTreatment, setLoader = undefined
         //or all or partner
         if(!params.org) params.access = "all"
 
-        //todo handle errors
         orgAPI.getPublic(params.access, params.org)
             .then(response => {
                 //    postTreatment( response.data.length === 1 ? response.data[0] : response.data )
@@ -130,13 +129,10 @@ export function checkOrgChanges( actualOrg, initialOrg, returnOnlyChanges = fals
 
         if(!checkMultiTextHaveChange(initialOrg.description, actualOrg.description)) orgWithChanges.description = undefined
 
-        //todo check Address
-
         return orgWithChanges
 
     } else {
 
-        //todo check Address ?
         let boolResult = false
 
         if(

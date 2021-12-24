@@ -55,10 +55,6 @@ const UserPage_Admin = ({history}) => {
         setLoader2(false)
     }
 
-    //todo check loader
-    //todo check loader when logout (ou voir a le faire faire par le backend? dans certain cas?)
-    //todo check if run  maybe conflic with return array or not by bdd
-    //tod voir ci-dessous
     const postTreatment = async (userResponse) => {
 
         //if admin change user's email
@@ -75,7 +71,7 @@ const UserPage_Admin = ({history}) => {
                         history.replace("/login")
                     }
                 })
-                .catch(err => console.log(err)) //todo remove console.log
+                .catch(err => console.log(err)) //todo remove console.log & handle error message
         }
         //if admin change his own firstname or lastname
         if(authAPI.getId() === userResponse.id){
@@ -226,10 +222,6 @@ const UserPage_Admin = ({history}) => {
                         </div>
                     </>
                     }
-
-                    {/* //todo ? {!selectedUser &&
-                    <p> { t('errors')} </p>
-                    }*/}
 
                 </div>
             </Modal>

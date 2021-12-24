@@ -106,7 +106,6 @@ export const UpdateUserForm = ({history, user, postTreatment, forAdmin = false, 
 
     const handleCancel = ( event ) => {
         event.preventDefault()
-        //todo if no cancelForm just cancel updatedUser ?
         cancelForm()
     }
 
@@ -144,10 +143,8 @@ export const UpdateUserForm = ({history, user, postTreatment, forAdmin = false, 
     )
 }
 
-//todo add cancelHandler for admin
 export const DisplayConfirmAccountProcess = ({t, tokenActivation, postTreatment, loader, setLoader, error, setError, forAdmin =false, handleCancel = undefined}) => {
 
-    //todo pass by default true for no admin user for activation page
     const [isConfirmHandle, setIsConfirmHandle] = useState(forAdmin === false)
     useEffect(()=>{
         if(isConfirmHandle){
@@ -200,7 +197,6 @@ export const DisplayConfirmAccountProcess = ({t, tokenActivation, postTreatment,
     )
 }
 
-//todo  restyle
 export const SearchUserForm = ({user, setUser, handleSubmit, formErrors, forAdmin = false}) => {
     const { t } = useTranslation()
     return (

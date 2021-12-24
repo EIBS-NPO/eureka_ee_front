@@ -41,7 +41,6 @@ const getBodyFormData = (org) => {
     return bodyFormData
 }
 
-//todo add for partner //todo for test
 const getUrlParams = (access, org = undefined, admin = undefined) => {
     let params = "?access="+access
     if(admin === true) params += "&admin=1";
@@ -52,7 +51,6 @@ const getUrlParams = (access, org = undefined, admin = undefined) => {
             if (org.email) params += "&email=" + org.email
             if (org.phone) params += "&phone=" + org.phone
 
-            //only partner //maybe public access //todo
             if(org.partner) params += "&partner=1"
 
             //by referent relation
@@ -71,7 +69,6 @@ const getUrlParams = (access, org = undefined, admin = undefined) => {
             }
         }
 
-        //todo  by member
     }
     return params
 }
